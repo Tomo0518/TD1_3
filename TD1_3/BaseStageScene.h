@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include <memory>
-#include "GameSceneBase.h"
+#include "IGameScene.h"
 #include "GameShared.h"
 #include "DrawComponent2D.h"
 #include "Camera2D.h"
@@ -9,14 +9,13 @@ class SceneManager;
 
 /// <summary>
 /// ステージシーンの基底クラス
-/// 新しい DrawComponent2D と Camera2D システムに対応
 /// - 背景描画
 /// - カメラ管理
 /// - 共通の更新処理
 /// </summary>
 class BaseStageScene : public IGameScene {
 public:
-	BaseStageScene(SceneManager& manager, GameShared& shared, int stageIndex);
+	BaseStageScene(SceneManager& manager, int stageIndex);
 	virtual ~BaseStageScene();
 
 	int GetStageIndex() const override { return stageIndex_; }
@@ -51,7 +50,7 @@ protected:
 	// ========================================
 
 	SceneManager& manager_;          // シーンマネージャー
-	GameShared& shared_;             // 共有リソース
+	//GameShared& shared_;             // 共有リソース
 	int stageIndex_ = 0;             // ステージ番号
 	bool initialized_ = false;       // 初期化フラグ
 

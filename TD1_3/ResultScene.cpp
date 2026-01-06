@@ -1,13 +1,16 @@
 ﻿#include "ResultScene.h"
 #include <Novice.h>
 #include "SceneManager.h"
+#include "SceneUtilityIncludes.h"
+
+using namespace SceneServices;
 
 #ifdef _DEBUG
 #include <imgui.h>
 #endif
 
-ResultScene::ResultScene(SceneManager& mgr, GameShared& shared)
-	: manager_(mgr), shared_(shared) {
+ResultScene::ResultScene(SceneManager& mgr)
+	: manager_(mgr) {
 
 	// フォント読み込み
 	if (font_.Load("Resources/font/oxanium.fnt", "./Resources/font/oxanium_0.png")) {
@@ -22,7 +25,8 @@ ResultScene::ResultScene(SceneManager& mgr, GameShared& shared)
 	InitializeButtons();
 
 	// リザルトBGMを再生
-	shared_.PlayExclusive_(BgmKind::Result);
+	Sound().PlayBgm(BgmId::Result);
+
 }
 
 ResultScene::~ResultScene() {
@@ -65,7 +69,7 @@ void ResultScene::InitializeDrawComponents() {
 
 void ResultScene::InitializeButtons() {
 	// ボタン用の白いテクスチャ
-	grHandleButton_ = shared_.texWhite;
+	//grHandleButton_ = shared_.texWhite;
 
 	// ボタンの位置とサイズ
 	const float centerX = 1080.0f;
@@ -77,19 +81,20 @@ void ResultScene::InitializeButtons() {
 
 	// リトライ
 	auto retry = [&]() {
-		shared_.StopAllBgm();
+		Sound().StopBgm();
+
 		manager_.RequestStageRestart();
 		};
 
 	// タイトルへ
 	auto backToTitle = [&]() {
-		shared_.StopAllBgm();
+		Sound().StopBgm();
 		manager_.RequestTransition(SceneType::Title);
 		};
 
 	// ゲーム終了
 	auto quit = [&]() {
-		shared_.StopAllBgm();
+		Sound().StopBgm();
 		manager_.RequestQuit();
 		};
 
@@ -102,11 +107,11 @@ void ResultScene::InitializeButtons() {
 	// ========== SE設定 ==========
 
 	buttonManager_.SetOnSelectSound([&]() {
-		shared_.PlaySelectSe();
+		Sound().PlaySe(SeId::Select);
 		});
 
 	buttonManager_.SetOnDecideSound([&]() {
-		shared_.PlayDecideSe();
+		Sound().PlaySe(SeId::Decide);
 		});
 }
 
@@ -123,13 +128,12 @@ void ResultScene::UpdateDrawComponents(float deltaTime) {
 }
 
 void ResultScene::Update(float dt, const char* keys, const char* pre) {
-	shared_.pad.Update();
 
 	// 描画コンポーネントを更新
 	UpdateDrawComponents(dt);
 
 	// ボタンマネージャーを更新
-	buttonManager_.Update(dt, keys, pre, shared_.pad);
+	buttonManager_.Update(dt, keys, pre, *Input().GetPad());
 }
 
 void ResultScene::Draw() {
@@ -147,71 +151,4 @@ void ResultScene::Draw() {
 	if (fontReady_) {
 		buttonManager_.Draw(grHandleButton_, &font_, &text_);
 	}
-
-	// ========== デバッグ情報 ==========
-#ifdef _DEBUG
-	ImGui::Begin("Result Scene Debug");
-
-	ImGui::Text("=== Scene State ===");
-	ImGui::Text("Font Ready: %s", fontReady_ ? "Yes" : "No");
-
-	ImGui::Separator();
-
-	ImGui::Text("=== Background ===");
-	if (drawCompBackground_) {
-		Vector2 bgPos = drawCompBackground_->GetPosition();
-		Vector2 bgSize = drawCompBackground_->GetDrawSize();
-		ImGui::Text("Position: (%.1f, %.1f)", bgPos.x, bgPos.y);
-		ImGui::Text("Draw Size: (%.1f, %.1f)", bgSize.x, bgSize.y);
-		ImGui::Text("Animation Playing: %s",
-			drawCompBackground_->IsAnimationPlaying() ? "Yes" : "No");
-
-		if (ImGui::Button("Add Background Pulse")) {
-			drawCompBackground_->StartPulse(0.98f, 1.02f, 0.8f, true);
-		}
-
-		if (ImGui::Button("Stop Background Effects")) {
-			drawCompBackground_->StopAllEffects();
-		}
-	}
-
-	ImGui::Separator();
-
-	ImGui::Text("=== Clear Label ===");
-	if (drawCompClearLabel_) {
-		Vector2 labelPos = drawCompClearLabel_->GetPosition();
-		Vector2 labelSize = drawCompClearLabel_->GetDrawSize();
-		ImGui::Text("Position: (%.1f, %.1f)", labelPos.x, labelPos.y);
-		ImGui::Text("Draw Size: (%.1f, %.1f)", labelSize.x, labelSize.y);
-		ImGui::Text("Scale Effect Active: %s",
-			drawCompClearLabel_->IsScaleEffectActive() ? "Yes" : "No");
-
-		if (ImGui::Button("Reset Label Pulse")) {
-			drawCompClearLabel_->StopScale();
-			drawCompClearLabel_->StartPulse(0.95f, 1.05f, 0.2f, true);
-		}
-
-		if (ImGui::Button("Flash Label")) {
-			drawCompClearLabel_->StartFlash(ColorRGBA::White(), 0.3f, 0.8f);
-		}
-
-		if (ImGui::Button("Spawn Effect")) {
-			drawCompClearLabel_->StartSpawnEffect();
-		}
-	}
-
-	ImGui::Separator();
-
-	ImGui::Text("=== Buttons ===");
-	ImGui::Text("Button Count: %zu", buttonManager_.GetButtonCount());
-	ImGui::Text("Selected Index: %d", buttonManager_.GetSelectedIndex());
-
-	ImGui::Separator();
-
-	ImGui::Text("=== Controls ===");
-	ImGui::Text("W/S or Up/Down: Navigate");
-	ImGui::Text("Space/Enter or A: Select");
-
-	ImGui::End();
-#endif
 }

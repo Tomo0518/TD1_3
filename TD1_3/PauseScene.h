@@ -3,7 +3,7 @@
 #include "UiDrawComponent.h"
 #include "FontAtlas.h"
 #include "TextRenderer.h"
-#include "GameSceneBase.h"
+#include "IGameScene.h"
 #include <string>
 #include <Novice.h>
 

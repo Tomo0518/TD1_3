@@ -20,6 +20,7 @@ enum class TextureId {
 class TextureManager {
 public:
 	TextureManager();
+	~TextureManager() = default;
 
 	static TextureManager& GetInstance() {
 		static TextureManager instance;

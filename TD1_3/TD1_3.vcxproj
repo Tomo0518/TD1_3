@@ -151,6 +151,7 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClInclude Include="..\DirectXGame\3d\Camera.h" />
     <ClInclude Include="Affine2D.h" />
     <ClInclude Include="Animation.h" />
+    <ClInclude Include="SceneUtilityIncludes.h" />
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="Background.h" />
     <ClInclude Include="BaseStageScene.h" />
@@ -190,7 +191,7 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClInclude Include="Effect.h" />
     <ClInclude Include="FontAtlas.h" />
     <ClInclude Include="GamePlayScene.h" />
-    <ClInclude Include="GameSceneBase.h" />
+    <ClInclude Include="IGameScene.h" />
     <ClInclude Include="GameShared.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="json.hpp" />

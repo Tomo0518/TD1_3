@@ -6,7 +6,7 @@
 /// </summary>
 class Stage1Scene : public BaseStageScene {
 public:
-	Stage1Scene(SceneManager& manager, GameShared& shared);
+	Stage1Scene(SceneManager& manager);
 
 protected:
 

@@ -4,9 +4,9 @@
 #include "SettingScene.h"
 #include "PauseScene.h"
 #include "ResultScene.h"
-#include "GamePlayScene.h"
 #include "Stage1Scene.h"
 
+#include "SceneUtilityIncludes.h"
 
 #include <Novice.h>
 
@@ -17,9 +17,16 @@ SceneManager::SceneManager() {
 
 void SceneManager::Update(float dt, const char* keys, const char* pre) {
 	// Rキーで現在シーンを再生成（初期化）
+
+#ifdef _DEBUG
 	if (keys[DIK_R] && !pre[DIK_R]) {
 		RequestTransition(currentSceneType_);
 	}
+#endif
+
+	InputManager::GetInstance().Update();
+	
+
 
 	// オーバーレイがある場合はそちらを優先
 	if (!overlayScenes_.empty()) {
@@ -75,7 +82,7 @@ void SceneManager::RequestPauseResume() {
 }
 
 void SceneManager::RequestOpenSettings() {
-	auto settingScene = std::make_unique<SettingScene>(*this, shared_);
+	auto settingScene = std::make_unique<SettingScene>(*this);
 	PushOverlay(std::move(settingScene));
 }
 
@@ -123,21 +130,21 @@ void SceneManager::ChangeScene(SceneType type) {
 		break;
 
 	case SceneType::Stage1:
-		currentScene_ = std::make_unique<Stage1Scene>(*this, shared_);
+		currentScene_ = std::make_unique<Stage1Scene>(*this); //!
 		currentStageIndex_ = 1;
 		break;
 
 	case SceneType::Result:
-		currentScene_ = std::make_unique<ResultScene>(*this, shared_);
+		currentScene_ = std::make_unique<ResultScene>(*this);//!
 		break;
 
 	case SceneType::Setting:
-		currentScene_ = std::make_unique<SettingScene>(*this, shared_);
+		currentScene_ = std::make_unique<SettingScene>(*this);
 		break;
 
-	case SceneType::GamePlay:
-		currentScene_ = std::make_unique<GamePlayScene>(*this, shared_);
-		break;
+	//case SceneType::GamePlay:
+	//	currentScene_ = std::make_unique<GamePlayScene>(*this);//!
+	//	break;
 
 	default:
 		// 未実装のシーンの場合はタイトルに戻る

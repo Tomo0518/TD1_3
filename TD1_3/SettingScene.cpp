@@ -1,19 +1,52 @@
 ﻿#include "SettingScene.h"
 #include "SceneManager.h"
 #include <algorithm>
+#include <cmath>
 #include <cstdio>
 
-SettingScene::SettingScene(SceneManager& mgr, GameShared& shared)
-	: manager_(mgr), shared_(shared) {
-	bgmVolume_ = shared_.userBgmVolume;
-	seVolume_ = shared_.userSeVolume;
-	vibEnable_ = shared_.vibrationEnabled;
-	vibStrength_ = shared_.vibrationStrength;
+#include "SceneUtilityIncludes.h"
 
-	bgmStep_ = std::clamp(int(std::round(bgmVolume_ * 10.0f)), 0, 10);
-	seStep_ = std::clamp(int(std::round(seVolume_ * 10.0f)), 0, 10);
-	vibStrengthStep_ = std::clamp(int(std::round(vibStrength_ * 10.0f)), 1, 10);
-	ApplyStepsToFloat();
+using namespace SceneServices;
+
+namespace {
+	constexpr float kStickThreshold = 0.55f;
+
+	inline int ClampStep01(int step) {
+		return std::clamp(step, 0, 10);
+	}
+
+	inline int ClampStep10(int step) {
+		return std::clamp(step, 1, 10);
+	}
+
+	inline int VolumeToStep(float volume) {
+		return std::clamp(static_cast<int>(std::round(volume * 10.0f)), 0, 10);
+	}
+
+	inline int StrengthToStep(float strength) {
+		return std::clamp(static_cast<int>(std::round(strength * 10.0f)), 1, 10);
+	}
+
+	inline float StepToVolume(int step) {
+		return step / 10.0f;
+	}
+}
+
+SettingScene::SettingScene(SceneManager& mgr)
+	: manager_(mgr) {
+
+	// フレーム画像（旧: SettingScene.h のメンバで LoadTexture していた）
+	frame_ = DrawComponent2D(Tex().GetTexture(TextureId::ResultBackground)); // ←一旦ダミー防止
+	frame_.SetGraphHandle(Novice::LoadTexture("./Resources/images/explanation/frame.png"));
+	frame_.SetAnchorPoint({ 0.0f, 0.0f });
+	frame_.SetPosition({ 50.0f, 50.0f });
+
+	// 現在値（設定画面を開いた瞬間の値を反映）
+	bgmStep_ = VolumeToStep(Sound().GetBgmVolume());
+	seStep_ = VolumeToStep(Sound().GetSeVolume());
+	vibStrengthStep_ = StrengthToStep(Input().GetVibrationStrength());
+
+	ApplyStepsToServices();
 
 	if (font_.Load("Resources/font/oxanium.fnt", "./Resources/font/oxanium_0.png")) {
 		text_.SetFont(&font_);
@@ -21,10 +54,15 @@ SettingScene::SettingScene(SceneManager& mgr, GameShared& shared)
 	}
 }
 
-void SettingScene::ApplyStepsToFloat() {
-	bgmVolume_ = bgmStep_ / 10.0f;
-	seVolume_ = seStep_ / 10.0f;
-	vibStrength_ = vibStrengthStep_ / 10.0f;
+void SettingScene::ApplyStepsToServices() {
+	Sound().SetBgmVolume(StepToVolume(bgmStep_));
+	Sound().SetSeVolume(StepToVolume(seStep_));
+
+	// 旧コードの誤り修正：Enabled に強度を渡していた
+	Input().SetVibrationStrength(StepToVolume(vibStrengthStep_));
+
+	// 現在再生中BGMに反映（旧 GameShared::ApplyAudioSettings 相当）
+	Sound().ApplyAudioSettings();
 }
 
 void SettingScene::ChangeFocus(int dir) {
@@ -35,169 +73,193 @@ void SettingScene::ChangeFocus(int dir) {
 		Item::VIB_STRENGTH,
 		Item::BACK
 	};
-	int count = (int)(sizeof(order) / sizeof(order[0]));
+
+	const int count = static_cast<int>(sizeof(order) / sizeof(order[0]));
 	int cur = 0;
-	for (int i = 0; i < count; ++i)
-		if (order[i] == focus_) { cur = i; break; }
+	for (int i = 0; i < count; ++i) {
+		if (order[i] == focus_) {
+			cur = i;
+			break;
+		}
+	}
 	cur = (cur + dir + count) % count;
 	focus_ = order[cur];
 
-	// 選択音を再生
-	shared_.PlaySelectSe();
+	Sound().PlaySe(SeId::Select);
 }
 
 void SettingScene::AdjustCurrent(int dir) {
 	switch (focus_) {
 	case Item::BGM: {
-		int before = bgmStep_;
-		bgmStep_ = std::clamp(bgmStep_ + dir, 0, 10);
+		const int before = bgmStep_;
+		bgmStep_ = ClampStep01(bgmStep_ + dir);
 		if (bgmStep_ != before) {
-			ApplyStepsToFloat();
-			shared_.PlaySelectSe();
+			ApplyStepsToServices();
+			Sound().PlaySe(SeId::Select);
 		}
 		break;
 	}
 	case Item::SE: {
-		int before = seStep_;
-		seStep_ = std::clamp(seStep_ + dir, 0, 10);
+		const int before = seStep_;
+		seStep_ = ClampStep01(seStep_ + dir);
 		if (seStep_ != before) {
-			ApplyStepsToFloat();
-			shared_.PlaySelectSe();
+			ApplyStepsToServices();
+			Sound().PlaySe(SeId::Select);
 		}
 		break;
 	}
-	case Item::VIB_ENABLE:
+	case Item::VIB_ENABLE: {
 		if (dir != 0) {
-			vibEnable_ = !vibEnable_;
-			shared_.PlaySelectSe();
+			const bool vibEnable = !Input().IsVibrationEnabled();
+			Input().SetVibrationEnabled(vibEnable);
+			Sound().PlaySe(SeId::Select);
 		}
 		break;
-	case Item::VIB_STRENGTH:
-		if (!vibEnable_) return;
-		{
-			int before = vibStrengthStep_;
-			vibStrengthStep_ = std::clamp(vibStrengthStep_ + dir, 1, 10);
-			if (vibStrengthStep_ != before) {
-				ApplyStepsToFloat();
-				shared_.PlaySelectSe();
-			}
-			break;
+	}
+	case Item::VIB_STRENGTH: {
+		if (!Input().IsVibrationEnabled()) {
+			return;
 		}
-	default: break;
+		const int before = vibStrengthStep_;
+		vibStrengthStep_ = ClampStep10(vibStrengthStep_ + dir);
+		if (vibStrengthStep_ != before) {
+			ApplyStepsToServices();
+			Sound().PlaySe(SeId::Select);
+		}
+		break;
+	}
+	default:
+		break;
 	}
 }
 
 void SettingScene::Leave(bool apply) {
 	if (apply) {
-		// 設定を適用
-		shared_.userBgmVolume = bgmVolume_;
-		shared_.userSeVolume = seVolume_;
-		shared_.vibrationEnabled = vibEnable_;
-		shared_.vibrationStrength = vibStrength_;
-
-		// 音声設定を反映
-		shared_.ApplyAudioSettings();
-
-		// 決定音を再生（適用後なので新しい音量で再生される）
-		shared_.PlayDecideSe();
-
-#ifdef _DEBUG
-		// デバッグ出力（設定保存確認用）
-		char debugMsg[256];
-		snprintf(debugMsg, sizeof(debugMsg),
-			"[SettingScene] Settings saved: BGM=%.2f, SE=%.2f, Vibration=%s (%.2f)\n",
-			bgmVolume_, seVolume_,
-			vibEnable_ ? "ON" : "OFF", vibStrength_);
-		Novice::ConsolePrintf(debugMsg);
-#endif
+		// いまの設計では変更は常に即時反映だが、
+		// 「確定音を鳴らす」「適用を明示する」目的で残す
+		Sound().ApplyAudioSettings();
+		Sound().PlaySe(SeId::Decide);
 	}
 	else {
-		// キャンセル時はキャンセル音を再生（元の音量）
-		shared_.PlayBackSe();
-
-#ifdef _DEBUG
-		Novice::ConsolePrintf("[SettingScene] Settings discarded\n");
-#endif
+		// ここで「元に戻す」挙動が必要なら、入室時スナップショットを保持して復元する
+		Sound().PlaySe(SeId::Back);
 	}
 
 	manager_.RequestCloseSettings();
 }
 
-void SettingScene::Update(float dt, const char* keys, const char* pre) {
-	(void)dt;
-	shared_.pad.Update();
-	float lx = shared_.pad.LeftX();
-	float ly = shared_.pad.LeftY();
-	const float th = 0.55f;
-	bool up = false, down = false, left = false, right = false;
+void SettingScene::UpdateInput() {
+	Pad* pad = Input().GetPad();
+	const float lx = pad ? pad->LeftX() : 0.0f;
+	const float ly = pad ? pad->LeftY() : 0.0f;
+
+	bool up = false;
+	bool down = false;
+	bool left = false;
+	bool right = false;
+
 	if (firstFrame_) {
-		prevLX_ = lx; prevLY_ = ly; firstFrame_ = false;
+		prevLX_ = lx;
+		prevLY_ = ly;
+		firstFrame_ = false;
 	}
 	else {
-		if (prevLY_ <= th && ly > th) up = true;
-		if (prevLY_ >= -th && ly < -th) down = true;
-		if (prevLX_ >= -th && lx < -th) left = true;
-		if (prevLX_ <= th && lx > th) right = true;
-		prevLX_ = lx; prevLY_ = ly;
+		if (prevLY_ <= kStickThreshold && ly > kStickThreshold) up = true;
+		if (prevLY_ >= -kStickThreshold && ly < -kStickThreshold) down = true;
+		if (prevLX_ >= -kStickThreshold && lx < -kStickThreshold) left = true;
+		if (prevLX_ <= kStickThreshold && lx > kStickThreshold) right = true;
+
+		prevLX_ = lx;
+		prevLY_ = ly;
 	}
-	bool kUp = (pre[DIK_W] == 0 && keys[DIK_W]);
-	bool kDown = (pre[DIK_S] == 0 && keys[DIK_S]);
-	bool kLeft = (pre[DIK_A] == 0 && keys[DIK_A]);
-	bool kRight = (pre[DIK_D] == 0 && keys[DIK_D]);
+
+	const bool kUp = Input().TriggerKey(DIK_W);
+	const bool kDown = Input().TriggerKey(DIK_S);
+	const bool kLeft = Input().TriggerKey(DIK_A);
+	const bool kRight = Input().TriggerKey(DIK_D);
 
 	if (kUp || up) ChangeFocus(-1);
 	if (kDown || down) ChangeFocus(+1);
 	if (kLeft || left) AdjustCurrent(-1);
 	if (kRight || right) AdjustCurrent(+1);
 
-	bool decide = (!pre[DIK_SPACE] && keys[DIK_SPACE]) || (!pre[DIK_RETURN] && keys[DIK_RETURN]) || shared_.pad.Trigger(Pad::Button::A);
-	bool cancel = (pre[DIK_ESCAPE] == 0 && keys[DIK_ESCAPE]) || shared_.pad.Trigger(Pad::Button::B);
-	if (decide && focus_ == Item::BACK) { Leave(true); return; }
-	if (cancel) { Leave(true); return; }
+	const bool decide =
+		Input().TriggerKey(DIK_SPACE) ||
+		Input().TriggerKey(DIK_RETURN) ||
+		(pad && pad->Trigger(Pad::Button::A));
+
+	const bool cancel =
+		Input().TriggerKey(DIK_ESCAPE) ||
+		(pad && pad->Trigger(Pad::Button::B));
+
+	if (decide && focus_ == Item::BACK) {
+		Leave(true);
+	}
+	else if (cancel) {
+		Leave(false);
+	}
+}
+
+void SettingScene::Update(float dt, const char* keys, const char* pre) {
+	(void)dt;
+	(void)keys;
+	(void)pre;
+
+	frame_.Update(dt);
+	UpdateInput();
 }
 
 void SettingScene::Draw() {
 	Novice::DrawBox(0, 0, 1280, 720, 0.0f, 0x00000088, kFillModeSolid);
-	Novice::DrawSprite(50, 50, grHandleFrame, 1.0f, 1.0f, 0.0f, 0xFFFFFFAA);
 
-	auto drawBar = [&](int y, const char* lbl, int step, bool foc) {
+	// フレーム描画（DrawComponent2D化）
+	frame_.DrawScreen();
+
+	auto drawBar = [&](int y, const char* lbl, int step, bool foc, bool enable) {
 		char buf[128];
 		std::snprintf(buf, sizeof(buf), "%s  \xE2\x97\x80%2d\xE2\x96\xB6  (%.2f)",
-			lbl, step, step / 10.0f);
+			lbl, step, StepToVolume(step));
+
 		uint32_t col = foc ? 0xFFFFAAFF : 0xDDDDDDFF;
-		if (fontReady_) text_.DrawTextLabel(440, y, buf, col, foc ? 1.1f : 0.9f);
+		if (!enable) {
+			col = foc ? 0x666666FF : 0x444444FF;
+		}
+
+		if (fontReady_) {
+			text_.DrawTextLabel(440, y, buf, col, foc ? 1.1f : 0.9f);
+		}
 		};
 
 	auto drawToggle = [&](int y, const char* lbl, bool on, bool foc) {
 		char buf[128];
 		std::snprintf(buf, sizeof(buf), "%s  \xE2\x97\x80 %s \xE2\x96\xB6",
 			lbl, on ? "ON " : "OFF");
+
 		uint32_t col = foc ? 0xFFFFAAFF : 0xDDDDDDFF;
-		if (!on && (lbl[0] == 'V')) {
+		if (!on) {
 			col = foc ? 0x8888AAFF : 0x555555FF;
 		}
-		if (fontReady_) text_.DrawTextLabel(440, y, buf, col, foc ? 1.1f : 0.9f);
+
+		if (fontReady_) {
+			text_.DrawTextLabel(440, y, buf, col, foc ? 1.1f : 0.9f);
+		}
 		};
 
-	if (fontReady_) text_.DrawTextLabel(500, 90, "SETTINGS", 0xFFFFFFFF, 1.6f);
-
-	drawBar(200, "BGM VOLUME", bgmStep_, focus_ == Item::BGM);
-	drawBar(280, "SE  VOLUME", seStep_, focus_ == Item::SE);
-	drawToggle(360, "VIBRATION", vibEnable_, focus_ == Item::VIB_ENABLE);
-
-	{
-		drawBar(440, "VIB STRENGTH", vibStrengthStep_, focus_ == Item::VIB_STRENGTH);
-		if (!vibEnable_) {
-			char buf[128];
-			std::snprintf(buf, sizeof(buf), "VIB STRENGTH  \xE2\x97\x80%2d\xE2\x96\xB6  (%.2f)",
-				vibStrengthStep_, vibStrengthStep_ / 10.0f);
-			if (fontReady_) text_.DrawTextLabel(440, 440, buf,
-				focus_ == Item::VIB_STRENGTH ? 0x666666FF : 0x444444FF,
-				focus_ == Item::VIB_STRENGTH ? 1.1f : 0.9f);
-		}
+	if (fontReady_) {
+		text_.DrawTextLabel(500, 90, "SETTINGS", 0xFFFFFFFF, 1.6f);
 	}
 
+	const bool vibEnabled = Input().IsVibrationEnabled();
+
+	drawBar(200, "BGM VOLUME", bgmStep_, IsFocused(Item::BGM), true);
+	drawBar(280, "SE  VOLUME", seStep_, IsFocused(Item::SE), true);
+	drawToggle(360, "VIBRATION", vibEnabled, IsFocused(Item::VIB_ENABLE));
+
+	drawBar(440, "VIB STRENGTH", vibStrengthStep_, IsFocused(Item::VIB_STRENGTH), vibEnabled);
+
 	const char* backLbl = "[ BACK ]";
-	uint32_t backCol = focus_ == Item::BACK ? 0xFFFFAAFF : 0xDDDDDDFF;
-	if (fontReady_) text_.DrawTextLabel(560, 540, backLbl, backCol, focus_ == Item::BACK ? 1.2f : 1.0f);
+	const uint32_t backCol = IsFocused(Item::BACK) ? 0xFFFFAAFF : 0xDDDDDDFF;
+	if (fontReady_) {
+		text_.DrawTextLabel(560, 540, backLbl, backCol, IsFocused(Item::BACK) ? 1.2f : 1.0f);
+	}
 }

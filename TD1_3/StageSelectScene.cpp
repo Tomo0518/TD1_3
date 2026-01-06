@@ -3,9 +3,7 @@
 #include "SceneType.h"
 #include <Novice.h>
 
-#include "SoundManager.h"
-#include "InputManager.h"
-#include "TextureManager.h"
+#include "SceneUtilityIncludes.h"
 
 #ifdef _DEBUG
 #include <imgui.h>

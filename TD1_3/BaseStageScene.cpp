@@ -4,12 +4,14 @@
 #include <Novice.h>
 #include <cmath>
 
+#include "SceneUtilityIncludes.h"
+
 #ifdef _DEBUG
 #include <imgui.h>
 #endif
 
-BaseStageScene::BaseStageScene(SceneManager& manager, GameShared& shared, int stageIndex)
-	: manager_(manager), shared_(shared), stageIndex_(stageIndex) {
+BaseStageScene::BaseStageScene(SceneManager& manager, int stageIndex)
+	: manager_(manager), stageIndex_(stageIndex) {
 
 	// 背景を初期化
 	InitializeBackground();
@@ -18,7 +20,7 @@ BaseStageScene::BaseStageScene(SceneManager& manager, GameShared& shared, int st
 	InitializeCamera();
 
 	// BGM再生
-	shared_.PlayExclusive_(BgmKind::Stage);
+	SoundManager::GetInstance().PlayBgm(BgmId::Stage);
 }
 
 BaseStageScene::~BaseStageScene() {
@@ -28,10 +30,9 @@ BaseStageScene::~BaseStageScene() {
 
 void BaseStageScene::InitializeBackground() {
 	// 背景テクスチャをロード
-	int bgTexture = Novice::LoadTexture("./Resources/images/gamePlay/background_ver1.png");
-
-	// 新しい DrawComponent2D で背景を作成（静止画）
-	drawCompBackground_ = new DrawComponent2D(bgTexture);
+	
+	// DrawComponent2D で背景を作成（静止画）
+	drawCompBackground_ = new DrawComponent2D(TextureManager::GetInstance().GetTexture(TextureId::StageSelectBackground));
 
 	// 背景の設定
 	drawCompBackground_->SetPosition({ kWindowWidth / 2.0f, kWindowHeight / 2.0f });
@@ -78,8 +79,7 @@ void BaseStageScene::Update(float dt, const char* keys, const char* pre) {
 	}
 
 	// パッドのStartボタンでポーズ
-	shared_.pad.Update();
-	if (shared_.pad.Trigger(Pad::Button::Start)) {
+	if (InputManager::GetInstance().GetPad()->Trigger(Pad::Button::Start)) {
 		manager_.RequestPause();
 		return;
 	}

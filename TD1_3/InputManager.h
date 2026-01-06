@@ -73,6 +73,18 @@ public:
 	// パッドを取得（直接操作したい場合用）
 	Pad* GetPad() { return &pad_; }
 
+	// パッド振動の設定
+	/*void SetVibration(float leftPower, float rightPower, int frames);
+	void StopVibration();*/
+
+	// 振動のオンオフ設定
+	void SetVibrationEnabled(bool enabled) { vibrationEnabled_ = enabled; }
+	bool IsVibrationEnabled() const { return vibrationEnabled_; }
+
+	// 振動の強さ設定（0.0f～1.0f）
+	void SetVibrationStrength(float multi) { vibStrength_ = multi; }
+	float GetVibrationStrength() const { return vibStrength_; }
+
 	// 現在の入力モードを取得（自動切り替え）
 	InputMode GetInputMode() const { return currentInputMode_; }
 
@@ -97,6 +109,17 @@ private:
 
 	// パッド
 	Pad pad_;
+
+	// パッド用設定
+	static constexpr float kPadInputThreshold_ = 0.3f; // アナログスティックの入力検知閾値
+
+	// 振動の強さ
+	float vibStrength_ = 1.0f;
+
+
+
+	// 振動のオンオフ
+	bool vibrationEnabled_ = true;
 
 	// 入力モード管理
 	InputMode currentInputMode_ = InputMode::KeyboardMouse;

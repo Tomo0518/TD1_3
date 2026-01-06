@@ -1,7 +1,7 @@
 ﻿#include "SoundManager.h"
 
 SoundManager::SoundManager() {
-	// 全てのリソースを初期化（-1は無効値）
+	// 全てのリソースを初期化（無効値）
 	bgmResources_.fill(-1);
 	seResources_.fill(-1);
 
@@ -71,6 +71,10 @@ void SoundManager::SetBgmVolume(float volume) {
 
 void SoundManager::SetSeVolume(float volume) {
 	seVolume_ = volume;
-	// SEは鳴りっぱなしのものは少ないので、次回の再生から反映でOK
-	// もしループ再生する環境音SEなどがある場合は、個別のハンドル管理が必要
+}
+
+void SoundManager::ApplyAudioSettings() {
+	if (currentBgmPlayHandle_ != -1 && Novice::IsPlayingAudio(currentBgmPlayHandle_)) {
+		Novice::SetAudioVolume(currentBgmPlayHandle_, bgmVolume_);
+	}
 }

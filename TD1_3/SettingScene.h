@@ -1,16 +1,13 @@
 ﻿#pragma once
-#include "GameSceneBase.h"
-#include "Pad.h"
+#include "IGameScene.h"
 #include "FontAtlas.h"
 #include "TextRenderer.h"
-#include "GameShared.h"
-#include <Novice.h>
+#include "DrawComponent2D.h"
 
 class SceneManager;
 
 class SettingScene : public IGameScene {
 public:
-
 	enum class Item {
 		BGM,
 		SE,
@@ -19,43 +16,40 @@ public:
 		BACK
 	};
 
-	SettingScene(SceneManager& mgr, GameShared& shared);
+	explicit SettingScene(SceneManager& mgr);
+
 	void Update(float dt, const char* keys, const char* pre) override;
 	void Draw() override;
 
-	float GetBgmVolume() const { return bgmVolume_; }
-	float GetSeVolume()  const { return seVolume_; }
-
-	int grHandleFrame = Novice::LoadTexture("./Resources/images/explanation/frame.png");
-
 private:
 	SceneManager& manager_;
-	GameShared& shared_;
 
+	// UI
 	Item focus_ = Item::BGM;
 
-	int bgmStep_{ 10 };
-	int seStep_{ 10 };
-	int vibStrengthStep_{ 10 };
-	bool vibEnable_{ true };
-	float bgmVolume_{ 1.0f };
-	float seVolume_{ 1.0f };
-	float vibStrength_{};
+	int bgmStep_ = 10;          // 0..10
+	int seStep_ = 10;           // 0..10
+	int vibStrengthStep_ = 10;  // 1..10
 
-	// アナログ閾値
+	// 入力（スティックのトリガ判定用）
 	float prevLX_ = 0.0f;
 	float prevLY_ = 0.0f;
 	bool firstFrame_ = true;
 
-	// フォント
+	// UI描画
+	DrawComponent2D frame_;
 	FontAtlas font_;
 	TextRenderer text_;
 	bool fontReady_ = false;
 
-	void ApplyStepsToFloat();
-	void ChangeFocus(int dir);     // -1 / +1
-	void AdjustCurrent(int dir);   // -1 / +1
+private:
+	void ApplyStepsToServices();
+	void ChangeFocus(int dir);      // -1 / +1
+	void AdjustCurrent(int dir);    // -1 / +1
 	void Leave(bool apply);
 
+	// 入力集約
+	void UpdateInput();
 
+	bool IsFocused(Item item) const { return focus_ == item; }
 };

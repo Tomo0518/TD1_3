@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "GameSceneBase.h"
+#include "IGameScene.h"
 #include "GameShared.h"
 #include "Pad.h"
 #include "FontAtlas.h"

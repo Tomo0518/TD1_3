@@ -2,7 +2,7 @@
 
 #include "GameShared.h"
 #include "TextRenderer.h"
-#include "GameSceneBase.h"
+#include "IGameScene.h"
 #include "DrawComponent2D.h"
 #include "ButtonManager.h"
 
@@ -14,11 +14,10 @@ class SceneManager;
 
 /// <summary>
 /// リザルトシーン
-/// 新しい DrawComponent2D と Effect システムに対応
 /// </summary>
 class ResultScene : public IGameScene {
 public:
-	ResultScene(SceneManager& mgr, GameShared& shared);
+	ResultScene(SceneManager& mgr);
 	~ResultScene();
 
 	void Update(float dt, const char* keys, const char* pre) override;
@@ -30,7 +29,7 @@ private:
 	void UpdateDrawComponents(float deltaTime);
 
 	SceneManager& manager_;
-	GameShared& shared_;
+	//GameShared& shared_;
 
 	// ========== ボタン管理 ==========
 	ButtonManager buttonManager_;

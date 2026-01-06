@@ -6,8 +6,7 @@
 #include <algorithm>
 
 #include "SceneManager.h"
-#include "SoundManager.h"
-#include "InputManager.h"
+#include "SceneUtilityIncludes.h"
 
 #ifdef _DEBUG
 #include <imgui.h>

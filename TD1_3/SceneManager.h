@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "GameSceneBase.h"
+#include "IGameScene.h"
 #include "GameShared.h"
 #include "SceneType.h"
 #include <memory>

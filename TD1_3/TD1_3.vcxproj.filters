@@ -325,7 +325,7 @@
     <ClInclude Include="C:\KamataEngine\DirectXGame\2d\ImGuiManager.h">
       <Filter>KamataEngine\Include</Filter>
     </ClInclude>
-    <ClInclude Include="GameSceneBase.h">
+    <ClInclude Include="IGameScene.h">
       <Filter>KamataEngine\Source\Game\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Pad.h">
@@ -459,6 +459,9 @@
     </ClInclude>
     <ClInclude Include="TextureManager.h">
       <Filter>KamataEngine\Source\library\TextureManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneUtilityIncludes.h">
+      <Filter>KamataEngine\Source\Game\Scene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

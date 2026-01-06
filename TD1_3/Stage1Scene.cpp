@@ -1,9 +1,9 @@
 ﻿#include "Stage1Scene.h"
 #include "SceneManager.h"
 
-Stage1Scene::Stage1Scene(SceneManager& manager, GameShared& shared)
-	: BaseStageScene(manager, shared, 1) {
-	// 共通初期化はBaseStageSceneで実行される
+Stage1Scene::Stage1Scene(SceneManager& manager) : 
+	BaseStageScene(manager, 1) {
+	// ステージ1固有の初期化
 }
 
 void Stage1Scene::InitializeStage() {

@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "GameSceneBase.h"
+#include "IGameScene.h"
 #include "Pad.h"
 #include "TextRenderer.h"
 #include "FontAtlas.h"
