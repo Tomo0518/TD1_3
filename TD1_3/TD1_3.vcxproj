@@ -1,0 +1,235 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{1498399d-e954-4eac-8e85-30761551ae88}</ProjectGuid>
+    <RootNamespace>TD1_3</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(ProjectDir)..\Generated\Outputs\$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)..\Generated\Obj\$(ProjectName)\$(Configuration)\</IntDir>
+    <LibraryPath>$(ProjectDir)..\External\KamataEngine\lib\$(Configuration);$(ProjectDir)..\External\DirectXTex\lib\$(Configuration);$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(ProjectDir)..\Generated\Outputs\$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)..\Generated\Obj\$(ProjectName)\$(Configuration)\</IntDir>
+    <LibraryPath>$(ProjectDir)..\External\KamataEngine\lib\$(Configuration);$(ProjectDir)..\External\DirectXTex\lib\$(Configuration);$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\KamataEngine\Adapter;C:\KamataEngine\External\imgui;C:\KamataEngine\External\KamataEngine\include;C:\KamataEngine\External\DirectXTex\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DisableSpecificWarnings>26495;26819</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\KamataEngine\External\KamataEngine\lib\$(Configuration);C:\KamataEngine\External\DirectXTex\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>KamataEngine.lib;DirectXTex.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>xcopy C:\KamataEngine\DirectXGame\Resources .\NoviceResources /S /E /I /D /R /Y
+xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /S /E /I /D /R /Y</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\KamataEngine\Adapter;C:\KamataEngine\External\KamataEngine\include;C:\KamataEngine\External\DirectXTex\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <Optimization>MinSpace</Optimization>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>KamataEngine.lib;DirectXTex.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\KamataEngine\External\KamataEngine\lib\$(Configuration);C:\KamataEngine\External\DirectXTex\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent>
+      <Command>xcopy C:\KamataEngine\DirectXGame\Resources .\NoviceResources /S /E /I /D /R /Y
+xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /S /E /I /D /R /Y</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Affine2D.cpp" />
+    <ClCompile Include="Animation.cpp" />
+    <ClCompile Include="AtomicBarrirScene.cpp" />
+    <ClCompile Include="AudioManager.cpp" />
+    <ClCompile Include="Background.cpp" />
+    <ClCompile Include="BaseStageScene.cpp" />
+    <ClCompile Include="Button.cpp" />
+    <ClCompile Include="ButtonManager.cpp" />
+    <ClCompile Include="C:\KamataEngine\Adapter\Novice.cpp" />
+    <ClCompile Include="Camera2D.cpp" />
+    <ClCompile Include="ComponentBase.cpp" />
+    <ClCompile Include="CyberOverdrive.cpp" />
+    <ClCompile Include="DebugWindow.cpp" />
+    <ClCompile Include="DrawComponent2D.cpp" />
+    <ClCompile Include="Effect.cpp" />
+    <ClCompile Include="Fish.cpp" />
+    <ClCompile Include="FishScene.cpp" />
+    <ClCompile Include="FontAtlas.cpp" />
+    <ClCompile Include="GamePlayScene.cpp" />
+    <ClCompile Include="GameShared.cpp" />
+    <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Matrix3x3.cpp" />
+    <ClCompile Include="NightSkyScene.cpp" />
+    <ClCompile Include="Object2D.cpp" />
+    <ClCompile Include="Pad.cpp" />
+    <ClCompile Include="Particle.cpp" />
+    <ClCompile Include="ParticleManager.cpp" />
+    <ClCompile Include="PauseScene.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="ResultScene.cpp" />
+    <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="SettingScene.cpp" />
+    <ClCompile Include="Stage1Scene.cpp" />
+    <ClCompile Include="StageSelectScene.cpp" />
+    <ClCompile Include="TextRenderer.cpp" />
+    <ClCompile Include="TitleScene.cpp" />
+    <ClCompile Include="UiDrawComponent.cpp" />
+    <ClCompile Include="Vector2.cpp" />
+    <ClCompile Include="Vertex4.cpp" />
+    <ClCompile Include="Vertex4Component.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\DirectXGame\3d\Camera.h" />
+    <ClInclude Include="Affine2D.h" />
+    <ClInclude Include="Animation.h" />
+    <ClInclude Include="AtomicBarrirScene.h" />
+    <ClInclude Include="AudioManager.h" />
+    <ClInclude Include="Background.h" />
+    <ClInclude Include="BaseStageScene.h" />
+    <ClInclude Include="Button.h" />
+    <ClInclude Include="ButtonManager.h" />
+    <ClInclude Include="C:\KamataEngine\DirectXGame\base\StringUtility.h" />
+    <ClInclude Include="C:\KamataEngine\DirectXGame\math\Matrix4x4.h" />
+    <ClInclude Include="C:\KamataEngine\DirectXGame\math\Vector2.h" />
+    <ClInclude Include="C:\KamataEngine\DirectXGame\math\Vector3.h" />
+    <ClInclude Include="C:\KamataEngine\DirectXGame\math\Vector4.h" />
+    <ClInclude Include="C:\KamataEngine\DirectXGame\3d\CircleShadow.h" />
+    <ClInclude Include="C:\KamataEngine\DirectXGame\3d\DebugCamera.h" />
+    <ClInclude Include="C:\KamataEngine\DirectXGame\3d\DirectionalLight.h" />
+    <ClInclude Include="C:\KamataEngine\DirectXGame\3d\LightGroup.h" />
+    <ClInclude Include="C:\KamataEngine\DirectXGame\3d\Material.h" />
+    <ClInclude Include="C:\KamataEngine\DirectXGame\3d\Mesh.h" />
+    <ClInclude Include="C:\KamataEngine\DirectXGame\3d\PointLight.h" />
+    <ClInclude Include="C:\KamataEngine\DirectXGame\3d\SpotLight.h" />
+    <ClInclude Include="C:\KamataEngine\DirectXGame\2d\DebugText.h" />
+    <ClInclude Include="C:\KamataEngine\DirectXGame\2d\Sprite.h" />
+    <ClInclude Include="C:\KamataEngine\DirectXGame\2d\ImGuiManager.h" />
+    <ClInclude Include="C:\KamataEngine\DirectXGame\3d\Model.h" />
+    <ClInclude Include="C:\KamataEngine\DirectXGame\3d\WorldTransform.h" />
+    <ClInclude Include="C:\KamataEngine\DirectXGame\audio\Audio.h" />
+    <ClInclude Include="C:\KamataEngine\DirectXGame\base\DirectXCommon.h" />
+    <ClInclude Include="C:\KamataEngine\DirectXGame\base\SafeDelete.h" />
+    <ClInclude Include="C:\KamataEngine\DirectXGame\base\TextureManager.h" />
+    <ClInclude Include="C:\KamataEngine\DirectXGame\base\WinApp.h" />
+    <ClInclude Include="C:\KamataEngine\DirectXGame\input\Input.h" />
+    <ClInclude Include="C:\KamataEngine\DirectXGame\scene\GameScene.h" />
+    <ClInclude Include="C:\KamataEngine\Adapter\Novice.h" />
+    <ClInclude Include="Camera2D.h" />
+    <ClInclude Include="ComponentBase.h" />
+    <ClInclude Include="CyberOverdrive.h" />
+    <ClInclude Include="DebugWindow.h" />
+    <ClInclude Include="DrawComponent2D.h" />
+    <ClInclude Include="Easing.h" />
+    <ClInclude Include="Effect.h" />
+    <ClInclude Include="Fish.h" />
+    <ClInclude Include="FishScene.h" />
+    <ClInclude Include="FontAtlas.h" />
+    <ClInclude Include="GamePlayScene.h" />
+    <ClInclude Include="GameSceneBase.h" />
+    <ClInclude Include="GameShared.h" />
+    <ClInclude Include="InputManager.h" />
+    <ClInclude Include="json.hpp" />
+    <ClInclude Include="JsonUtil.h" />
+    <ClInclude Include="Matrix3x3.h" />
+    <ClInclude Include="NightSkyScene.h" />
+    <ClInclude Include="Object2D.h" />
+    <ClInclude Include="Pad.h" />
+    <ClInclude Include="Particle.h" />
+    <ClInclude Include="ParticleEnum.h" />
+    <ClInclude Include="ParticleManager.h" />
+    <ClInclude Include="PauseScene.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="Random.h" />
+    <ClInclude Include="ResultScene.h" />
+    <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="SceneType.h" />
+    <ClInclude Include="SettingScene.h" />
+    <ClInclude Include="Stage1Scene.h" />
+    <ClInclude Include="StageSelectScene.h" />
+    <ClInclude Include="TextRenderer.h" />
+    <ClInclude Include="TitleScene.h" />
+    <ClInclude Include="Transform2D.h" />
+    <ClInclude Include="UiDrawComponent.h" />
+    <ClInclude Include="Vector2.h" />
+    <ClInclude Include="Vertex4.h" />
+    <ClInclude Include="Vertex4Component.h" />
+    <ClInclude Include="stageMaxNum.h" />
+    <ClInclude Include="WindowSize.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

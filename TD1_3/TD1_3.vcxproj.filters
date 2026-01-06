@@ -1,0 +1,491 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="KamataEngine">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="KamataEngine\Source">
+      <UniqueIdentifier>{d966e9f8-e880-44ae-8586-a08515e4cffc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Include">
+      <UniqueIdentifier>{4aae4e40-94f7-4d32-9a91-c0c37a2edf0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Adapter">
+      <UniqueIdentifier>{c6468eb4-788b-4a83-b207-a5f4804e56c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\library">
+      <UniqueIdentifier>{98ed059e-1340-4920-9687-d7c97423eb11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\library\2D">
+      <UniqueIdentifier>{19458c85-7aab-43a1-aaaf-40ad3f7e5cef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\library\2D\Affine2D">
+      <UniqueIdentifier>{19c0b78d-5c17-495d-b478-972529b39aa1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\library\2D\Animation">
+      <UniqueIdentifier>{1f8adba6-2057-4122-9102-716d6a116446}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\library\2D\Camera2D">
+      <UniqueIdentifier>{a236cbe0-f016-4ce2-98e8-baf366f78709}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\library\2D\Matrix3x3">
+      <UniqueIdentifier>{1b564a63-b16a-4aed-aea3-664bb6764702}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\library\2D\Vector2">
+      <UniqueIdentifier>{74a63033-44fa-42f4-b9bc-beb82d0f5264}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\library\2D\Vertex4">
+      <UniqueIdentifier>{5de70c35-c36d-427e-bedd-eea6f12fde74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\library\2D\Vertex4Component">
+      <UniqueIdentifier>{0cb228bd-d917-4d49-a9e9-94f0a1bbb031}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\library\2D\Ui">
+      <UniqueIdentifier>{8814f3eb-efd8-456a-b1fd-0c8fa783aa14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\library\pad">
+      <UniqueIdentifier>{e93fcc20-cc52-41b8-b2b8-d887a382def4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\Game">
+      <UniqueIdentifier>{c35711af-6d06-4cd8-98c8-09bcd4acbe86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\library\Font">
+      <UniqueIdentifier>{f5491827-021f-4287-b297-257990123aef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\library\Font\NewFilter1">
+      <UniqueIdentifier>{714b4be8-a74a-4c78-b34a-a04e67cdde87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\library\Background">
+      <UniqueIdentifier>{67192a98-45fd-4a7b-81ec-1ee1444c2aa2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\library\Button">
+      <UniqueIdentifier>{f9f36ce5-a084-47ce-b44f-49a3240e6298}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\library\2D\Draw">
+      <UniqueIdentifier>{da34a123-ccc4-43c8-a74c-7f5504d8f69d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\library\2D\Draw\DrawComponent2D">
+      <UniqueIdentifier>{ccecc336-e010-414e-b44b-9cc8a5101b60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\Game\Object">
+      <UniqueIdentifier>{f099fe7f-5a33-4bbc-a1e9-0cc177a5a662}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\Game\Scene">
+      <UniqueIdentifier>{a4bf57f4-439d-4649-820d-293984d77588}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\Game\Scene\Game">
+      <UniqueIdentifier>{e5a4c103-c449-4c12-9efe-a30a7a071ae4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\Game\Scene\Game\Stage">
+      <UniqueIdentifier>{4de58c43-e77c-4133-ae16-b6d2901f7caf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\Game\Scene\Pause">
+      <UniqueIdentifier>{7281bc2e-c5bc-4321-b190-3b2c6cc8d38b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\Game\Scene\Result">
+      <UniqueIdentifier>{1db7ec59-9841-41cf-b99d-3091af7ce3b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\Game\Scene\Setting">
+      <UniqueIdentifier>{7e1e4521-13e7-4d3d-bc70-4c5afd5d31d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\Game\Scene\StageSelect">
+      <UniqueIdentifier>{5885c190-46a9-460e-be3c-8b9b2cd0f3c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\Game\Scene\Title">
+      <UniqueIdentifier>{20f0e729-06fe-4763-b7d1-b23ac254a24a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\Game\DebugWindow">
+      <UniqueIdentifier>{76e4a89a-1ebb-4d50-8a50-eed30bb1b8ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\library\2D\Particle">
+      <UniqueIdentifier>{a6f8e870-45b6-4068-a2f1-ab24ce3be498}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\library\2D\Effect">
+      <UniqueIdentifier>{3c214814-9fc5-485b-93fa-667b00dab85b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\Shared">
+      <UniqueIdentifier>{5faa254f-c393-4f48-ba8a-971af779a6d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\library\json">
+      <UniqueIdentifier>{5fb55ef0-75a1-4869-bb7c-84f0b9f104f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\library\2D\Object">
+      <UniqueIdentifier>{cb735915-8412-42fc-a555-a3f8e359f839}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\library\2D\Component">
+      <UniqueIdentifier>{04be402e-ea39-47dc-a12f-25e8df166762}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\library\2D\Component\ComponentBase">
+      <UniqueIdentifier>{3320bfb2-b5b7-457f-bda5-fbcb05a39150}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\Game\Scene\NightSky">
+      <UniqueIdentifier>{82002ce7-e9bf-46ad-9d90-17a4f1a83965}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\Shared\Audio">
+      <UniqueIdentifier>{ba8fd610-1a56-41a2-af57-9f1aff346022}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\Shared\Input">
+      <UniqueIdentifier>{cc040a39-70d8-4b4c-9de6-6c02cb1c4f7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\Game\Scene\NightSky\Fish">
+      <UniqueIdentifier>{4523e883-cf42-41c4-bedd-1bc337a44e40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\Game\Scene\CyberOverdrive">
+      <UniqueIdentifier>{d40d8be3-0477-428c-ab75-5346cb87b85d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="C:\KamataEngine\Adapter\Novice.cpp">
+      <Filter>KamataEngine\Adapter</Filter>
+    </ClCompile>
+    <ClCompile Include="Pad.cpp">
+      <Filter>KamataEngine\Source\library\pad</Filter>
+    </ClCompile>
+    <ClCompile Include="FontAtlas.cpp">
+      <Filter>KamataEngine\Source\library\Font</Filter>
+    </ClCompile>
+    <ClCompile Include="TextRenderer.cpp">
+      <Filter>KamataEngine\Source\library\Font</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage1Scene.cpp">
+      <Filter>KamataEngine\Source\Game\Scene\Game\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Affine2D.cpp">
+      <Filter>KamataEngine\Source\library\2D\Affine2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>KamataEngine\Source\library\2D\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="PauseScene.cpp">
+      <Filter>KamataEngine\Source\Game\Scene\Pause</Filter>
+    </ClCompile>
+    <ClCompile Include="ResultScene.cpp">
+      <Filter>KamataEngine\Source\Game\Scene\Result</Filter>
+    </ClCompile>
+    <ClCompile Include="SettingScene.cpp">
+      <Filter>KamataEngine\Source\Game\Scene\Setting</Filter>
+    </ClCompile>
+    <ClCompile Include="StageSelectScene.cpp">
+      <Filter>KamataEngine\Source\Game\Scene\StageSelect</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleScene.cpp">
+      <Filter>KamataEngine\Source\Game\Scene\Title</Filter>
+    </ClCompile>
+    <ClCompile Include="GameShared.cpp">
+      <Filter>KamataEngine\Source\Shared</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera2D.cpp">
+      <Filter>KamataEngine\Source\library\2D\Camera2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix3x3.cpp">
+      <Filter>KamataEngine\Source\library\2D\Matrix3x3</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector2.cpp">
+      <Filter>KamataEngine\Source\library\2D\Vector2</Filter>
+    </ClCompile>
+    <ClCompile Include="Vertex4.cpp">
+      <Filter>KamataEngine\Source\library\2D\Vertex4</Filter>
+    </ClCompile>
+    <ClCompile Include="Vertex4Component.cpp">
+      <Filter>KamataEngine\Source\library\2D\Vertex4Component</Filter>
+    </ClCompile>
+    <ClCompile Include="DrawComponent2D.cpp">
+      <Filter>KamataEngine\Source\library\2D\Draw\DrawComponent2D</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseStageScene.cpp">
+      <Filter>KamataEngine\Source\Game\Scene\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>KamataEngine\Source\Game\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="UiDrawComponent.cpp">
+      <Filter>KamataEngine\Source\library\2D\Ui</Filter>
+    </ClCompile>
+    <ClCompile Include="Background.cpp">
+      <Filter>KamataEngine\Source\library\Background</Filter>
+    </ClCompile>
+    <ClCompile Include="GamePlayScene.cpp">
+      <Filter>KamataEngine\Source\Game\Scene\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Button.cpp">
+      <Filter>KamataEngine\Source\library\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="ButtonManager.cpp">
+      <Filter>KamataEngine\Source\library\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugWindow.cpp">
+      <Filter>KamataEngine\Source\Game\DebugWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="Effect.cpp">
+      <Filter>KamataEngine\Source\library\2D\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>KamataEngine\Source\Game\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleManager.cpp">
+      <Filter>KamataEngine\Source\library\2D\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Particle.cpp">
+      <Filter>KamataEngine\Source\library\2D\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Object2D.cpp">
+      <Filter>KamataEngine\Source\library\2D\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentBase.cpp">
+      <Filter>KamataEngine\Source\library\2D\Component\ComponentBase</Filter>
+    </ClCompile>
+    <ClCompile Include="NightSkyScene.cpp">
+      <Filter>KamataEngine\Source\Game\Scene\NightSky</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioManager.cpp">
+      <Filter>KamataEngine\Source\Shared\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="InputManager.cpp">
+      <Filter>KamataEngine\Source\Shared\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Fish.cpp">
+      <Filter>KamataEngine\Source\Game\Scene\NightSky\Fish</Filter>
+    </ClCompile>
+    <ClCompile Include="FishScene.cpp">
+      <Filter>KamataEngine\Source\Game\Scene\NightSky\Fish</Filter>
+    </ClCompile>
+    <ClCompile Include="AtomicBarrirScene.cpp">
+      <Filter>KamataEngine\Source\Game\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="CyberOverdrive.cpp">
+      <Filter>KamataEngine\Source\Game\Scene\CyberOverdrive</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\KamataEngine\DirectXGame\audio\Audio.h">
+      <Filter>KamataEngine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\KamataEngine\DirectXGame\2d\DebugText.h">
+      <Filter>KamataEngine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\KamataEngine\DirectXGame\base\DirectXCommon.h">
+      <Filter>KamataEngine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\KamataEngine\DirectXGame\scene\GameScene.h">
+      <Filter>KamataEngine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\KamataEngine\DirectXGame\input\Input.h">
+      <Filter>KamataEngine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\KamataEngine\DirectXGame\3d\Model.h">
+      <Filter>KamataEngine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\KamataEngine\DirectXGame\base\SafeDelete.h">
+      <Filter>KamataEngine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\KamataEngine\DirectXGame\2d\Sprite.h">
+      <Filter>KamataEngine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\KamataEngine\DirectXGame\base\TextureManager.h">
+      <Filter>KamataEngine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\KamataEngine\DirectXGame\base\WinApp.h">
+      <Filter>KamataEngine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\KamataEngine\DirectXGame\3d\WorldTransform.h">
+      <Filter>KamataEngine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\KamataEngine\Adapter\Novice.h">
+      <Filter>KamataEngine\Adapter</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\KamataEngine\DirectXGame\3d\CircleShadow.h">
+      <Filter>KamataEngine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\KamataEngine\DirectXGame\3d\DebugCamera.h">
+      <Filter>KamataEngine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\KamataEngine\DirectXGame\3d\DirectionalLight.h">
+      <Filter>KamataEngine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\KamataEngine\DirectXGame\3d\LightGroup.h">
+      <Filter>KamataEngine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\KamataEngine\DirectXGame\3d\Material.h">
+      <Filter>KamataEngine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\KamataEngine\DirectXGame\3d\Mesh.h">
+      <Filter>KamataEngine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\KamataEngine\DirectXGame\3d\PointLight.h">
+      <Filter>KamataEngine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\KamataEngine\DirectXGame\3d\SpotLight.h">
+      <Filter>KamataEngine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\KamataEngine\DirectXGame\base\StringUtility.h">
+      <Filter>KamataEngine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DirectXGame\3d\Camera.h">
+      <Filter>KamataEngine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\KamataEngine\DirectXGame\math\Matrix4x4.h">
+      <Filter>KamataEngine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\KamataEngine\DirectXGame\math\Vector2.h">
+      <Filter>KamataEngine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\KamataEngine\DirectXGame\math\Vector3.h">
+      <Filter>KamataEngine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\KamataEngine\DirectXGame\math\Vector4.h">
+      <Filter>KamataEngine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\KamataEngine\DirectXGame\2d\ImGuiManager.h">
+      <Filter>KamataEngine\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSceneBase.h">
+      <Filter>KamataEngine\Source\Game\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Pad.h">
+      <Filter>KamataEngine\Source\library\pad</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneType.h">
+      <Filter>KamataEngine\Source\Game\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="FontAtlas.h">
+      <Filter>KamataEngine\Source\library\Font</Filter>
+    </ClInclude>
+    <ClInclude Include="TextRenderer.h">
+      <Filter>KamataEngine\Source\library\Font</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage1Scene.h">
+      <Filter>KamataEngine\Source\Game\Scene\Game\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Affine2D.h">
+      <Filter>KamataEngine\Source\library\2D\Affine2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>KamataEngine\Source\library\2D\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="PauseScene.h">
+      <Filter>KamataEngine\Source\Game\Scene\Pause</Filter>
+    </ClInclude>
+    <ClInclude Include="ResultScene.h">
+      <Filter>KamataEngine\Source\Game\Scene\Result</Filter>
+    </ClInclude>
+    <ClInclude Include="SettingScene.h">
+      <Filter>KamataEngine\Source\Game\Scene\Setting</Filter>
+    </ClInclude>
+    <ClInclude Include="StageSelectScene.h">
+      <Filter>KamataEngine\Source\Game\Scene\StageSelect</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleScene.h">
+      <Filter>KamataEngine\Source\Game\Scene\Title</Filter>
+    </ClInclude>
+    <ClInclude Include="GameShared.h">
+      <Filter>KamataEngine\Source\Shared</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera2D.h">
+      <Filter>KamataEngine\Source\library\2D\Camera2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix3x3.h">
+      <Filter>KamataEngine\Source\library\2D\Matrix3x3</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector2.h">
+      <Filter>KamataEngine\Source\library\2D\Vector2</Filter>
+    </ClInclude>
+    <ClInclude Include="Vertex4.h">
+      <Filter>KamataEngine\Source\library\2D\Vertex4</Filter>
+    </ClInclude>
+    <ClInclude Include="Vertex4Component.h">
+      <Filter>KamataEngine\Source\library\2D\Vertex4Component</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawComponent2D.h">
+      <Filter>KamataEngine\Source\library\2D\Draw\DrawComponent2D</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseStageScene.h">
+      <Filter>KamataEngine\Source\Game\Scene\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>KamataEngine\Source\Game\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="UiDrawComponent.h">
+      <Filter>KamataEngine\Source\library\2D\Ui</Filter>
+    </ClInclude>
+    <ClInclude Include="stageMaxNum.h">
+      <Filter>KamataEngine\Source\Game\Scene\Game\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Background.h">
+      <Filter>KamataEngine\Source\library\Background</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowSize.h">
+      <Filter>KamataEngine\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Easing.h">
+      <Filter>KamataEngine\Source\library</Filter>
+    </ClInclude>
+    <ClInclude Include="GamePlayScene.h">
+      <Filter>KamataEngine\Source\Game\Scene\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Button.h">
+      <Filter>KamataEngine\Source\library\Button</Filter>
+    </ClInclude>
+    <ClInclude Include="ButtonManager.h">
+      <Filter>KamataEngine\Source\library\Button</Filter>
+    </ClInclude>
+    <ClInclude Include="Random.h">
+      <Filter>KamataEngine\Source\library</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugWindow.h">
+      <Filter>KamataEngine\Source\Game\DebugWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="Effect.h">
+      <Filter>KamataEngine\Source\library\2D\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>KamataEngine\Source\Game\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Particle.h">
+      <Filter>KamataEngine\Source\library\2D\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleManager.h">
+      <Filter>KamataEngine\Source\library\2D\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="json.hpp">
+      <Filter>KamataEngine\Source\library\json</Filter>
+    </ClInclude>
+    <ClInclude Include="JsonUtil.h">
+      <Filter>KamataEngine\Source\library\json</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleEnum.h">
+      <Filter>KamataEngine\Source\library\2D\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Object2D.h">
+      <Filter>KamataEngine\Source\library\2D\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentBase.h">
+      <Filter>KamataEngine\Source\library\2D\Component\ComponentBase</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform2D.h">
+      <Filter>KamataEngine\Source\library\2D\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="NightSkyScene.h">
+      <Filter>KamataEngine\Source\Game\Scene\NightSky</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioManager.h">
+      <Filter>KamataEngine\Source\Shared\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="InputManager.h">
+      <Filter>KamataEngine\Source\Shared\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Fish.h">
+      <Filter>KamataEngine\Source\Game\Scene\NightSky\Fish</Filter>
+    </ClInclude>
+    <ClInclude Include="FishScene.h">
+      <Filter>KamataEngine\Source\Game\Scene\NightSky\Fish</Filter>
+    </ClInclude>
+    <ClInclude Include="AtomicBarrirScene.h">
+      <Filter>KamataEngine\Source\Game\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="CyberOverdrive.h">
+      <Filter>KamataEngine\Source\Game\Scene\CyberOverdrive</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
