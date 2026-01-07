@@ -37,6 +37,8 @@ struct Status {
 
 class GameObject {
 protected:
+    GameObject* owner_ = nullptr; // 所有者オブジェクト
+
     // 基本情報
     GameObjectInfo info_;
 
@@ -56,6 +58,7 @@ protected:
     Status status_;
 
 public:
+
     GameObject() {
         // デフォルト初期化
         transform_.position = { 0.0f, 0.0f };
@@ -74,12 +77,21 @@ public:
         info_.tag = tag;
     }
 
+    // 生成時や初期化時にセットする
+    void SetOwner(GameObject* owner) { owner_ = owner; }
+    GameObject* GetOwner() const { return owner_; }
+
+	// オーナーかどうか判定
+    bool IsOwnedBy(GameObject* potentialOwner) const {
+        return owner_ == potentialOwner;
+    }
+
     virtual void Initialize() {
         rigidbody_.Initialize();
 
         // 描画コンポーネントの初期化があれば呼ぶ
         if (drawComponent_) {
-            // drawComponent_->Initialize();
+            drawComponent_->Initialize();
         }
     }
 

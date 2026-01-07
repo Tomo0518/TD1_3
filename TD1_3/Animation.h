@@ -90,6 +90,13 @@ public:
 		isPlaying_ = true;
 	}
 
+
+	void Initialize() {
+		currentFrame_ = 0;
+		elapsedTime_ = 0.0f;
+		UpdateSourceRect();
+	}
+
 	// フレーム更新
 	void Update(float deltaTime) {
 		if (!isPlaying_) return;

@@ -67,6 +67,12 @@ public:
 	/// </summary>
 	void Draw(const Camera2D& camera);
 
+
+	/// <summary>
+	/// アニメーション、エフェクト、基本パラメータの初期化
+	/// </summary>
+	void Initialize();
+
 	/// <summary>
 	/// ワールド座標での描画（カメラなし）
 	/// </summary>

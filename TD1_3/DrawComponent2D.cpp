@@ -186,6 +186,16 @@ void DrawComponent2D::DrawScreen() {
 	DrawInternal(nullptr);
 }
 
+void DrawComponent2D::Initialize() {
+	// アニメーションがある場合は再生を開始
+	if (animation_) {
+		animation_->Initialize();
+	}
+
+	// エフェクトをリセット
+	effect_.StopAll();
+}
+
 void DrawComponent2D::DrawInternal(const Matrix3x3* vpMatrix) {
 	if (graphHandle_ < 0) return;
 
