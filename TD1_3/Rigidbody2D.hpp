@@ -58,8 +58,8 @@ public:
         // 3. 角速度の更新
         angularVelocity += angularAcceleration * deltaTime;
 
-        // 角速度制限 (簡易Clamp)
-        angularVelocity = std::max(-maxAngularSpeed, std::min(angularVelocity, maxAngularSpeed));
+        // 角速度制限
+        angularVelocity = std::clamp(angularVelocity, -maxAngularSpeed, maxAngularSpeed);
 
         // 4. 減速（摩擦）処理
         // 加速度入力がない軸に対してのみ減速を適用する（慣性）

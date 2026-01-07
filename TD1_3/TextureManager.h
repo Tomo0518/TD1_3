@@ -13,7 +13,7 @@ enum class TextureId {
 
 	ResultBackground,
 	ResultClearLabel,
-
+	PlayerAnimeNormal,
 	Count
 };
 

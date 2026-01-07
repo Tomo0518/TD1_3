@@ -10,3 +10,5 @@ namespace SceneServices {
 	inline TextureManager& Tex() { return TextureManager::GetInstance(); }
 
 } // namespace SceneServices
+
+using namespace SceneServices;

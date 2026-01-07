@@ -29,4 +29,13 @@ void TextureManager::LoadResources() {
 		Novice::LoadTexture("./Resources/images/result/result_sky.png");
 	textureResources_[static_cast<int>(TextureId::ResultClearLabel)] =
 		Novice::LoadTexture("./Resources/images/result/clear.png");
+
+
+	// ==================================
+	// ゲームオブジェクト
+	// ==================================
+
+	// =========Player ==========
+	textureResources_[static_cast<int>(TextureId::PlayerAnimeNormal)] =
+		Novice::LoadTexture("./Resources/images/gamePlay/playerSpecial_ver1.png");
 }

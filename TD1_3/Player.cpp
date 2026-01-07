@@ -2,56 +2,58 @@
 #include "Camera2D.h"
 #include <Novice.h>
 
+#include "SceneUtilityIncludes.h"
+
 Player::Player() {
 	// テクスチャをロード
-	textureHandle_ = Novice::LoadTexture("./Resources/images/gamePlay/playerSpecial_ver1.png");
 
 	// 新しい DrawComponent2D を使用（アニメーション付き）
 	// 80x80のスプライトシートを 5x5分割、5フレーム、0.1秒/フレーム
-	drawComp_ = new DrawComponent2D(textureHandle_, 5, 1, 5, 0.1f, true);
+	drawComp_ = new DrawComponent2D(Tex().GetTexture(TextureId::PlayerAnimeNormal), 5, 1, 5, 0.1f, true);
 
 	// 初期設定
-	drawComp_->SetPosition(position_);
+	drawComp_->SetPosition(transform_.position);
 	drawComp_->SetScale({ 1.0f, 1.0f });  // 2倍サイズで描画
 	drawComp_->SetAnchorPoint({ 0.5f, 0.5f });  // 中心を基準点に
 }
 
 Player::~Player() {
-	delete drawComp_;
+	//delete drawComp_;
 }
 
 void Player::Move(float deltaTime, const char* keys) {
-	velocity_ = { 0.0f, 0.0f };
+	rigidbody_.velocity = { 0.0f, 0.0f };
 
 	// WASD で移動
 	if (keys[DIK_W]) {
-		velocity_.y = moveSpeed_;
+		rigidbody_.velocity.y = rigidbody_.maxSpeed;
 	}
 
 	if (keys[DIK_S]) {
-		velocity_.y = -moveSpeed_;
+		rigidbody_.velocity.y = -rigidbody_.maxSpeed;
 	}
 
 	if (keys[DIK_A]) {
-		velocity_.x = -moveSpeed_;
+		rigidbody_.velocity.x = -rigidbody_.maxSpeed;
 	}
 
 	if (keys[DIK_D]) {
-		velocity_.x = moveSpeed_;
+		rigidbody_.velocity.x = rigidbody_.maxSpeed;
 	}
 
 	// 斜め移動の速度を正規化
-	if (velocity_.x != 0.0f && velocity_.y != 0.0f) {
-		float length = std::sqrt(velocity_.x * velocity_.x + velocity_.y * velocity_.y);
+	if (rigidbody_.velocity.x != 0.0f && rigidbody_.velocity.y != 0.0f) {
+		/*float length = std::sqrt(rigidbody_.velocity.x * rigidbody_.velocity.x + rigidbody_.velocity.y * rigidbody_.velocity.y);
 		if (length > 0.0f) {
-			velocity_.x = (velocity_.x / length) * moveSpeed_;
-			velocity_.y = (velocity_.y / length) * moveSpeed_;
-		}
+			velocity_.x = (velocity_.x / length) * rigidbody_.maxSpeed;
+			velocity_.y = (velocity_.y / length) * rigidbody_.maxSpeed;
+		}*/
+		rigidbody_.velocity = Vector2::Normalize(rigidbody_.velocity) * rigidbody_.maxSpeed;
 	}
 
 	// 位置を更新
-	position_.x += velocity_.x * deltaTime;
-	position_.y += velocity_.y * deltaTime;
+	Vector2 moveDelta = rigidbody_.velocity * deltaTime;
+	transform_.position += moveDelta;
 
 	// 画面内に制限
 	//position_.x = std::clamp(position_.x, 32.0f, 1280.0f - 32.0f);
@@ -59,7 +61,7 @@ void Player::Move(float deltaTime, const char* keys) {
 }
 
 void Player::Update(float deltaTime, const char* keys, const char* pre, bool isDebugMode) {
-	if (!isAlive_) return;
+	if (!info_.isActive) return;
 
 	// 移動処理
 	Move(deltaTime, keys);
@@ -128,23 +130,22 @@ void Player::Update(float deltaTime, const char* keys, const char* pre, bool isD
 		}
 	}
 
-
 	// DrawComponent2D の位置を更新
-	drawComp_->SetPosition(position_);
+	drawComp_->SetPosition(transform_.position);
 
 	// DrawComponent2D を更新（アニメーション・エフェクト）
 	drawComp_->Update(deltaTime);
 }
 
 void Player::Draw(const Camera2D& camera) {
-	if (!isAlive_) return;
+	if (!info_.isActive) return;
 
 	// カメラを使って描画（ゲーム内オブジェクト）
 	drawComp_->Draw(camera);
 }
 
 void Player::DrawScreen() {
-	if (!isAlive_) return;
+	if (!info_.isActive) return;
 
 	// スクリーン座標で描画（UI用）
 	drawComp_->DrawScreen();
@@ -152,7 +153,7 @@ void Player::DrawScreen() {
 
 #ifdef _DEBUG
 void Player::DrawDebugWindow() {
-	ImGui::Begin("Player Debug");
+	/*ImGui::Begin("Player Debug");
 
 	ImGui::Text("=== Transform ===");
 	ImGui::Text("Position: (%.1f, %.1f)", position_.x, position_.y);
@@ -189,6 +190,6 @@ void Player::DrawDebugWindow() {
 			drawComp_->IsFadeActive() ? "Yes" : "No");
 	}
 
-	ImGui::End();
+	ImGui::End();*/
 }
 #endif

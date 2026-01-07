@@ -35,9 +35,9 @@ struct Status {
     int stateFlag = 0;
 };
 
-class GameObject {
+class GameObject2D {
 protected:
-    GameObject* owner_ = nullptr; // 所有者オブジェクト
+    GameObject2D* owner_ = nullptr; // 所有者オブジェクト
 
     // 基本情報
     GameObjectInfo info_;
@@ -49,7 +49,7 @@ protected:
     Rigidbody2D rigidbody_;
 
     // 描画機能
-    std::unique_ptr<DrawComponent2D> drawComponent_;
+    DrawComponent2D* drawComp_;
 
     // 当たり判定情報
     Collider collider_;
@@ -59,30 +59,30 @@ protected:
 
 public:
 
-    GameObject() {
+    GameObject2D() {
         // デフォルト初期化
         transform_.position = { 0.0f, 0.0f };
         transform_.scale = { 1.0f, 1.0f };
         transform_.rotation = 0.0f;
 
         // DrawComponent2Dの生成
-		drawComponent_ = std::make_unique<DrawComponent2D>();
+		drawComp_ = new DrawComponent2D();
     }
 
-    virtual ~GameObject() = default;
+    virtual ~GameObject2D() = default;
 
     // IDとタグを指定して初期化
-    GameObject(int id, const std::string& tag) : GameObject() {
+    GameObject2D(int id, const std::string& tag) : GameObject2D() {
         info_.id = id;
         info_.tag = tag;
     }
 
     // 生成時や初期化時にセットする
-    void SetOwner(GameObject* owner) { owner_ = owner; }
-    GameObject* GetOwner() const { return owner_; }
+    void SetOwner(GameObject2D* owner) { owner_ = owner; }
+    GameObject2D* GetOwner() const { return owner_; }
 
 	// オーナーかどうか判定
-    bool IsOwnedBy(GameObject* potentialOwner) const {
+    bool IsOwnedBy(GameObject2D* potentialOwner) const {
         return owner_ == potentialOwner;
     }
 
@@ -90,15 +90,15 @@ public:
         rigidbody_.Initialize();
 
         // 描画コンポーネントの初期化があれば呼ぶ
-        if (drawComponent_) {
-            drawComponent_->Initialize();
+        if (drawComp_) {
+            drawComp_->Initialize();
         }
     }
 
     // テクスチャの設定（DrawComponent2Dへ流す）
     void SetTexture(TextureId id) {
-        if (drawComponent_) {
-			drawComponent_->SetTexture(id);
+        if (drawComp_) {
+			drawComp_->SetTexture(id);
         }
     }
 
@@ -117,17 +117,17 @@ public:
 
        
         // 4. 描画コンポーネント等の更新があれば呼ぶ
-        if (drawComponent_) { 
-			drawComponent_->SetTransform(transform_);
-            drawComponent_->Update(deltaTime);}
+        if (drawComp_) { 
+			drawComp_->SetTransform(transform_);
+            drawComp_->Update(deltaTime);}
     }
 
     virtual void Draw(const Camera2D& camera) {
         if (!info_.isActive || !info_.isVisible) return;
 
         // DrawComponent2Dを使って描画
-        if (drawComponent_) {
-            drawComponent_->Draw(camera);
+        if (drawComp_) {
+            drawComp_->Draw(camera);
         }
     }
 
@@ -143,7 +143,7 @@ public:
     Status& GetStatus() { return status_; }
 
     // 描画コンポーネントへのアクセス（細かい設定用）
-    DrawComponent2D* GetDrawComponent() { return drawComponent_.get(); }
+    DrawComponent2D* GetDrawComponent() { return drawComp_; }
 
     void SetPosition(const Vector2& pos) { transform_.position = pos; }
     Vector2 GetPosition() const { return transform_.position; }

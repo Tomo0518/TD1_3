@@ -11,6 +11,8 @@
 #include "InputManager.h"
 #include "TextureManager.h"
 
+#include "Camera2D.h"
+
 const char kWindowTitle[] = "LC1A_30_ムラセ_トモキ";
 
 // Windowsアプリでのエントリーポイント(main関数)
@@ -28,6 +30,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	SoundManager audioManager;
 	InputManager inputManager;
 	TextureManager textureManager;
+
+	Camera2D camera;
 
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };

@@ -23,6 +23,11 @@ public:
 		const Vector2& size = { 1280.0f, 720.0f },
 		bool invertY = false);
 
+	static Camera2D GetInstance(){
+		static Camera2D instance;
+		return instance;
+	}
+
 	// 更新（deltaTime対応でスムーズに）
 	void Update(float deltaTime);
 

@@ -7,8 +7,12 @@
 #include "DrawComponent2D.h"
 #include <memory>
 
+#include "Player.h"
+
+
 class GameShared;
 class SceneManager;
+class Player;
 
 
 class TitleScene : public IGameScene {
@@ -32,6 +36,9 @@ private:
 	FontAtlas font_;
 	TextRenderer text_;
 	bool fontReady_ = false;
+
+	// ゲームオブジェクト
+	Player player_;
 
 	//=========================
 	// 描画類

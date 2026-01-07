@@ -12,6 +12,8 @@
 #include <imgui.h>
 #endif
 
+#include "Camera2D.h"
+
 //TitleScene::TitleScene(SceneManager& manager, GameShared& shared)
 //	: manager_(manager),
 //	shared_(shared) {
@@ -46,6 +48,8 @@ TitleScene::TitleScene(SceneManager& manager)
 
 	// ボタン初期化
 	InitializeButtons();
+
+	player_.Initialize();
 
 	// BGMを再生
 	SoundManager::GetInstance().PlayBgm(BgmId::Title);
@@ -140,12 +144,16 @@ void TitleScene::UpdateDrawComponents(float deltaTime) {
 }
 
 void TitleScene::Update(float dt, const char* keys, const char* pre) {
+	Camera2D::GetInstance().Update(dt);
+
 	// 描画コンポーネントを更新
 	UpdateDrawComponents(dt);
 
 	if (keys[DIK_I] && !pre[DIK_I]) {
 		SoundManager::GetInstance().PlaySe(SeId::Decide);
 	}
+
+	player_.Update(dt, keys, pre, false);
 	
 	// ボタンマネージャーを更新
 	buttonManager_.Update(dt, keys, pre, *InputManager::GetInstance().GetPad());
@@ -164,6 +172,8 @@ void TitleScene::Draw() {
 		&font_,
 		&text_
 	);
+
+	player_.Draw(Camera2D::GetInstance());
 
 #ifdef _DEBUG
 	// デバッグ情報

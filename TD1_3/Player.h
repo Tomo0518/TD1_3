@@ -3,6 +3,8 @@
 #include "DrawComponent2D.h"
 #include <algorithm>
 
+#include "GameObject2D.h"
+
 #ifdef _DEBUG
 #include "imgui.h"
 #endif
@@ -15,7 +17,7 @@ class Camera2D;
 /// デモ用プレイヤークラス
 /// 新しい DrawComponent2D と Camera2D を使用
 /// </summary>
-class Player {
+class Player : public GameObject2D{
 public:
 	Player();
 	~Player();
@@ -29,18 +31,18 @@ public:
 	void Move(float deltaTime, const char* keys);
 
 	// ========== ゲッター ==========
-	Vector2 GetPosition() const { return position_; }
-	Vector2 GetVelocity() const { return velocity_; }
+	Vector2 GetPosition() const { return transform_.position; }
+	Vector2 GetVelocity() const { return rigidbody_.velocity; }
 	float GetRadius() const { return radius_; }
-	bool IsAlive() const { return isAlive_; }
+	bool IsAlive() const { return info_.isActive; }
 
 	// 位置への const 参照を返すメソッド
-	const Vector2& GetPositionRef() const { return position_; }
+	const Vector2& GetPositionRef() const { return transform_.position; }
 
 
 	// ========== セッター ==========
-	void SetPosition(const Vector2& pos) { position_ = pos; }
-	void SetAlive(bool alive) { isAlive_ = alive; }
+	void SetPosition(const Vector2& pos) { transform_.position = pos; }
+	void SetAlive(bool alive) { info_.isActive = alive; }
 
 	// ========== デバッグ ==========
 #ifdef _DEBUG
@@ -48,14 +50,17 @@ public:
 #endif
 
 private:
+
+
 	// ========== パラメータ ==========
-	Vector2 position_ = { 640.0f, 360.0f };
+	/*Vector2 position_ = { 640.0f, 360.0f };
 	Vector2 velocity_ = { 0.0f, 0.0f };
-	float radius_ = 32.0f;
 	float moveSpeed_ = 400.0f;
-	bool isAlive_ = true;
+	bool isAlive_ = true;*/
+	
+	float radius_ = 32.0f;
 
 	// ========== 描画コンポーネント ==========
-	DrawComponent2D* drawComp_ = nullptr;
-	int textureHandle_ = -1;
+	/*DrawComponent2D* drawComp_ = nullptr;
+	int textureHandle_ = -1;*/
 };
