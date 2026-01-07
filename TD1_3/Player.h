@@ -22,13 +22,15 @@ public:
 	Player();
 	~Player();
 
+	void Initialize() override;
+
 	// ========== 更新・描画 ==========
 	void Update(float deltaTime, const char* keys, const char* pre, bool isDebugMode);
 	void Draw(const Camera2D& camera);
 	void DrawScreen();  // UI用（カメラなし）
 
 	// ========== 移動 ==========
-	void Move(float deltaTime, const char* keys);
+	void Move(float deltaTime);
 
 	// ========== ゲッター ==========
 	Vector2 GetPosition() const { return transform_.position; }

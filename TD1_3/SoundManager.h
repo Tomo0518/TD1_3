@@ -54,10 +54,12 @@ public:
 	// 現在再生中のBGMにボリュームを再適用
 	void ApplyAudioSettings();
 
-private:
+	// 一度だけリソースをロード(mainの初期化時に一回)
 	void LoadResources();
-
 private:
+	
+	bool isLoaded_ = false;
+
 	float bgmVolume_ = 0.1f;
 	float seVolume_ = 0.2f;
 

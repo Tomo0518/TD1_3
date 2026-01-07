@@ -2,13 +2,17 @@
 
 SoundManager::SoundManager() {
 	// 全てのリソースを初期化（無効値）
-	bgmResources_.fill(-1);
-	seResources_.fill(-1);
-
 	LoadResources();
 }
 
 void SoundManager::LoadResources() {
+	if(isLoaded_) {
+		return; // 既にロード済みなら何もしない
+	}
+
+	bgmResources_.fill(-1);
+	seResources_.fill(-1);
+
 	// ========================================
 	// BGMのロード
 	// ========================================
@@ -25,6 +29,8 @@ void SoundManager::LoadResources() {
 	seResources_[static_cast<int>(SeId::Back)] = Novice::LoadAudio("./Resources/sounds/SE/cancel.mp3");
 	seResources_[static_cast<int>(SeId::Pause)] = Novice::LoadAudio("./Resources/sounds/SE/cancel.mp3");
 	seResources_[static_cast<int>(SeId::PlayerShot)] = Novice::LoadAudio("./Resources/sounds/SE/playerShot.mp3");
+
+	isLoaded_ = true;
 }
 
 void SoundManager::PlayBgm(BgmId id, bool loop) {

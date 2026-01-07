@@ -27,11 +27,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	//Novice::SetWindowMode(kFullscreen);
 
-	SoundManager audioManager;
+	SoundManager::GetInstance().LoadResources();
 	InputManager inputManager;
 	TextureManager textureManager;
 
-	Camera2D camera;
+	Camera2D::GetInstance().SetInvertY(true);
 
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };

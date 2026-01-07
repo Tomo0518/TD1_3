@@ -17,7 +17,7 @@ public:
     // 1.0f = 減速なし、0.9f = 毎秒90%に減速
     Vector2 deceleration = { 0.0f, 0.0f };
 
-    float maxSpeed = 80.0f;
+    float maxSpeed = 400.0f;
 
     // --- 回転パラメータ ---
     float angularVelocity = 0.0f;

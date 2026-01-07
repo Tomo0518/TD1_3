@@ -14,6 +14,8 @@
 
 #include "TextureManager.h"
 
+class GameObjectManager; // 前方宣言
+
 // 必要な構造体定義
 struct GameObjectInfo {
     int id = -1;
@@ -57,6 +59,12 @@ protected:
     // ゲームパラメータ
     Status status_;
 
+    // 生成・削除を依頼するマネージャー
+    GameObjectManager* manager_ = nullptr;
+
+    // 死亡フラグ（trueになるとマネージャーが削除する）
+    bool isDead_ = false;
+
 public:
 
     GameObject2D() {
@@ -86,6 +94,7 @@ public:
         return owner_ == potentialOwner;
     }
 
+	// 初期化処理
     virtual void Initialize() {
         rigidbody_.Initialize();
 
@@ -147,4 +156,11 @@ public:
 
     void SetPosition(const Vector2& pos) { transform_.position = pos; }
     Vector2 GetPosition() const { return transform_.position; }
+
+    // --- マネージャー連携用セッター ---
+    void SetManager(GameObjectManager* manager) { manager_ = manager; }
+
+    // 自分を殺す（リストから削除依頼）
+    void Destroy() { isDead_ = true; }
+    bool IsDead() const { return isDead_; }
 };

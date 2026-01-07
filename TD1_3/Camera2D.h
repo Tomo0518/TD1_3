@@ -23,7 +23,7 @@ public:
 		const Vector2& size = { 1280.0f, 720.0f },
 		bool invertY = false);
 
-	static Camera2D GetInstance(){
+	static Camera2D& GetInstance(){
 		static Camera2D instance;
 		return instance;
 	}
@@ -68,6 +68,7 @@ public:
 
 	// === Y軸反転取得 ===
 	bool IsInvertY() const { return invertY_; }
+	void SetInvertY(bool invert) { invertY_ = invert; }
 
 	// デバッグ用
 	bool GetIsDebugCamera() { return isDebugCamera_; }

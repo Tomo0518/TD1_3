@@ -19,35 +19,36 @@ Player::Player() {
 
 Player::~Player() {
 	//delete drawComp_;
+
+	Initialize();
 }
 
-void Player::Move(float deltaTime, const char* keys) {
+void Player::Initialize() {
+	transform_.position = { 640.0f, 360.0f };
+}
+
+void Player::Move(float deltaTime) {
 	rigidbody_.velocity = { 0.0f, 0.0f };
 
 	// WASD で移動
-	if (keys[DIK_W]) {
+	if (Input().PressKey(DIK_W)) {
 		rigidbody_.velocity.y = rigidbody_.maxSpeed;
 	}
 
-	if (keys[DIK_S]) {
+	if (Input().PressKey(DIK_S)) {
 		rigidbody_.velocity.y = -rigidbody_.maxSpeed;
 	}
 
-	if (keys[DIK_A]) {
+	if (Input().PressKey(DIK_A)) {
 		rigidbody_.velocity.x = -rigidbody_.maxSpeed;
 	}
 
-	if (keys[DIK_D]) {
+	if (Input().PressKey(DIK_D)) {
 		rigidbody_.velocity.x = rigidbody_.maxSpeed;
 	}
 
 	// 斜め移動の速度を正規化
 	if (rigidbody_.velocity.x != 0.0f && rigidbody_.velocity.y != 0.0f) {
-		/*float length = std::sqrt(rigidbody_.velocity.x * rigidbody_.velocity.x + rigidbody_.velocity.y * rigidbody_.velocity.y);
-		if (length > 0.0f) {
-			velocity_.x = (velocity_.x / length) * rigidbody_.maxSpeed;
-			velocity_.y = (velocity_.y / length) * rigidbody_.maxSpeed;
-		}*/
 		rigidbody_.velocity = Vector2::Normalize(rigidbody_.velocity) * rigidbody_.maxSpeed;
 	}
 
@@ -64,7 +65,7 @@ void Player::Update(float deltaTime, const char* keys, const char* pre, bool isD
 	if (!info_.isActive) return;
 
 	// 移動処理
-	Move(deltaTime, keys);
+	Move(deltaTime);
 
 	// ========== エフェクトテスト用のキー入力 ==========
 
@@ -142,6 +143,8 @@ void Player::Draw(const Camera2D& camera) {
 
 	// カメラを使って描画（ゲーム内オブジェクト）
 	drawComp_->Draw(camera);
+
+	DrawDebugWindow();
 }
 
 void Player::DrawScreen() {
@@ -153,12 +156,14 @@ void Player::DrawScreen() {
 
 #ifdef _DEBUG
 void Player::DrawDebugWindow() {
-	/*ImGui::Begin("Player Debug");
+	ImGui::Begin("Player Debug");
 
 	ImGui::Text("=== Transform ===");
-	ImGui::Text("Position: (%.1f, %.1f)", position_.x, position_.y);
-	ImGui::Text("Velocity: (%.1f, %.1f)", velocity_.x, velocity_.y);
+	ImGui::Text("Position: (%.1f, %.1f)",transform_.position.x, transform_.position.y);
+	ImGui::Text("Velocity: (%.1f, %.1f)", rigidbody_.velocity.x, rigidbody_.velocity.y);
+	ImGui::End();
 
+	/*
 	ImGui::Text("=== Status ===");
 	ImGui::Text("Alive: %s", isAlive_ ? "Yes" : "No");
 	ImGui::Text("Radius: %.1f", radius_);
