@@ -25,8 +25,8 @@ public:
 	void Initialize() override;
 
 	// ========== 更新・描画 ==========
-	void Update(float deltaTime, const char* keys, const char* pre, bool isDebugMode);
-	void Draw(const Camera2D& camera);
+	void Update(float deltaTimebool)override;
+	void Draw(const Camera2D& camera)override;
 	void DrawScreen();  // UI用（カメラなし）
 
 	// ========== 移動 ==========

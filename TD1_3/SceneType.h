@@ -10,7 +10,4 @@ enum class SceneType {
 	Explanation,
 	Setting,
 	GamePlay,
-	NightSky,
-	AtomicBarrier,
-	CyberOverdrive,
 };

@@ -477,6 +477,9 @@ void ParticleManager::Draw(const Camera2D& camera) {
 	// カメラから ViewProjectionMatrix を取得
 	Matrix3x3 vpMatrix = camera.GetVpVpMatrix();
 
+	// ズーム倍率（描画サイズにも反映させる）
+	const float cameraZoom = 1.0f / camera.GetZoom();
+
 	// パーティクルタイプごとにブレンドモードをグループ化して描画
 	for (auto it = params_.begin(); it != params_.end(); ++it) {
 		ParticleType type = it->first;
@@ -515,8 +518,10 @@ void ParticleManager::Draw(const Camera2D& camera) {
 				baseSize = static_cast<float>(srcW);
 			}
 			float finalScale = p.GetCurrentScale();
-			float drawWidth = baseSize * finalScale;
-			float drawHeight = baseSize * finalScale;
+
+			// ★カメラズームを描画サイズに反映
+			float drawWidth = baseSize * finalScale * cameraZoom;
+			float drawHeight = baseSize * finalScale * cameraZoom;
 
 			float rot = p.GetRotation();
 
@@ -525,8 +530,6 @@ void ParticleManager::Draw(const Camera2D& camera) {
 				float hw = drawWidth * 0.5f;
 				float hh = drawHeight * 0.5f;
 
-				// ローカル（ワールド座標系。Y+が上）
-				// 上辺が +hh、下辺が -hh
 				Vector2 ltLocal = { -hw,  hh };
 				Vector2 rtLocal = { hw,  hh };
 				Vector2 lbLocal = { -hw, -hh };
@@ -542,13 +545,11 @@ void ParticleManager::Draw(const Camera2D& camera) {
 					};
 					};
 
-				// ワールド頂点
 				Vector2 wLT = RotateAddCenter(ltLocal);
 				Vector2 wRT = RotateAddCenter(rtLocal);
 				Vector2 wLB = RotateAddCenter(lbLocal);
 				Vector2 wRB = RotateAddCenter(rbLocal);
 
-				// スクリーンへ
 				Vector2 vLT = Matrix3x3::Transform(wLT, vpMatrix);
 				Vector2 vRT = Matrix3x3::Transform(wRT, vpMatrix);
 				Vector2 vLB = Matrix3x3::Transform(wLB, vpMatrix);
@@ -565,17 +566,16 @@ void ParticleManager::Draw(const Camera2D& camera) {
 				);
 			}
 			else {
-				// 非回転：中心→スクリーン、AABBで描画（行列適用は中心のみ）
 				Vector2 screenPos = Matrix3x3::Transform(worldPos, vpMatrix);
 
 				float offsetX = screenPos.x - drawWidth * 0.5f;
 				float offsetY = screenPos.y - drawHeight * 0.5f;
 
 				Novice::DrawQuad(
-					static_cast<int>(offsetX), static_cast<int>(offsetY),                      // 左上
-					static_cast<int>(offsetX + drawWidth), static_cast<int>(offsetY),                      // 右上
-					static_cast<int>(offsetX), static_cast<int>(offsetY + drawHeight),         // 左下
-					static_cast<int>(offsetX + drawWidth), static_cast<int>(offsetY + drawHeight),         // 右下
+					static_cast<int>(offsetX), static_cast<int>(offsetY),
+					static_cast<int>(offsetX + drawWidth), static_cast<int>(offsetY),
+					static_cast<int>(offsetX), static_cast<int>(offsetY + drawHeight),
+					static_cast<int>(offsetX + drawWidth), static_cast<int>(offsetY + drawHeight),
 					srcX, srcY, srcW, srcH,
 					p.GetTextureHandle(),
 					p.GetCurrentColor()

@@ -30,7 +30,6 @@ void TextureManager::LoadResources() {
 	textureResources_[static_cast<int>(TextureId::ResultClearLabel)] =
 		Novice::LoadTexture("./Resources/images/result/clear.png");
 
-
 	// ==================================
 	// ゲームオブジェクト
 	// ==================================
@@ -38,4 +37,33 @@ void TextureManager::LoadResources() {
 	// =========Player ==========
 	textureResources_[static_cast<int>(TextureId::PlayerAnimeNormal)] =
 		Novice::LoadTexture("./Resources/images/gamePlay/playerSpecial_ver1.png");
+
+
+	// =========Background ==========
+	textureResources_[static_cast<int>(TextureId::Background0_0)] =
+		Novice::LoadTexture("./Resources/images/gamePlay/background/background0_0.png");
+
+	textureResources_[static_cast<int>(TextureId::BackgroundBlack)] =
+		Novice::LoadTexture("./Resources/images/gamePlay/background/background_black.png");
+
+	textureResources_[static_cast<int>(TextureId::Background0_2)] =
+		Novice::LoadTexture("./Resources/images/gamePlay/background/background0_2.png");
+
+	textureResources_[static_cast<int>(TextureId::Background1_0)] =
+		Novice::LoadTexture("./Resources/images/gamePlay/background/background1_0.png");
+
+	textureResources_[static_cast<int>(TextureId::Background1_1)] =
+		Novice::LoadTexture("./Resources/images/gamePlay/background/background1_1.png");
+
+	textureResources_[static_cast<int>(TextureId::Background1_2)] =
+		Novice::LoadTexture("./Resources/images/gamePlay/background/background1_2.png");
+
+	textureResources_[static_cast<int>(TextureId::Background2_0)] =
+		Novice::LoadTexture("./Resources/images/gamePlay/background/background2_0.png");
+
+	textureResources_[static_cast<int>(TextureId::Background2_1)] =
+		Novice::LoadTexture("./Resources/images/gamePlay/background/background2_1.png");
+
+	textureResources_[static_cast<int>(TextureId::Background2_2)] =
+		Novice::LoadTexture("./Resources/images/gamePlay/background/background2_2.png");
 }

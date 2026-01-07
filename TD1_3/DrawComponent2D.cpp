@@ -162,7 +162,7 @@ void DrawComponent2D::Draw(const Camera2D& camera) {
 	Matrix3x3 vpMatrix = camera.GetVpVpMatrix();
 
 	// カメラのY軸反転設定を確認してスケールを調整
-	if (camera.IsInvertY()) {
+	if (camera.IsWorldYUp()) {
 		// Y軸反転が有効な場合、スケールのY成分を反転
 		Vector2 originalScale = transform_.scale;
 		transform_.scale.y *= -1.0f;

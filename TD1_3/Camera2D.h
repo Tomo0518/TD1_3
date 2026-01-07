@@ -67,8 +67,8 @@ public:
 	Matrix3x3 GetVpVpMatrix() const;
 
 	// === Y軸反転取得 ===
-	bool IsInvertY() const { return invertY_; }
-	void SetInvertY(bool invert) { invertY_ = invert; }
+	bool IsWorldYUp() const { return isWorldYUp_; }
+	void SetisWorldYUp(bool invert) { isWorldYUp_ = invert; }
 
 	// デバッグ用
 	bool GetIsDebugCamera() { return isDebugCamera_; }
@@ -79,9 +79,9 @@ private:
 	Vector2 size_;
 	float zoom_;
 	float rotation_;
-	bool invertY_;  // Y軸反転フラグ
+	bool isWorldYUp_;  // Y軸反転フラグ
 
-	bool isDebugCamera_ = false;
+	bool isDebugCamera_ = true;
 
 	// イージング移動
 	struct MoveEffect {
@@ -116,7 +116,7 @@ private:
 	// 追従設定
 	struct FollowSettings {
 		const Vector2* target = nullptr;
-		float speed = 0.1f;
+		float speed = 0.4f;
 		float deadZoneWidth = 0.0f;
 		float deadZoneHeight = 0.0f;
 	};

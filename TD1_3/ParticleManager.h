@@ -73,6 +73,11 @@ public:
 	ParticleManager();
 	~ParticleManager() = default;
 
+	ParticleManager& GetInstance(){
+		static ParticleManager instance;
+		return instance;
+	}
+
 	void Update(float deltaTime);
 	void Draw(const Camera2D& camera);
 	void Emit(ParticleType type, const Vector2& pos);

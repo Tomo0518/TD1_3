@@ -61,7 +61,7 @@ void Player::Move(float deltaTime) {
 	//position_.y = std::clamp(position_.y, 32.0f, 720.0f - 32.0f);
 }
 
-void Player::Update(float deltaTime, const char* keys, const char* pre, bool isDebugMode) {
+void Player::Update(float deltaTime) {
 	if (!info_.isActive) return;
 
 	// 移動処理
@@ -69,66 +69,64 @@ void Player::Update(float deltaTime, const char* keys, const char* pre, bool isD
 
 	// ========== エフェクトテスト用のキー入力 ==========
 
-	if (!isDebugMode) {
 		// Q: シェイクエフェクト
-		if (keys[DIK_Q] && !pre[DIK_Q]) {
-			drawComp_->StartShake(10.0f, 0.3f);
-		}
+	if (Input().TriggerKey(DIK_Q)) {
+		drawComp_->StartShake(10.0f, 0.3f);
+	}
 
-		// E: 回転エフェクト
-		if (keys[DIK_R] && !pre[DIK_R]) {
-			if (drawComp_->IsRotationActive()) {
-				drawComp_->StopRotation();
-			}
-			else {
-				drawComp_->StartRotationContinuous(3.0f);
-			}
+	// E: 回転エフェクト
+	if (Input().TriggerKey(DIK_R)) {
+		if (drawComp_->IsRotationActive()) {
+			drawComp_->StopRotation();
 		}
+		else {
+			drawComp_->StartRotationContinuous(3.0f);
+		}
+	}
 
-		// T: パルス（拡大縮小）
-		if (keys[DIK_E] && !pre[DIK_E]) {
-			if (drawComp_->IsScaleEffectActive()) {
-				drawComp_->StopScale();
-			}
-			else {
-				drawComp_->StartPulse(0.8f, 1.2f, 3.0f, true);
-			}
+	// T: パルス（拡大縮小）
+	if (Input().TriggerKey(DIK_E)) {
+		if (drawComp_->IsScaleEffectActive()) {
+			drawComp_->StopScale();
 		}
+		else {
+			drawComp_->StartPulse(0.8f, 1.2f, 3.0f, true);
+		}
+	}
 
-		// Y: フラッシュ（白）
-		if (keys[DIK_Y] && !pre[DIK_Y]) {
-			drawComp_->StartFlash(ColorRGBA::White(), 0.2f, 0.8f);
-		}
+	// Y: フラッシュ（白）
+	if (Input().TriggerKey(DIK_Y)) {
+		drawComp_->StartFlash(ColorRGBA::White(), 0.2f, 0.8f);
+	}
 
-		// U: ヒットエフェクト（複合）
-		if (keys[DIK_U] && !pre[DIK_U]) {
-			drawComp_->StartHitEffect();
-		}
+	// U: ヒットエフェクト（複合）
+	if (Input().TriggerKey(DIK_U)) {
+		drawComp_->StartHitEffect();
+	}
 
-		// I: 色変更（赤）
-		if (keys[DIK_I] && !pre[DIK_I]) {
-			drawComp_->StartColorTransition(ColorRGBA::Red(), 0.5f);
-		}
+	// I: 色変更（赤）
+	if (Input().TriggerKey(DIK_I)) {
+		drawComp_->StartColorTransition(ColorRGBA::Red(), 0.5f);
+	}
 
-		// O: 色リセット（白）
-		if (keys[DIK_O] && !pre[DIK_O]) {
-			drawComp_->StartColorTransition(ColorRGBA::White(), 0.5f);
-		}
+	// O: 色リセット（白）
+	if (Input().TriggerKey(DIK_O)) {
+		drawComp_->StartColorTransition(ColorRGBA::White(), 0.5f);
+	}
 
-		// P: フェードアウト
-		if (keys[DIK_P] && !pre[DIK_P]) {
-			drawComp_->StartFadeOut(1.0f);
-		}
+	// P: フェードアウト
+	if (Input().TriggerKey(DIK_P)) {
+		drawComp_->StartFadeOut(1.0f);
+	}
 
-		// L: フェードイン
-		if (keys[DIK_L] && !pre[DIK_L]) {
-			drawComp_->StartFadeIn(0.5f);
-		}
+	// L: フェードイン
+	if (Input().TriggerKey(DIK_L)) {
+		drawComp_->StartFadeIn(0.5f);
+	}
 
-		// F: 全エフェクトリセット
-		if (keys[DIK_F] && !pre[DIK_F]) {
-			drawComp_->StopAllEffects();
-		}
+	// F: 全エフェクトリセット
+	if (Input().TriggerKey(DIK_F)) {
+		drawComp_->StopAllEffects();
 	}
 
 	// DrawComponent2D の位置を更新
@@ -159,7 +157,7 @@ void Player::DrawDebugWindow() {
 	ImGui::Begin("Player Debug");
 
 	ImGui::Text("=== Transform ===");
-	ImGui::Text("Position: (%.1f, %.1f)",transform_.position.x, transform_.position.y);
+	ImGui::Text("Position: (%.1f, %.1f)", transform_.position.x, transform_.position.y);
 	ImGui::Text("Velocity: (%.1f, %.1f)", rigidbody_.velocity.x, rigidbody_.velocity.y);
 	ImGui::End();
 

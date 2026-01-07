@@ -12,7 +12,7 @@ Background::Background(int textureHandle, const Vector2& position) {
 	drawComp_->SetPosition(position);
 
 	// アンカーポイントを左上に設定（背景用）
-	drawComp_->SetAnchorPoint({ 0.0f, 0.0f });
+	drawComp_->SetAnchorPoint({ 0.5f, 0.5f });
 }
 
 Background::Background(int textureHandle, int divX, int divY, int totalFrames,

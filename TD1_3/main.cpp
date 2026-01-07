@@ -28,10 +28,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//Novice::SetWindowMode(kFullscreen);
 
 	SoundManager::GetInstance().LoadResources();
-	InputManager inputManager;
-	TextureManager textureManager;
-
-	Camera2D::GetInstance().SetInvertY(true);
+	Camera2D::GetInstance().SetisWorldYUp(true);
 
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };
@@ -49,7 +46,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓更新処理ここから
 		///
-
 
 		sceneManager.Update(kDeltaTime, keys, preKeys);
 

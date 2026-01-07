@@ -140,6 +140,9 @@
     <Filter Include="KamataEngine\Source\Game\Map\MapManager">
       <UniqueIdentifier>{529e0a03-df87-4967-9d69-1ae667fa667d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="KamataEngine\Source\Game\Object\GameObjectManager">
+      <UniqueIdentifier>{2d261b23-9bae-468e-be14-1a7af250c116}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -250,6 +253,9 @@
     </ClCompile>
     <ClCompile Include="GameObject2D.cpp">
       <Filter>KamataEngine\Source\Game\Object\GameObject2D</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObjectManager.cpp">
+      <Filter>KamataEngine\Source\Game\Object\GameObjectManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -474,6 +480,12 @@
     </ClInclude>
     <ClInclude Include="GameObject2D.h">
       <Filter>KamataEngine\Source\Game\Object\GameObject2D</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObjectManager.h">
+      <Filter>KamataEngine\Source\Game\Object\GameObjectManager</Filter>
+    </ClInclude>
+    <ClInclude Include="GamaManager.hpp">
+      <Filter>KamataEngine\Source\Game\Scene\Game</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

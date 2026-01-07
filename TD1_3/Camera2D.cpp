@@ -11,7 +11,7 @@ Camera2D::Camera2D(const Vector2& position, const Vector2& size, bool invertY)
 	, size_(size)
 	, zoom_(1.0f)
 	, rotation_(0.0f)
-	, invertY_(invertY) {
+	, isWorldYUp_(invertY) {
 
 	UpdateMatrices();
 }
@@ -204,15 +204,16 @@ void Camera2D::UpdateFollow(float deltaTime) {
 		}
 	}
 
+	deltaTime;
 	// 線形補間で追従（スムーズに追いかける）
-	float lerpFactor = 1.0f - std::pow(1.0f - follow_.speed, deltaTime * 60.0f);
-	position_.x += (targetPos.x - position_.x) * lerpFactor;
-	position_.y += (targetPos.y - position_.y) * lerpFactor;
+	//float lerpFactor = 1.0f - std::pow(1.0f - follow_.speed, deltaTime * 60.0f);
+	position_.x += (targetPos.x - position_.x) * 0.1f;
+	position_.y += (targetPos.y - position_.y) * 0.1f;
 }
 
 // ========== 境界制限 ==========
 void Camera2D::SetBounds(float left, float top, float right, float bottom) {
-	bounds_.enabled = true;
+	bounds_.enabled = false;
 	bounds_.left = left;
 	bounds_.top = top;
 	bounds_.right = right;
@@ -240,7 +241,6 @@ void Camera2D::ApplyBounds() {
 }
 
 // ========== 行列計算 ==========
-// ========== 行列計算 ==========
 void Camera2D::UpdateMatrices() {
 	// シェイクオフセットを適用した位置
 	Vector2 finalPosition = position_;
@@ -257,7 +257,7 @@ void Camera2D::UpdateMatrices() {
 	// 射影行列（正射影）を作成 - Y軸反転オプションあり
 	float halfWidth = size_.x * 0.5f;
 	float halfHeight = size_.y * 0.5f;
-	float yScale = invertY_ ? -1.0f : 1.0f;  // Y軸反転フラグに応じて変更
+	float yScale = isWorldYUp_ ? -1.0f : 1.0f;  // Y軸反転フラグに応じて変更
 
 	projectionMatrix_.m[0][0] = 1.0f / halfWidth;
 	projectionMatrix_.m[0][1] = 0.0f;
@@ -312,7 +312,7 @@ void Camera2D::DebugMove(bool isDebug, const char* keys, const char* pre) {
 
 	// ========== 移動 ==========
 	// 矢印キーで移動
-	if (IsInvertY()) {
+	if (IsWorldYUp()) {
 		if (keys[DIK_UP]) {
 			position_.y += moveSpeed * (1.0f / 60.0f);  // 仮に60FPS想定
 		}

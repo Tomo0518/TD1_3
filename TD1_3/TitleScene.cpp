@@ -87,13 +87,17 @@ void TitleScene::InitializeButtons() {
 
 	// ボタンの位置とサイズ
 	const float centerX = 1080.0f;
-	const float startY = 500.0f;
+	const float startY = 400.0f;
 	const float buttonSpacing = 80.0f;
 	const Vector2 buttonSize = { 270.0f, 60.0f };
 
 	// ボタンのコールバック
 	auto goToStageSelect = [&]() {
 		sceneManager_.RequestTransition(SceneType::StageSelect);
+		};
+
+	auto goToGamePlay = [&]() {
+		sceneManager_.RequestTransition(SceneType::GamePlay);
 		};
 
 	auto goToSettings = [&]() {
@@ -105,15 +109,19 @@ void TitleScene::InitializeButtons() {
 		};
 
 	// 3つのボタンを追加
-	buttonManager_.AddButton({ centerX, startY }, buttonSize, "Play", goToStageSelect);
+
+	buttonManager_.AddButton({ centerX, startY }, buttonSize, "GamePlay", goToGamePlay);
+
+	buttonManager_.AddButton({ centerX, startY + buttonSpacing }, buttonSize, "StageSelect", goToStageSelect);
+
 	buttonManager_.AddButton(
-		Vector2{ centerX, startY + buttonSpacing },
+		Vector2{ centerX, startY + buttonSpacing *2},
 		buttonSize,
 		"SETTING",
 		goToSettings
 	);
 	buttonManager_.AddButton(
-		Vector2{ centerX, startY + buttonSpacing * 2 },
+		Vector2{ centerX, startY + buttonSpacing * 3 },
 		buttonSize,
 		"QUIT",
 		quitGame
@@ -155,7 +163,7 @@ void TitleScene::Update(float dt, const char* keys, const char* pre) {
 		SoundManager::GetInstance().PlaySe(SeId::Decide);
 	}
 
-	player_.Update(dt, keys, pre, false);
+	player_.Update(dt);
 	
 	// ボタンマネージャーを更新
 	buttonManager_.Update(dt, keys, pre, *InputManager::GetInstance().GetPad());

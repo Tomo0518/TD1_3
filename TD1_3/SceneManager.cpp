@@ -5,6 +5,7 @@
 #include "PauseScene.h"
 #include "ResultScene.h"
 #include "Stage1Scene.h"
+#include "GamePlayScene.h"
 
 #include "SceneUtilityIncludes.h"
 
@@ -25,8 +26,6 @@ void SceneManager::Update(float dt, const char* keys, const char* pre) {
 #endif
 
 	InputManager::GetInstance().Update();
-	
-
 
 	// オーバーレイがある場合はそちらを優先
 	if (!overlayScenes_.empty()) {
@@ -127,6 +126,10 @@ void SceneManager::ChangeScene(SceneType type) {
 	case SceneType::StageSelect:
 		currentScene_ = std::make_unique<StageSelectScene>(*this);
 		currentStageIndex_ = -1;
+		break;
+
+	case SceneType::GamePlay:
+		currentScene_ = std::make_unique<GamePlayScene>(*this);
 		break;
 
 	case SceneType::Stage1:
