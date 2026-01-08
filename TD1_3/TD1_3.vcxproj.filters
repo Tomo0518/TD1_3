@@ -146,6 +146,9 @@
     <Filter Include="KamataEngine\Source\Game\Map\MapData">
       <UniqueIdentifier>{32eb2c9f-e99a-4c9a-b486-d8098279ba15}</UniqueIdentifier>
     </Filter>
+    <Filter Include="KamataEngine\Source\Game\Map\TileRegistry">
+      <UniqueIdentifier>{c37847d2-9254-43fc-a690-6208584a3a65}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -507,6 +510,9 @@
     </ClInclude>
     <ClInclude Include="MapChipEditor.h">
       <Filter>KamataEngine\Source\Game\Map\MapEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="TileRegistry.h">
+      <Filter>KamataEngine\Source\Game\Map\TileRegistry</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

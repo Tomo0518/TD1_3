@@ -223,6 +223,7 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClInclude Include="StageSelectScene.h" />
     <ClInclude Include="TextRenderer.h" />
     <ClInclude Include="TextureManager.h" />
+    <ClInclude Include="TileRegistry.h" />
     <ClInclude Include="TitleScene.h" />
     <ClInclude Include="Transform2D.h" />
     <ClInclude Include="UiDrawComponent.h" />

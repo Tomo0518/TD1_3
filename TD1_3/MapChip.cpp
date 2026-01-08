@@ -1,4 +1,5 @@
 ﻿#include "MapChip.h"
+#include "TileRegistry.h"
 
 MapChip::MapChip() {
 }
@@ -52,43 +53,28 @@ void MapChip::Draw(Camera2D& camera) {
     // 範囲内だけループして描画
     for (int y = startY; y < endY; ++y) {
         for (int x = startX; x < endX; ++x) {
-            // マップデータからチップ番号を取得
             int tileID = mapData_->GetTile(x, y);
+            if (tileID == 0) continue;
 
-            // 0は「空気」として描画しないルール
-            if (tileID != 0) {
-                // ワールド座標
-                Vector2 worldPos;
-                worldPos.x = x * tileSize;
-                worldPos.y = y * tileSize;
+            // IDから「どの絵を描くか」の情報をRegistryからもらう
+            const TileDefinition* def = TileRegistry::GetTile(tileID);
 
-                // スクリーン座標に変換（カメラクラスの機能を使用）
-                // ※TransformクラスがあるならMatrixを使っても良いが、ここでは単純化
+            if (def && def->textureIndex >= 0) {
+                // textureIndex を使ってUV計算
+                // 仮に横10枚並んでいるタイルセットだとする
+                int idx = def->textureIndex;
+                int srcX = (idx % 10) * 64; // 64は元画像の1タイルの画素数
+                int srcY = (idx / 10) * 64;
+
+                Vector2 worldPos = { x * tileSize, y * tileSize };
                 Vector2 screenPos = camera.WorldToScreen(worldPos);
 
-                // 描画（今回はIDに応じて元画像の切り抜き位置を変える処理は省略し、
-                // 単純にその画像を描画する。タイルセットを使う場合はsrcRectの計算が必要）
-
-                // 例：タイルセットが横10列の場合のUV計算
-                /*
-                int srcX = (tileID % 10) * (int)textureSrcSize_;
-                int srcY = (tileID / 10) * (int)textureSrcSize_;
                 Novice::DrawSpriteRect(
                     (int)screenPos.x, (int)screenPos.y,
-                    srcX, srcY,
-                    (int)textureSrcSize_, (int)textureSrcSize_,
+                    srcX, srcY, 64, 64, // 元画像の切り抜きサイズ
                     textureHandle_,
-                    tileSize / textureSrcSize_, // スケール
+                    tileSize / 64.0f, // 拡大率
                     1, 0.0f, 0xFFFFFFFF
-                );
-                */
-
-                // 簡易版：とりあえず全部同じ画像で描画（動作確認用）
-                Novice::DrawSprite(
-                    (int)screenPos.x, (int)screenPos.y,
-                    textureHandle_,
-                    1.0f, 1.0f,
-                    0.0f, 0xFFFFFFFF
                 );
             }
         }
