@@ -73,6 +73,36 @@ public:
 	// デバッグ用
 	bool GetIsDebugCamera() { return isDebugCamera_; }
 
+
+	/// <summary>
+	/// カメラのズームによる表示領域の左上座標を取得
+	/// </summary>
+	/// <returns></returns>
+	Vector2 GetTopLeft() {
+		float halfWidth = (size_.x / zoom_) * 0.5f;
+		float halfHeight = (size_.y / zoom_) * 0.5f;
+		return Vector2{ position_.x - halfWidth, position_.y - halfHeight };
+	}
+
+	/// <summary>
+	/// カメラのズームによる表示領域の右下座標を取得
+	/// </summary>
+	/// <returns></returns>
+	Vector2 GetBottomRight() {
+		float halfWidth = (size_.x / zoom_) * 0.5f;
+		float halfHeight = (size_.y / zoom_) * 0.5f;
+		return Vector2{ position_.x + halfWidth, position_.y + halfHeight };
+	}
+
+	/// <summary>
+	// ワールド座標をスクリーン座標に変換
+	/// </summary>
+	/// <param name="pos">ワールド座標</param>
+	Vector2 WorldToScreen(Vector2 pos) {
+		return Matrix3x3::Transform(pos, vpVpMatrix_);
+	}
+
+
 private:
 	// 基本パラメータ
 	Vector2 position_;

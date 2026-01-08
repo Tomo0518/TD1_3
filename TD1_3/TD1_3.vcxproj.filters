@@ -134,14 +134,17 @@
     <Filter Include="KamataEngine\Source\Game\Map">
       <UniqueIdentifier>{0bc445e1-679f-47a7-9a76-673477151c8f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="KamataEngine\Source\Game\Map\MapLoader">
-      <UniqueIdentifier>{7818067b-ad9f-44f9-86c8-aefeb85fdc3a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="KamataEngine\Source\Game\Map\MapManager">
-      <UniqueIdentifier>{529e0a03-df87-4967-9d69-1ae667fa667d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="KamataEngine\Source\Game\Object\GameObjectManager">
       <UniqueIdentifier>{2d261b23-9bae-468e-be14-1a7af250c116}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\Game\Map\MapChip">
+      <UniqueIdentifier>{db1dad81-42e4-4a81-bd0f-b342979c6690}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\Game\Map\MapEditor">
+      <UniqueIdentifier>{9ad2e4fb-ed92-49c8-82d5-16857469a76b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\Game\Map\MapData">
+      <UniqueIdentifier>{32eb2c9f-e99a-4c9a-b486-d8098279ba15}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -256,6 +259,15 @@
     </ClCompile>
     <ClCompile Include="GameObjectManager.cpp">
       <Filter>KamataEngine\Source\Game\Object\GameObjectManager</Filter>
+    </ClCompile>
+    <ClCompile Include="MapChip.cpp">
+      <Filter>KamataEngine\Source\Game\Map\MapChip</Filter>
+    </ClCompile>
+    <ClCompile Include="MapData.cpp">
+      <Filter>KamataEngine\Source\Game\Map\MapData</Filter>
+    </ClCompile>
+    <ClCompile Include="MapChipEditor.cpp">
+      <Filter>KamataEngine\Source\Game\Map\MapEditor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -486,6 +498,15 @@
     </ClInclude>
     <ClInclude Include="GamaManager.hpp">
       <Filter>KamataEngine\Source\Game\Scene\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="MapChip.h">
+      <Filter>KamataEngine\Source\Game\Map\MapChip</Filter>
+    </ClInclude>
+    <ClInclude Include="MapData.h">
+      <Filter>KamataEngine\Source\Game\Map\MapData</Filter>
+    </ClInclude>
+    <ClInclude Include="MapChipEditor.h">
+      <Filter>KamataEngine\Source\Game\Map\MapEditor</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

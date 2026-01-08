@@ -116,7 +116,7 @@ void GamePlayScene::Update(float dt, const char* keys, const char* pre) {
 			isDebugCameraMove_ = !isDebugCameraMove_;
 		}
 
-		camera_->DebugMove(false, keys, pre);
+		camera_->DebugMove(isDebugCameraMove_, keys, pre);
 	}
 	else if (camera_) {
 		camera_->DebugMove(false, keys, pre);

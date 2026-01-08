@@ -113,6 +113,9 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="GameObject2D.cpp" />
     <ClCompile Include="GameObjectManager.cpp" />
+    <ClCompile Include="MapChip.cpp" />
+    <ClCompile Include="MapChipEditor.cpp" />
+    <ClCompile Include="MapData.cpp" />
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="Background.cpp" />
     <ClCompile Include="BaseStageScene.cpp" />
@@ -155,6 +158,9 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClInclude Include="GamaManager.hpp" />
     <ClInclude Include="GameObject2D.h" />
     <ClInclude Include="GameObjectManager.h" />
+    <ClInclude Include="MapChip.h" />
+    <ClInclude Include="MapChipEditor.h" />
+    <ClInclude Include="MapData.h" />
     <ClInclude Include="Rigidbody2D.hpp" />
     <ClInclude Include="SceneUtilityIncludes.h" />
     <ClInclude Include="SoundManager.h" />
