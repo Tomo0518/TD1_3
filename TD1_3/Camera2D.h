@@ -102,6 +102,15 @@ public:
 		return Matrix3x3::Transform(pos, vpVpMatrix_);
 	}
 
+	/// <summary>
+	// スクリーン座標をワールド座標に変換
+	/// </summary>
+	// <param name="pos">スクリーン座標</param>
+	Vector2 ScreenToWorld(Vector2 pos) {
+		Matrix3x3 invVpVp = Matrix3x3::Inverse(vpVpMatrix_);
+		return Matrix3x3::Transform(pos, invVpVp);
+	}
+
 
 private:
 	// 基本パラメータ

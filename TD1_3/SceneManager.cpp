@@ -7,13 +7,15 @@
 #include "Stage1Scene.h"
 #include "GamePlayScene.h"
 
+#include "PrototypeSurvivalScene.h"
+
 #include "SceneUtilityIncludes.h"
 
 #include <Novice.h>
 
 SceneManager::SceneManager() {
 	shared_.LoadCommonTextures();
-	ChangeScene(SceneType::Title);
+	ChangeScene(SceneType::PrototypeSurvival);
 }
 
 void SceneManager::Update(float dt, const char* keys, const char* pre) {
@@ -143,6 +145,10 @@ void SceneManager::ChangeScene(SceneType type) {
 
 	case SceneType::Setting:
 		currentScene_ = std::make_unique<SettingScene>(*this);
+		break;
+
+	case SceneType::PrototypeSurvival:
+		currentScene_ = std::make_unique<PrototypeSurvivalScene>(*this);
 		break;
 
 	//case SceneType::GamePlay:

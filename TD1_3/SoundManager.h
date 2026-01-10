@@ -34,6 +34,10 @@ public:
 		return instance;
 	}
 
+	// 削除・コピー禁止
+	SoundManager(const SoundManager&) = delete;
+	SoundManager& operator=(const SoundManager&) = delete;
+
 	// ==========================================
 	// 再生制御
 	// ==========================================

@@ -93,7 +93,7 @@ void TitleScene::InitializeButtons() {
 
 	// ボタンのコールバック
 	auto goToStageSelect = [&]() {
-		sceneManager_.RequestTransition(SceneType::StageSelect);
+		sceneManager_.RequestTransition(SceneType::PrototypeSurvival);
 		};
 
 	auto goToGamePlay = [&]() {

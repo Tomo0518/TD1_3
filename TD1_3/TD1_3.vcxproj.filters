@@ -149,6 +149,12 @@
     <Filter Include="KamataEngine\Source\Game\Map\TileRegistry">
       <UniqueIdentifier>{c37847d2-9254-43fc-a690-6208584a3a65}</UniqueIdentifier>
     </Filter>
+    <Filter Include="KamataEngine\Source\Game\Scene\Proto">
+      <UniqueIdentifier>{615acf88-9878-48ba-8f00-ed05406a7850}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\Game\Scene\Proto\PrototypeSurvivalScene">
+      <UniqueIdentifier>{cac08d67-7d46-436f-bb69-fefd7ec1725d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -271,6 +277,9 @@
     </ClCompile>
     <ClCompile Include="MapChipEditor.cpp">
       <Filter>KamataEngine\Source\Game\Map\MapEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="PrototypeSurvivalScene.cpp">
+      <Filter>KamataEngine\Source\Game\Scene\Proto\PrototypeSurvivalScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -513,6 +522,9 @@
     </ClInclude>
     <ClInclude Include="TileRegistry.h">
       <Filter>KamataEngine\Source\Game\Map\TileRegistry</Filter>
+    </ClInclude>
+    <ClInclude Include="PrototypeSurvivalScene.h">
+      <Filter>KamataEngine\Source\Game\Scene\Proto\PrototypeSurvivalScene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -47,12 +47,14 @@ public:
 		return instance;
 	}
 
+	// 削除・コピー禁止
+	TextureManager(const TextureManager&) = delete;
+	TextureManager& operator=(const TextureManager&) = delete;
+
 	// テクスチャハンドル取得
 	int GetTexture(TextureId id) const;
 
 private:
 	void LoadResources();
-
-private:
 	std::array<int, static_cast<int>(TextureId::Count)> textureResources_;
 };

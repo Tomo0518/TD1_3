@@ -10,4 +10,5 @@ enum class SceneType {
 	Explanation,
 	Setting,
 	GamePlay,
+	PrototypeSurvival,
 };

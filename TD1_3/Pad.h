@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <cstdint>
 #include <array>
+#include "Vector2.h"
 
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
@@ -32,6 +33,10 @@ public:
 
 	float LeftX()  const { return leftX_; }
 	float LeftY()  const { return leftY_; }
+
+	Vector2 GetLeftStick() const { return { leftX_, leftY_ }; }
+	Vector2 GetRightStick() const { return { rightX_, rightY_ }; }
+
 	float RightX() const { return rightX_; }
 	float RightY() const { return rightY_; }
 

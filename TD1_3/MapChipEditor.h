@@ -5,6 +5,8 @@
 #include <Novice.h>
 #include <imgui.h>
 
+#include "SceneUtilityIncludes.h" // Inputクラスなど共通ユーティリティ
+
 class MapEditor {
 public:
     // 初期化
@@ -15,7 +17,7 @@ public:
     }
 
     // 更新＆描画（ImGuiの処理）
-    void UpdateAndDrawImGui(MapData& mapData, const Camera2D& camera) {
+    void UpdateAndDrawImGui(MapData& mapData, Camera2D& camera) {
         ImGui::Begin("Map Editor");
 
         // --- 1. 保存・ロード機能 ---
@@ -77,13 +79,13 @@ private:
     int selectedTileId_ = 0;
 
     // マウス入力を処理してマップを書き換える
-    void HandleMouseInput(MapData& mapData, const Camera2D& camera) {
+    void HandleMouseInput(MapData& mapData,  Camera2D& camera) {
         // ImGuiのウィンドウ上にある時はゲーム画面への操作を無効化する
         if (ImGui::GetIO().WantCaptureMouse) return;
 
         // 左クリックで配置
         if (Novice::IsPressMouse(0)) {
-            Vector2 mousePos = { (float)Input::GetMousePosition().x, (float)Input::GetMousePosition().y }; // Inputクラス等は環境に合わせて
+            Vector2 mousePos = { (float)Input().GetMousePosition().x, (float)Input().GetMousePosition().y}; // Inputクラス等は環境に合わせて
 
             // スクリーン座標 → ワールド座標
             Vector2 worldPos = camera.ScreenToWorld(mousePos);
@@ -100,7 +102,7 @@ private:
 
         // 右クリックでスポイト（その場所のブロックを選択）機能があると便利
         if (Novice::IsPressMouse(1)) {
-            Vector2 mousePos = { (float)Input::GetMousePosition().x, (float)Input::GetMousePosition().y };
+            Vector2 mousePos = { (float)Input().GetMousePosition().x, (float)Input().GetMousePosition().y };
             Vector2 worldPos = camera.ScreenToWorld(mousePos);
             int col = (int)(worldPos.x / mapData.GetTileSize());
             int row = (int)(worldPos.y / mapData.GetTileSize());

@@ -27,6 +27,10 @@ public:
 		return instance;
 	}
 
+	// 削除・コピー禁止
+	InputManager(const InputManager&) = delete;
+	InputManager& operator=(const InputManager&) = delete;
+
 	// 毎フレーム呼ぶ更新処理
 	void Update();
 
