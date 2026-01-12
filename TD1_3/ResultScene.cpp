@@ -3,7 +3,7 @@
 #include "SceneManager.h"
 #include "SceneUtilityIncludes.h"
 
-using namespace SceneServices;
+using namespace GameServices;
 
 #ifdef _DEBUG
 #include <imgui.h>

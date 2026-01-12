@@ -6,7 +6,7 @@
 
 #include "SceneUtilityIncludes.h"
 
-using namespace SceneServices;
+using namespace GameServices;
 
 namespace {
 	constexpr float kStickThreshold = 0.55f;

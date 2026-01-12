@@ -118,7 +118,7 @@ private:
 	Vector2 size_;
 	float zoom_;
 	float rotation_;
-	bool isWorldYUp_;  // Y軸反転フラグ
+	bool isWorldYUp_ = true;  // Y軸反転フラグ
 
 	bool isDebugCamera_ = true;
 

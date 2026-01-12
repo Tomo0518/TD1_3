@@ -73,7 +73,7 @@ public:
 	ParticleManager();
 	~ParticleManager() = default;
 
-	ParticleManager& GetInstance(){
+	static ParticleManager& GetInstance(){
 		static ParticleManager instance;
 		return instance;
 	}

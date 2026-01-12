@@ -153,6 +153,7 @@ void SurvivalEnemy::OnHit(int damage, Vector2 knockbackDir, float knockbackPower
 
     if (hp_ <= 0) {
         isDead_ = true;
+        GetInfo().isActive = false;
         // 死亡エフェクトがあればここで再生（ParticleManagerなどに依頼）
     }
 }
