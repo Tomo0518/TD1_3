@@ -5,7 +5,6 @@ MapChip::MapChip() {
 }
 
 MapChip::~MapChip() {
-    // mapData_は外部（Sceneなど）が持っているはずなのでdeleteしない
 }
 
 void MapChip::Initialize(MapData* mapData, const std::string& textureFilePath) {
@@ -21,62 +20,92 @@ void MapChip::Initialize(MapData* mapData, const std::string& textureFilePath) {
 }
 
 void MapChip::Draw(Camera2D& camera) {
-    // データがない、または画像がない場合は描画できない
-    if (!mapData_ || textureHandle_ == -1) return;
+	// データがない、または画像がない場合は描画できない
+	if (!mapData_ || textureHandle_ == -1) return;
 
-    // マップ情報の取得
-    int width = mapData_->GetWidth();
-    int height = mapData_->GetHeight();
-    float tileSize = mapData_->GetTileSize();
+	// マップ情報の取得
+	const int width = mapData_->GetWidth();
+	const int height = mapData_->GetHeight();
+	const float tileSize = mapData_->GetTileSize();
 
-    // カメラの表示範囲を取得（カリング用）
-    Vector2 cameraTopLeft = camera.GetTopLeft();
-    Vector2 cameraBottomRight = camera.GetBottomRight();
+	// タイルシートのサイズ（自動分割用）
+	int texW = 0;
+	int texH = 0;
+	Novice::GetTextureSize(textureHandle_, &texW, &texH);
 
-    // 描画すべきグリッド範囲を計算（画面外はループすら回さない）
-    // 左端：カメラ左端 ÷ タイルサイズ（0未満にならないようmax）
-    int startX = (int)(cameraTopLeft.x / tileSize);
-    startX = (startX < 0) ? 0 : startX;
+	const int srcTileSize = static_cast<int>(textureSrcSize_);
+	const int tilesPerRow = (srcTileSize > 0) ? (texW / srcTileSize) : 0;
+	if (tilesPerRow <= 0) {
+		return;
+	}
 
-    // 右端：カメラ右端 ÷ タイルサイズ（マップ幅を超えないようmin）
-    int endX = (int)(cameraBottomRight.x / tileSize) + 1;
-    endX = (endX > width) ? width : endX;
+	// カメラの表示範囲を取得（カリング用）
+	Vector2 cameraTopLeft = camera.GetTopLeft();
+	Vector2 cameraBottomRight = camera.GetBottomRight();
 
-    // 上端
-    int startY = (int)(cameraTopLeft.y / tileSize);
-    startY = (startY < 0) ? 0 : startY;
+	// 描画すべきグリッド範囲を計算（画面外はループすら回さない）
+	int startX = static_cast<int>(cameraTopLeft.x / tileSize);
+	startX = (startX < 0) ? 0 : startX;
 
-    // 下端
-    int endY = (int)(cameraBottomRight.y / tileSize) + 1;
-    endY = (endY > height) ? height : endY;
+	int endX = static_cast<int>(cameraBottomRight.x / tileSize) + 1;
+	endX = (endX > width) ? width : endX;
 
-    // 範囲内だけループして描画
-    for (int y = startY; y < endY; ++y) {
-        for (int x = startX; x < endX; ++x) {
-            int tileID = mapData_->GetTile(x, y);
-            if (tileID == 0) continue;
+	int startY = static_cast<int>(cameraTopLeft.y / tileSize);
+	startY = (startY < 0) ? 0 : startY;
 
-            // IDから「どの絵を描くか」の情報をRegistryからもらう
-            const TileDefinition* def = TileRegistry::GetTile(tileID);
+	int endY = static_cast<int>(cameraBottomRight.y / tileSize) + 1;
+	endY = (endY > height) ? height : endY;
 
-            if (def && def->textureIndex >= 0) {
-                // textureIndex を使ってUV計算
-                // 仮に横10枚並んでいるタイルセットだとする
-                int idx = def->textureIndex;
-                int srcX = (idx % 10) * 64; // 64は元画像の1タイルの画素数
-                int srcY = (idx / 10) * 64;
+	// カメラ行列（回転・ズーム込み）
+	const Matrix3x3 vpVp = camera.GetVpVpMatrix();
 
-                Vector2 worldPos = { x * tileSize, y * tileSize };
-                Vector2 screenPos = camera.WorldToScreen(worldPos);
+	// 範囲内だけループして描画
+	for (int y = startY; y < endY; ++y) {
+		for (int x = startX; x < endX; ++x) {
+			const int tileID = mapData_->GetTile(x, y);
+			if (tileID == 0) continue;
 
-                Novice::DrawSpriteRect(
-                    (int)screenPos.x, (int)screenPos.y,
-                    srcX, srcY, 64, 64, // 元画像の切り抜きサイズ
-                    textureHandle_,
-                    tileSize / 64.0f, // 拡大率
-                    1, 0.0f, 0xFFFFFFFF
-                );
-            }
-        }
-    }
+			const TileDefinition* def = TileRegistry::GetTile(tileID);
+			if (!def) continue;
+			if (def->textureIndex < 0) continue;
+
+			// textureIndex -> src rect（画像サイズから列数を算出）
+			const int idx = def->textureIndex;
+
+			const int srcX = (idx % tilesPerRow) * srcTileSize;
+			const int srcY = (idx / tilesPerRow) * srcTileSize;
+
+			// 範囲外（タイル数超過）なら描かない
+			if (srcX < 0 || srcY < 0) continue;
+			if (srcX + srcTileSize > texW) continue;
+			if (srcY + srcTileSize > texH) continue;
+
+			// タイルのワールド4頂点（左上基準）
+			const float left = x * tileSize;
+			const float top = y * tileSize;
+			const float right = left + tileSize;
+			const float bottom = top + tileSize;
+
+			const Vector2 wLT = { left, top };
+			const Vector2 wRT = { right, top };
+			const Vector2 wLB = { left, bottom };
+			const Vector2 wRB = { right, bottom };
+
+			// カメラ変換してスクリーンへ（回転・ズーム込み）
+			const Vector2 sLT = Matrix3x3::Transform(wLT, vpVp);
+			const Vector2 sRT = Matrix3x3::Transform(wRT, vpVp);
+			const Vector2 sLB = Matrix3x3::Transform(wLB, vpVp);
+			const Vector2 sRB = Matrix3x3::Transform(wRB, vpVp);
+
+			Novice::DrawQuad(
+				static_cast<int>(sLT.x), static_cast<int>(sLT.y),
+				static_cast<int>(sRT.x), static_cast<int>(sRT.y),
+				static_cast<int>(sLB.x), static_cast<int>(sLB.y),
+				static_cast<int>(sRB.x), static_cast<int>(sRB.y),
+				srcX, srcY, srcTileSize, srcTileSize,
+				textureHandle_,
+				0xFFFFFFFF
+			);
+		}
+	}
 }

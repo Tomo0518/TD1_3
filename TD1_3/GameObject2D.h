@@ -8,10 +8,7 @@
 #include "Camera2D.h"
 
 #include "Rigidbody2D.hpp"
-
-// 描画コンポーネント
 #include "DrawComponent2D.h" 
-
 #include "TextureManager.h"
 
 class GameObjectManager; // 前方宣言
@@ -26,7 +23,7 @@ struct GameObjectInfo {
 
 struct Collider {
     Vector2 offset = { 0.0f, 0.0f };
-    Vector2 size = { 1.0f, 1.0f };
+    Vector2 size = { 64.0f, 64.0f };
     bool canCollide = true;
     bool isTrigger = false;
 };

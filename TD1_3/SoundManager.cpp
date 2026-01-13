@@ -7,7 +7,7 @@ SoundManager::SoundManager() {
 
 void SoundManager::LoadResources() {
 	if(isLoaded_) {
-		return; // 既にロード済みなら何もしない
+		return;
 	}
 
 	bgmResources_.fill(-1);

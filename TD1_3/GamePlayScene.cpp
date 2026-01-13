@@ -37,8 +37,22 @@ void GamePlayScene::Initialize() {
 	objectManager_.Clear();
 	player_ = nullptr;
 
+	// --- ★マップシステムの初期化 ---
+	// 1. エディタ初期化（タイル定義のロード）
+	mapEditor_.Initialize();
+
+	// 2. マップデータのロード（ファイルがない場合は初期リセットされる）
+	// ※パスは適宜調整してください
+	if (!mapData_.Load("./Resources/data/stage1.json")) {
+		mapData_.Reset(40, 30); // 読み込めなかったら仮のサイズで作成
+	}
+
+	// 3. マップ描画クラスの初期化
+	// タイルセット画像のパスを指定してください
+	mapChip_.Initialize(&mapData_, "./Resources/images/gamePlay/block1_ver1.png");
+
 	InitializeCamera();
-	InitializeObjects();
+	InitializeObjects(); // ここでPlayer生成
 	InitializeBackground();
 }
 
@@ -126,6 +140,20 @@ void GamePlayScene::Update(float dt, const char* keys, const char* pre) {
 	// GameObjectManager 経由で更新
 	objectManager_.Update(dt);
 
+
+	// --- エディタの更新（ImGui）---
+	// ゲーム中でも編集できるようにする
+	mapEditor_.UpdateAndDrawImGui(mapData_, *camera_);
+
+	// --- 当たり判定（物理演算）---
+	// オブジェクトが移動した後、マップとのめり込みを解消する
+	if (player_) {
+		PhysicsManager::ResolveMapCollision(player_, mapData_);
+	}
+
+	// GameObjectManager 経由でオブジェクト更新（移動処理）
+	objectManager_.Update(dt);
+
 	// パーティクル
 	particleManager_->Update(dt);
 
@@ -152,6 +180,10 @@ void GamePlayScene::Draw() {
 	for (auto& background : background_) {
 		background->Draw(*camera_);
 	}
+
+	// --- マップ描画 ---
+	// オブジェクトより奥（背景より手前）に描画
+	mapChip_.Draw(*camera_);
 
 	particleManager_->Draw(*camera_);
 

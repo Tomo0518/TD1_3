@@ -15,7 +15,7 @@
 
 SceneManager::SceneManager() {
 	shared_.LoadCommonTextures();
-	ChangeScene(SceneType::PrototypeSurvival);
+	ChangeScene(SceneType::Title);
 }
 
 void SceneManager::Update(float dt, const char* keys, const char* pre) {

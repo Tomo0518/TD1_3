@@ -62,7 +62,6 @@ public:
         }
 
         // 3. 死亡フラグが立ったオブジェクトを削除
-        // remove_if -> erase のイディオム
         objects_.erase(
             std::remove_if(objects_.begin(), objects_.end(),
                 [](const std::unique_ptr<GameObject2D>& obj) {

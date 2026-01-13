@@ -64,8 +64,8 @@ private:
 	
 	bool isLoaded_ = false;
 
-	float bgmVolume_ = 0.1f;
-	float seVolume_ = 0.2f;
+	float bgmVolume_ = 0.0f;
+	float seVolume_ = 0.0f;
 
 	std::array<int, static_cast<int>(BgmId::Count)> bgmResources_;
 	std::array<int, static_cast<int>(SeId::Count)> seResources_;

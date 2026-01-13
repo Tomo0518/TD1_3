@@ -4,111 +4,45 @@
 #include "TileRegistry.h"
 #include <Novice.h>
 #include <imgui.h>
+#include <vector>
+#include <map>
 
-#include "SceneUtilityIncludes.h" // Inputクラスなど共通ユーティリティ
+// 1マスの変更履歴
+struct TileChangeLog {
+    int col;
+    int row;
+    int prevId; // 変更前のID
+    int newId;  // 変更後のID
+};
 
-class MapEditor {
+// 1回のアクション（一筆書き）をまとめたコマンド
+struct EditCommand {
+    std::vector<TileChangeLog> logs;
+};
+
+class MapChipEditor {
 public:
     // 初期化
-    void Initialize() {
-        // タイル情報のロード（ゲーム起動時に1回呼ぶ）
-        TileRegistry::Initialize();
-        selectedTileId_ = 1; // デフォルトで何か選択しておく
-    }
+    void Initialize();
 
-    // 更新＆描画（ImGuiの処理）
-    void UpdateAndDrawImGui(MapData& mapData, Camera2D& camera) {
-        ImGui::Begin("Map Editor");
-
-        // --- 1. 保存・ロード機能 ---
-        if (ImGui::Button("Save Map")) {
-            mapData.Save("./Resources/data/stage1.json");
-            ImGui::OpenPopup("Saved");
-        }
-        ImGui::SameLine();
-        if (ImGui::Button("Load Map")) {
-            mapData.Load("./Resources/data/stage1.json");
-        }
-
-        // 保存完了メッセージ
-        if (ImGui::BeginPopup("Saved")) {
-            ImGui::Text("Save Complete!");
-            ImGui::EndPopup();
-        }
-
-        ImGui::Separator();
-
-        // --- 2. パレット自動生成 ---
-        ImGui::Text("Select Tile:");
-
-        // TileRegistryにある全ブロックをボタンとして表示
-        const auto& tiles = TileRegistry::GetAllTiles();
-
-        // グリッド状に並べるための設定
-        int buttonsPerRow = 4;
-        int count = 0;
-
-        for (const auto& tile : tiles) {
-            // 選択中のものは色を変えるなどの強調も可能
-            std::string label = tile.name + "##" + std::to_string(tile.id);
-
-            // 選択状態のラジオボタンのように振る舞う
-            if (ImGui::RadioButton(label.c_str(), selectedTileId_ == tile.id)) {
-                selectedTileId_ = tile.id;
-            }
-
-            // 横並び処理
-            count++;
-            if (count % buttonsPerRow != 0) {
-                ImGui::SameLine();
-            }
-        }
-        // 改行リセット
-        if (count % buttonsPerRow != 0) ImGui::NewLine();
-
-        ImGui::Separator();
-
-        // --- 3. マウスによる配置処理 ---
-        ImGui::Text("Click on screen to place blocks.");
-        HandleMouseInput(mapData, camera);
-
-        ImGui::End();
-    }
+    // 更新＆描画
+    void UpdateAndDrawImGui(MapData& mapData, Camera2D& camera);
 
 private:
-    int selectedTileId_ = 0;
+    int selectedTileId_ = 1;
 
-    // マウス入力を処理してマップを書き換える
-    void HandleMouseInput(MapData& mapData,  Camera2D& camera) {
-        // ImGuiのウィンドウ上にある時はゲーム画面への操作を無効化する
-        if (ImGui::GetIO().WantCaptureMouse) return;
+    // --- Undo / Redo 用変数 ---
+    std::vector<EditCommand> undoStack_;
+    std::vector<EditCommand> redoStack_;
 
-        // 左クリックで配置
-        if (Novice::IsPressMouse(0)) {
-            Vector2 mousePos = { (float)Input().GetMousePosition().x, (float)Input().GetMousePosition().y}; // Inputクラス等は環境に合わせて
+    // ドラッグ中の一時キャッシュ (座標{col, row} -> 変更前のID)
+    // これにより、同じ場所をグリグリしても「最初の状態」を覚えておける
+    std::map<std::pair<int, int>, int> strokeCache_;
+    bool isDragging_ = false;
 
-            // スクリーン座標 → ワールド座標
-            Vector2 worldPos = camera.ScreenToWorld(mousePos);
-
-            // ワールド座標 → グリッド座標 (MapDataのメソッドがあればそれを使うのも良し)
-            int col = (int)(worldPos.x / mapData.GetTileSize());
-            int row = (int)(worldPos.y / mapData.GetTileSize());
-
-            // 範囲内なら書き換え
-            if (col >= 0 && col < mapData.GetWidth() && row >= 0 && row < mapData.GetHeight()) {
-                mapData.SetTile(col, row, selectedTileId_);
-            }
-        }
-
-        // 右クリックでスポイト（その場所のブロックを選択）機能があると便利
-        if (Novice::IsPressMouse(1)) {
-            Vector2 mousePos = { (float)Input().GetMousePosition().x, (float)Input().GetMousePosition().y };
-            Vector2 worldPos = camera.ScreenToWorld(mousePos);
-            int col = (int)(worldPos.x / mapData.GetTileSize());
-            int row = (int)(worldPos.y / mapData.GetTileSize());
-
-            int pickedId = mapData.GetTile(col, row);
-            if (pickedId != 0) selectedTileId_ = pickedId; // 0(空気)は吸わない方が使いやすいかも
-        }
-    }
+    // --- 内部メソッド ---
+    void HandleInput(MapData& mapData, Camera2D& camera);
+    void ExecuteUndo(MapData& mapData);
+    void ExecuteRedo(MapData& mapData);
+    void CommitStroke(MapData& mapData); // ドラッグ終了時に履歴を確定させる
 };

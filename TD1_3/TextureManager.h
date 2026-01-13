@@ -33,7 +33,6 @@ enum class TextureId {
 	Background3_2,
 
 
-
 	Count,	// 最後
 };
 
