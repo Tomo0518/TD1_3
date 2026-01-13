@@ -140,11 +140,6 @@ void GamePlayScene::Update(float dt, const char* keys, const char* pre) {
 	// GameObjectManager 経由で更新
 	objectManager_.Update(dt);
 
-
-	// --- エディタの更新（ImGui）---
-	// ゲーム中でも編集できるようにする
-	mapEditor_.UpdateAndDrawImGui(mapData_, *camera_);
-
 	// --- 当たり判定（物理演算）---
 	// オブジェクトが移動した後、マップとのめり込みを解消する
 	if (player_) {
@@ -191,6 +186,10 @@ void GamePlayScene::Draw() {
 	if (camera_) {
 		objectManager_.Draw(*camera_);
 	}
+
+	// --- エディタの更新（ImGui）---
+	// ゲーム中でも編集できるようにする
+	mapEditor_.UpdateAndDrawImGui(mapData_, *camera_);
 
 #ifdef _DEBUG
 	if (debugWindow_) {
