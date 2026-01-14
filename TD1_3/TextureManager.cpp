@@ -31,6 +31,12 @@ void TextureManager::LoadResources() {
 		Novice::LoadTexture("./Resources/images/result/clear.png");
 
 	// ==================================
+	// マップチップ
+	// ==================================
+	textureResources_[static_cast<int>(TextureId::GroundAuto)] =
+		Novice::LoadTexture("./Resources/images/mapChip/tile_temp.png");	
+
+	// ==================================
 	// ゲームオブジェクト
 	// ==================================
 
@@ -66,4 +72,7 @@ void TextureManager::LoadResources() {
 
 	textureResources_[static_cast<int>(TextureId::Background2_2)] =
 		Novice::LoadTexture("./Resources/images/gamePlay/background/background2_2.png");
+
+	textureResources_[static_cast<int>(TextureId::None)] =
+		Novice::LoadTexture("./Resources/images/temp/none.png");
 }

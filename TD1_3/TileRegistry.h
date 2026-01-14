@@ -1,25 +1,27 @@
 ﻿#pragma once
 #include <string>
 #include <vector>
-#include <map>
+#include "TextureManager.h" // TextureId定義のためインクルード
 
-// 1つのタイルの情報をまとめた構造体
-struct TileDefinition {
-    int id;             // マップデータに保存される数値 (例: 1)
-    std::string name;   // エディタ表示名 (例: "Ground")
-    int textureIndex;   // タイルセット画像内の何番目の絵か (例: 0)
-    bool isSolid;       // 当たり判定があるか（Physics用、今はデータとして持つだけ）
+// タイルの種類
+enum class TileType {
+    None,       // 空気
+    Solid,      // 通常ブロック
+    AutoTile    // オートタイル
 };
 
-// 全タイルのカタログを管理するクラス（どこからでも使えるようにStaticにする）
+struct TileDefinition {
+    int id;                 // ID
+    std::string name;       // エディタ表示名
+    TextureId textureId;    // ★変更: TextureManagerで使うID
+    TileType type;          // 種類
+    bool isSolid;           // 当たり判定
+};
+
 class TileRegistry {
 public:
-    // 定義リストを取得
-    static const std::vector<TileDefinition>& GetAllTiles() {
-        return tiles_;
-    }
+    static const std::vector<TileDefinition>& GetAllTiles() { return tiles_; }
 
-    // IDから定義を取得（描画や判定で使う）
     static const TileDefinition* GetTile(int id) {
         for (const auto& tile : tiles_) {
             if (tile.id == id) return &tile;
@@ -27,24 +29,34 @@ public:
         return nullptr;
     }
 
-    // 初期化：ここでブロックの種類を登録する！
-    // 新しいブロックを追加したい時はここに行を追加する
+    // 初期化：ここで TextureId を指定して登録
     static void Initialize() {
         tiles_.clear();
-        // ID, 名前, 画像Index, 当たり判定
-        tiles_.push_back({ 0, "Air",         0, false }); // 空気（消しゴム用）
-        tiles_.push_back({ 1, "Ground",      1, true });
-        tiles_.push_back({ 2, "Brick",       2, true });
-        tiles_.push_back({ 3, "Spike",       3, true });
-        tiles_.push_back({ 4, "Ice",         4, true });
-        tiles_.push_back({ 10, "Goal",      10, false });
-        // どんどん追加できる
+
+        // ID:0 空気 (テクスチャなしなので適当なIDか、None用ID)
+        // TextureId::None があると仮定、なければ適当なものを
+        tiles_.push_back({ 0, "Air", TextureId::Count, TileType::None, false });
+
+        // ID:1 地面 (オートタイル)
+        // ※ TextureManager側で TextureId::GroundAuto に "ground_auto.png" をロードしておく必要があります
+        tiles_.push_back({
+            1, "Ground",
+            TextureId::GroundAuto, // ここを実際のTextureIdに合わせて変更してください
+            TileType::AutoTile,
+            true
+            });
+
+        // ID:2 鉄ブロック
+        tiles_.push_back({
+            2, "Iron",
+            TextureId::GroundAuto,
+            TileType::Solid,
+            true
+            });
     }
 
 private:
     static std::vector<TileDefinition> tiles_;
 };
 
-// 実体定義（cppファイルに書くべきだが、簡単のためここに書くならinlineが必要。
-// 正しくは TileRegistry.cpp を作ってそこに書く）
 inline std::vector<TileDefinition> TileRegistry::tiles_;

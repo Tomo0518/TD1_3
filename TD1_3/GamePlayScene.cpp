@@ -49,7 +49,7 @@ void GamePlayScene::Initialize() {
 
 	// 3. マップ描画クラスの初期化
 	// タイルセット画像のパスを指定してください
-	mapChip_.Initialize(&mapData_, "./Resources/images/gamePlay/block1_ver1.png");
+	mapChip_.Initialize(&mapData_);
 
 	InitializeCamera();
 	InitializeObjects(); // ここでPlayer生成

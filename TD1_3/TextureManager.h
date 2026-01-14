@@ -15,6 +15,10 @@ enum class TextureId {
 	ResultClearLabel,
 	PlayerAnimeNormal,
 
+	// =========================================
+	// マップチップ用テクスチャ
+	// =========================================
+	GroundAuto, // 地面オートタイル
 
 	// ==========================================
 	// ゲームシーン背景
@@ -32,7 +36,7 @@ enum class TextureId {
 	Background3_1,
 	Background3_2,
 
-
+	None,		// テクスチャなし用
 	Count,	// 最後
 };
 
