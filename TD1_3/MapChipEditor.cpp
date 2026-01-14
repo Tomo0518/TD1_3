@@ -148,6 +148,33 @@ void MapChipEditor::HandleInput(MapData& mapData, Camera2D& camera) {
         DrawSelectionRect_(camera, startX, startY, endX, endY, 0x00FF0080, 0x00FF00FF); // 緑の半透明＋枠
     }
 
+    // --- Penツール：右クリックで削除（tile=0） ---
+    if (currentMode_ == ToolMode::Pen && isInside) {
+        // 右クリック開始：ストローク開始
+        if (Novice::IsTriggerMouse(1)) {
+            isDragging_ = true;
+            strokeCache_.clear();
+        }
+
+        // 右クリック中：削除
+        if (Novice::IsPressMouse(1)) {
+            const int currentId = mapData.GetTile(col, row);
+            if (currentId != 0) {
+                const std::pair<int, int> key = { col, row };
+                if (strokeCache_.find(key) == strokeCache_.end()) {
+                    strokeCache_[key] = currentId; // 元IDを保存
+                }
+                mapData.SetTile(col, row, 0); // 削除
+            }
+        }
+
+        // 右クリック離した：確定
+        if (!Novice::IsPressMouse(1) && isDragging_) {
+            CommitStroke(mapData);
+            isDragging_ = false;
+        }
+    }
+
     // 左クリック開始
     if (Novice::IsTriggerMouse(0)) {
         if (isInside) {
