@@ -18,18 +18,19 @@ namespace {
 }
 
 void MapChipEditor::Initialize() {
-    // タイル情報のロード（既にGamePlayScene等で呼ばれていれば不要だが安全のため）
     TileRegistry::Initialize();
     selectedTileId_ = 1;
+    currentMode_ = ToolMode::Pen;
+    currentLayer_ = TileLayer::Block;
 
     undoStack_.clear();
     redoStack_.clear();
     strokeCache_.clear();
     isDragging_ = false;
+    dragStartCol_ = -1;
 }
 
 void MapChipEditor::UpdateAndDrawImGui(MapData& mapData, Camera2D& camera) {
-
     // ショートカットキーの処理 (ImGuiウィンドウ外でも効くように先頭で)
     // Ctrlキーが押されているかチェック
     bool isCtrlPressed = Input().PressKey(DIK_LCONTROL) || Input().PressKey(DIK_RCONTROL);
@@ -83,6 +84,48 @@ void MapChipEditor::UpdateAndDrawImGui(MapData& mapData, Camera2D& camera) {
     // スタック数を表示（デバッグ用）
     ImGui::Text("History: Undo[%d] Redo[%d]", (int)undoStack_.size(), (int)redoStack_.size());
 
+    ImGui::Separator();
+
+    // --- レイヤー選択 ---
+    ImGui::Text("Layer:");
+    if (ImGui::RadioButton("Block (1)", currentLayer_ == TileLayer::Block)) {
+        currentLayer_ = TileLayer::Block;
+        // レイヤー切り替え時に選択中のタイルが対象レイヤーでない場合、デフォルトを選択
+        const TileDefinition* currentTile = TileRegistry::GetTile(selectedTileId_);
+        if (!currentTile || currentTile->layer != currentLayer_) {
+            selectedTileId_ = 1; // Blockレイヤーのデフォルト（Ground）
+        }
+    }
+    ImGui::SameLine();
+    if (ImGui::RadioButton("Decoration (2)", currentLayer_ == TileLayer::Decoration)) {
+        currentLayer_ = TileLayer::Decoration;
+        // レイヤー切り替え時に選択中のタイルが対象レイヤーでない場合、デフォルトを選択
+        const TileDefinition* currentTile = TileRegistry::GetTile(selectedTileId_);
+        if (!currentTile || currentTile->layer != currentLayer_) {
+            selectedTileId_ = 10; // Decorationレイヤーのデフォルト（Grass）
+        }
+    }
+
+    // キーボードショートカットでレイヤー切り替え
+    if (!ImGui::GetIO().WantCaptureKeyboard) {
+        if (Input().TriggerKey(DIK_1)) {
+            currentLayer_ = TileLayer::Block;
+            const TileDefinition* currentTile = TileRegistry::GetTile(selectedTileId_);
+            if (!currentTile || currentTile->layer != currentLayer_) {
+                selectedTileId_ = 1;
+            }
+        }
+        if (Input().TriggerKey(DIK_2)) {
+            currentLayer_ = TileLayer::Decoration;
+            const TileDefinition* currentTile = TileRegistry::GetTile(selectedTileId_);
+            if (!currentTile || currentTile->layer != currentLayer_) {
+                selectedTileId_ = 10;
+            }
+        }
+    }
+
+    ImGui::Separator();
+
     // --- ツール切り替え ---
     ImGui::Text("Tools:");
     if (ImGui::RadioButton("Pen (P)", currentMode_ == ToolMode::Pen)) currentMode_ = ToolMode::Pen;
@@ -100,19 +143,22 @@ void MapChipEditor::UpdateAndDrawImGui(MapData& mapData, Camera2D& camera) {
 
     ImGui::Separator();
 
-    // パレット表示
+    // パレット表示（現在のレイヤーに応じてフィルタリング）
     ImGui::Text("Select Tile:");
     const auto& tiles = TileRegistry::GetAllTiles();
     int buttonsPerRow = 4;
     int count = 0;
 
     for (const auto& tile : tiles) {
-        std::string label = tile.name + "##" + std::to_string(tile.id);
-        if (ImGui::RadioButton(label.c_str(), selectedTileId_ == tile.id)) {
-            selectedTileId_ = tile.id;
+        // Airは常に表示、それ以外は現在のレイヤーに一致するもののみ表示
+        if (tile.id == 0 || tile.layer == currentLayer_) {
+            std::string label = tile.name + "##" + std::to_string(tile.id);
+            if (ImGui::RadioButton(label.c_str(), selectedTileId_ == tile.id)) {
+                selectedTileId_ = tile.id;
+            }
+            count++;
+            if (count % buttonsPerRow != 0) ImGui::SameLine();
         }
-        count++;
-        if (count % buttonsPerRow != 0) ImGui::SameLine();
     }
     if (count % buttonsPerRow != 0) ImGui::NewLine();
 
@@ -158,13 +204,13 @@ void MapChipEditor::HandleInput(MapData& mapData, Camera2D& camera) {
 
         // 右クリック中：削除
         if (Novice::IsPressMouse(1)) {
-            const int currentId = mapData.GetTile(col, row);
+            const int currentId = mapData.GetTile(col, row, currentLayer_);
             if (currentId != 0) {
                 const std::pair<int, int> key = { col, row };
                 if (strokeCache_.find(key) == strokeCache_.end()) {
                     strokeCache_[key] = currentId; // 元IDを保存
                 }
-                mapData.SetTile(col, row, 0); // 削除
+                mapData.SetTile(col, row, 0, currentLayer_); // 削除
             }
         }
 
@@ -193,20 +239,21 @@ void MapChipEditor::HandleInput(MapData& mapData, Camera2D& camera) {
         }
     }
 
-    // ドラッグ中（ペン）
+    // ドラッグ中（ペン or 矩形プレビュー）
     if (Novice::IsPressMouse(0) && isDragging_) {
         if (currentMode_ == ToolMode::Pen && isInside) {
-            int currentId = mapData.GetTile(col, row);
+            int currentId = mapData.GetTile(col, row, currentLayer_);
             if (currentId != selectedTileId_) {
                 std::pair<int, int> key = { col, row };
                 if (strokeCache_.find(key) == strokeCache_.end()) {
                     strokeCache_[key] = currentId;
                 }
-                mapData.SetTile(col, row, selectedTileId_);
+                mapData.SetTile(col, row, selectedTileId_, currentLayer_);
             }
         }
         else if (currentMode_ == ToolMode::Rectangle) {
-            ToolRectangle(mapData, camera, col, row);
+            // プレビュー表示のみ
+            ToolRectanglePreview(mapData, camera, col, row);
         }
     }
 
@@ -215,44 +262,24 @@ void MapChipEditor::HandleInput(MapData& mapData, Camera2D& camera) {
         isDragging_ = false;
 
         if (currentMode_ == ToolMode::Rectangle) {
-            int minX = (dragStartCol_ < col) ? dragStartCol_ : col;
-            int maxX = (dragStartCol_ > col) ? dragStartCol_ : col;
-            int minY = (dragStartRow_ < row) ? dragStartRow_ : row;
-            int maxY = (dragStartRow_ > row) ? dragStartRow_ : row;
-
-            minX = (minX < 0) ? 0 : minX;
-            maxX = (maxX >= mapData.GetWidth()) ? mapData.GetWidth() - 1 : maxX;
-            minY = (minY < 0) ? 0 : minY;
-            maxY = (maxY >= mapData.GetHeight()) ? mapData.GetHeight() - 1 : maxY;
-
-            for (int y = minY; y <= maxY; ++y) {
-                for (int x = minX; x <= maxX; ++x) {
-                    int currentId = mapData.GetTile(x, y);
-                    if (currentId != selectedTileId_) {
-                        std::pair<int, int> key = { x, y };
-                        if (strokeCache_.find(key) == strokeCache_.end()) {
-                            strokeCache_[key] = currentId;
-                        }
-                        mapData.SetTile(x, y, selectedTileId_);
-                    }
-                }
-            }
+            // 矩形を適用
+            ToolRectangleApply(mapData, col, row);
         }
 
         CommitStroke(mapData);
         dragStartCol_ = -1;
     }
 
-    // 右クリック（スポイト）
-    if (Novice::IsPressMouse(1) && isInside) {
-        int pickedId = mapData.GetTile(col, row);
+    // 右クリック（スポイト）- 削除機能と競合しないように、ドラッグ中でない場合のみ
+    if (Novice::IsTriggerMouse(1) && isInside && currentMode_ != ToolMode::Pen) {
+        int pickedId = mapData.GetTile(col, row, currentLayer_);
         if (pickedId != 0) selectedTileId_ = pickedId;
     }
 }
 
 // バケツツール（塗りつぶしアルゴリズム）
 void MapChipEditor::ToolBucket(MapData& mapData, int startCol, int startRow, int newId) {
-    int targetId = mapData.GetTile(startCol, startRow);
+    int targetId = mapData.GetTile(startCol, startRow, currentLayer_);
     if (targetId == newId) return; // 同じ色なら何もしない
 
     int w = mapData.GetWidth();
@@ -266,7 +293,7 @@ void MapChipEditor::ToolBucket(MapData& mapData, int startCol, int startRow, int
     // strokeCache_ を訪問済みリストとして兼用する
     std::pair<int, int> startKey = { startCol, startRow };
     strokeCache_[startKey] = targetId;
-    mapData.SetTile(startCol, startRow, newId);
+    mapData.SetTile(startCol, startRow, newId, currentLayer_);
 
     // 4方向の移動量
     const int dx[] = { 0, 0, -1, 1 };
@@ -286,13 +313,13 @@ void MapChipEditor::ToolBucket(MapData& mapData, int startCol, int startRow, int
 
             // 範囲内かつ、塗りつぶし対象の色か？
             if (nx >= 0 && nx < w && ny >= 0 && ny < h) {
-                int nId = mapData.GetTile(nx, ny);
+                int nId = mapData.GetTile(nx, ny, currentLayer_);
                 if (nId == targetId) {
                     // まだキャッシュにない（未訪問）なら処理
                     std::pair<int, int> nKey = { nx, ny };
                     if (strokeCache_.find(nKey) == strokeCache_.end()) {
                         strokeCache_[nKey] = targetId; // 元の色を記録
-                        mapData.SetTile(nx, ny, newId); // 塗る
+                        mapData.SetTile(nx, ny, newId, currentLayer_); // 塗る
                         q.push({ nx, ny }); // 次の探索へ
                     }
                 }
@@ -301,8 +328,11 @@ void MapChipEditor::ToolBucket(MapData& mapData, int startCol, int startRow, int
     }
 }
 
-// 矩形ツール（プレビュー表示）
-void MapChipEditor::ToolRectangle(MapData& mapData, Camera2D& camera, int currentCol, int currentRow) {
+// 矩形ツール（プレビュー表示のみ）
+void MapChipEditor::ToolRectanglePreview(MapData& mapData, Camera2D& camera, int currentCol, int currentRow) {
+    // 始点が無効な場合は何もしない
+    if (dragStartCol_ < 0 || dragStartRow_ < 0) return;
+
     // 始点と現在のマウス位置から矩形を計算
     float ts = mapData.GetTileSize();
 
@@ -331,12 +361,46 @@ void MapChipEditor::ToolRectangle(MapData& mapData, Camera2D& camera, int curren
         (int)(sPos2.x - sPos1.x), (int)(sPos2.y - sPos1.y),
         0.0f, 0xFF000080, kFillModeSolid // 赤色の半透明
     );
+
     // 枠線
     Novice::DrawBox(
         (int)sPos1.x, (int)sPos1.y,
         (int)(sPos2.x - sPos1.x), (int)(sPos2.y - sPos1.y),
         0.0f, 0xFF0000FF, kFillModeWireFrame
     );
+}
+
+// 矩形ツール（適用処理）
+void MapChipEditor::ToolRectangleApply(MapData& mapData, int endCol, int endRow) {
+    // 始点が無効な場合は何もしない
+    if (dragStartCol_ < 0 || dragStartRow_ < 0) return;
+
+    // 矩形の範囲を計算
+    int minX = (dragStartCol_ < endCol) ? dragStartCol_ : endCol;
+    int maxX = (dragStartCol_ > endCol) ? dragStartCol_ : endCol;
+    int minY = (dragStartRow_ < endRow) ? dragStartRow_ : endRow;
+    int maxY = (dragStartRow_ > endRow) ? dragStartRow_ : endRow;
+
+    // マップの範囲内にクランプ
+    minX = (minX < 0) ? 0 : minX;
+    maxX = (maxX >= mapData.GetWidth()) ? mapData.GetWidth() - 1 : maxX;
+    minY = (minY < 0) ? 0 : minY;
+    maxY = (maxY >= mapData.GetHeight()) ? mapData.GetHeight() - 1 : maxY;
+
+    // 矩形範囲内の全てのタイルを変更
+    for (int y = minY; y <= maxY; ++y) {
+        for (int x = minX; x <= maxX; ++x) {
+            int currentId = mapData.GetTile(x, y, currentLayer_);
+            if (currentId != selectedTileId_) {
+                std::pair<int, int> key = { x, y };
+                // 同じ操作で複数回変更された場合でも、最初の状態を保持
+                if (strokeCache_.find(key) == strokeCache_.end()) {
+                    strokeCache_[key] = currentId;
+                }
+                mapData.SetTile(x, y, selectedTileId_, currentLayer_);
+            }
+        }
+    }
 }
 
 void MapChipEditor::CommitStroke(MapData& mapData) {
@@ -347,11 +411,11 @@ void MapChipEditor::CommitStroke(MapData& mapData) {
     for (auto const& [pos, prevId] : strokeCache_) {
         int col = pos.first;
         int row = pos.second;
-        int currentId = mapData.GetTile(col, row); // 今（書き換え後）のID
+        int currentId = mapData.GetTile(col, row, currentLayer_); // 今（書き換え後）のID
 
         // 実際に値が変わったものだけ記録
         if (prevId != currentId) {
-            cmd.logs.push_back({ col, row, prevId, currentId });
+            cmd.logs.push_back({ col, row, prevId, currentId, currentLayer_ });
         }
     }
 
@@ -374,7 +438,7 @@ void MapChipEditor::ExecuteUndo(MapData& mapData) {
 
     // 変更を「元に戻す（prevIdにする）」
     for (const auto& log : cmd.logs) {
-        mapData.SetTile(log.col, log.row, log.prevId);
+        mapData.SetTile(log.col, log.row, log.prevId, log.layer);
     }
 
     // Redoスタックに積む
@@ -390,7 +454,7 @@ void MapChipEditor::ExecuteRedo(MapData& mapData) {
 
     // 変更を「やり直す（newIdにする）」
     for (const auto& log : cmd.logs) {
-        mapData.SetTile(log.col, log.row, log.newId);
+        mapData.SetTile(log.col, log.row, log.newId, log.layer);
     }
 
     // Undoスタックに戻す

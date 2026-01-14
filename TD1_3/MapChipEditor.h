@@ -13,6 +13,7 @@ struct TileChangeLog {
     int row;
     int prevId; // 変更前のID
     int newId;  // 変更後のID
+    TileLayer layer; // どのレイヤーの変更か
 };
 
 // ツールの種類
@@ -44,6 +45,9 @@ private:
     // 現在のツールモード
     ToolMode currentMode_ = ToolMode::Pen;
 
+    // 現在編集中のレイヤー
+    TileLayer currentLayer_ = TileLayer::Block;
+
     // --- Undo / Redo 用変数 ---
     std::vector<EditCommand> undoStack_;
     std::vector<EditCommand> redoStack_;
@@ -62,6 +66,13 @@ private:
 
     // 塗りつぶし処理
     void ToolBucket(MapData& mapData, int col, int row, int newId);
+
     // 矩形処理
-    void ToolRectangle(MapData& mapData,Camera2D& camera, int col, int row);
+   // void ToolRectangle(MapData& mapData, Camera2D& camera, int col, int row);
+
+	// プレビュー＆適用処理
+    void ToolRectanglePreview(MapData& mapData, Camera2D& camera, int col, int row);
+
+	// 適用処理
+    void ToolRectangleApply(MapData& mapData, int endCol, int endRow);
 };

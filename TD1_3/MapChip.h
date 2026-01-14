@@ -21,7 +21,8 @@ public:
     /// <param name="texManager">テクスチャマネージャー（ハンドル取得用）</param>
     void Initialize(MapData* mapData);
 
-    void Draw( Camera2D& camera);
+    // 全レイヤーの描画
+    void Draw(Camera2D& camera);
 
     void SetMapData(MapData* mapData) { mapData_ = mapData; }
 
@@ -29,13 +30,14 @@ private:
     MapData* mapData_ = nullptr;
 
     // IDごとの画像ハンドルキャッシュ
-    // 描画のたびにTextureManagerにアクセスしても良いですが、
-    // ここでキャッシュしておくと少し高速です。
     std::map<int, int> textureCache_;
 
     // テクスチャハンドルの準備
     void LoadTexturesFromManager();
 
     // オートタイル判定用
-    bool IsSameTile(int myID, int tx, int ty) const;
+    bool IsSameTile(int myID, int tx, int ty,TileLayer layer) const;
+
+    // 特定レイヤーだけを描画する
+    void DrawLayer(Camera2D& camera, TileLayer layer);
 };

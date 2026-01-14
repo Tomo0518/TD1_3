@@ -3,60 +3,99 @@
 #include <vector>
 #include "TextureManager.h" // TextureId定義のためインクルード
 
+enum class TileLayer {
+	Background, //
+	Block,      // 地形（当たり判定あり、描画順は中）
+	Decoration, // 装飾（当たり判定なし、描画順は奥 or 手前）
+	Object      // ゲームオブジェクト配置用（実行時は消える）
+};
+
 // タイルの種類
 enum class TileType {
-    None,       // 空気
-    Solid,      // 通常ブロック
-    AutoTile    // オートタイル
+	None,       // 空気
+	Solid,      // 通常ブロック
+	AutoTile    // オートタイル
 };
 
 struct TileDefinition {
-    int id;                 // ID
-    std::string name;       // エディタ表示名
-    TextureId textureId;    // ★変更: TextureManagerで使うID
-    TileType type;          // 種類
-    bool isSolid;           // 当たり判定
+	int id;                 // ID
+	std::string name;       // エディタ表示名
+	TextureId textureId;    // TextureManagerで使うID
+	TileType type;          // 種類
+	bool isSolid;           // 当たり判定
+
+	TileLayer layer;     // 所属するレイヤー
+	Vector2 drawOffset; // 描画オフセット
 };
 
 class TileRegistry {
 public:
-    static const std::vector<TileDefinition>& GetAllTiles() { return tiles_; }
+	static const std::vector<TileDefinition>& GetAllTiles() { return tiles_; }
 
-    static const TileDefinition* GetTile(int id) {
-        for (const auto& tile : tiles_) {
-            if (tile.id == id) return &tile;
-        }
-        return nullptr;
-    }
+	static const TileDefinition* GetTile(int id) {
+		for (const auto& tile : tiles_) {
+			if (tile.id == id) return &tile;
+		}
+		return nullptr;
+	}
 
-    // 初期化：ここで TextureId を指定して登録
-    static void Initialize() {
-        tiles_.clear();
+	static void Initialize() {
+		tiles_.clear();
 
-        // ID:0 空気 (テクスチャなしなので適当なIDか、None用ID)
-        // TextureId::None があると仮定、なければ適当なものを
-        tiles_.push_back({ 0, "Air", TextureId::Count, TileType::None, false });
+		// ID:0 空気 (テクスチャなし)
+		tiles_.push_back({
+			0, "Air",
+			TextureId::Count,
+			TileType::None,
+			false,
+			TileLayer::Block,
+			{0.0f, 0.0f}
+			});
 
-        // ID:1 地面 (オートタイル)
-        // ※ TextureManager側で TextureId::GroundAuto に "ground_auto.png" をロードしておく必要があります
-        tiles_.push_back({
-            1, "Ground",
-            TextureId::GroundAuto, // ここを実際のTextureIdに合わせて変更してください
-            TileType::AutoTile,
-            true
-            });
+		// ID:1 地面 (オートタイル)
+		tiles_.push_back({
+			1, "Ground",
+			TextureId::GroundAuto,
+			TileType::AutoTile,
+			true,
+			TileLayer::Block,
+			{0.0f, 0.0f}
 
-        // ID:2 鉄ブロック
-        tiles_.push_back({
-            2, "Iron",
-            TextureId::GroundAuto,
-            TileType::Solid,
-            true
-            });
-    }
+			});
+
+		// ID:2 鉄ブロック
+		tiles_.push_back({
+			2, "Iron",
+			TextureId::GroundAuto,
+			TileType::Solid,
+			true,
+			TileLayer::Block,
+			{0.0f, 0.0f}
+			});
+
+		// --- Decoration Layer (装飾) ---
+		// ID:10 草 (Decoration)
+		tiles_.push_back({
+			10, "Grass", TextureId::None, TileType::Solid, false, // 当たり判定なし
+			TileLayer::Decoration, {0.0f, 8.0f} // オフセットで位置微調整
+			});
+
+		// ID:11 看板 (Decoration)
+		tiles_.push_back({
+			11, "Sign", TextureId::Deco_Scrap, TileType::Solid, false,
+			TileLayer::Decoration, {0.0f, 0.0f}
+			});
+
+		// --- Object Layer (配置物) ---
+		// ID:100 プレイヤースタート位置
+		tiles_.push_back({
+			100, "PlayerStart", TextureId::None, TileType::Solid, false,
+			TileLayer::Object, {0.0f, 0.0f}
+			});
+	}
 
 private:
-    static std::vector<TileDefinition> tiles_;
+	static std::vector<TileDefinition> tiles_;
 };
 
 inline std::vector<TileDefinition> TileRegistry::tiles_;

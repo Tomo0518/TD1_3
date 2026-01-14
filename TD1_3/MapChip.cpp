@@ -29,16 +29,30 @@ void MapChip::LoadTexturesFromManager() {
 	}
 }
 
-bool MapChip::IsSameTile(int myID, int tx, int ty) const {
+// レイヤーを考慮して判定
+bool MapChip::IsSameTile(int myID, int tx, int ty, TileLayer layer) const {
 	if (!mapData_) return false;
 	if (tx < 0 || tx >= mapData_->GetWidth() ||
 		ty < 0 || ty >= mapData_->GetHeight()) {
 		return true;
 	}
-	return (mapData_->GetTile(tx, ty) == myID);
+	// 指定したレイヤーのタイルと比較
+	return (mapData_->GetTile(tx, ty, layer) == myID);
 }
 
+// 全レイヤーの描画
 void MapChip::Draw(Camera2D& camera) {
+	if (!mapData_) return;
+
+	// 1. デコレーション（奥）を描画
+	DrawLayer(camera, TileLayer::Decoration);
+
+	// 2. ブロック（手前）を描画
+	DrawLayer(camera, TileLayer::Block);
+}
+
+// 特定レイヤーだけを描画する
+void MapChip::DrawLayer(Camera2D& camera, TileLayer layer) {
 	if (!mapData_) return;
 
 	const int width = mapData_->GetWidth();
@@ -65,7 +79,7 @@ void MapChip::Draw(Camera2D& camera) {
 
 	for (int y = startY; y < endY; ++y) {
 		for (int x = startX; x < endX; ++x) {
-			const int tileID = mapData_->GetTile(x, y);
+			const int tileID = mapData_->GetTile(x, y, layer);
 			if (tileID == 0) continue;
 
 			const TileDefinition* def = TileRegistry::GetTile(tileID);
@@ -110,20 +124,20 @@ void MapChip::Draw(Camera2D& camera) {
 				// ビットマスク計算 (上=1, 右=2, 下=4, 左=8)
 				bool up = false, right = false, down = false, left = false;
 
-				if (IsSameTile(tileID, x, y+ 1)) up = true;
-				if (IsSameTile(tileID, x + 1, y)) right = true;
-				if (IsSameTile(tileID, x, y - 1)) down = true;
-				if (IsSameTile(tileID, x - 1, y)) left = true;
+				if (IsSameTile(tileID, x, y + 1, layer)) up = true;
+				if (IsSameTile(tileID, x + 1, y, layer)) right = true;
+				if (IsSameTile(tileID, x, y - 1, layer)) down = true;
+				if (IsSameTile(tileID, x - 1, y, layer)) left = true;
 
 				int maskTable[16] = {
-					!up && !left && down && right , !up && left && down&& right , !up && left && down&& !right , !up && !left && down&& !right ,
-					up && !left && down&& right , up && left && down&& right , up && left && down&& !right , up && !left && down&& !right ,
-					up && !left && !down&& right , up && left && !down&& right ,up && left && !down&& !right ,up && !left && !down&& !right ,
-				   !up && !left && !down&& right ,!up && left && !down&& right ,!up && left && !down&& !right ,!up && !left && !down&& !right
+					!up && !left && down && right , !up && left && down && right , !up && left && down && !right , !up && !left && down && !right ,
+					up && !left && down && right , up && left && down && right , up && left && down && !right , up && !left && down && !right ,
+					up && !left && !down && right , up && left && !down && right ,up && left && !down && !right ,up && !left && !down && !right ,
+				   !up && !left && !down && right ,!up && left && !down && right ,!up && left && !down && !right ,!up && !left && !down && !right
 				};
 
 				int mask = 0;
-				
+
 				while (!maskTable[mask]) {
 					mask++;
 				}

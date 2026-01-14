@@ -44,6 +44,11 @@ void TextureManager::LoadResources() {
 	textureResources_[static_cast<int>(TextureId::PlayerAnimeNormal)] =
 		Novice::LoadTexture("./Resources/images/gamePlay/playerSpecial_ver1.png");
 
+	// デコレーション
+
+	textureResources_[static_cast<int>(TextureId::Deco_Scrap)] = 
+		Novice::LoadTexture("./Resources/images/mapChip/decoration/scrap_supplystation.png");
+
 
 	// =========Background ==========
 	textureResources_[static_cast<int>(TextureId::Background0_0)] =

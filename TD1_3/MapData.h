@@ -4,13 +4,13 @@
 #include <Novice.h>
 #include "Vector2.h"
 #include "JsonUtil.h" // 既存のJsonUtilを使用
+#include "TileRegistry.h" // TileLayer定義のためインクルード
 
 // 将来的に敵の出現位置なども管理するための構造体
 struct EnemySpawnInfo {
     int enemyType;
     Vector2 position;
 };
-
 
 // MapDataはほかのクラスを知らない
 
@@ -47,11 +47,17 @@ public:
 
     // --- アクセサ（データの取得・設定） ---
 
-    // 指定座標のタイル番号を取得（範囲外は0を返す安全設計）
-    int GetTile(int col, int row) const;
+    // レイヤーを指定して取得
+    int GetTile(int col, int row, TileLayer layer) const;
 
-    // 指定座標のタイル番号を書き換える（エディタ用）
-    void SetTile(int col, int row, int tileType);
+    // レイヤーを指定して設定
+    void SetTile(int col, int row, int tileID, TileLayer layer);
+
+    // 既存コード互換用（Blockレイヤーを返す）
+    // これがあればPhysicsManagerなどは書き換えなくて済む
+    int GetTile(int col, int row) const {
+        return GetTile(col, row, TileLayer::Block);
+    }
 
     // マップの列数（幅）
     int GetWidth() const { return width_; }
@@ -62,10 +68,26 @@ public:
     // 1タイルのサイズ
     float GetTileSize() const { return tileSize_; }
 
+	// 指定レイヤーの配列ポインタを取得するヘルパー
+    std::vector<std::vector<int>>* GetLayerDataMutable(TileLayer layer);
+
+	// 指定レイヤーの配列ポインタを取得するヘルパー（const版）
+	const std::vector<std::vector<int>>* GetLayerData(TileLayer layer) const;
+
+
 private:
-    // マップチップの番号を格納する2次元配列 [row][col]
-    // vector<vector<int>> にすることでサイズを可変にする
-    std::vector<std::vector<int>> tiles_;
+    // ==============================
+    // レイヤー情報
+    // ==============================
+    std::vector<std::vector<int>> tilesBackground_; // 背景レイヤー
+    std::vector<std::vector<int>> tilesDecoration_; // 装飾レイヤー
+    std::vector<std::vector<int>> tilesBlock_; // ブロックレイヤー
+    std::vector<std::vector<int>> tilesObject_;    // オブジェクトレイヤー
+
+   // std::vector<std::vector<int>> tilesBlock_;
+
+	static const int kMapChipWidth = 1000;
+	static const int kMapChipHeight = 1000;
 
     // マップのサイズ
     int width_ = 1000;  // 列数 (x)
