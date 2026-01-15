@@ -152,9 +152,32 @@ void MapChip::DrawLayer(Camera2D& camera, TileLayer layer) {
 					mask++;
 				}
 
-				// 4x4グリッド前提。1セルのサイズはテクスチャサイズから算出
+				// 特殊ケースの処理
+				if (mask == 5) {
+					bool leftTop = false, rightTop = false, leftBottom = false, rightBottom = false;
+					// 斜めのブロックも見たうえでマスクを決定する
+					if (IsSameTile(tileID, x - 1, y + 1, layer)) leftTop = true;
+					if (IsSameTile(tileID, x + 1, y + 1, layer)) rightTop = true;
+					if (IsSameTile(tileID, x - 1, y - 1, layer)) leftBottom = true;
+					if (IsSameTile(tileID, x + 1, y - 1, layer)) rightBottom = true;
+
+					if (!leftTop && rightTop && leftBottom && rightBottom) {
+						mask = 16;
+					}
+					else if (leftTop && !rightTop && leftBottom && rightBottom) {
+						mask = 17;
+					}
+					else if (leftTop && rightTop && !leftBottom && rightBottom) {
+						mask = 18;
+					}
+					else if (leftTop && rightTop && leftBottom && !rightBottom) {
+						mask = 19;
+					}
+				}
+
+				// 4x5グリッド前提。1セルのサイズはテクスチャサイズから算出
 				const int cols = 4;
-				const int rows = 4;
+				const int rows = 5;
 
 				const int cellW = texW / cols;
 				const int cellH = texH / rows;

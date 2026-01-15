@@ -34,7 +34,7 @@ void TextureManager::LoadResources() {
 	// マップチップ
 	// ==================================
 	textureResources_[static_cast<int>(TextureId::GroundAuto)] =
-		Novice::LoadTexture("./Resources/images/mapChip/tile_temp3.png");	
+		Novice::LoadTexture("./Resources/images/mapChip/tile_temp7.png");	
 
 	// ==================================
 	// ゲームオブジェクト
