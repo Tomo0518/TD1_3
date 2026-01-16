@@ -44,18 +44,18 @@ public:
 	void RequestResult(int stageIndex, int score); // リザルト画面へ
 
 	// オーバーレイシーン管理（設定画面など）
-	void PushOverlay(std::unique_ptr<IGameScene> overlay);
+	void PushOverlay(std::unique_ptr<IScene> overlay);
 	void PopOverlay();
 	bool HasOverlay() const { return !overlayScenes_.empty(); }
 
 private:
 	// 現在のシーン
-	std::unique_ptr<IGameScene> currentScene_;
+	std::unique_ptr<IScene> currentScene_;
 
 	SceneType currentSceneType_ = SceneType::Title;
 
 	// オーバーレイシーンスタック（設定画面など）
-	std::vector<std::unique_ptr<IGameScene>> overlayScenes_;
+	std::vector<std::unique_ptr<IScene>> overlayScenes_;
 
 	// 遷移リクエスト
 	std::optional<SceneTransition> pendingTransition_;

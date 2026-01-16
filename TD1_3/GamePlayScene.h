@@ -16,7 +16,7 @@
 class SceneManager;
 class DebugWindow;
 
-class GamePlayScene : public IGameScene {
+class GamePlayScene : public IScene {
 public:
     GamePlayScene(SceneManager& mgr);
     ~GamePlayScene();

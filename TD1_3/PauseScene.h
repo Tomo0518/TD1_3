@@ -10,9 +10,9 @@
 class SceneManager;
 class GameShared;
 
-class PauseScene : public IGameScene {
+class PauseScene : public IScene {
 public:
-	PauseScene(SceneManager& manager, IGameScene& underlying, GameShared& shared);
+	PauseScene(SceneManager& manager, IScene& underlying, GameShared& shared);
 	void Update(float deltaTime, const char* keys, const char* pre);
 	void Draw();
 
@@ -30,7 +30,7 @@ private:
 	void DrawCenteredText(int centerX, int y, const std::string& text, float scale, uint32_t color);
 
 	SceneManager& manager_;
-	IGameScene& underlying_;
+	IScene& underlying_;
 	GameShared& shared_;
 
 	static constexpr int kOptionCount = 4;

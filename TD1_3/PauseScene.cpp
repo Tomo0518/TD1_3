@@ -20,7 +20,7 @@ namespace {
 	constexpr uint32_t kPauseColSelectedText = 0xFFFF55FF;
 }
 
-PauseScene::PauseScene(SceneManager& manager, IGameScene& underlying, GameShared& shared)
+PauseScene::PauseScene(SceneManager& manager, IScene& underlying, GameShared& shared)
 	: manager_(manager), underlying_(underlying), shared_(shared) {
 
 	if (pauseFont_.Load("Resources/font/oxanium.fnt", "./Resources/font/oxanium_0.png")) {

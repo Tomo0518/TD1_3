@@ -71,9 +71,6 @@
     <Filter Include="KamataEngine\Source\Game\Scene\Game">
       <UniqueIdentifier>{e5a4c103-c449-4c12-9efe-a30a7a071ae4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="KamataEngine\Source\Game\Scene\Game\Stage">
-      <UniqueIdentifier>{4de58c43-e77c-4133-ae16-b6d2901f7caf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="KamataEngine\Source\Game\Scene\Pause">
       <UniqueIdentifier>{7281bc2e-c5bc-4321-b190-3b2c6cc8d38b}</UniqueIdentifier>
     </Filter>
@@ -173,9 +170,6 @@
     <ClCompile Include="TextRenderer.cpp">
       <Filter>KamataEngine\Source\library\Font</Filter>
     </ClCompile>
-    <ClCompile Include="Stage1Scene.cpp">
-      <Filter>KamataEngine\Source\Game\Scene\Game\Stage</Filter>
-    </ClCompile>
     <ClCompile Include="Affine2D.cpp">
       <Filter>KamataEngine\Source\library\2D\Affine2D</Filter>
     </ClCompile>
@@ -217,9 +211,6 @@
     </ClCompile>
     <ClCompile Include="DrawComponent2D.cpp">
       <Filter>KamataEngine\Source\library\2D\Draw\DrawComponent2D</Filter>
-    </ClCompile>
-    <ClCompile Include="BaseStageScene.cpp">
-      <Filter>KamataEngine\Source\Game\Scene\Game</Filter>
     </ClCompile>
     <ClCompile Include="SceneManager.cpp">
       <Filter>KamataEngine\Source\Game\Scene</Filter>
@@ -388,9 +379,6 @@
     <ClInclude Include="TextRenderer.h">
       <Filter>KamataEngine\Source\library\Font</Filter>
     </ClInclude>
-    <ClInclude Include="Stage1Scene.h">
-      <Filter>KamataEngine\Source\Game\Scene\Game\Stage</Filter>
-    </ClInclude>
     <ClInclude Include="Affine2D.h">
       <Filter>KamataEngine\Source\library\2D\Affine2D</Filter>
     </ClInclude>
@@ -433,17 +421,11 @@
     <ClInclude Include="DrawComponent2D.h">
       <Filter>KamataEngine\Source\library\2D\Draw\DrawComponent2D</Filter>
     </ClInclude>
-    <ClInclude Include="BaseStageScene.h">
-      <Filter>KamataEngine\Source\Game\Scene\Game</Filter>
-    </ClInclude>
     <ClInclude Include="SceneManager.h">
       <Filter>KamataEngine\Source\Game\Scene</Filter>
     </ClInclude>
     <ClInclude Include="UiDrawComponent.h">
       <Filter>KamataEngine\Source\library\2D\Ui</Filter>
-    </ClInclude>
-    <ClInclude Include="stageMaxNum.h">
-      <Filter>KamataEngine\Source\Game\Scene\Game\Stage</Filter>
     </ClInclude>
     <ClInclude Include="Background.h">
       <Filter>KamataEngine\Source\library\Background</Filter>

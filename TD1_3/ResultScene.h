@@ -15,7 +15,7 @@ class SceneManager;
 /// <summary>
 /// リザルトシーン
 /// </summary>
-class ResultScene : public IGameScene {
+class ResultScene : public IScene {
 public:
 	ResultScene(SceneManager& mgr);
 	~ResultScene();

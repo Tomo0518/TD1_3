@@ -100,7 +100,7 @@ void SceneManager::RequestResult(int stageIndex, int score) {
 	RequestTransition(SceneType::Result);
 }
 
-void SceneManager::PushOverlay(std::unique_ptr<IGameScene> overlay) {
+void SceneManager::PushOverlay(std::unique_ptr<IScene> overlay) {
 	overlayScenes_.push_back(std::move(overlay));
 }
 
@@ -137,11 +137,6 @@ void SceneManager::ChangeScene(SceneType type) {
 		currentScene_ = std::make_unique<GamePlayScene>(*this);
 		break;
 
-	case SceneType::Stage1:
-		currentScene_ = std::make_unique<Stage1Scene>(*this); //!
-		currentStageIndex_ = 1;
-		break;
-
 	case SceneType::Result:
 		currentScene_ = std::make_unique<ResultScene>(*this);//!
 		break;
@@ -171,7 +166,7 @@ void SceneManager::ChangeScene(SceneType type) {
 
 SceneType SceneManager::StageIndexToSceneType(int stageIndex) const {
 	switch (stageIndex) {
-	case 1: return SceneType::Stage1;
+	case 1: return SceneType::GamePlay;
 	default: return SceneType::Title;
 	}
 }

@@ -1,5 +1,4 @@
 ﻿#include <Novice.h>
-#include "WindowSize.h"
 
 #ifdef _DEBUG
 #include <imgui.h>
@@ -8,7 +7,6 @@
 #include "SceneManager.h"
 
 #include "SoundManager.h"
-#include "InputManager.h"
 #include "TextureManager.h"
 #include "ParticleManager.h"
 
@@ -20,7 +18,7 @@ const char kWindowTitle[] = "LC1A_30_ムラセ_トモキ";
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	// ライブラリの初期化
-	Novice::Initialize(kWindowTitle, 1280, 720);
+	Novice::Initialize(kWindowTitle, (int)kWindowWidth, (int)kWindowHeight);
 
 	const float kDeltaTime = 1.0f / 60.0f;
 
@@ -29,11 +27,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//Novice::SetWindowMode(kFullscreen);
 
 	SoundManager::GetInstance().LoadResources();
-
 	Camera2D::GetInstance().SetIsWorldYUp(true);
-
 	ParticleManager::GetInstance().Load();
-
 	TextureManager::GetInstance().LoadResources();
 
 	// キー入力結果を受け取る箱

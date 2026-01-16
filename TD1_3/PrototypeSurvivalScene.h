@@ -6,7 +6,7 @@
 
 class SceneManager;
 
-class PrototypeSurvivalScene : public IGameScene {
+class PrototypeSurvivalScene : public IScene {
 public:
     PrototypeSurvivalScene(SceneManager& manager);
     ~PrototypeSurvivalScene() override;

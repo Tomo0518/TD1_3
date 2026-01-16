@@ -3,8 +3,6 @@
 enum class SceneType {
 	Title,
 	StageSelect,
-	Stage1,
-
 	Pause,
 	Result,
 	Explanation,

@@ -9,29 +9,6 @@
 #include <imgui.h>
 #endif
 
-//StageSelectScene::StageSelectScene(SceneManager& manager, GameShared& shared)
-//	: manager_(manager), shared_(shared) {
-//
-//	// フォント読み込み
-//	if (font_.Load("Resources/font/oxanium.fnt", "./Resources/font/oxanium_0.png")) {
-//		text_.SetFont(&font_);
-//		fontReady_ = true;
-//	}
-//
-//	// 描画コンポーネント初期化
-//	InitializeDrawComponents();
-//
-//	// ボタン初期化
-//	InitializeButtons();
-//
-//	// BGMを再生
-//	shared_.PlayExclusive_(BgmKind::Title);
-//
-//	// 入力遅延タイマーを設定
-//	inputDelayTimer_ = kInputDelay_;
-//	inputEnabled_ = false;
-//}
-
 StageSelectScene::StageSelectScene(SceneManager& manager)
 	: manager_(manager){
 

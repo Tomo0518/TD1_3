@@ -15,7 +15,7 @@ class SceneManager;
 class Player;
 
 
-class TitleScene : public IGameScene {
+class TitleScene : public IScene {
 public:
 	TitleScene(SceneManager& manager);
 
