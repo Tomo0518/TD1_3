@@ -5,12 +5,15 @@
 #include <Novice.h>
 
 #include "Player.h"
+#include "WorldOrigin.h"
 #include "ParticleManager.h"
+
+#include "PhysicsManager.h"
 
 #include "SceneUtilityIncludes.h"
 
 GamePlayScene::GamePlayScene(SceneManager& mgr)
-	: manager_(mgr){
+	: manager_(mgr) {
 
 	Initialize();
 
@@ -23,9 +26,6 @@ GamePlayScene::GamePlayScene(SceneManager& mgr)
 }
 
 GamePlayScene::~GamePlayScene() {
-	/*if (shared_ && shared_->particleManager_) {
-		shared_->particleManager_->StopAllContinuousEmit();
-	}*/
 }
 
 void GamePlayScene::Initialize() {
@@ -33,16 +33,20 @@ void GamePlayScene::Initialize() {
 
 	objectManager_.Clear();
 	player_ = nullptr;
+	worldOrigin_ = nullptr;
 
 	// --- マップシステムの初期化 ---
-	// 1. エディタ初期化（タイル定義のロード）
+		// 1. エディタ初期化（タイル定義のロード）
 	mapEditor_.Initialize();
+
+	// 2. マップデータ読み込み
+	mapData_.Load("./Resources/data/stage1.json");
 
 	// 3. マップ描画クラスの初期化
 	mapChip_.Initialize();
 
 	InitializeCamera();
-	InitializeObjects(); // ここでPlayer生成
+	InitializeObjects(); // ここでObject生成（マップデータから自動生成）
 	InitializeBackground();
 }
 
@@ -55,13 +59,62 @@ void GamePlayScene::InitializeCamera() {
 }
 
 void GamePlayScene::InitializeObjects() {
-	// Player を GameObjectManager で生成して所有させる
-	player_ = objectManager_.Spawn<Player>(nullptr, "Player");
-	player_->SetPosition({ 640.0f, 560.0f });
+	// MapDataからオブジェクトスポーン情報を取得
+	const auto& spawns = mapData_.GetObjectSpawns();
 
-	// カメラ追従（Scene側は参照だけ持つ）
+	for (const auto& spawn : spawns) {
+		SpawnObjectFromData(spawn);
+	}
+
+	// Playerが生成されていない場合はデフォルト位置に配置
+	/*if (!player_) {
+		Novice::ConsolePrintf("[GamePlayScene] No player spawn found, using default position\n");
+		player_ = objectManager_.Spawn<Player>(nullptr, "Player");
+		player_->SetPosition({ 640.0f, 560.0f });
+	}*/
+
+	// WorldOriginが見つからない場合はデフォルト位置に生成
+	if (!worldOrigin_) {
+		Novice::ConsolePrintf("[GamePlayScene] No WorldOrigin found, creating at default position\n");
+		worldOrigin_ = objectManager_.Spawn<WorldOrigin>(nullptr,"WorldOrigin");
+		worldOrigin_->SetPosition({ 640.0f, 360.0f });
+	}
+
+	// カメラ追従設定
 	if (camera_ && player_) {
 		camera_->SetTarget(&player_->GetPositionRef());
+	}
+}
+
+void GamePlayScene::SpawnObjectFromData(const ObjectSpawnInfo& spawn) {
+	switch (spawn.objectTypeId) {
+	case 0: // WorldOrigin（拠点・ワールド座標の原点）
+		if (!worldOrigin_) {
+			worldOrigin_ = objectManager_.Spawn<WorldOrigin>(nullptr,"WorldOrigin");
+			worldOrigin_->SetPosition(spawn.position);
+			Novice::ConsolePrintf("[GamePlayScene] Spawned WorldOrigin at (%.1f, %.1f)\n",
+				spawn.position.x, spawn.position.y);
+		}
+		break;
+
+	case 100: // PlayerStart
+		if (!player_) {
+			player_ = objectManager_.Spawn<Player>(nullptr, "Player");
+			player_->SetPosition(spawn.position);
+			Novice::ConsolePrintf("[GamePlayScene] Spawned Player at (%.1f, %.1f)\n",
+				spawn.position.x, spawn.position.y);
+		}
+		break;
+
+		// 追加するオブジェクトタイプはここに追加
+		// case 101: // Enemy_Normal
+		//     auto* enemy = objectManager_.Spawn<Enemy>(nullptr, "Enemy");
+		//     enemy->SetPosition(spawn.position);
+		//     break;
+
+	default:
+		Novice::ConsolePrintf("[GamePlayScene] Unknown object type: %d\n", spawn.objectTypeId);
+		break;
 	}
 }
 
@@ -69,13 +122,13 @@ void GamePlayScene::InitializeBackground() {
 	background_.clear();
 
 	background_.push_back(std::make_unique<Background>(Tex().GetTexture(TextureId::Background0_0)));
-	background_[0]->SetPosition({ -kWindowWidth, kWindowHeight*2 });
+	background_[0]->SetPosition({ -kWindowWidth, kWindowHeight * 2 });
 
 	background_.push_back(std::make_unique<Background>(Tex().GetTexture(TextureId::BackgroundBlack)));
-	background_[1]->SetPosition({ 0.0f, kWindowHeight*2 });
+	background_[1]->SetPosition({ 0.0f, kWindowHeight * 2 });
 
 	background_.push_back(std::make_unique<Background>(Tex().GetTexture(TextureId::Background0_2)));
-	background_[2]->SetPosition({ kWindowWidth, kWindowHeight*2 });
+	background_[2]->SetPosition({ kWindowWidth, kWindowHeight * 2 });
 
 	background_.push_back(std::make_unique<Background>(Tex().GetTexture(TextureId::Background1_0)));
 	background_[3]->SetPosition({ -kWindowWidth, kWindowHeight });
@@ -97,7 +150,6 @@ void GamePlayScene::InitializeBackground() {
 }
 
 void GamePlayScene::Update(float dt, const char* keys, const char* pre) {
-	//shared_->pad.Update();
 	if (fade_ < 1.0f) {
 		fade_ += dt * 4.0f;
 	}
@@ -108,14 +160,13 @@ void GamePlayScene::Update(float dt, const char* keys, const char* pre) {
 		(!pre[DIK_RETURN] && keys[DIK_RETURN]);
 
 	if (openPause) {
-		//shared_->PlayBackSe();
 		Sound().PlaySe(SeId::Decide);
-		manager_.RequestPause();
+		manager_.RequestOpenPause();
 		return;
 	}
 
 #ifdef _DEBUG
-	if (camera_ ) {
+	if (camera_) {
 		if (Input().TriggerKey(keys[DIK_C])) {
 			isDebugCameraMove_ = !isDebugCameraMove_;
 		}
@@ -130,13 +181,13 @@ void GamePlayScene::Update(float dt, const char* keys, const char* pre) {
 	// GameObjectManager 経由で更新
 	objectManager_.Update(dt);
 
-	// --- 当たり判定（物理演算）---
-	// オブジェクトが移動した後、マップとのめり込みを解消する
+	// 当たり判定（物理演算)
+	// オブジェクトが移動した後、マップとのめり込みを解消
 	if (player_) {
 		PhysicsManager::ResolveMapCollision(player_, mapData_);
 	}
 
-	// GameObjectManager 経由でオブジェクト更新（移動処理）
+	// GameObjectManager でオブジェクト更新（移動処理）
 	objectManager_.Update(dt);
 
 	// パーティクル
@@ -144,9 +195,9 @@ void GamePlayScene::Update(float dt, const char* keys, const char* pre) {
 
 	// テスト入力（player_ は参照として使える）
 	if (player_) {
-		
+
 		if (Input().TriggerKey(DIK_SPACE)) {
-		particleManager_->Emit(ParticleType::Explosion, player_->GetPosition());
+			particleManager_->Emit(ParticleType::Explosion, player_->GetPosition());
 		}
 		if (Input().TriggerKey(DIK_J)) {
 			particleManager_->Emit(ParticleType::Debris, player_->GetPosition());
@@ -168,7 +219,7 @@ void GamePlayScene::Draw() {
 
 	// --- マップ描画 ---
 	// オブジェクトより奥（背景より手前）に描画
-	mapChip_.Draw(*camera_);
+	mapChip_.Draw(*camera_, mapData_);
 
 	particleManager_->Draw(*camera_);
 

@@ -86,18 +86,18 @@ void TitleScene::InitializeButtons() {
 	//grHandleButton_ = shared_.texWhite;
 
 	// ボタンの位置とサイズ
-	const float centerX = 1080.0f;
+	const float centerX = 1130.0f;
 	const float startY = 400.0f;
 	const float buttonSpacing = 80.0f;
-	const Vector2 buttonSize = { 270.0f, 60.0f };
+	const Vector2 buttonSize = { 270.0f, 80.0f };
+
+	auto goToGamePlay = [&]() {
+		sceneManager_.RequestTransition(SceneType::GamePlay);
+		};
 
 	// ボタンのコールバック
 	auto goToStageSelect = [&]() {
 		sceneManager_.RequestTransition(SceneType::PrototypeSurvival);
-		};
-
-	auto goToGamePlay = [&]() {
-		sceneManager_.RequestTransition(SceneType::GamePlay);
 		};
 
 	auto goToSettings = [&]() {
@@ -110,27 +110,40 @@ void TitleScene::InitializeButtons() {
 
 	// 3つのボタンを追加
 
-	buttonManager_.AddButton({ centerX, startY }, buttonSize, "GamePlay", goToGamePlay);
+	//void ButtonManager::AddButton(const Vector2 & position, const Vector2 & size, int normalTexture, int selectedTexture, std::function<void()> callback);
 
-	buttonManager_.AddButton({ centerX, startY + buttonSpacing }, buttonSize, "StageSelect", goToStageSelect);
+	buttonManager_.AddButton(
+		{ centerX, startY }, buttonSize, 
+		Tex().GetTexture(TextureId::UI_Button_Play),
+		Tex().GetTexture(TextureId::UI_Button_Play_Selected),
+		goToGamePlay);
+
+	buttonManager_.AddButton(
+		{ centerX, startY + buttonSpacing }, buttonSize,
+		Tex().GetTexture(TextureId::UI_Button_StageSelect), 
+		Tex().GetTexture(TextureId::UI_Button_StageSelect_Selected), 
+		goToStageSelect);
 
 	buttonManager_.AddButton(
 		Vector2{ centerX, startY + buttonSpacing *2},
 		buttonSize,
-		"SETTING",
+		Tex().GetTexture(TextureId::UI_Button_Settings),
+		Tex().GetTexture(TextureId::UI_Button_Settings_Selected),
 		goToSettings
 	);
+
 	buttonManager_.AddButton(
 		Vector2{ centerX, startY + buttonSpacing * 3 },
 		buttonSize,
-		"QUIT",
+		Tex().GetTexture(TextureId::UI_Button_Quit),
+		Tex().GetTexture(TextureId::UI_Button_Quit_Selected),
 		quitGame
 	);
 
 	// 各ボタンにテクスチャを設定
-	for (size_t i = 0; i < buttonManager_.GetButtonCount(); ++i) {
-		buttonManager_.SetButtonTexture(grHandleButton_);
-	}
+	//for (size_t i = 0; i < buttonManager_.GetButtonCount(); ++i) {
+	//	buttonManager_.SetButtonTexture(grHandleButton_);
+	//}
 
 	// SE設定
 	buttonManager_.SetOnSelectSound([&]() {
@@ -166,7 +179,7 @@ void TitleScene::Update(float dt, const char* keys, const char* pre) {
 	player_.Update(dt);
 	
 	// ボタンマネージャーを更新
-	buttonManager_.Update(dt, keys, pre, *InputManager::GetInstance().GetPad());
+	buttonManager_.Update(dt);
 }
 
 void TitleScene::Draw() {
@@ -177,11 +190,7 @@ void TitleScene::Draw() {
 	drawCompLogo_.DrawScreen();
 
 	// ボタン描画
-	buttonManager_.Draw(
-		grHandleButton_,
-		&font_,
-		&text_
-	);
+	buttonManager_.Draw();
 
 	player_.Draw(Camera2D::GetInstance());
 

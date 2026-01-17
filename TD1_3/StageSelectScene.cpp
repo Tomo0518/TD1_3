@@ -9,29 +9,6 @@
 #include <imgui.h>
 #endif
 
-//StageSelectScene::StageSelectScene(SceneManager& manager, GameShared& shared)
-//	: manager_(manager), shared_(shared) {
-//
-//	// フォント読み込み
-//	if (font_.Load("Resources/font/oxanium.fnt", "./Resources/font/oxanium_0.png")) {
-//		text_.SetFont(&font_);
-//		fontReady_ = true;
-//	}
-//
-//	// 描画コンポーネント初期化
-//	InitializeDrawComponents();
-//
-//	// ボタン初期化
-//	InitializeButtons();
-//
-//	// BGMを再生
-//	shared_.PlayExclusive_(BgmKind::Title);
-//
-//	// 入力遅延タイマーを設定
-//	inputDelayTimer_ = kInputDelay_;
-//	inputEnabled_ = false;
-//}
-
 StageSelectScene::StageSelectScene(SceneManager& manager)
 	: manager_(manager){
 
@@ -87,15 +64,8 @@ void StageSelectScene::InitializeButtons() {
 
 	// ========== ボタンのコールバック ==========
 
-	// ステージ1へ遷移
-	auto goToStage1 = [&]() {
-		//shared_.lastPlayedStageIndex = 0;
-		manager_.RequestStage(1);
-		};
-
-	// ゲームプレイシーン（テスト用）
+	// ゲームプレイシーン
 	auto goToGamePlay = [&]() {
-		//shared_.lastPlayedStageIndex = 0;
 		manager_.RequestTransition(SceneType::GamePlay);
 		};
 
@@ -106,23 +76,15 @@ void StageSelectScene::InitializeButtons() {
 		};
 
 	// ========== ボタンを追加 ==========
-
 	buttonManager_.AddButton(
-		Vector2{ centerX, startY },
-		buttonSize,
-		"STAGE 1",
-		goToStage1
-	);
-
-	buttonManager_.AddButton(
-		Vector2{ centerX, startY + buttonSpacing },
+		Vector2{ centerX, startY},
 		buttonSize,
 		"GAMEPLAY TEST",
 		goToGamePlay
 	);
 
 	buttonManager_.AddButton(
-		Vector2{ centerX, startY + buttonSpacing * 2 },
+		Vector2{ centerX, startY + buttonSpacing },
 		buttonSize,
 		"BACK TO TITLE",
 		backToTitle
@@ -149,6 +111,7 @@ void StageSelectScene::UpdateDrawComponents(float deltaTime) {
 }
 
 void StageSelectScene::Update(float dt, const char* keys, const char* pre) {
+	keys, pre; // 未使用
 	// 入力受付の遅延処理（秒単位）
 	if (inputDelayTimer_ > 0.0f) {
 		inputDelayTimer_ -= dt;
@@ -163,10 +126,10 @@ void StageSelectScene::Update(float dt, const char* keys, const char* pre) {
 	// 入力が有効な場合のみ処理
 	if (inputEnabled_) {
 		// ボタンマネージャーの更新
-		buttonManager_.Update(dt, keys, pre, *InputManager::GetInstance().GetPad());
+		buttonManager_.Update(dt);
 
 		// Escapeキーで戻る
-		if (!pre[DIK_ESCAPE] && keys[DIK_ESCAPE]) {
+		if (InputManager::GetInstance().TriggerKey(DIK_ESCAPE)) {
 			SoundManager::GetInstance().PlaySe(SeId::Back);
 			manager_.RequestTransition(SceneType::Title);
 		}
@@ -181,7 +144,7 @@ void StageSelectScene::Draw() {
 
 	// ========== ボタン描画 ==========
 	if (fontReady_) {
-		buttonManager_.Draw(grHandleButton_, &font_, &text_);
+		buttonManager_.Draw();
 	}
 
 	// ========== デバッグ情報 ==========

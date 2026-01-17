@@ -3,6 +3,16 @@
 #include <vector>
 #include <memory>
 #include <algorithm>
+#include "MapData.h"
+
+enum class ObjectType {
+    Player,
+    Enemy,
+    Bullet,
+    Item,
+    Effect,
+    // 必要に応じて追加
+};
 
 class GameObjectManager {
 private:
@@ -45,6 +55,18 @@ public:
         // これにより「Boss」は「今産まれたEnemy」を即座に知ることができる
         return rawPtr;
     }
+
+	// MapDataから
+	//void SpawnFromMapData() {
+	//	const MapData& mapData = MapData::GetInstance();
+	//	int width = mapData.GetWidth();
+	//	int height = mapData.GetHeight();
+ //       for (int y = 0; y < height; ++y) {
+ //           for (int x = 0; x < width; ++x) {
+ //               int tileID = mapData.GetTile(x, y, TileLayer::Object);
+ //           }
+ //       }
+ //   }
 
     // ==========================================
     //  基本ループ

@@ -28,6 +28,16 @@ public:
 	void AddButton(const Button& button);
 
 	/// <summary>
+	/// 画像ボタンを追加（テクスチャサイズ自動取得）
+	/// </summary>
+	/// <param name="position">ボタンの位置</param>
+	/// <param name="size">ボタンの横幅と縦幅</param>
+	/// <param name="normalTexture">通常時のテクスチャハンドル</param>
+	/// <param name="selectedTexture">選択時のテクスチャハンドル</param>
+	/// <param name="callback">コールバック関数</param>
+	void AddButton(const Vector2& position, const Vector2& size, int normalTexture, int selectedTexture, std::function<void()> callback);
+
+	/// <summary>
 	/// すべてのボタンをクリア
 	/// </summary>
 	void ClearButtons();
@@ -36,18 +46,12 @@ public:
 	/// 更新処理
 	/// </summary>
 	/// <param name="deltaTime">デルタタイム</param>
-	/// <param name="keys">キーボードの入力状態</param>
-	/// <param name="preKeys">前フレームのキーボード入力状態</param>
-	/// <param name="pad">パッドの参照</param>
-	void Update(float deltaTime, const char* keys, const char* preKeys, Pad& pad);
+	void Update(float deltaTime);
 
 	/// <summary>
 	/// 描画処理
 	/// </summary>
-	/// <param name="textureHandle">ボタンのテクスチャハンドル</param>
-	/// <param name="font">フォントアトラス</param>
-	/// <param name="textRenderer">テキストレンダラー</param>
-	void Draw(int textureHandle, FontAtlas* font, TextRenderer* textRenderer);
+	void Draw();
 
 	// ゲッター
 	int GetSelectedIndex() const { return selectedIndex_; }
@@ -55,8 +59,6 @@ public:
 
 	// セッター
 	void SetSelectedIndex(int index);
-
-	void SetButtonTexture(int textureHandle);
 
 	// ループ設定
 	void SetLoopNavigation(bool loop) { loopNavigation_ = loop; }
@@ -83,6 +85,6 @@ private:
 	std::function<void()> onDecideSound_;  // 決定時のSE
 
 	// 入力処理
-	void HandleKeyboardInput(const char* keys, const char* preKeys);
-	void HandlePadInput(Pad& pad);
+	void HandleKeyboardInput();
+	void HandlePadInput();
 };

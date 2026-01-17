@@ -1,8 +1,7 @@
 ﻿#include "MapData.h"
 
 MapData::MapData() {
-    // デフォルトで空のマップを作っておく
-    Reset(1000, 1000);
+    Reset(kMapChipWidth, kMapChipHeight);
 }
 
 void MapData::Reset(int width, int height, float tileSize) {
@@ -14,9 +13,9 @@ void MapData::Reset(int width, int height, float tileSize) {
     tilesBackground_.assign(height_, std::vector<int>(width_, 0));
     tilesDecoration_.assign(height_, std::vector<int>(width_, 0));
     tilesBlock_.assign(height_, std::vector<int>(width_, 0));
-    tilesObject_.assign(height_, std::vector<int>(width_, 0));
 
-    enemySpawns_.clear();
+    // オブジェクトスポーン情報をクリア
+    objectSpawns_.clear();
 }
 
 bool MapData::Load(const std::string& filePath) {
@@ -34,11 +33,10 @@ bool MapData::Load(const std::string& filePath) {
         // 配列リセット（全レイヤーを初期化）
         Reset(width_, height_, tileSize_);
 
-        // "layers" キーの下に各レイヤーデータがある想定
+        // タイルレイヤー読み込み
         if (j.contains("layers")) {
             auto& layers = j["layers"];
 
-            // 各レイヤーを読み込み（存在すれば上書き、なければ0埋めのまま）
             if (layers.contains("background")) {
                 tilesBackground_ = layers["background"].get<std::vector<std::vector<int>>>();
             }
@@ -48,16 +46,28 @@ bool MapData::Load(const std::string& filePath) {
             if (layers.contains("block")) {
                 tilesBlock_ = layers["block"].get<std::vector<std::vector<int>>>();
             }
-            if (layers.contains("object")) {
-                tilesObject_ = layers["object"].get<std::vector<std::vector<int>>>();
-            }
         }
-        // 互換性: 古い形式（ルートに "tiles" がある場合）はBlockとして読む
+        // 互換性: 古い形式
         else if (j.contains("tiles")) {
             tilesBlock_ = j["tiles"].get<std::vector<std::vector<int>>>();
         }
 
-        Novice::ConsolePrintf("[MapData] Loaded map (4 Layers): %dx%d\n", width_, height_);
+        // オブジェクトスポーン情報読み込み
+        objectSpawns_.clear();
+        if (j.contains("objects")) {
+            for (auto& obj : j["objects"]) {
+                ObjectSpawnInfo spawn;
+                spawn.objectTypeId = obj["type"];
+                spawn.position.x = obj["position"]["x"];
+                spawn.position.y = obj["position"]["y"];
+                spawn.tag = obj.value("tag", "");
+                spawn.customData = obj.value("data", json::object());
+                objectSpawns_.push_back(spawn);
+            }
+            Novice::ConsolePrintf("[MapData] Loaded %d object spawns\n", (int)objectSpawns_.size());
+        }
+
+        Novice::ConsolePrintf("[MapData] Loaded map: %dx%d\n", width_, height_);
         return true;
     }
     catch (const std::exception& e) {
@@ -67,34 +77,64 @@ bool MapData::Load(const std::string& filePath) {
 }
 
 bool MapData::Save(const std::string& filePath) {
-    // 拡張子で判定
-    if (filePath.ends_with(".bin") || filePath.ends_with(".mapbin")) {
-        //return SaveBinary(filePath);
-    }
-
-    // JSON形式（コンパクトフォーマット）
     json j;
     JsonUtil::SetValue(j, "width", width_);
     JsonUtil::SetValue(j, "height", height_);
     JsonUtil::SetValue(j, "tileSize", tileSize_);
 
-    // 各レイヤーを保存
+    // タイルレイヤーを保存
     j["layers"]["background"] = tilesBackground_;
     j["layers"]["decoration"] = tilesDecoration_;
     j["layers"]["block"] = tilesBlock_;
-    j["layers"]["object"] = tilesObject_;
+
+    // オブジェクトスポーン情報を保存
+    json objectsArray = json::array();
+    for (auto& spawn : objectSpawns_) {
+        json obj;
+        obj["type"] = spawn.objectTypeId;
+        obj["position"]["x"] = spawn.position.x;
+        obj["position"]["y"] = spawn.position.y;
+        if (!spawn.tag.empty()) {
+            obj["tag"] = spawn.tag;
+        }
+        if (!spawn.customData.empty()) {
+            obj["data"] = spawn.customData;
+        }
+        objectsArray.push_back(obj);
+    }
+    j["objects"] = objectsArray;
 
     // コンパクトフォーマットで保存
     return JsonUtil::SaveMapCompact(filePath, j);
 }
 
-// 指定レイヤーの配列ポインタを取得するヘルパー
+void MapData::AddObjectSpawn(int typeId, const Vector2& position, const std::string& tag, const json& customData) {
+    ObjectSpawnInfo spawn;
+    spawn.objectTypeId = typeId;
+    spawn.position = position;
+    spawn.tag = tag;
+    spawn.customData = customData;
+    objectSpawns_.push_back(spawn);
+}
+
+void MapData::RemoveObjectSpawn(size_t index) {
+    if (index < objectSpawns_.size()) {
+        objectSpawns_.erase(objectSpawns_.begin() + index);
+    }
+}
+
+void MapData::UpdateObjectSpawnPosition(size_t index, const Vector2& newPosition) {
+    if (index < objectSpawns_.size()) {
+        objectSpawns_[index].position = newPosition;
+    }
+}
+
+
 const std::vector<std::vector<int>>* MapData::GetLayerData(TileLayer layer) const {
     switch (layer) {
     case TileLayer::Background: return &tilesBackground_;
     case TileLayer::Decoration: return &tilesDecoration_;
     case TileLayer::Block:      return &tilesBlock_;
-    case TileLayer::Object:     return &tilesObject_;
     default: return nullptr;
     }
 }
@@ -104,13 +144,11 @@ std::vector<std::vector<int>>* MapData::GetLayerDataMutable(TileLayer layer) {
     case TileLayer::Background: return &tilesBackground_;
     case TileLayer::Decoration: return &tilesDecoration_;
     case TileLayer::Block:      return &tilesBlock_;
-    case TileLayer::Object:     return &tilesObject_;
     default: return nullptr;
     }
 }
 
 int MapData::GetTile(int col, int row, TileLayer layer) const {
-    // 範囲外チェック
     if (row < 0 || row >= height_ || col < 0 || col >= width_) {
         return 0;
     }

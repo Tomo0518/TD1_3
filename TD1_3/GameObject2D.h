@@ -108,7 +108,7 @@ public:
         }
     }
 
-    virtual void Update(float deltaTime) {
+    virtual void Update(float deltaTime = 60.0f) {
         if (!info_.isActive) return;
 
         // 1. 物理挙動の更新（速度計算）

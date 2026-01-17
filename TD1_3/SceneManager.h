@@ -30,35 +30,41 @@ public:
 	void RequestTransition(SceneType targetScene);
 	void RequestQuit() { shouldQuit_ = true; }
 
-	// ステージ関連の遷移
-	void RequestStage(int stageIndex); // Stage1～12への遷移
-	void RequestStageRestart(); // 現在のステージを再開
+	// プレイをリトライ(ポーズのボタンから使用)
+	void RequestRetry();
 
-	// ポーズ関連
-	void RequestPause(); // ポーズ画面を開く
-	void RequestPauseResume(); // ポーズから復帰
+	// ポーズからタイトルへの処理
+	void RequestPauseToTitle();
+
+	// ======================
+	// ポーズシステム
+	// ======================
+	void RequestOpenPause(); // ポーズ画面を開く
+	void RequestClosePause(); // ポーズから復帰
+
+	// ======================
+	// 設定画面オーバーレイ
+	// ======================
 	void RequestOpenSettings(); // 設定画面を開く（オーバーレイ）
 	void RequestCloseSettings(); // 設定画面を閉じる
 
-	// リザルト
-	void RequestResult(int stageIndex, int score); // リザルト画面へ
-
 	// オーバーレイシーン管理（設定画面など）
-	void PushOverlay(std::unique_ptr<IGameScene> overlay);
+	void PushOverlay(std::unique_ptr<IScene> overlay);
 	void PopOverlay();
 	bool HasOverlay() const { return !overlayScenes_.empty(); }
 
 private:
 	// 現在のシーン
-	std::unique_ptr<IGameScene> currentScene_;
+	std::unique_ptr<IScene> currentScene_;
 
 	SceneType currentSceneType_ = SceneType::Title;
 
 	// オーバーレイシーンスタック（設定画面など）
-	std::vector<std::unique_ptr<IGameScene>> overlayScenes_;
+	std::vector<std::unique_ptr<IScene>> overlayScenes_;
 
 	// 遷移リクエスト
 	std::optional<SceneTransition> pendingTransition_;
+	bool pendingOverlayClear_ = false;
 
 	// 共有リソース
 	GameShared shared_;

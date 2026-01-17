@@ -71,9 +71,6 @@
     <Filter Include="KamataEngine\Source\Game\Scene\Game">
       <UniqueIdentifier>{e5a4c103-c449-4c12-9efe-a30a7a071ae4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="KamataEngine\Source\Game\Scene\Game\Stage">
-      <UniqueIdentifier>{4de58c43-e77c-4133-ae16-b6d2901f7caf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="KamataEngine\Source\Game\Scene\Pause">
       <UniqueIdentifier>{7281bc2e-c5bc-4321-b190-3b2c6cc8d38b}</UniqueIdentifier>
     </Filter>
@@ -95,17 +92,11 @@
     <Filter Include="KamataEngine\Source\library\2D\Particle">
       <UniqueIdentifier>{a6f8e870-45b6-4068-a2f1-ab24ce3be498}</UniqueIdentifier>
     </Filter>
-    <Filter Include="KamataEngine\Source\library\2D\Effect">
-      <UniqueIdentifier>{3c214814-9fc5-485b-93fa-667b00dab85b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="KamataEngine\Source\Shared">
       <UniqueIdentifier>{5faa254f-c393-4f48-ba8a-971af779a6d9}</UniqueIdentifier>
     </Filter>
     <Filter Include="KamataEngine\Source\library\json">
       <UniqueIdentifier>{5fb55ef0-75a1-4869-bb7c-84f0b9f104f4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="KamataEngine\Source\library\2D\Object">
-      <UniqueIdentifier>{cb735915-8412-42fc-a555-a3f8e359f839}</UniqueIdentifier>
     </Filter>
     <Filter Include="KamataEngine\Source\library\SoundManager">
       <UniqueIdentifier>{3d9f9343-17ca-4970-b470-6034ecfcccaf}</UniqueIdentifier>
@@ -128,34 +119,43 @@
     <Filter Include="KamataEngine\Source\Game\Scene\Proto\PrototypeSurvivalScene">
       <UniqueIdentifier>{cac08d67-7d46-436f-bb69-fefd7ec1725d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="KamataEngine\Source\library\MapChipSystem">
-      <UniqueIdentifier>{0bc445e1-679f-47a7-9a76-673477151c8f}</UniqueIdentifier>
+    <Filter Include="KamataEngine\Source\library\2D\Draw\Effect">
+      <UniqueIdentifier>{3c214814-9fc5-485b-93fa-667b00dab85b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="KamataEngine\Source\library\MapChipSystem\MapChip">
-      <UniqueIdentifier>{db1dad81-42e4-4a81-bd0f-b342979c6690}</UniqueIdentifier>
+    <Filter Include="KamataEngine\Source\Game\Object">
+      <UniqueIdentifier>{cb735915-8412-42fc-a555-a3f8e359f839}</UniqueIdentifier>
     </Filter>
-    <Filter Include="KamataEngine\Source\library\MapChipSystem\TileRegistry">
-      <UniqueIdentifier>{c37847d2-9254-43fc-a690-6208584a3a65}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="KamataEngine\Source\library\MapChipSystem\MapData">
-      <UniqueIdentifier>{32eb2c9f-e99a-4c9a-b486-d8098279ba15}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="KamataEngine\Source\Game\GameObject">
-      <UniqueIdentifier>{e5b2c76b-72c1-43dc-9f9d-6d7e2da7a31e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="KamataEngine\Source\library\2D\Object\GameObject2D">
+    <Filter Include="KamataEngine\Source\Game\Object\GameObject2D">
       <UniqueIdentifier>{65687946-7eb7-4138-abf5-52a53d47e12a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="KamataEngine\Source\library\2D\Object\GameObjectManager">
+    <Filter Include="KamataEngine\Source\Game\Object\GameObjectManager">
       <UniqueIdentifier>{2d261b23-9bae-468e-be14-1a7af250c116}</UniqueIdentifier>
     </Filter>
-    <Filter Include="KamataEngine\Source\library\2D\Object\Rigidbody2D">
+    <Filter Include="KamataEngine\Source\Game\Object\Rigidbody2D">
       <UniqueIdentifier>{f80d8359-cbae-40ac-aa6f-0a0f5e605761}</UniqueIdentifier>
     </Filter>
-    <Filter Include="KamataEngine\Source\library\MapChipSystem\PhysicsManager">
+    <Filter Include="KamataEngine\Source\Game\Object\WorldOrigin">
+      <UniqueIdentifier>{cca4f8e0-1109-4841-ba0d-e0c1df153684}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\Game\Object\ObjectRegistry">
+      <UniqueIdentifier>{c7c97720-b144-4813-a0ab-257fdde2a48d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\Game\MapChipSystem">
+      <UniqueIdentifier>{0bc445e1-679f-47a7-9a76-673477151c8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\Game\MapChipSystem\MapChip">
+      <UniqueIdentifier>{db1dad81-42e4-4a81-bd0f-b342979c6690}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\Game\MapChipSystem\TileRegistry">
+      <UniqueIdentifier>{c37847d2-9254-43fc-a690-6208584a3a65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\Game\MapChipSystem\MapData">
+      <UniqueIdentifier>{32eb2c9f-e99a-4c9a-b486-d8098279ba15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KamataEngine\Source\Game\MapChipSystem\PhysicsManager">
       <UniqueIdentifier>{60744e3d-9e5f-4413-9c0d-369b88cccdbb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="KamataEngine\Source\library\MapChipSystem\MapChipEditor">
+    <Filter Include="KamataEngine\Source\Game\MapChipSystem\MapChipEditor">
       <UniqueIdentifier>{9ad2e4fb-ed92-49c8-82d5-16857469a76b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -172,9 +172,6 @@
     </ClCompile>
     <ClCompile Include="TextRenderer.cpp">
       <Filter>KamataEngine\Source\library\Font</Filter>
-    </ClCompile>
-    <ClCompile Include="Stage1Scene.cpp">
-      <Filter>KamataEngine\Source\Game\Scene\Game\Stage</Filter>
     </ClCompile>
     <ClCompile Include="Affine2D.cpp">
       <Filter>KamataEngine\Source\library\2D\Affine2D</Filter>
@@ -218,9 +215,6 @@
     <ClCompile Include="DrawComponent2D.cpp">
       <Filter>KamataEngine\Source\library\2D\Draw\DrawComponent2D</Filter>
     </ClCompile>
-    <ClCompile Include="BaseStageScene.cpp">
-      <Filter>KamataEngine\Source\Game\Scene\Game</Filter>
-    </ClCompile>
     <ClCompile Include="SceneManager.cpp">
       <Filter>KamataEngine\Source\Game\Scene</Filter>
     </ClCompile>
@@ -243,7 +237,7 @@
       <Filter>KamataEngine\Source\Game\DebugWindow</Filter>
     </ClCompile>
     <ClCompile Include="Effect.cpp">
-      <Filter>KamataEngine\Source\library\2D\Effect</Filter>
+      <Filter>KamataEngine\Source\library\2D\Draw\Effect</Filter>
     </ClCompile>
     <ClCompile Include="ParticleManager.cpp">
       <Filter>KamataEngine\Source\library\2D\Particle</Filter>
@@ -261,19 +255,19 @@
       <Filter>KamataEngine\Source\library\TextureManager</Filter>
     </ClCompile>
     <ClCompile Include="GameObject2D.cpp">
-      <Filter>KamataEngine\Source\library\2D\Object\GameObject2D</Filter>
+      <Filter>KamataEngine\Source\Game\Object\GameObject2D</Filter>
     </ClCompile>
     <ClCompile Include="GameObjectManager.cpp">
-      <Filter>KamataEngine\Source\library\2D\Object\GameObjectManager</Filter>
+      <Filter>KamataEngine\Source\Game\Object\GameObjectManager</Filter>
     </ClCompile>
     <ClCompile Include="MapChip.cpp">
-      <Filter>KamataEngine\Source\library\MapChipSystem\MapChip</Filter>
+      <Filter>KamataEngine\Source\Game\MapChipSystem\MapChip</Filter>
     </ClCompile>
     <ClCompile Include="MapData.cpp">
-      <Filter>KamataEngine\Source\library\MapChipSystem\MapData</Filter>
+      <Filter>KamataEngine\Source\Game\MapChipSystem\MapData</Filter>
     </ClCompile>
     <ClCompile Include="MapChipEditor.cpp">
-      <Filter>KamataEngine\Source\library\MapChipSystem\MapChipEditor</Filter>
+      <Filter>KamataEngine\Source\Game\MapChipSystem\MapChipEditor</Filter>
     </ClCompile>
     <ClCompile Include="PrototypeSurvivalScene.cpp">
       <Filter>KamataEngine\Source\Game\Scene\Proto\PrototypeSurvivalScene</Filter>
@@ -284,11 +278,17 @@
     <ClCompile Include="SurvivalObjects.cpp">
       <Filter>KamataEngine\Source\Game\Scene\Proto\PrototypeSurvivalScene</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>KamataEngine\Source\Game\GameObject</Filter>
-    </ClCompile>
     <ClCompile Include="PhysicsManager.cpp">
-      <Filter>KamataEngine\Source\library\MapChipSystem\PhysicsManager</Filter>
+      <Filter>KamataEngine\Source\Game\MapChipSystem\PhysicsManager</Filter>
+    </ClCompile>
+    <ClCompile Include="WorldOrigin.cpp">
+      <Filter>KamataEngine\Source\Game\Object\WorldOrigin</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>KamataEngine\Source\Game\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectRegistry.cpp">
+      <Filter>KamataEngine\Source\Game\Object\ObjectRegistry</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -388,9 +388,6 @@
     <ClInclude Include="TextRenderer.h">
       <Filter>KamataEngine\Source\library\Font</Filter>
     </ClInclude>
-    <ClInclude Include="Stage1Scene.h">
-      <Filter>KamataEngine\Source\Game\Scene\Game\Stage</Filter>
-    </ClInclude>
     <ClInclude Include="Affine2D.h">
       <Filter>KamataEngine\Source\library\2D\Affine2D</Filter>
     </ClInclude>
@@ -433,17 +430,11 @@
     <ClInclude Include="DrawComponent2D.h">
       <Filter>KamataEngine\Source\library\2D\Draw\DrawComponent2D</Filter>
     </ClInclude>
-    <ClInclude Include="BaseStageScene.h">
-      <Filter>KamataEngine\Source\Game\Scene\Game</Filter>
-    </ClInclude>
     <ClInclude Include="SceneManager.h">
       <Filter>KamataEngine\Source\Game\Scene</Filter>
     </ClInclude>
     <ClInclude Include="UiDrawComponent.h">
       <Filter>KamataEngine\Source\library\2D\Ui</Filter>
-    </ClInclude>
-    <ClInclude Include="stageMaxNum.h">
-      <Filter>KamataEngine\Source\Game\Scene\Game\Stage</Filter>
     </ClInclude>
     <ClInclude Include="Background.h">
       <Filter>KamataEngine\Source\library\Background</Filter>
@@ -470,7 +461,7 @@
       <Filter>KamataEngine\Source\Game\DebugWindow</Filter>
     </ClInclude>
     <ClInclude Include="Effect.h">
-      <Filter>KamataEngine\Source\library\2D\Effect</Filter>
+      <Filter>KamataEngine\Source\library\2D\Draw\Effect</Filter>
     </ClInclude>
     <ClInclude Include="Particle.h">
       <Filter>KamataEngine\Source\library\2D\Particle</Filter>
@@ -500,25 +491,25 @@
       <Filter>KamataEngine\Source\Game\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Rigidbody2D.hpp">
-      <Filter>KamataEngine\Source\library\2D\Object\Rigidbody2D</Filter>
+      <Filter>KamataEngine\Source\Game\Object\Rigidbody2D</Filter>
     </ClInclude>
     <ClInclude Include="GameObject2D.h">
-      <Filter>KamataEngine\Source\library\2D\Object\GameObject2D</Filter>
+      <Filter>KamataEngine\Source\Game\Object\GameObject2D</Filter>
     </ClInclude>
     <ClInclude Include="GameObjectManager.h">
-      <Filter>KamataEngine\Source\library\2D\Object\GameObjectManager</Filter>
+      <Filter>KamataEngine\Source\Game\Object\GameObjectManager</Filter>
     </ClInclude>
     <ClInclude Include="MapChip.h">
-      <Filter>KamataEngine\Source\library\MapChipSystem\MapChip</Filter>
+      <Filter>KamataEngine\Source\Game\MapChipSystem\MapChip</Filter>
     </ClInclude>
     <ClInclude Include="MapData.h">
-      <Filter>KamataEngine\Source\library\MapChipSystem\MapData</Filter>
+      <Filter>KamataEngine\Source\Game\MapChipSystem\MapData</Filter>
     </ClInclude>
     <ClInclude Include="MapChipEditor.h">
-      <Filter>KamataEngine\Source\library\MapChipSystem\MapChipEditor</Filter>
+      <Filter>KamataEngine\Source\Game\MapChipSystem\MapChipEditor</Filter>
     </ClInclude>
     <ClInclude Include="TileRegistry.h">
-      <Filter>KamataEngine\Source\library\MapChipSystem\TileRegistry</Filter>
+      <Filter>KamataEngine\Source\Game\MapChipSystem\TileRegistry</Filter>
     </ClInclude>
     <ClInclude Include="PrototypeSurvivalScene.h">
       <Filter>KamataEngine\Source\Game\Scene\Proto\PrototypeSurvivalScene</Filter>
@@ -532,11 +523,20 @@
     <ClInclude Include="Transform2D.h">
       <Filter>KamataEngine\Source\library\2D</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>KamataEngine\Source\Game\GameObject</Filter>
-    </ClInclude>
     <ClInclude Include="PhysicsManager.h">
-      <Filter>KamataEngine\Source\library\MapChipSystem\PhysicsManager</Filter>
+      <Filter>KamataEngine\Source\Game\MapChipSystem\PhysicsManager</Filter>
+    </ClInclude>
+    <ClInclude Include="WorldOrigin.h">
+      <Filter>KamataEngine\Source\Game\Object\WorldOrigin</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>KamataEngine\Source\Game\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectRegistry.h">
+      <Filter>KamataEngine\Source\Game\Object\ObjectRegistry</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectSpawnInfo.h">
+      <Filter>KamataEngine\Source\Game\Object\ObjectRegistry</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

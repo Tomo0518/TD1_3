@@ -15,7 +15,6 @@ class Camera2D;
 
 /// <summary>
 /// デモ用プレイヤークラス
-/// 新しい DrawComponent2D と Camera2D を使用
 /// </summary>
 class Player : public GameObject2D{
 public:

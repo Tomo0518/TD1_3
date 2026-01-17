@@ -83,7 +83,7 @@ void ResultScene::InitializeButtons() {
 	auto retry = [&]() {
 		Sound().StopBgm();
 
-		manager_.RequestStageRestart();
+		manager_.RequestTransition(SceneType::GamePlay);
 		};
 
 	// タイトルへ
@@ -128,12 +128,13 @@ void ResultScene::UpdateDrawComponents(float deltaTime) {
 }
 
 void ResultScene::Update(float dt, const char* keys, const char* pre) {
+	keys; pre; // 未使用
 
 	// 描画コンポーネントを更新
 	UpdateDrawComponents(dt);
 
 	// ボタンマネージャーを更新
-	buttonManager_.Update(dt, keys, pre, *Input().GetPad());
+	buttonManager_.Update(dt);
 }
 
 void ResultScene::Draw() {
@@ -149,6 +150,6 @@ void ResultScene::Draw() {
 
 	// ========== ボタン描画 ==========
 	if (fontReady_) {
-		buttonManager_.Draw(grHandleButton_, &font_, &text_);
+		buttonManager_.Draw();
 	}
 }

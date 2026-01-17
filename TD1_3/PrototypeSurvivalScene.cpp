@@ -40,6 +40,10 @@ void PrototypeSurvivalScene::Update(float deltaTime, const char* keys, const cha
 	keys; preKeys; // 未使用防止
     input_->Update();
 
+	if (Input().PressKey(DIK_ESCAPE)) {
+        sceneManager_->RequestTransition(SceneType::Title);
+    }
+
     // スポーン処理
     enemySpawnTimer_ += deltaTime;
     if (enemySpawnTimer_ > 1.0f) {

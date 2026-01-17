@@ -92,7 +92,7 @@ public:
 	}
 
 	/// <summary>
-	/// マップデータ専用：コンパクトフォーマットで保存（各行を1行のJSON配列として）
+	/// マップデータ専用：コンパクトフォーマットで保存
 	/// </summary>
 	static bool SaveMapCompact(const std::string& filepath, const json& j) {
 		try {
@@ -113,8 +113,8 @@ public:
 
 			file << " \"layers\": {\n";
 
-			// レイヤー名のリスト
-			const std::vector<std::string> layerNames = { "background", "decoration", "block", "object" };
+			// タイルレイヤー
+			const std::vector<std::string> layerNames = { "background", "decoration", "block" };
 			bool firstLayer = true;
 
 			for (const auto& layerName : layerNames) {
@@ -143,7 +143,32 @@ public:
 				file << "  ]";
 			}
 
-			file << "\n }\n";
+			file << "\n },\n";
+
+			// オブジェクトスポーン情報
+			file << " \"objects\": [\n";
+			if (j.contains("objects")) {
+				const auto& objects = j["objects"];
+				for (size_t i = 0; i < objects.size(); ++i) {
+					const auto& obj = objects[i];
+					file << "  {\"type\":" << obj["type"]
+						<< ",\"position\":{\"x\":" << obj["position"]["x"]
+						<< ",\"y\":" << obj["position"]["y"] << "}";
+
+					if (obj.contains("tag")) {
+						file << ",\"tag\":\"" << obj["tag"].get<std::string>() << "\"";
+					}
+					if (obj.contains("data") && !obj["data"].empty()) {
+						file << ",\"data\":" << obj["data"].dump();
+					}
+
+					file << "}";
+					if (i < objects.size() - 1) file << ",";
+					file << "\n";
+				}
+			}
+			file << " ]\n";
+
 			file << "}\n";
 
 #ifdef _DEBUG

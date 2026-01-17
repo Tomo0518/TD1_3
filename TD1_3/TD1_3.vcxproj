@@ -116,11 +116,11 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClCompile Include="MapChip.cpp" />
     <ClCompile Include="MapChipEditor.cpp" />
     <ClCompile Include="MapData.cpp" />
+    <ClCompile Include="ObjectRegistry.cpp" />
     <ClCompile Include="PhysicsManager.cpp" />
     <ClCompile Include="PrototypeSurvivalScene.cpp" />
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="Background.cpp" />
-    <ClCompile Include="BaseStageScene.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="ButtonManager.cpp" />
     <ClCompile Include="C:\KamataEngine\Adapter\Novice.cpp" />
@@ -142,7 +142,6 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClCompile Include="ResultScene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="SettingScene.cpp" />
-    <ClCompile Include="Stage1Scene.cpp" />
     <ClCompile Include="StageSelectScene.cpp" />
     <ClCompile Include="SurvivalGameManager.cpp" />
     <ClCompile Include="SurvivalObjects.cpp" />
@@ -153,6 +152,7 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClCompile Include="Vector2.cpp" />
     <ClCompile Include="Vertex4.cpp" />
     <ClCompile Include="Vertex4Component.cpp" />
+    <ClCompile Include="WorldOrigin.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\DirectXGame\3d\Camera.h" />
@@ -163,13 +163,14 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClInclude Include="MapChip.h" />
     <ClInclude Include="MapChipEditor.h" />
     <ClInclude Include="MapData.h" />
+    <ClInclude Include="ObjectRegistry.h" />
+    <ClInclude Include="ObjectSpawnInfo.h" />
     <ClInclude Include="PhysicsManager.h" />
     <ClInclude Include="PrototypeSurvivalScene.h" />
     <ClInclude Include="Rigidbody2D.hpp" />
     <ClInclude Include="SceneUtilityIncludes.h" />
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="Background.h" />
-    <ClInclude Include="BaseStageScene.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="ButtonManager.h" />
     <ClInclude Include="C:\KamataEngine\DirectXGame\base\StringUtility.h" />
@@ -222,7 +223,6 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="SceneType.h" />
     <ClInclude Include="SettingScene.h" />
-    <ClInclude Include="Stage1Scene.h" />
     <ClInclude Include="StageSelectScene.h" />
     <ClInclude Include="SurvivalGameManager.h" />
     <ClInclude Include="SurvivalObjects.h" />
@@ -235,8 +235,8 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClInclude Include="Vector2.h" />
     <ClInclude Include="Vertex4.h" />
     <ClInclude Include="Vertex4Component.h" />
-    <ClInclude Include="stageMaxNum.h" />
     <ClInclude Include="WindowSize.h" />
+    <ClInclude Include="WorldOrigin.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

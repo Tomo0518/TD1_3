@@ -3,13 +3,15 @@
 #include <string>
 #include <Novice.h>
 #include "Vector2.h"
-#include "JsonUtil.h" // 既存のJsonUtilを使用
-#include "TileRegistry.h" // TileLayer定義のためインクルード
+#include "JsonUtil.h"
+#include "TileRegistry.h"
 
-// 将来的に敵の出現位置なども管理するための構造体
-struct EnemySpawnInfo {
-    int enemyType;
-    Vector2 position;
+// オブジェクトスポーン情報
+struct ObjectSpawnInfo {
+    int objectTypeId;       // オブジェクトタイプID（100=Player, 101=Enemy等）
+    Vector2 position;       // ワールド座標（自由配置）
+    std::string tag;        // タグ（検索用、例: "player", "enemy"）
+    json customData;        // カスタムパラメータ（向き、HP、AI設定等）
 };
 
 /// <summary>
@@ -18,21 +20,14 @@ struct EnemySpawnInfo {
 /// </summary>
 class MapData {
 public:
-    // コンストラクタ
     MapData();
-
-    // デストラクタ
     ~MapData() = default;
 
-    // シングルトンにする
-    static MapData& GetInstance() {
-        static MapData instance;
-        return instance;
+	// シングルトンインスタンス取得
+	static MapData& GetInstance() {
+		static MapData instance;
+		return instance;
 	}
-
-	// 削除・コピー禁止
-	MapData(const MapData&) = delete;
-	MapData& operator=(const MapData&) = delete;
 
     /// <summary>
     /// マップデータをリセット（指定サイズで0埋め）
@@ -42,65 +37,68 @@ public:
     /// <summary>
     /// JSONファイルからマップデータを読み込む
     /// </summary>
-    /// <param name="filePath">ファイルパス</param>
-    /// <returns>成功したらtrue</returns>
     bool Load(const std::string& filePath);
 
     /// <summary>
     /// 現在のマップデータをJSONファイルに保存する
     /// </summary>
-    /// <param name="filePath">ファイルパス</param>
-    /// <returns>成功したらtrue</returns>
     bool Save(const std::string& filePath);
 
-    // --- アクセサ（データの取得・設定） ---
-
-    // レイヤーを指定して取得
+    // --- タイルデータアクセサ ---
     int GetTile(int col, int row, TileLayer layer) const;
-
-    // レイヤーを指定して設定
     void SetTile(int col, int row, int tileID, TileLayer layer);
 
     // 既存コード互換用（Blockレイヤーを返す）
-    // これがあればPhysicsManagerなどは書き換えなくて済む
     int GetTile(int col, int row) const {
         return GetTile(col, row, TileLayer::Block);
     }
 
-    // マップの列数（幅）
+    // --- オブジェクトスポーン情報アクセサ ---
+    const std::vector<ObjectSpawnInfo>& GetObjectSpawns() const { return objectSpawns_; }
+
+    /// <summary>
+    /// オブジェクトスポーンを追加
+    /// </summary>
+    void AddObjectSpawn(int typeId, const Vector2& position, const std::string& tag = "", const json& customData = json::object());
+
+    /// <summary>
+    /// オブジェクトスポーンを削除（インデックス指定）
+    /// </summary>
+    void RemoveObjectSpawn(size_t index);
+
+
+	/// <summary>
+	/// オブジェクトスポーンの位置を更新（インデックス指定）
+	/// </summary>
+    void UpdateObjectSpawnPosition(size_t index, const Vector2& newPosition);
+
+    /// <summary>
+    /// オブジェクトスポーンを全削除
+    /// </summary>
+    void ClearObjectSpawns() { objectSpawns_.clear(); }
+
+    // --- メタデータアクセサ ---
     int GetWidth() const { return width_; }
-
-    // マップの行数（高さ）
     int GetHeight() const { return height_; }
-
-    // 1タイルのサイズ
     float GetTileSize() const { return tileSize_; }
 
-	// 指定レイヤーの配列ポインタを取得するヘルパー
+    // レイヤーデータ取得
     std::vector<std::vector<int>>* GetLayerDataMutable(TileLayer layer);
-
-	// 指定レイヤーの配列ポインタを取得するヘルパー（const版）
-	const std::vector<std::vector<int>>* GetLayerData(TileLayer layer) const;
+    const std::vector<std::vector<int>>* GetLayerData(TileLayer layer) const;
 
 private:
-    // ==============================
-    // レイヤー情報
-    // ==============================
-    std::vector<std::vector<int>> tilesBackground_; // 背景レイヤー
-    std::vector<std::vector<int>> tilesDecoration_; // 装飾レイヤー
-    std::vector<std::vector<int>> tilesBlock_; // ブロックレイヤー
-    std::vector<std::vector<int>> tilesObject_;    // オブジェクトレイヤー
+    // タイルレイヤー
+    std::vector<std::vector<int>> tilesBackground_;
+    std::vector<std::vector<int>> tilesDecoration_;
+    std::vector<std::vector<int>> tilesBlock_;
 
-   // std::vector<std::vector<int>> tilesBlock_;
+    // オブジェクトスポーン情報（座標管理）
+    std::vector<ObjectSpawnInfo> objectSpawns_;
 
-	static const int kMapChipWidth = 1000;
-	static const int kMapChipHeight = 1000;
+    static const int kMapChipWidth = 1000;
+    static const int kMapChipHeight = 1000;
 
-    // マップのサイズ
-    int width_ = 1000;  // 列数 (x)
-    int height_ = 1000; // 行数 (y)
+    int width_ = 1000;
+    int height_ = 1000;
     float tileSize_ = 64.0f;
-
-    // (拡張用) 敵の出現リストなど
-    std::vector<EnemySpawnInfo> enemySpawns_;
 };

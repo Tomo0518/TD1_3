@@ -1,5 +1,6 @@
 ﻿#include "ButtonManager.h"
 #include <algorithm>
+#include "InputManager.h"
 
 #ifdef min
 #undef min
@@ -14,12 +15,19 @@ ButtonManager::ButtonManager() {
 }
 
 void ButtonManager::AddButton(const Vector2& position, const Vector2& size, const std::string& label, std::function<void()> callback) {
-	Button newButton(position, size, label, callback);
-	buttons_.push_back(std::move(newButton)); // ムーブで追加
+	buttons_.emplace_back(position, size, label, callback);
 }
 
 void ButtonManager::AddButton(const Button& button) {
 	buttons_.push_back(button);
+}
+
+void ButtonManager::AddButton(const Vector2& position, const Vector2& size, int normalTexture, int selectedTexture, std::function<void()> callback) {
+	buttons_.emplace_back(position, size, normalTexture, selectedTexture, callback);
+	// 各ボタンの更新
+	for (size_t i = 0; i < buttons_.size(); ++i) {
+		buttons_[i].Update(1.0f / 60.0f, i == selectedIndex_);
+	}
 }
 
 void ButtonManager::ClearButtons() {
@@ -33,18 +41,13 @@ void ButtonManager::SetSelectedIndex(int index) {
 	}
 }
 
-void ButtonManager::SetButtonTexture(int textureHandle) {
-	for (auto& button : buttons_) {
-		button.SetTexture(textureHandle);
-	}
-}
-
-void ButtonManager::Update(float deltaTime, const char* keys, const char* preKeys, Pad& pad) {
+void ButtonManager::Update(float deltaTime) {
 	if (buttons_.empty()) return;
+	auto& input = InputManager::GetInstance();
 
 	// 初回フレームはスキップ（誤入力防止）
 	if (firstFrame_) {
-		prevLY_ = pad.LeftY();
+		prevLY_ = input.GetPad()->GetLeftStick().y;
 		firstFrame_ = false;
 
 		// ボタンの更新のみ実行
@@ -57,10 +60,10 @@ void ButtonManager::Update(float deltaTime, const char* keys, const char* preKey
 	int prevSelected = selectedIndex_;
 
 	// キーボード入力処理
-	HandleKeyboardInput(keys, preKeys);
+	HandleKeyboardInput();
 
 	// パッド入力処理
-	HandlePadInput(pad);
+	HandlePadInput();
 
 	// 選択が変わった場合、SE再生
 	if (prevSelected != selectedIndex_ && onSelectSound_) {
@@ -68,9 +71,9 @@ void ButtonManager::Update(float deltaTime, const char* keys, const char* preKey
 	}
 
 	// 決定入力
-	bool decide = (preKeys[DIK_SPACE] == 0 && keys[DIK_SPACE]) ||
-		(preKeys[DIK_RETURN] == 0 && keys[DIK_RETURN]) ||
-		pad.Trigger(Pad::Button::A);
+	bool decide = (input.TriggerKey(DIK_SPACE)) ||
+		(input.TriggerKey(DIK_RETURN)) ||
+		input.GetPad()->Trigger(Pad::Button::A);
 
 	if (decide) {
 		if (onDecideSound_) {
@@ -85,16 +88,16 @@ void ButtonManager::Update(float deltaTime, const char* keys, const char* preKey
 	}
 
 	// 前フレームのパッド入力を保存
-	prevLY_ = pad.LeftY();
+	prevLY_ = input.GetPad()->GetLeftStick().y;
 }
 
-void ButtonManager::HandleKeyboardInput(const char* keys, const char* preKeys) {
-	if (buttons_.empty()) return;
-
+void ButtonManager::HandleKeyboardInput() {
+	auto& input = InputManager::GetInstance();
 	// 上キー（W）
-	if (!preKeys[DIK_W] && keys[DIK_W]) {
+	if (input.TriggerKey(DIK_W)) {
 		if (loopNavigation_) {
-			selectedIndex_ = (selectedIndex_ + static_cast<int>(buttons_.size()) - 1) % static_cast<int>(buttons_.size());
+
+			selectedIndex_ = static_cast<int>((selectedIndex_ + static_cast<int>(buttons_.size()) - 1) % static_cast<int>(buttons_.size()));
 		}
 		else {
 			selectedIndex_ = std::max(0, selectedIndex_ - 1);
@@ -102,9 +105,9 @@ void ButtonManager::HandleKeyboardInput(const char* keys, const char* preKeys) {
 	}
 
 	// 下キー（S）
-	if (!preKeys[DIK_S] && keys[DIK_S]) {
+	if (input.TriggerKey(DIK_S)) {
 		if (loopNavigation_) {
-			selectedIndex_ = (selectedIndex_ + 1) % static_cast<int>(buttons_.size());
+			selectedIndex_ = (selectedIndex_ + 1) % buttons_.size();
 		}
 		else {
 			selectedIndex_ = std::min(static_cast<int>(buttons_.size()) - 1, selectedIndex_ + 1);
@@ -112,41 +115,45 @@ void ButtonManager::HandleKeyboardInput(const char* keys, const char* preKeys) {
 	}
 }
 
-void ButtonManager::HandlePadInput(Pad& pad) {
-	if (buttons_.empty()) return;
+void ButtonManager::HandlePadInput() {
+	Pad* padPtr = InputManager::GetInstance().GetPad();
+	if (padPtr) {
+		float ly = padPtr->LeftY();
+		const float threshold = 0.5f;
 
-	float ly = pad.LeftY();
-	const float threshold = 0.5f;
+		// 上方向（スティックを上に倒す = Y軸+方向）
+		bool padUp = (prevLY_ <= threshold && ly > threshold) ||
+			padPtr->Trigger(Pad::Button::DPadUp);
 
-	// 上方向（スティックを上に倒す = Y軸+方向）
-	bool padUp = (prevLY_ <= threshold && ly > threshold) ||
-		pad.Trigger(Pad::Button::DPadUp);
+		// 下方向（スティックを下に倒す = Y軸-方向）
+		bool padDown = (prevLY_ >= -threshold && ly < -threshold) ||
+			padPtr->Trigger(Pad::Button::DPadDown);
 
-	// 下方向（スティックを下に倒す = Y軸-方向）
-	bool padDown = (prevLY_ >= -threshold && ly < -threshold) ||
-		pad.Trigger(Pad::Button::DPadDown);
-
-	if (padUp) {
-		if (loopNavigation_) {
-			selectedIndex_ = (selectedIndex_ + static_cast<int>(buttons_.size()) - 1) % static_cast<int>(buttons_.size());
+		if (padUp) {
+			if (loopNavigation_) {
+				selectedIndex_ = static_cast<int>((selectedIndex_ + static_cast<int>(buttons_.size()) - 1) % static_cast<int>(buttons_.size()));
+			}
+			else {
+				selectedIndex_ = std::max(0, selectedIndex_ - 1);
+			}
 		}
-		else {
-			selectedIndex_ = std::max(0, selectedIndex_ - 1);
-		}
-	}
 
-	if (padDown) {
-		if (loopNavigation_) {
-			selectedIndex_ = (selectedIndex_ + 1) % static_cast<int>(buttons_.size());
+		if (padDown) {
+			if (loopNavigation_) {
+				selectedIndex_ = (selectedIndex_ + 1) % buttons_.size();
+			}
+			else {
+				selectedIndex_ = std::min(static_cast<int>(buttons_.size()) - 1, selectedIndex_ + 1);
+			}
 		}
-		else {
-			selectedIndex_ = std::min(static_cast<int>(buttons_.size()) - 1, selectedIndex_ + 1);
-		}
+
+		prevLY_ = ly;
 	}
 }
 
-void ButtonManager::Draw(int textureHandle, FontAtlas* font, TextRenderer* textRenderer) {
+void ButtonManager::Draw() {
 	for (auto& button : buttons_) {
-		button.Draw(textureHandle, font, textRenderer);
+		button.Draw();
 	}
 }
+

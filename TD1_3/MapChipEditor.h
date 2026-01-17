@@ -11,16 +11,17 @@
 struct TileChangeLog {
     int col;
     int row;
-    int prevId; // 変更前のID
-    int newId;  // 変更後のID
-    TileLayer layer; // どのレイヤーの変更か
+    int prevId;
+    int newId;
+    TileLayer layer;
 };
 
 // ツールの種類
 enum class ToolMode {
-    Pen,        // 1マス配置（ドラッグで連続）
-    Bucket,     // 塗りつぶし
-    Rectangle   // 矩形塗りつぶし
+    Pen,
+    Bucket,
+    Rectangle,
+    Object
 };
 
 // 1回のアクション（一筆書き）をまとめたコマンド
@@ -30,49 +31,41 @@ struct EditCommand {
 
 class MapChipEditor {
 public:
-    // 初期化
     void Initialize();
-
-    // 更新＆描画
     void UpdateAndDrawImGui(MapData& mapData, Camera2D& camera);
-
-    // デバッグ用などに現在のツールを取得したい場合
     ToolMode GetCurrentTool() const { return currentMode_; }
 
 private:
     int selectedTileId_ = 1;
-
-    // 現在のツールモード
     ToolMode currentMode_ = ToolMode::Pen;
-
-    // 現在編集中のレイヤー
     TileLayer currentLayer_ = TileLayer::Block;
 
-    // --- Undo / Redo 用変数 ---
+    // オブジェクトモード用
+    int selectedObjectTypeId_ = 100;  // デフォルト: PlayerStart
+    int selectedObjectIndex_ = -1;    // 選択中のオブジェクトインデックス（-1=未選択）
+
+    // Undo / Redo用
     std::vector<EditCommand> undoStack_;
     std::vector<EditCommand> redoStack_;
     std::map<std::pair<int, int>, int> strokeCache_;
     bool isDragging_ = false;
 
-    // --- 矩形ツール用変数 ---
+    // 矩形ツール用
     int dragStartCol_ = -1;
     int dragStartRow_ = -1;
 
-    // --- 内部メソッド ---
+    // 内部メソッド
     void HandleInput(MapData& mapData, Camera2D& camera);
+    void HandleObjectMode(MapData& mapData, Camera2D& camera);
+    void DrawObjectPalette();
+    void DrawObjectList(MapData& mapData);
+
     void ExecuteUndo(MapData& mapData);
     void ExecuteRedo(MapData& mapData);
     void CommitStroke(MapData& mapData);
 
-    // 塗りつぶし処理
+    // ツール処理
     void ToolBucket(MapData& mapData, int col, int row, int newId);
-
-    // 矩形処理
-   // void ToolRectangle(MapData& mapData, Camera2D& camera, int col, int row);
-
-	// プレビュー＆適用処理
     void ToolRectanglePreview(MapData& mapData, Camera2D& camera, int col, int row);
-
-	// 適用処理
     void ToolRectangleApply(MapData& mapData, int endCol, int endRow);
 };

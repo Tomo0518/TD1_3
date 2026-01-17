@@ -43,6 +43,35 @@ enum class TextureId {
 	Background3_1,
 	Background3_2,
 
+	// ========================================
+	// UI用テクスチャ
+	// ========================================
+
+	// ========== ボタン ==========
+	UI_Button_Play,
+	UI_Button_Play_Selected,
+
+	UI_Button_StageSelect,
+	UI_Button_StageSelect_Selected,
+
+	UI_Button_Settings,
+	UI_Button_Settings_Selected,
+
+	UI_Button_Quit,
+	UI_Button_Quit_Selected,
+
+	UI_Button_Pause,
+	UI_Button_Pause_Selected,
+
+	UI_Button_Resume,
+	UI_Button_Resume_Selected,
+
+	UI_Button_Retry,
+	UI_Button_Retry_Selected,
+
+	UI_Button_Title,
+	UI_Button_Title_Selected,
+
 	None,		// テクスチャなし用
 	Count,	// 最後
 };

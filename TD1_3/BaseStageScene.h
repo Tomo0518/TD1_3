@@ -13,7 +13,7 @@ class SceneManager;
 /// - カメラ管理
 /// - 共通の更新処理
 /// </summary>
-class BaseStageScene : public IGameScene {
+class BaseStageScene : public IScene {
 public:
 	BaseStageScene(SceneManager& manager, int stageIndex);
 	virtual ~BaseStageScene();
