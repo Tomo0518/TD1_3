@@ -123,6 +123,13 @@ void MapData::RemoveObjectSpawn(size_t index) {
     }
 }
 
+void MapData::UpdateObjectSpawnPosition(size_t index, const Vector2& newPosition) {
+    if (index < objectSpawns_.size()) {
+        objectSpawns_[index].position = newPosition;
+    }
+}
+
+
 const std::vector<std::vector<int>>* MapData::GetLayerData(TileLayer layer) const {
     switch (layer) {
     case TileLayer::Background: return &tilesBackground_;

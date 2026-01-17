@@ -30,8 +30,11 @@ public:
 	void RequestTransition(SceneType targetScene);
 	void RequestQuit() { shouldQuit_ = true; }
 
-	// リトライ
-	void RequestRetryScene();
+	// プレイをリトライ(ポーズのボタンから使用)
+	void RequestRetry();
+
+	// ポーズからタイトルへの処理
+	void RequestPauseToTitle();
 
 	// ======================
 	// ポーズシステム
@@ -61,6 +64,7 @@ private:
 
 	// 遷移リクエスト
 	std::optional<SceneTransition> pendingTransition_;
+	bool pendingOverlayClear_ = false;
 
 	// 共有リソース
 	GameShared shared_;

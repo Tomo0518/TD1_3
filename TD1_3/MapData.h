@@ -66,6 +66,12 @@ public:
     /// </summary>
     void RemoveObjectSpawn(size_t index);
 
+
+	/// <summary>
+	/// オブジェクトスポーンの位置を更新（インデックス指定）
+	/// </summary>
+    void UpdateObjectSpawnPosition(size_t index, const Vector2& newPosition);
+
     /// <summary>
     /// オブジェクトスポーンを全削除
     /// </summary>

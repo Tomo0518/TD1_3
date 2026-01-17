@@ -86,10 +86,10 @@ void TitleScene::InitializeButtons() {
 	//grHandleButton_ = shared_.texWhite;
 
 	// ボタンの位置とサイズ
-	const float centerX = 1080.0f;
+	const float centerX = 1130.0f;
 	const float startY = 400.0f;
 	const float buttonSpacing = 80.0f;
-	const Vector2 buttonSize = { 270.0f, 60.0f };
+	const Vector2 buttonSize = { 270.0f, 80.0f };
 
 	auto goToGamePlay = [&]() {
 		sceneManager_.RequestTransition(SceneType::GamePlay);

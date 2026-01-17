@@ -35,6 +35,13 @@ void SceneManager::Update(float dt, const char* keys, const char* pre) {
 	// オーバーレイがある場合はそちらを優先
 	if (!overlayScenes_.empty()) {
 		overlayScenes_.back()->Update(dt, keys, pre);
+
+		// Update完了後に遅延クリア処理を実行
+		if (pendingOverlayClear_) {
+			overlayScenes_.clear();
+			pendingOverlayClear_ = false;
+		}
+
 		// オーバーレイ表示中は実際の切り替えは行わない
 		return;
 	}
@@ -62,11 +69,19 @@ void SceneManager::RequestTransition(SceneType targetScene) {
 	pendingTransition_ = SceneTransition{ targetScene };
 }
 
-void SceneManager::RequestRetryScene() {
-	if (currentSceneType_ == SceneType::GamePlay) {
-		pendingTransition_ = SceneTransition{ SceneType::GamePlay };
-	}
+void SceneManager::RequestRetry() {
+	// オーバーレイクリアを遅延実行に変更
+	pendingOverlayClear_ = true;
+	RequestTransition(currentSceneType_);
 }
+
+void SceneManager::RequestPauseToTitle() {
+	// オーバーレイクリアを遅延実行に変更
+	pendingOverlayClear_ = true;
+	RequestTransition(SceneType::Title);
+}
+
+
 
 //void SceneManager::RequestStage(int stageIndex) {
 //	pendingStageIndex_ = stageIndex;

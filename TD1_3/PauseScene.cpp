@@ -2,6 +2,7 @@
 #include "SceneManager.h"
 #include "SettingScene.h"
 #include <Novice.h>
+#include "SceneUtilityIncludes.h"
 
 PauseScene::PauseScene(SceneManager& manager, IScene& underlying, GameShared& shared)
 	: manager_(manager), underlying_(underlying), shared_(shared) {
@@ -12,17 +13,17 @@ PauseScene::PauseScene(SceneManager& manager, IScene& underlying, GameShared& sh
 
 void PauseScene::InitializeButtons() {
 	// ボタン画像読み込み
-	int resume = Novice::LoadTexture("./Resources/images/pause/RESUME_default_ver2.png");
-	int resumeSelected = Novice::LoadTexture("./Resources/images/pause/RESUME_selected_ver2.png");
+	int resume = Tex().GetTexture(TextureId::UI_Button_Resume);
+	int resumeSelected = Tex().GetTexture(TextureId::UI_Button_Resume_Selected);
 
-	int retry = Novice::LoadTexture("./Resources/images/pause/RETRY_default_ver2.png");
-	int retrySelected = Novice::LoadTexture("./Resources/images/pause/RETRY_selsected_ver2.png");
+	int retry = Tex().GetTexture(TextureId::UI_Button_Retry);
+	int retrySelected = Tex().GetTexture(TextureId::UI_Button_Retry_Selected);
 
-	int settings = Novice::LoadTexture("./Resources/images/pause/SETTING_default_ver2.png");
-	int settingsSelected = Novice::LoadTexture("./Resources/images/pause/SETTING_selected_ver2.png");
+	int settings = Tex().GetTexture(TextureId::UI_Button_Settings);
+	int settingsSelected = Tex().GetTexture(TextureId::UI_Button_Settings_Selected);
 
-	int title = Novice::LoadTexture("./Resources/images/pause/TITLE_default_ver2.png");
-	int titleSelected = Novice::LoadTexture("./Resources/images/pause/TITLE_selected_ver2.png");
+	int title = Tex().GetTexture(TextureId::UI_Button_Title);
+	int titleSelected = Tex().GetTexture(TextureId::UI_Button_Title_Selected);	
 
 	const float centerX = 640.0f;
 	const float startY = 200.0f;
@@ -45,10 +46,10 @@ void PauseScene::InitializeButtons() {
 		retry,
 		retrySelected,
 		[this]() {
-			manager_.PopOverlay();
-			manager_.RequestTransition(SceneType::GamePlay);
+			manager_.RequestRetry();
 		}
 	);
+
 
 	// Settings: 設定画面を開く
 	buttonManager_->AddButton(
@@ -61,6 +62,7 @@ void PauseScene::InitializeButtons() {
 			manager_.PushOverlay(std::move(settingScene));
 		}
 	);
+
 	// Title: タイトルに戻る
 	buttonManager_->AddButton(
 		Vector2{ centerX, startY + buttonSpacing * 3 },
@@ -68,8 +70,7 @@ void PauseScene::InitializeButtons() {
 		title,
 		titleSelected,
 		[this]() {
-			manager_.PopOverlay();
-			manager_.RequestTransition(SceneType::Title);
+			manager_.RequestPauseToTitle();
 		}
 	);
 

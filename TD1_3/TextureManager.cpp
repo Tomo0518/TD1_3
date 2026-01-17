@@ -117,6 +117,24 @@ void TextureManager::LoadResources() {
 		textureResources_[static_cast<int>(TextureId::UI_Button_StageSelect_Selected)] =
 			Novice::LoadTexture("./Resources/images/ui/button/notTexture_selected.png");
 
+		// Resumeボタン
+		textureResources_[static_cast<int>(TextureId::UI_Button_Resume)] =
+			Novice::LoadTexture("./Resources/images/ui/button/resume_default.png");
+		textureResources_[static_cast<int>(TextureId::UI_Button_Resume_Selected)] =
+			Novice::LoadTexture("./Resources/images/ui/button/resume_selected.png");
+
+		// Retryボタン
+		textureResources_[static_cast<int>(TextureId::UI_Button_Retry)] =
+			Novice::LoadTexture("./Resources/images/ui/button/retry_default.png");
+		textureResources_[static_cast<int>(TextureId::UI_Button_Retry_Selected)] =
+			Novice::LoadTexture("./Resources/images/ui/button/retry_selected.png");
+
+		// Titleボタン
+		textureResources_[static_cast<int>(TextureId::UI_Button_Title)] =
+			Novice::LoadTexture("./Resources/images/ui/button/title_default.png");
+		textureResources_[static_cast<int>(TextureId::UI_Button_Title_Selected)] =
+			Novice::LoadTexture("./Resources/images/ui/button/title_selected.png");
+
 		// Pauseボタン
 		//textureResources_[static_cast<int>(TextureId::UI_Button_Pause)] =
 		//	Novice::LoadTexture("./Resources/images/ui/button/pause_default.png");

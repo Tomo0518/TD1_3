@@ -43,6 +43,14 @@ void MapChip::Draw(Camera2D& camera) {
 	DrawLayer(camera, TileLayer::Block);
 }
 
+void MapChip::Draw(Camera2D& camera, const MapData& mapData) {
+	if (!mapData_) return;
+	mapData_ = const_cast<MapData*>(&mapData);
+
+	DrawLayer(camera, TileLayer::Decoration);
+	DrawLayer(camera, TileLayer::Block);
+}
+
 // --- カリング範囲計算 ---
 MapChip::CullingRange MapChip::CalculateCullingRange(Camera2D& camera, int width, int height,
 	float tileSize, int marginTiles) const {

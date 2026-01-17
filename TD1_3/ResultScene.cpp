@@ -83,7 +83,7 @@ void ResultScene::InitializeButtons() {
 	auto retry = [&]() {
 		Sound().StopBgm();
 
-		manager_.RequestRetryScene();
+		manager_.RequestTransition(SceneType::GamePlay);
 		};
 
 	// タイトルへ

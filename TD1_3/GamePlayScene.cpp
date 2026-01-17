@@ -5,7 +5,10 @@
 #include <Novice.h>
 
 #include "Player.h"
+#include "WorldOrigin.h"
 #include "ParticleManager.h"
+
+#include "PhysicsManager.h"
 
 #include "SceneUtilityIncludes.h"
 
@@ -30,9 +33,10 @@ void GamePlayScene::Initialize() {
 
 	objectManager_.Clear();
 	player_ = nullptr;
+	worldOrigin_ = nullptr;
 
 	// --- マップシステムの初期化 ---
-	// 1. エディタ初期化（タイル定義のロード）
+		// 1. エディタ初期化（タイル定義のロード）
 	mapEditor_.Initialize();
 
 	// 2. マップデータ読み込み
@@ -42,7 +46,7 @@ void GamePlayScene::Initialize() {
 	mapChip_.Initialize();
 
 	InitializeCamera();
-	InitializeObjects(); // ここでPlayer生成（マップデータから自動生成）
+	InitializeObjects(); // ここでObject生成（マップデータから自動生成）
 	InitializeBackground();
 }
 
@@ -69,6 +73,13 @@ void GamePlayScene::InitializeObjects() {
 		player_->SetPosition({ 640.0f, 560.0f });
 	}*/
 
+	// WorldOriginが見つからない場合はデフォルト位置に生成
+	if (!worldOrigin_) {
+		Novice::ConsolePrintf("[GamePlayScene] No WorldOrigin found, creating at default position\n");
+		worldOrigin_ = objectManager_.Spawn<WorldOrigin>(nullptr,"WorldOrigin");
+		worldOrigin_->SetPosition({ 640.0f, 360.0f });
+	}
+
 	// カメラ追従設定
 	if (camera_ && player_) {
 		camera_->SetTarget(&player_->GetPositionRef());
@@ -77,6 +88,15 @@ void GamePlayScene::InitializeObjects() {
 
 void GamePlayScene::SpawnObjectFromData(const ObjectSpawnInfo& spawn) {
 	switch (spawn.objectTypeId) {
+	case 0: // WorldOrigin（拠点・ワールド座標の原点）
+		if (!worldOrigin_) {
+			worldOrigin_ = objectManager_.Spawn<WorldOrigin>(nullptr,"WorldOrigin");
+			worldOrigin_->SetPosition(spawn.position);
+			Novice::ConsolePrintf("[GamePlayScene] Spawned WorldOrigin at (%.1f, %.1f)\n",
+				spawn.position.x, spawn.position.y);
+		}
+		break;
+
 	case 100: // PlayerStart
 		if (!player_) {
 			player_ = objectManager_.Spawn<Player>(nullptr, "Player");
@@ -86,14 +106,10 @@ void GamePlayScene::SpawnObjectFromData(const ObjectSpawnInfo& spawn) {
 		}
 		break;
 
-		// 今後追加するオブジェクトタイプはここに追加
+		// 追加するオブジェクトタイプはここに追加
 		// case 101: // Enemy_Normal
 		//     auto* enemy = objectManager_.Spawn<Enemy>(nullptr, "Enemy");
 		//     enemy->SetPosition(spawn.position);
-		//     // customDataから追加パラメータを設定
-		//     if (spawn.customData.contains("patrolRange")) {
-		//         enemy->SetPatrolRange(spawn.customData["patrolRange"]);
-		//     }
 		//     break;
 
 	default:
@@ -165,13 +181,13 @@ void GamePlayScene::Update(float dt, const char* keys, const char* pre) {
 	// GameObjectManager 経由で更新
 	objectManager_.Update(dt);
 
-	// --- 当たり判定（物理演算）---
-	// オブジェクトが移動した後、マップとのめり込みを解消する
+	// 当たり判定（物理演算)
+	// オブジェクトが移動した後、マップとのめり込みを解消
 	if (player_) {
 		PhysicsManager::ResolveMapCollision(player_, mapData_);
 	}
 
-	// GameObjectManager 経由でオブジェクト更新（移動処理）
+	// GameObjectManager でオブジェクト更新（移動処理）
 	objectManager_.Update(dt);
 
 	// パーティクル
@@ -203,7 +219,7 @@ void GamePlayScene::Draw() {
 
 	// --- マップ描画 ---
 	// オブジェクトより奥（背景より手前）に描画
-	mapChip_.Draw(*camera_);
+	mapChip_.Draw(*camera_, mapData_);
 
 	particleManager_->Draw(*camera_);
 

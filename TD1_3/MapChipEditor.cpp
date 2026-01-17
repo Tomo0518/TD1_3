@@ -22,7 +22,7 @@ void MapChipEditor::Initialize() {
     TileRegistry::Initialize();
     ObjectRegistry::Initialize();
     selectedTileId_ = 1;
-    selectedObjectTypeId_ = 100;
+    selectedObjectTypeId_ = 0;
     selectedObjectIndex_ = -1;
     currentMode_ = ToolMode::Pen;
     currentLayer_ = TileLayer::Block;
@@ -243,17 +243,15 @@ void MapChipEditor::DrawObjectList(MapData& mapData) {
 }
 
 void MapChipEditor::HandleObjectMode(MapData& mapData, Camera2D& camera) {
-    if (ImGui::GetIO().WantCaptureMouse) return;
-
-    // マウス位置取得
-    int mouseX, mouseY;
-    Novice::GetMousePosition(&mouseX, &mouseY);
-    Vector2 worldPos = camera.ScreenToWorld({ (float)mouseX, (float)mouseY });
-
     // 配置済みオブジェクトの描画（マップ上にアイコン表示）
+    // この部分はマウスキャプチャに関係なく常に描画
     const auto& spawns = mapData.GetObjectSpawns();
     for (size_t i = 0; i < spawns.size(); ++i) {
         const auto& spawn = spawns[i];
+
+        // ObjectRegistryから色を取得
+        const auto* objType = ObjectRegistry::GetObjectType(spawn.objectTypeId);
+        unsigned int baseColor = objType ? objType->color : 0x0000FFFF;
 
         // アイコンサイズ（32x32ピクセル）
         const float iconSize = 32.0f;
@@ -263,8 +261,8 @@ void MapChipEditor::HandleObjectMode(MapData& mapData, Camera2D& camera) {
         Vector2 screenMin = camera.WorldToScreen(iconWorldMin);
         Vector2 screenMax = camera.WorldToScreen(iconWorldMax);
 
-        // アイコンの色（選択中は黄色、それ以外は青）
-        unsigned int color = (selectedObjectIndex_ == (int)i) ? 0xFFFF00FF : 0x0000FFFF;
+        // 選択中は黄色、それ以外はオブジェクトタイプの色
+        unsigned int color = (selectedObjectIndex_ == (int)i) ? 0xFFFF00FF : baseColor;
 
         Novice::DrawBox(
             (int)screenMin.x, (int)screenMin.y,
@@ -279,6 +277,15 @@ void MapChipEditor::HandleObjectMode(MapData& mapData, Camera2D& camera) {
             4, 4, 0.0f, color, kFillModeSolid
         );
     }
+
+    // --- ここから入力処理 ---
+    // マウスがImGuiウィンドウ上にある場合は入力処理をスキップ
+    if (ImGui::GetIO().WantCaptureMouse) return;
+
+    // マウス位置取得
+    int mouseX, mouseY;
+    Novice::GetMousePosition(&mouseX, &mouseY);
+    Vector2 worldPos = camera.ScreenToWorld({ (float)mouseX, (float)mouseY });
 
     // 左クリック：オブジェクト配置
     if (Novice::IsTriggerMouse(0)) {
@@ -302,10 +309,38 @@ void MapChipEditor::HandleObjectMode(MapData& mapData, Camera2D& camera) {
         if (!clickedExisting) {
             const auto* objType = ObjectRegistry::GetObjectType(selectedObjectTypeId_);
             std::string tag = objType ? objType->tag : "";
-            mapData.AddObjectSpawn(selectedObjectTypeId_, worldPos, tag);
-            selectedObjectIndex_ = -1;
-            Novice::ConsolePrintf("[MapEditor] Placed object type %d at (%.1f, %.1f)\n",
-                selectedObjectTypeId_, worldPos.x, worldPos.y);
+
+            // WorldOrigin (0) と PlayerStart (100) は1つまで
+            if (selectedObjectTypeId_ == 0 || selectedObjectTypeId_ == 100) {
+                // 既存の同じタイプを探す
+                bool alreadyExists = false;
+                for (size_t i = 0; i < spawns.size(); ++i) {
+                    if (spawns[i].objectTypeId == selectedObjectTypeId_) {
+                        // 既に存在する場合は位置を更新（移動）
+                        mapData.UpdateObjectSpawnPosition(i, worldPos);
+                        selectedObjectIndex_ = (int)i;
+                        alreadyExists = true;
+                        Novice::ConsolePrintf("[MapEditor] Moved %s to (%.1f, %.1f)\n",
+                            objType->name.c_str(), worldPos.x, worldPos.y);
+                        break;
+                    }
+                }
+
+                // 存在しない場合は新規配置
+                if (!alreadyExists) {
+                    mapData.AddObjectSpawn(selectedObjectTypeId_, worldPos, tag);
+                    selectedObjectIndex_ = -1;
+                    Novice::ConsolePrintf("[MapEditor] Placed %s at (%.1f, %.1f)\n",
+                        objType->name.c_str(), worldPos.x, worldPos.y);
+                }
+            }
+            // それ以外のオブジェクトは複数配置可能
+            else {
+                mapData.AddObjectSpawn(selectedObjectTypeId_, worldPos, tag);
+                selectedObjectIndex_ = -1;
+                Novice::ConsolePrintf("[MapEditor] Placed object type %d at (%.1f, %.1f)\n",
+                    selectedObjectTypeId_, worldPos.x, worldPos.y);
+            }
         }
     }
 
@@ -322,9 +357,7 @@ void MapChipEditor::HandleObjectMode(MapData& mapData, Camera2D& camera) {
 }
 
 void MapChipEditor::HandleInput(MapData& mapData, Camera2D& camera) {
-    if (ImGui::GetIO().WantCaptureMouse) return;
-
-    // マウス位置の計算
+    // マウス位置の計算（描画に必要なので常に実行）
     int mouseX, mouseY;
     Novice::GetMousePosition(&mouseX, &mouseY);
     Vector2 worldPos = camera.ScreenToWorld({ (float)mouseX, (float)mouseY });
@@ -333,6 +366,8 @@ void MapChipEditor::HandleInput(MapData& mapData, Camera2D& camera) {
 
     // 範囲外なら何もしない（矩形のドラッグ中は除く）
     bool isInside = (col >= 0 && col < mapData.GetWidth() && row >= 0 && row < mapData.GetHeight());
+
+    // --- 描画処理（マウスキャプチャに関係なく実行）---
 
     // Penツール用：ホバーしている1マスを常にプレビュー表示
     if (currentMode_ == ToolMode::Pen && isInside) {
@@ -344,6 +379,15 @@ void MapChipEditor::HandleInput(MapData& mapData, Camera2D& camera) {
 
         DrawSelectionRect_(camera, startX, startY, endX, endY, 0x00FF0080, 0x00FF00FF); // 緑の半透明＋枠
     }
+
+    // 矩形ツールのプレビュー（ドラッグ中）
+    if (currentMode_ == ToolMode::Rectangle && isDragging_ && Novice::IsPressMouse(0)) {
+        ToolRectanglePreview(mapData, camera, col, row);
+    }
+
+    // --- ここから入力処理 ---
+    // マウスがImGuiウィンドウ上にある場合は入力処理をスキップ
+    if (ImGui::GetIO().WantCaptureMouse) return;
 
     // --- Penツール：右クリックで削除（tile=0） ---
     if (currentMode_ == ToolMode::Pen && isInside) {
@@ -390,7 +434,7 @@ void MapChipEditor::HandleInput(MapData& mapData, Camera2D& camera) {
         }
     }
 
-    // ドラッグ中（ペン or 矩形プレビュー）
+    // ドラッグ中（ペンのみ、矩形プレビューは上で描画済み）
     if (Novice::IsPressMouse(0) && isDragging_) {
         if (currentMode_ == ToolMode::Pen && isInside) {
             int currentId = mapData.GetTile(col, row, currentLayer_);
@@ -401,10 +445,6 @@ void MapChipEditor::HandleInput(MapData& mapData, Camera2D& camera) {
                 }
                 mapData.SetTile(col, row, selectedTileId_, currentLayer_);
             }
-        }
-        else if (currentMode_ == ToolMode::Rectangle) {
-            // プレビュー表示のみ
-            ToolRectanglePreview(mapData, camera, col, row);
         }
     }
 

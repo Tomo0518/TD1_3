@@ -56,7 +56,6 @@ public:
         return rawPtr;
     }
 
-
 	// MapDataから
 	//void SpawnFromMapData() {
 	//	const MapData& mapData = MapData::GetInstance();
