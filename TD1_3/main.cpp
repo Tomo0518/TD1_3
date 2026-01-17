@@ -12,7 +12,7 @@
 
 #include "Camera2D.h"
 
-const char kWindowTitle[] = "LC1A_30_ムラセ_トモキ";
+const char kWindowTitle[] = "==============ゲームタイトル==============";
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
