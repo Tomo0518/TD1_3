@@ -487,7 +487,7 @@ void ParticleManager::Draw(const Camera2D& camera) {
 	Matrix3x3 vpMatrix = camera.GetVpVpMatrix();
 
 	// ズーム倍率（描画サイズにも反映させる）
-	const float cameraZoom = 1.0f / camera.GetZoom();
+	const float cameraZoom = camera.GetZoom();
 
 	// パーティクルタイプごとにブレンドモードをグループ化して描画
 	for (auto it = params_.begin(); it != params_.end(); ++it) {

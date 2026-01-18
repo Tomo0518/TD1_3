@@ -61,6 +61,22 @@ public:
 	static void Initialize() {
 		tiles_.clear();
 
+		// ==================================
+		// タイル定義登録方法
+		// ==================================
+		//struct TileDefinition {
+		//	int id;                 // ID
+		//	std::string name;       // エディタ表示名
+		//	TextureId textureId;    // TextureManagerで使うID
+		//	TileType type;          // 種類
+		//	bool isSolid;           // 当たり判定
+		//	TileLayer layer;		// 所属するレイヤー
+		//	Vector2 drawOffset;		// 描画オフセット
+		//	RenderMode renderMode;	// 描画モード(MapChipかComponentか)
+		//	TileAnimConfig animConfig{
+		//		true(), 8, 1, 8, 0.15f,true,{0.5f, 0.8f}}; // アニメーション設定
+		//};
+
 		// ID:0 空気 (テクスチャなし)
 		tiles_.push_back({
 			0, "Air",
@@ -68,7 +84,8 @@ public:
 			TileType::None,
 			false,
 			TileLayer::Block,
-			{0.0f, 0.0f}
+			{0.0f, 0.0f},
+			RenderMode::Simple,{}
 			});
 
 		// ID:1 地面 (オートタイル)
