@@ -8,7 +8,6 @@
 
 #include "SoundManager.h"
 #include "TextureManager.h"
-#include "ParticleManager.h"
 
 #include "Camera2D.h"
 
@@ -21,7 +20,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Novice::Initialize(kWindowTitle, (int)kWindowWidth, (int)kWindowHeight);
 
 	const float kDeltaTime = 1.0f / 60.0f;
-
 	SceneManager sceneManager;
 
 	//Novice::SetWindowMode(kFullscreen);
