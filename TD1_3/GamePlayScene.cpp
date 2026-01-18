@@ -48,6 +48,11 @@ void GamePlayScene::Initialize() {
 	InitializeCamera();
 	InitializeObjects(); // ここでObject生成（マップデータから自動生成）
 	InitializeBackground();
+
+	// カメラ初期位置設定
+	if (player_) {
+		camera_->SetPosition(player_->GetPosition());
+	}
 }
 
 void GamePlayScene::InitializeCamera() {
