@@ -217,36 +217,56 @@ void DrawComponent2D::Initialize() {
 void DrawComponent2D::DrawInternal(const Matrix3x3* vpMatrix) {
 	if (graphHandle_ < 0) return;
 
+	// 1. ソース矩形（テクスチャのどこを読むか）を計算
+	int srcX, srcY, srcW, srcH;
+	GetSourceRect(srcX, srcY, srcW, srcH); // アニメーション対応：現在のフレームの座標を取得
+
+	// 2. クロップ計算（ソースと描画サイズの両方に適用する！）
+	float currentSrcW = static_cast<float>(srcW);
+	float currentSrcH = static_cast<float>(srcH);
+
+	// 描画サイズも変更するための変数を用意
+	float currentDrawW = drawSize_.x;
+	float currentDrawH = drawSize_.y;
+
+	if (cropDirection_ == CropDirection::Horizontal) {
+		// 幅を削る
+		currentSrcW *= cropRatio_; // テクスチャを削る
+		currentDrawW *= cropRatio_; // 画面上の表示幅も削る
+	}
+	else {
+		// 高さを削る
+		currentSrcH *= cropRatio_;
+		currentDrawH *= cropRatio_;
+	}
+
+	// 3. 頂点座標を計算（削った currentDrawW/H を使う）
+	Vector2 localVertices[4];
+
+	// アンカーポイントのオフセット計算
+	// ※注意：HPバーの場合、AnchorPointは {0.0f, 0.5f} (左) に設定しないと、
+	float anchorOffsetX = drawSize_.x * anchorPoint_.x;
+	float anchorOffsetY = drawSize_.y * anchorPoint_.y;
+
+	localVertices[0] = { -anchorOffsetX, -anchorOffsetY };                // 左上
+	localVertices[1] = { currentDrawW - anchorOffsetX, -anchorOffsetY };  // 右上 (width変更)
+	localVertices[2] = { currentDrawW - anchorOffsetX, currentDrawH - anchorOffsetY }; // 右下 (width/height変更)
+	localVertices[3] = { -anchorOffsetX, currentDrawH - anchorOffsetY };  // 左下 (height変更)
+
+	// --- ここから下は変更なし（行列計算など） ---
+
 	// エフェクト適用後の変換行列を取得
 	Matrix3x3 worldMatrix = GetFinalTransformMatrix();
-
-	// カメラ行列を適用
 	Matrix3x3 finalMatrix = worldMatrix;
 	if (vpMatrix) {
 		finalMatrix = Matrix3x3::Multiply(worldMatrix, *vpMatrix);
 	}
-
-	// 頂点座標を計算
-	Vector2 localVertices[4];
-
-	// アンカーポイントを考慮したローカル座標
-	float anchorOffsetX = drawSize_.x * anchorPoint_.x;
-	float anchorOffsetY = drawSize_.y * anchorPoint_.y;
-
-	localVertices[0] = { -anchorOffsetX, -anchorOffsetY };               // 左上
-	localVertices[1] = { drawSize_.x - anchorOffsetX, -anchorOffsetY };  // 右上
-	localVertices[2] = { drawSize_.x - anchorOffsetX, drawSize_.y - anchorOffsetY }; // 右下
-	localVertices[3] = { -anchorOffsetX, drawSize_.y - anchorOffsetY };  // 左下
 
 	// 変換行列を適用
 	Vector2 screenVertices[4];
 	for (int i = 0; i < 4; ++i) {
 		screenVertices[i] = Matrix3x3::Transform(localVertices[i], finalMatrix);
 	}
-
-	// ソース矩形を取得
-	int srcX, srcY, srcW, srcH;
-	GetSourceRect(srcX, srcY, srcW, srcH);
 
 	// 反転処理
 	if (flipX_) {
@@ -258,18 +278,17 @@ void DrawComponent2D::DrawInternal(const Matrix3x3* vpMatrix) {
 		std::swap(screenVertices[1], screenVertices[2]);
 	}
 
-	// 最終的な色を取得
-	unsigned int finalColor = GetFinalColor();
-
 	// 描画
 	Novice::DrawQuad(
 		static_cast<int>(screenVertices[0].x), static_cast<int>(screenVertices[0].y),
 		static_cast<int>(screenVertices[1].x), static_cast<int>(screenVertices[1].y),
 		static_cast<int>(screenVertices[3].x), static_cast<int>(screenVertices[3].y),
 		static_cast<int>(screenVertices[2].x), static_cast<int>(screenVertices[2].y),
-		srcX, srcY, srcW, srcH,
+		srcX, srcY, // アニメーションの開始位置はそのまま
+		static_cast<int>(currentSrcW), // 削った幅
+		static_cast<int>(currentSrcH), // 削った高さ
 		graphHandle_,
-		finalColor
+		GetFinalColor()
 	);
 }
 

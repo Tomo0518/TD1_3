@@ -61,6 +61,8 @@ private:
 	
 	float radius_ = 32.0f;
 
+	float gaugeRatio_ = 1.0f; // ゲージ表示用
+
 	// ========== 描画コンポーネント ==========
 	/*DrawComponent2D* drawComp_ = nullptr;
 	int textureHandle_ = -1;*/

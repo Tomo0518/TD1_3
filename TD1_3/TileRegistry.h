@@ -74,7 +74,8 @@ public:
 		//	Vector2 drawOffset;		// 描画オフセット
 		//	RenderMode renderMode;	// 描画モード(MapChipかComponentか)
 		//	TileAnimConfig animConfig{
-		//		true(), 8, 1, 8, 0.15f,true,{0.5f, 0.8f}}; // アニメーション設定
+		//		true(アニメーションあるかどうか), 8(スプライトシートの横), 1(縦), 8(総フレーム数),
+		//		0.15f(アニメーション速度),true(ループするかどうか),{0.5f, 0.8f}(アンカーポイントの位置)};
 		//};
 
 		// ID:0 空気 (テクスチャなし)

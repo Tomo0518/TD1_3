@@ -1,6 +1,7 @@
 ﻿#include "Player.h"
 #include "Camera2D.h"
 #include <Novice.h>
+#include <algorithm>
 
 #include "SceneUtilityIncludes.h"
 
@@ -12,8 +13,7 @@ Player::Player() {
 	drawComp_ = new DrawComponent2D(Tex().GetTexture(TextureId::PlayerAnimeNormal), 5, 1, 5, 0.1f, true);
 
 	// 初期設定
-	drawComp_->SetPosition(transform_.translate);
-	drawComp_->SetScale({ 1.0f, 1.0f });  // 2倍サイズで描画
+	drawComp_->SetTransform(transform_);
 	drawComp_->SetAnchorPoint({ 0.5f, 0.5f });  // 中心を基準点に
 }
 
@@ -69,68 +69,81 @@ void Player::Update(float deltaTime) {
 
 	// ========== エフェクトテスト用のキー入力 ==========
 
-		// Q: シェイクエフェクト
-	if (Input().TriggerKey(DIK_Q)) {
-		drawComp_->StartShake(10.0f, 0.3f);
+	if (Input().PressKey(DIK_SPACE)) {
+  		gaugeRatio_ -= 0.01f;
+		transform_.rotation -= 0.004f;
+
+		gaugeRatio_ = std::clamp(gaugeRatio_, 0.0f, 1.0f);
+	}
+	else {
+		gaugeRatio_ += 0.01f;
+		gaugeRatio_ = std::clamp(gaugeRatio_, 0.0f, 1.0f);
 	}
 
-	// E: 回転エフェクト
-	if (Input().TriggerKey(DIK_R)) {
-		if (drawComp_->IsRotationActive()) {
-			drawComp_->StopRotation();
-		}
-		else {
-			drawComp_->StartRotationContinuous(3.0f);
-		}
-	}
+	drawComp_->SetCropRatio(gaugeRatio_);
 
-	// T: パルス（拡大縮小）
-	if (Input().TriggerKey(DIK_E)) {
-		if (drawComp_->IsScaleEffectActive()) {
-			drawComp_->StopScale();
-		}
-		else {
-			drawComp_->StartPulse(0.8f, 1.2f, 3.0f, true);
-		}
-	}
+	//	// Q: シェイクエフェクト
+	//if (Input().TriggerKey(DIK_Q)) {
+	//	drawComp_->StartShake(10.0f, 0.3f);
+	//}
 
-	// Y: フラッシュ（白）
-	if (Input().TriggerKey(DIK_Y)) {
-		drawComp_->StartFlash(ColorRGBA::White(), 0.2f, 0.8f);
-	}
+	//// E: 回転エフェクト
+	//if (Input().TriggerKey(DIK_R)) {
+	//	if (drawComp_->IsRotationActive()) {
+	//		drawComp_->StopRotation();
+	//	}
+	//	else {
+	//		drawComp_->StartRotationContinuous(3.0f);
+	//	}
+	//}
 
-	// U: ヒットエフェクト（複合）
-	if (Input().TriggerKey(DIK_U)) {
-		drawComp_->StartHitEffect();
-	}
+	//// T: パルス（拡大縮小）
+	//if (Input().TriggerKey(DIK_E)) {
+	//	if (drawComp_->IsScaleEffectActive()) {
+	//		drawComp_->StopScale();
+	//	}
+	//	else {
+	//		drawComp_->StartPulse(0.8f, 1.2f, 3.0f, true);
+	//	}
+	//}
 
-	// I: 色変更（赤）
-	if (Input().TriggerKey(DIK_I)) {
-		drawComp_->StartColorTransition(ColorRGBA::Red(), 0.5f);
-	}
+	//// Y: フラッシュ（白）
+	//if (Input().TriggerKey(DIK_Y)) {
+	//	drawComp_->StartFlash(ColorRGBA::White(), 0.2f, 0.8f);
+	//}
 
-	// O: 色リセット（白）
-	if (Input().TriggerKey(DIK_O)) {
-		drawComp_->StartColorTransition(ColorRGBA::White(), 0.5f);
-	}
+	//// U: ヒットエフェクト（複合）
+	//if (Input().TriggerKey(DIK_U)) {
+	//	drawComp_->StartHitEffect();
+	//}
 
-	// P: フェードアウト
-	if (Input().TriggerKey(DIK_P)) {
-		drawComp_->StartFadeOut(1.0f);
-	}
+	//// I: 色変更（赤）
+	//if (Input().TriggerKey(DIK_I)) {
+	//	drawComp_->StartColorTransition(ColorRGBA::Red(), 0.5f);
+	//}
 
-	// L: フェードイン
-	if (Input().TriggerKey(DIK_L)) {
-		drawComp_->StartFadeIn(0.5f);
-	}
+	//// O: 色リセット（白）
+	//if (Input().TriggerKey(DIK_O)) {
+	//	drawComp_->StartColorTransition(ColorRGBA::White(), 0.5f);
+	//}
 
-	// F: 全エフェクトリセット
-	if (Input().TriggerKey(DIK_F)) {
-		drawComp_->StopAllEffects();
-	}
+	//// P: フェードアウト
+	//if (Input().TriggerKey(DIK_P)) {
+	//	drawComp_->StartFadeOut(1.0f);
+	//}
+
+	//// L: フェードイン
+	//if (Input().TriggerKey(DIK_L)) {
+	//	drawComp_->StartFadeIn(0.5f);
+	//}
+
+	//// F: 全エフェクトリセット
+	//if (Input().TriggerKey(DIK_F)) {
+	//	drawComp_->StopAllEffects();
+	//}
 
 	// DrawComponent2D の位置を更新
-	drawComp_->SetPosition(transform_.translate);
+	drawComp_->SetTransform(transform_);
 
 	// DrawComponent2D を更新（アニメーション・エフェクト）
 	drawComp_->Update(deltaTime);

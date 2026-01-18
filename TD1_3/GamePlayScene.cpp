@@ -211,9 +211,10 @@ void GamePlayScene::Update(float dt, const char* keys, const char* pre) {
 	// テスト入力（player_ は参照として使える）
 	if (player_) {
 
-		if (Input().TriggerKey(DIK_SPACE)) {
+		/*if (Input().TriggerKey(DIK_SPACE)) {
 			particleManager_->Emit(ParticleType::Explosion, player_->GetPosition());
-		}
+		}*/
+
 		if (Input().TriggerKey(DIK_J)) {
 			particleManager_->Emit(ParticleType::Debris, player_->GetPosition());
 		}

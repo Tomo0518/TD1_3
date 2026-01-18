@@ -13,6 +13,12 @@
 #include "imgui.h"
 #endif
 
+// 切り取る方向を指定する
+enum class CropDirection {
+	Horizontal, // 横方向に削る（HPバーなど）
+	Vertical    // 縦方向に削る（タンクなど）
+};
+
 /// <summary>
 /// DrawComponent2D
 /// </summary>
@@ -101,6 +107,12 @@ public:
 	/// Y軸反転描画
 	/// </summary>
 	void DrawInternal(const Matrix3x3* vpMatrix);
+
+	// クロップ率の設定 (0.0f:非表示 ～ 1.0f:全表示)
+	void SetCropRatio(float ratio) { cropRatio_ = std::clamp(ratio, 0.0f, 1.0f); }
+
+	// クロップ方向の設定
+	void SetCropDirection(CropDirection direction) { cropDirection_ = direction; }
 
 
 	// ========== 位置・変形設定 ==========
@@ -274,6 +286,10 @@ private:
 
 	// ========== エフェクト ==========
 	Effect effect_;
+
+	// ========== クロップ設定 ==========
+	float cropRatio_ = 1.0f; // 1.0fで通常描画
+	CropDirection cropDirection_ = CropDirection::Horizontal;
 
 	// ========== 内部処理 ==========
 

@@ -528,7 +528,7 @@ void ParticleManager::Draw(const Camera2D& camera) {
 			}
 			float finalScale = p.GetCurrentScale();
 
-			// ★カメラズームを描画サイズに反映
+			// カメラズームを描画サイズに反映
 			float drawWidth = baseSize * finalScale * cameraZoom;
 			float drawHeight = baseSize * finalScale * cameraZoom;
 
@@ -1296,7 +1296,7 @@ void ParticleManager::DrawDebugWindow() {
 }
 
 // ============================================
-// JSON入出力関連（既存のまま継続）
+// JSON入出力関連
 // ============================================
 
 // ========== JSONシリアライズ ==========
