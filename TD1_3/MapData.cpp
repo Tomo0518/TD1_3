@@ -11,6 +11,7 @@ void MapData::Reset(int width, int height, float tileSize) {
 
     // 全てのレイヤーを0で初期化
     tilesBackground_.assign(height_, std::vector<int>(width_, 0));
+	tilesBackgroundDecoration.assign(height_, std::vector<int>(width_, 0));
     tilesDecoration_.assign(height_, std::vector<int>(width_, 0));
     tilesBlock_.assign(height_, std::vector<int>(width_, 0));
 
@@ -39,6 +40,9 @@ bool MapData::Load(const std::string& filePath) {
 
             if (layers.contains("background")) {
                 tilesBackground_ = layers["background"].get<std::vector<std::vector<int>>>();
+            }
+			if (layers.contains("backgroundDecoration")) {
+                tilesBackgroundDecoration = layers["backgroundDecoration"].get<std::vector<std::vector<int>>>();
             }
             if (layers.contains("decoration")) {
                 tilesDecoration_ = layers["decoration"].get<std::vector<std::vector<int>>>();
@@ -85,6 +89,7 @@ bool MapData::Save(const std::string& filePath) {
 
     // タイルレイヤーを保存
     j["layers"]["background"] = tilesBackground_;
+	j["layers"]["backgroundDecoration"] = tilesBackgroundDecoration;
     j["layers"]["decoration"] = tilesDecoration_;
     j["layers"]["block"] = tilesBlock_;
 
@@ -135,6 +140,7 @@ void MapData::UpdateObjectSpawnPosition(size_t index, const Vector2& newPosition
 const std::vector<std::vector<int>>* MapData::GetLayerData(TileLayer layer) const {
     switch (layer) {
     case TileLayer::Background: return &tilesBackground_;
+    case TileLayer::BackgroundDecoration: return &tilesBackgroundDecoration;
     case TileLayer::Decoration: return &tilesDecoration_;
     case TileLayer::Block:      return &tilesBlock_;
     default: return nullptr;
@@ -144,6 +150,7 @@ const std::vector<std::vector<int>>* MapData::GetLayerData(TileLayer layer) cons
 std::vector<std::vector<int>>* MapData::GetLayerDataMutable(TileLayer layer) {
     switch (layer) {
     case TileLayer::Background: return &tilesBackground_;
+	case TileLayer::BackgroundDecoration: return &tilesBackgroundDecoration;
     case TileLayer::Decoration: return &tilesDecoration_;
     case TileLayer::Block:      return &tilesBlock_;
     default: return nullptr;
@@ -164,6 +171,8 @@ int MapData::GetTile(int col, int row, TileLayer layer) const {
         return tilesDecoration_[row][col];
     case TileLayer::Background:
         return tilesBackground_[row][col];
+    case TileLayer::BackgroundDecoration:
+        return tilesBackgroundDecoration[row][col];
     default:
         return 0;
     }

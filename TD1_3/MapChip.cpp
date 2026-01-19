@@ -36,19 +36,17 @@ bool MapChip::IsSameTile(int myID, int tx, int ty, TileLayer layer) const {
 	return (mapData_->GetTile(tx, ty, layer) == myID);
 }
 
-void MapChip::Draw(Camera2D& camera) {
+void MapChip::Draw(Camera2D& camera, const MapData& mapData) {
 	if (!mapData_) return;
-
+	mapData_ = const_cast<MapData*>(&mapData);
 	DrawLayer(camera, TileLayer::Decoration);
 	DrawLayer(camera, TileLayer::Block);
 }
 
-void MapChip::Draw(Camera2D& camera, const MapData& mapData) {
+void MapChip::DrawBackgroundDecorationBlock(Camera2D& camera, const MapData& mapData) {
 	if (!mapData_) return;
 	mapData_ = const_cast<MapData*>(&mapData);
-
-	DrawLayer(camera, TileLayer::Decoration);
-	DrawLayer(camera, TileLayer::Block);
+	DrawLayer(camera, TileLayer::BackgroundDecoration);
 }
 
 // --- カリング範囲計算 ---

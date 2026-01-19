@@ -246,10 +246,13 @@ void GamePlayScene::Update(float dt, const char* keys, const char* pre) {
 }
 
 void GamePlayScene::Draw() {
-	/*for (auto& background : background_) {
-		background->Draw(*camera_);
-	}*/
+	auto& mapData = MapData::GetInstance();
+
+	// 背景描画
 	backgroundManager_->Draw(*camera_);
+
+	// 背景装飾用マップチップ描画
+	mapChip_.DrawBackgroundDecorationBlock(*camera_, mapData);
 
 	//========================
 	// マップ描画 
@@ -258,7 +261,6 @@ void GamePlayScene::Draw() {
 	mapManager_.Draw(*camera_);
 
 	// 静的タイル描画
-	auto& mapData = MapData::GetInstance();
 	mapChip_.Draw(*camera_, mapData);
 
 	particleManager_->Draw(*camera_);

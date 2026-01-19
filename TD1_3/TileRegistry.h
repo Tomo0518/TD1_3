@@ -5,6 +5,7 @@
 
 enum class TileLayer {
 	Background, //
+	BackgroundDecoration, // 装飾タイル（当たり判定なし、背景の一つ上のレイヤー）
 	Block,      // 地形（当たり判定あり、描画順は中）
 	Decoration, // 装飾（当たり判定なし、描画順は奥 or 手前）
 	Object      // ゲームオブジェクト配置用（実行時は消える）
@@ -111,7 +112,9 @@ public:
 			RenderMode::Simple,{}
 			});
 
-		// --- Decoration Layer (装飾) ---
+		// ==================================
+		// --- Decoration Layer (装飾) (Decoration)
+		// ==================================
 		// ID:10 草 (Decoration)
 		tiles_.push_back({
 			10, "Grass", TextureId::Deco_GrassAnim, TileType::Solid, false, // 当たり判定なし
@@ -133,6 +136,23 @@ public:
 		tiles_.push_back({
 			100, "PlayerStart", TextureId::None, TileType::Solid, false,
 			TileLayer::Object, {0.0f, 0.0f}
+			});
+
+
+		// ==================================
+		// 背景装飾タイル (BackgroundDecoration)
+		// ==================================
+		// ID:200 背景岩ブロック
+		tiles_.push_back({
+			200, "BackgroundRockBlock", TextureId::Deco_Background_RockBlock, TileType::Solid , false,
+			TileLayer::BackgroundDecoration, {0.0f, 0.0f},
+			RenderMode::Simple,{}
+			});
+		// ID:201 背景アイスブロック 
+		tiles_.push_back({
+			201, "BackgroundIceBlock", TextureId::Deco_Background_IceBlock, TileType::None , false,
+			TileLayer::BackgroundDecoration, {0.0f, 0.0f},
+			RenderMode::Simple,{}
 			});
 	}
 

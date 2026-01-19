@@ -44,7 +44,9 @@ void TextureManager::LoadResources() {
 	textureResources_[static_cast<int>(TextureId::PlayerAnimeNormal)] =
 		Novice::LoadTexture("./Resources/images/gamePlay/playerSpecial_ver1.png");
 
+	// =========================================
 	// デコレーション
+	// =========================================
 
 	textureResources_[static_cast<int>(TextureId::Deco_Scrap)] =
 		Novice::LoadTexture("./Resources/images/mapChip/decoration/scrap_supplystation.png");
@@ -54,6 +56,12 @@ void TextureManager::LoadResources() {
 
 	textureResources_[static_cast<int>(TextureId::Deco_GrassAnim)] =
 		Novice::LoadTexture("./Resources/images/mapChip/decoration/grass_anim.png");
+
+	// ========Background Decoration==========
+	textureResources_[static_cast<int>(TextureId::Deco_Background_RockBlock)] =
+		Novice::LoadTexture("./Resources/images/gamePlay/background/decoration/background_rockblock.png");
+	textureResources_[static_cast<int>(TextureId::Deco_Background_IceBlock)] =
+		Novice::LoadTexture("./Resources/images/gamePlay/background/decoration/background_iceblock.png");
 
 	// =========Background ==========
 	{

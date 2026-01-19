@@ -127,12 +127,23 @@ void MapChipEditor::UpdateAndDrawImGui(MapData& mapData, Camera2D& camera) {
                 selectedTileId_ = 1;
             }
         }
+		// デコレーションレイヤー
         ImGui::SameLine();
         if (ImGui::RadioButton("Decoration (2)", currentLayer_ == TileLayer::Decoration)) {
             currentLayer_ = TileLayer::Decoration;
             const TileDefinition* currentTile = TileRegistry::GetTile(selectedTileId_);
             if (!currentTile || currentTile->layer != currentLayer_) {
                 selectedTileId_ = 10;
+            }
+        }
+
+        // 背景のデコレーションブロックレイヤー
+		ImGui::SameLine();
+		if (ImGui::RadioButton("BG Decoration(Tile)", currentLayer_ == TileLayer::BackgroundDecoration)) {
+            currentLayer_ = TileLayer::BackgroundDecoration;
+            const TileDefinition* currentTile = TileRegistry::GetTile(selectedTileId_);
+            if (!currentTile || currentTile->layer != currentLayer_) {
+                selectedTileId_ = 200;
             }
         }
 
@@ -151,6 +162,13 @@ void MapChipEditor::UpdateAndDrawImGui(MapData& mapData, Camera2D& camera) {
                     selectedTileId_ = 10;
                 }
             }
+            if (Input().TriggerKey(DIK_3)) {
+                currentLayer_ = TileLayer::BackgroundDecoration;
+                const TileDefinition* currentTile = TileRegistry::GetTile(selectedTileId_);
+                if (!currentTile || currentTile->layer != currentLayer_) {
+                    selectedTileId_ = 200;
+                }
+			}
         }
 
         ImGui::Separator();

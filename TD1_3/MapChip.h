@@ -15,8 +15,8 @@ public:
     ~MapChip();
 
     void Initialize();
-    void Draw(Camera2D& camera);
     void Draw(Camera2D& camera, const MapData& mapData);
+    void DrawBackgroundDecorationBlock(Camera2D& camera, const MapData& mapData);
 
 private:
     MapData* mapData_ = nullptr;

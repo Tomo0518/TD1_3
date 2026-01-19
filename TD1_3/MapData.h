@@ -91,6 +91,7 @@ public:
 private:
     // タイルレイヤー
     std::vector<std::vector<int>> tilesBackground_;
+    std::vector<std::vector<int>> tilesBackgroundDecoration;
     std::vector<std::vector<int>> tilesDecoration_;
     std::vector<std::vector<int>> tilesBlock_;
 
