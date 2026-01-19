@@ -15,6 +15,7 @@ Player::Player() {
 	// 初期設定
 	drawComp_->SetTransform(transform_);
 	drawComp_->SetAnchorPoint({ 0.5f, 0.5f });  // 中心を基準点に
+	
 }
 
 Player::~Player() {
@@ -70,12 +71,19 @@ void Player::Update(float deltaTime) {
 	// ========== エフェクトテスト用のキー入力 ==========
 
 	if (Input().PressKey(DIK_SPACE)) {
+		drawComp_->SetCropDirection(CropDirection::Vertical);
   		gaugeRatio_ -= 0.01f;
 		transform_.rotation -= 0.004f;
 
 		gaugeRatio_ = std::clamp(gaugeRatio_, 0.0f, 1.0f);
 	}
-	else {
+	else if (Input().PressKey(DIK_V)) {
+		drawComp_->SetCropDirection(CropDirection::Horizontal);
+		gaugeRatio_ -= 0.01f;
+		transform_.rotation -= 0.004f;
+
+		gaugeRatio_ = std::clamp(gaugeRatio_, 0.0f, 1.0f);
+	}else {
 		gaugeRatio_ += 0.01f;
 		gaugeRatio_ = std::clamp(gaugeRatio_, 0.0f, 1.0f);
 	}

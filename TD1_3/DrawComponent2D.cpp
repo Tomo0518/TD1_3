@@ -229,31 +229,39 @@ void DrawComponent2D::DrawInternal(const Matrix3x3* vpMatrix) {
 	float currentDrawW = drawSize_.x;
 	float currentDrawH = drawSize_.y;
 
+	// Vertical の場合のオフセット計算
+	float verticalOffset = 0.0f;
+
 	if (cropDirection_ == CropDirection::Horizontal) {
 		// 幅を削る
 		currentSrcW *= cropRatio_; // テクスチャを削る
 		currentDrawW *= cropRatio_; // 画面上の表示幅も削る
 	}
 	else {
-		// 高さを削る
+		// 高さを削る（上から下へ）
+		float originalSrcH = currentSrcH;
 		currentSrcH *= cropRatio_;
 		currentDrawH *= cropRatio_;
+
+		// ソース矩形を下側から読み取るように調整（上から消える）
+		srcY += static_cast<int>(originalSrcH - currentSrcH);
+
+		// 頂点座標を下にずらすオフセット（アンカーポイント考慮）
+		verticalOffset = drawSize_.y - currentDrawH;
 	}
 
 	// 3. 頂点座標を計算（削った currentDrawW/H を使う）
 	Vector2 localVertices[4];
 
 	// アンカーポイントのオフセット計算
-	// ※注意：HPバーの場合、AnchorPointは {0.0f, 0.5f} (左) に設定しないと、
 	float anchorOffsetX = drawSize_.x * anchorPoint_.x;
 	float anchorOffsetY = drawSize_.y * anchorPoint_.y;
 
-	localVertices[0] = { -anchorOffsetX, -anchorOffsetY };                // 左上
-	localVertices[1] = { currentDrawW - anchorOffsetX, -anchorOffsetY };  // 右上 (width変更)
-	localVertices[2] = { currentDrawW - anchorOffsetX, currentDrawH - anchorOffsetY }; // 右下 (width/height変更)
-	localVertices[3] = { -anchorOffsetX, currentDrawH - anchorOffsetY };  // 左下 (height変更)
-
-	// --- ここから下は変更なし（行列計算など） ---
+	// Vertical の場合は下にずらす
+	localVertices[0] = { -anchorOffsetX, -anchorOffsetY + verticalOffset };                // 左上
+	localVertices[1] = { currentDrawW - anchorOffsetX, -anchorOffsetY + verticalOffset };  // 右上 (width変更)
+	localVertices[2] = { currentDrawW - anchorOffsetX, currentDrawH - anchorOffsetY + verticalOffset }; // 右下 (width/height変更)
+	localVertices[3] = { -anchorOffsetX, currentDrawH - anchorOffsetY + verticalOffset };  // 左下 (height変更)
 
 	// エフェクト適用後の変換行列を取得
 	Matrix3x3 worldMatrix = GetFinalTransformMatrix();
@@ -284,7 +292,7 @@ void DrawComponent2D::DrawInternal(const Matrix3x3* vpMatrix) {
 		static_cast<int>(screenVertices[1].x), static_cast<int>(screenVertices[1].y),
 		static_cast<int>(screenVertices[3].x), static_cast<int>(screenVertices[3].y),
 		static_cast<int>(screenVertices[2].x), static_cast<int>(screenVertices[2].y),
-		srcX, srcY, // アニメーションの開始位置はそのまま
+		srcX, srcY, 
 		static_cast<int>(currentSrcW), // 削った幅
 		static_cast<int>(currentSrcH), // 削った高さ
 		graphHandle_,

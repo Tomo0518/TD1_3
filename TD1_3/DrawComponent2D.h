@@ -16,7 +16,7 @@
 // 切り取る方向を指定する
 enum class CropDirection {
 	Horizontal, // 横方向に削る（HPバーなど）
-	Vertical    // 縦方向に削る（タンクなど）
+	Vertical,    // 縦方向に削る（初期の向きなら下から上へ消滅する）
 };
 
 /// <summary>
@@ -68,8 +68,6 @@ public:
 	DrawComponent2D(DrawComponent2D&& other) noexcept;
 	DrawComponent2D& operator=(const DrawComponent2D& other);
 	DrawComponent2D& operator=(DrawComponent2D&& other) noexcept;
-
-
 
 	// ========== 更新 ==========
 
