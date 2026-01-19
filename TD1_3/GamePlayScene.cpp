@@ -6,6 +6,7 @@
 
 #include "Player.h"
 #include "WorldOrigin.h"
+#include "ObjectRegistry.h"
 #include "ParticleManager.h"
 
 #include "PhysicsManager.h"
@@ -35,14 +36,19 @@ void GamePlayScene::Initialize() {
 	player_ = nullptr;
 	worldOrigin_ = nullptr;
 
-
 	// シングルトンを使う
 	auto& mapData = MapData::GetInstance();
 	mapData.Load("./Resources/data/stage1.json");
 
+	// 1. タイル、オブジェクト定義の初期化
+	TileRegistry::Initialize();
+	ObjectRegistry::Initialize();
+
+#ifdef _DEBUG
 	// --- マップシステムの初期化 ---
 	// 1. エディタ初期化（タイル定義のロード）
 	mapEditor_.Initialize(&mapManager_);
+#endif
 
 	// 3. マップ描画クラスの初期化
 	mapChip_.Initialize();
@@ -50,7 +56,10 @@ void GamePlayScene::Initialize() {
 	// 4. マップマネージャー初期化
 	mapManager_.Initialize();
 
+#ifdef _DEBUG
+	// エディタにマップマネージャーをセット
 	mapEditor_.SetMapManager(&mapManager_);
+#endif
 
 	InitializeCamera();
 	InitializeObjects(); // ここでObject生成（マップデータから自動生成）

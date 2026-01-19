@@ -18,10 +18,9 @@ namespace {
     }
 }
 
+#ifdef _DEBUG
 void MapChipEditor::Initialize(MapManager* manager) {
 	mapManager_ = manager;
-    TileRegistry::Initialize();
-    ObjectRegistry::Initialize();
     selectedTileId_ = 1;
     selectedObjectTypeId_ = 0;
     selectedObjectIndex_ = -1;
@@ -52,7 +51,6 @@ void MapChipEditor::UpdateAndDrawImGui(MapData& mapData, Camera2D& camera) {
         ExecuteRedo(mapData);
     }
 
-#ifdef _DEBUG
     // --- ImGui ウィンドウ ---
     ImGui::Begin("Map Editor");
 
@@ -206,12 +204,10 @@ void MapChipEditor::UpdateAndDrawImGui(MapData& mapData, Camera2D& camera) {
     }
 
     ImGui::End();
-#endif // _DEBUG
 
 }
 
 void MapChipEditor::DrawObjectPalette() {
-#ifdef _DEBUG
     ImGui::Text("Select Object Type:");
     const auto& objectTypes = ObjectRegistry::GetAllObjectTypes();
 
@@ -221,12 +217,10 @@ void MapChipEditor::DrawObjectPalette() {
             selectedObjectTypeId_ = objType.id;
         }
     }
-#endif // _DEBUG
 }
 
 void MapChipEditor::DrawObjectList(MapData& mapData) {
 	mapData; // 未使用警告回避
-#ifdef _DEBUG
     ImGui::Text("Placed Objects (%d):", (int)mapData.GetObjectSpawns().size());
 
     const auto& spawns = mapData.GetObjectSpawns();
@@ -257,7 +251,6 @@ void MapChipEditor::DrawObjectList(MapData& mapData) {
 
         ImGui::PopID();
     }
-#endif // _DEBUG
 }
 
 void MapChipEditor::HandleObjectMode(MapData& mapData, Camera2D& camera) {
@@ -696,3 +689,4 @@ void MapChipEditor::ExecuteRedo(MapData& mapData) {
     // Undoスタックに戻す
     undoStack_.push_back(cmd);
 }
+#endif // _DEBUG

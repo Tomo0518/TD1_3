@@ -155,7 +155,9 @@ void Player::Draw(const Camera2D& camera) {
 	// カメラを使って描画（ゲーム内オブジェクト）
 	drawComp_->Draw(camera);
 
+#ifdef _DEBUG
 	DrawDebugWindow();
+#endif
 }
 
 void Player::DrawScreen() {

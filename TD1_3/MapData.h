@@ -42,7 +42,9 @@ public:
     /// <summary>
     /// 現在のマップデータをJSONファイルに保存する
     /// </summary>
+#ifdef _DEBUG
     bool Save(const std::string& filePath);
+#endif
 
     // --- タイルデータアクセサ ---
     int GetTile(int col, int row, TileLayer layer) const;

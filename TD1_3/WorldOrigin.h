@@ -18,6 +18,7 @@ public:
     }
 
     void Draw(Camera2D& camera) {
+        camera;
 #ifdef _DEBUG
         // デバッグ表示：原点マーカー
         Vector2 screenPos = camera.WorldToScreen(transform_.translate);

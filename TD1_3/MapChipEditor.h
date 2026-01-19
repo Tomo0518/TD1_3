@@ -3,10 +3,15 @@
 #include "Camera2D.h"
 #include "TileRegistry.h"
 #include <Novice.h>
-#include <imgui.h>
 #include <vector>
 #include <map>
 #include "MapManager.h"
+
+
+#ifdef _DEBUG
+#include <imgui.h>
+#endif // _DEBUG
+
 
 // 1マスの変更履歴
 struct TileChangeLog {
@@ -32,6 +37,8 @@ struct EditCommand {
 
 class MapChipEditor {
 public:
+
+#ifdef _DEBUG
     void Initialize(MapManager* manager);
     void UpdateAndDrawImGui(MapData& mapData, Camera2D& camera);
     ToolMode GetCurrentTool() const { return currentMode_; }
@@ -73,4 +80,5 @@ private:
     void ToolBucket(MapData& mapData, int col, int row, int newId);
     void ToolRectanglePreview(MapData& mapData, Camera2D& camera, int col, int row);
     void ToolRectangleApply(MapData& mapData, int endCol, int endRow);
+#endif // _DEBUG
 };

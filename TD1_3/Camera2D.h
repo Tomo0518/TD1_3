@@ -43,7 +43,7 @@ public:
 		std::function<float(float)> easingFunc = Easing::Linear);
 
 	//  === デバッグ用カメラ操作 ===
-	void DebugMove(bool isDebug, const char* keys, const char* pre);
+	void DebugMove(bool isDebug);
 
 	// === ズーム ===
 	void ZoomTo(float targetZoom, float duration,
@@ -120,7 +120,7 @@ private:
 	float rotation_;
 	bool isWorldYUp_ = true;  // Y軸反転フラグ
 
-	bool isDebugCamera_ = true;
+	bool isDebugCamera_ = false;
 
 	// イージング移動
 	struct MoveEffect {

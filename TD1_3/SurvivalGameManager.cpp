@@ -1,6 +1,7 @@
 ﻿#include "SurvivalGameManager.h"
 #include "SurvivalObjects.h" // 各クラスの定義が必要
 #include "Vector2.h"
+#include <cassert>
 
 SurvivalGameObjectManager::SurvivalGameObjectManager() {}
 SurvivalGameObjectManager::~SurvivalGameObjectManager() { Clear(); }

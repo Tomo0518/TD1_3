@@ -76,6 +76,7 @@ bool MapData::Load(const std::string& filePath) {
     }
 }
 
+#ifdef _DEBUG
 bool MapData::Save(const std::string& filePath) {
     json j;
     JsonUtil::SetValue(j, "width", width_);
@@ -107,6 +108,7 @@ bool MapData::Save(const std::string& filePath) {
     // コンパクトフォーマットで保存
     return JsonUtil::SaveMapCompact(filePath, j);
 }
+#endif
 
 void MapData::AddObjectSpawn(int typeId, const Vector2& position, const std::string& tag, const json& customData) {
     ObjectSpawnInfo spawn;

@@ -39,7 +39,9 @@ private:
     // ================================
     //  マップシステム
 	// ================================
+#ifdef _DEBUG
     MapChipEditor mapEditor_;
+#endif
     //MapData mapData_;
     MapChip mapChip_;// 静的マップチップ描画
 	MapManager mapManager_;// 動的タイル管理

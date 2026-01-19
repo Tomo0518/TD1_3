@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cmath>
 #include <Novice.h>
+#include "InputManager.h"
 
 // ========== コンストラクタ ==========
 Camera2D::Camera2D(const Vector2& position, const Vector2& size, bool invertY)
@@ -294,7 +295,7 @@ Matrix3x3 Camera2D::GetVpVpMatrix() const {
 }
 
 // ========== デバッグ用カメラ操作 ==========
-void Camera2D::DebugMove(bool isDebug, const char* keys, const char* pre) {
+void Camera2D::DebugMove(bool isDebug) {
 	if (!isDebug) {
 		isDebugCamera_ = false;
 		return;
@@ -310,33 +311,35 @@ void Camera2D::DebugMove(bool isDebug, const char* keys, const char* pre) {
 	const float zoomSpeed = 0.5f;        // ズーム速度
 	const float rotationSpeed = 1.0f;    // 回転速度（ラジアン/秒）
 
+	auto& input = InputManager::GetInstance();
+
 	// ========== 移動 ==========
 	// 矢印キーで移動
 	if (IsWorldYUp()) {
-		if (keys[DIK_UP]) {
+		if (input.PressKey(DIK_UP)) {
 			position_.y += moveSpeed * (1.0f / 60.0f);  // 仮に60FPS想定
 		}
-		if (keys[DIK_DOWN]) {
+		if (input.PressKey(DIK_DOWN)) {
 			position_.y -= moveSpeed * (1.0f / 60.0f);
 		}
-		if (keys[DIK_LEFT]) {
+		if (input.PressKey(DIK_LEFT)) {
 			position_.x -= moveSpeed * (1.0f / 60.0f);
 		}
-		if (keys[DIK_RIGHT]) {
+		if (input.PressKey(DIK_RIGHT)) {
 			position_.x += moveSpeed * (1.0f / 60.0f);
 		}
 	}
 	else {
-		if (keys[DIK_UP]) {
+		if (input.PressKey(DIK_UP)) {
 			position_.y -= moveSpeed * (1.0f / 60.0f);  // 仮に60FPS想定
 		}
-		if (keys[DIK_DOWN]) {
+		if (input.PressKey(DIK_DOWN)) {
 			position_.y += moveSpeed * (1.0f / 60.0f);
 		}
-		if (keys[DIK_LEFT]) {
+		if (input.PressKey(DIK_LEFT)) {
 			position_.x -= moveSpeed * (1.0f / 60.0f);
 		}
-		if (keys[DIK_RIGHT]) {
+		if (input.PressKey(DIK_RIGHT)) {
 			position_.x += moveSpeed * (1.0f / 60.0f);
 		}
 	}
@@ -344,11 +347,11 @@ void Camera2D::DebugMove(bool isDebug, const char* keys, const char* pre) {
 
 	// ========== ズーム ==========
 	// PageUp/PageDown でズーム
-	if (keys[DIK_E]) {  // PageUp
+	if (input.PressKey(DIK_E)) {  // PageUp
 		zoom_ += zoomSpeed * (1.0f / 60.0f);
 		zoom_ = std::clamp(zoom_, 0.1f, 10.0f);
 	}
-	if (keys[DIK_Q]) {  // PageDown
+	if (input.PressKey(DIK_Q)) {  // PageDown
 		zoom_ -= zoomSpeed * (1.0f / 60.0f);
 		zoom_ = std::clamp(zoom_, 0.1f, 10.0f);
 	}
@@ -357,16 +360,16 @@ void Camera2D::DebugMove(bool isDebug, const char* keys, const char* pre) {
 
 	// ========== 回転 ==========
 	// Q/E で回転
-	if (keys[DIK_R]) {
+	if (input.PressKey(DIK_R)) {
 		rotation_ -= rotationSpeed * (1.0f / 60.0f);
 	}
-	if (keys[DIK_T]) {
+	if (input.PressKey(DIK_T)) {
 		rotation_ += rotationSpeed * (1.0f / 60.0f);
 	}
 
 	// ========== リセット ==========
 	// Rキーでカメラリセット
-	if (keys[DIK_F] && !pre[DIK_F]) {
+	if (input.TriggerKey(DIK_F)) {
 		position_ = { 640.0f, 360.0f };
 		zoom_ = 1.0f;
 		rotation_ = 0.0f;
@@ -374,23 +377,23 @@ void Camera2D::DebugMove(bool isDebug, const char* keys, const char* pre) {
 
 	// ========== シェイクテスト ==========
 	// Spaceキーでシェイク
-	if (keys[DIK_SPACE] && !pre[DIK_SPACE]) {
+	if (input.TriggerKey(DIK_SPACE)) {
 		Shake(10.0f, 0.5f);
 	}
 
 	// ========== ズームテスト ==========
 	// 1キーでズームイン
-	if (keys[DIK_1] && !pre[DIK_1]) {
+	if (input.TriggerKey(DIK_1)) {
 		ZoomTo(2.0f, 1.0f, Easing::EaseOutQuad);
 	}
 	// 2キーでズームアウト
-	if (keys[DIK_2] && !pre[DIK_2]) {
+	if (input.TriggerKey(DIK_2)) {
 		ZoomTo(1.0f, 1.0f, Easing::EaseInOutQuad);
 	}
 
 	// ========== 移動テスト ==========
 	// 3キーで中央に移動
-	if (keys[DIK_3] && !pre[DIK_3]) {
+	if (input.TriggerKey(DIK_3)) {
 		MoveTo({ 640.0f, 360.0f }, 2.0f, Easing::EaseOutCubic);
 	}
 

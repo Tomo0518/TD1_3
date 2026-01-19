@@ -166,7 +166,7 @@ void TitleScene::UpdateDrawComponents(float deltaTime) {
 
 void TitleScene::Update(float dt, const char* keys, const char* pre) {
 
-	Camera2D::GetInstance().DebugMove(true, keys, pre);
+	Camera2D::GetInstance().DebugMove(true);
 	Camera2D::GetInstance().Update(dt);
 
 	// 描画コンポーネントを更新

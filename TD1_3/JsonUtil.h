@@ -177,6 +177,7 @@ public:
 			return true;
 		}
 		catch (const std::exception& e) {
+			e; // 未使用警告回避
 #ifdef _DEBUG
 			Novice::ConsolePrintf("JsonUtil: Write error: %s\n", e.what());
 #endif
