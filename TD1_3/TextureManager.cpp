@@ -86,9 +86,17 @@ void TextureManager::LoadResources() {
 
 		textureResources_[static_cast<int>(TextureId::None)] =
 			Novice::LoadTexture("./Resources/images/temp/none.png");
+
+		textureResources_[static_cast<int>(TextureId::Background_Base)] =
+			Novice::LoadTexture("./Resources/images/gamePlay/background/base.png");
+		textureResources_[static_cast<int>(TextureId::Background_Far)] =
+			Novice::LoadTexture("./Resources/images/gamePlay/background/far.png");
+		textureResources_[static_cast<int>(TextureId::Background_Middle)] =
+			Novice::LoadTexture("./Resources/images/gamePlay/background/middle.png");
+		textureResources_[static_cast<int>(TextureId::Background_Near)] =
+			Novice::LoadTexture("./Resources/images/gamePlay/background/near.png");
+
 	}
-
-
 
 	// ==========================================================
 	// UI用テクスチャ

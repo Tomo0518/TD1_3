@@ -111,6 +111,7 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
   <ItemGroup>
     <ClCompile Include="Affine2D.cpp" />
     <ClCompile Include="Animation.cpp" />
+    <ClCompile Include="BackgroundManager.cpp" />
     <ClCompile Include="GameObject2D.cpp" />
     <ClCompile Include="GameObjectManager.cpp" />
     <ClCompile Include="MapChip.cpp" />
@@ -118,6 +119,7 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClCompile Include="MapData.cpp" />
     <ClCompile Include="MapManager.cpp" />
     <ClCompile Include="ObjectRegistry.cpp" />
+    <ClCompile Include="ParallaxLayer.cpp" />
     <ClCompile Include="PhysicsManager.cpp" />
     <ClCompile Include="PrototypeSurvivalScene.cpp" />
     <ClCompile Include="SoundManager.cpp" />
@@ -160,6 +162,7 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClInclude Include="..\DirectXGame\3d\Camera.h" />
     <ClInclude Include="Affine2D.h" />
     <ClInclude Include="Animation.h" />
+    <ClInclude Include="BackgroundManager.h" />
     <ClInclude Include="GameObject2D.h" />
     <ClInclude Include="GameObjectManager.h" />
     <ClInclude Include="MapChip.h" />
@@ -168,6 +171,7 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClInclude Include="MapManager.h" />
     <ClInclude Include="ObjectRegistry.h" />
     <ClInclude Include="ObjectSpawnInfo.h" />
+    <ClInclude Include="ParallaxLayer.h" />
     <ClInclude Include="PhysicsManager.h" />
     <ClInclude Include="PrototypeSurvivalScene.h" />
     <ClInclude Include="Rigidbody2D.hpp" />

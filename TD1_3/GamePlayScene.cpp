@@ -35,6 +35,9 @@ void GamePlayScene::Initialize() {
 	objectManager_.Clear();
 	player_ = nullptr;
 	worldOrigin_ = nullptr;
+	
+	// 背景マネージャー初期化
+	backgroundManager_ = std::make_unique<BackgroundManager>();
 
 	// シングルトンを使う
 	auto& mapData = MapData::GetInstance();
@@ -140,34 +143,39 @@ void GamePlayScene::SpawnObjectFromData(const ObjectSpawnInfo& spawn) {
 }
 
 void GamePlayScene::InitializeBackground() {
-	background_.clear();
+	backgroundManager_->Clear();
 
-	background_.push_back(std::make_unique<Background>(Tex().GetTexture(TextureId::Background0_0)));
-	background_[0]->SetPosition({ -kWindowWidth, kWindowHeight * 2 });
+	// ベース背景
+	backgroundManager_->AddLayer(
+		TextureId::Background_Base,
+		0.0f,    // カメラの0%の速度
+		1280.0f  // テクスチャ幅
+	);
 
-	background_.push_back(std::make_unique<Background>(Tex().GetTexture(TextureId::BackgroundBlack)));
-	background_[1]->SetPosition({ 0.0f, kWindowHeight * 2 });
+	// レイヤー1: 洞窟の一番遠いレイヤー
+	backgroundManager_->AddLayer(
+		TextureId::Background_Far,
+		0.1f,    // カメラの10%の速度
+		1280.0f  // テクスチャ幅
+	);
 
-	background_.push_back(std::make_unique<Background>(Tex().GetTexture(TextureId::Background0_2)));
-	background_[2]->SetPosition({ kWindowWidth, kWindowHeight * 2 });
+	// レイヤー2: 洞窟の中景
+	backgroundManager_->AddLayer(
+		TextureId::Background_Middle,
+		0.3f,
+		1280.0f
+	);
 
-	background_.push_back(std::make_unique<Background>(Tex().GetTexture(TextureId::Background1_0)));
-	background_[3]->SetPosition({ -kWindowWidth, kWindowHeight });
+	// レイヤー3: 洞窟の近景
+	backgroundManager_->AddLayer(
+		TextureId::Background_Near,
+		0.6f,
+		1280.0f
+	);
 
-	background_.push_back(std::make_unique<Background>(Tex().GetTexture(TextureId::Background1_1)));
-	background_[4]->SetPosition({ 0.0f, kWindowHeight });
-
-	background_.push_back(std::make_unique<Background>(Tex().GetTexture(TextureId::Background1_2)));
-	background_[5]->SetPosition({ kWindowWidth, kWindowHeight });
-
-	background_.push_back(std::make_unique<Background>(Tex().GetTexture(TextureId::Background2_0)));
-	background_[6]->SetPosition({ -kWindowWidth, 0.0f });
-
-	background_.push_back(std::make_unique<Background>(Tex().GetTexture(TextureId::Background2_1)));
-	background_[7]->SetPosition({ 0.0f, 0.0f });
-
-	background_.push_back(std::make_unique<Background>(Tex().GetTexture(TextureId::Background2_2)));
-	background_[8]->SetPosition({ kWindowWidth, 0.0f });
+	// プレイヤースポーン後、カメラ初期位置を設定
+	Vector2 spawnPos = {player_->GetPosition()};
+	backgroundManager_->SetInitialCameraPosition(spawnPos);
 }
 
 void GamePlayScene::Update(float dt, const char* keys, const char* pre) {
@@ -238,9 +246,10 @@ void GamePlayScene::Update(float dt, const char* keys, const char* pre) {
 }
 
 void GamePlayScene::Draw() {
-	for (auto& background : background_) {
+	/*for (auto& background : background_) {
 		background->Draw(*camera_);
-	}
+	}*/
+	backgroundManager_->Draw(*camera_);
 
 	//========================
 	// マップ描画 

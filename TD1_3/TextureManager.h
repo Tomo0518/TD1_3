@@ -43,6 +43,11 @@ enum class TextureId {
 	Background3_1,
 	Background3_2,
 
+	Background_Base,
+	Background_Far,
+	Background_Middle,
+	Background_Near,
+
 	// ========================================
 	// UI用テクスチャ
 	// ========================================

@@ -6,7 +6,7 @@
 #include "MapData.h"
 #include "MapChip.h"
 #include "MapManager.h"
-#include "Background.h"
+#include "BackgroundManager.h"
 #include <memory>
 #include <vector>
 #include "WorldOrigin.h"
@@ -47,7 +47,8 @@ private:
 	MapManager mapManager_;// 動的タイル管理
 
     // --- 背景 ---
-    std::vector<std::unique_ptr<Background>> background_;
+  //  std::vector<std::unique_ptr<Background>> background_;
+	std::unique_ptr<BackgroundManager> backgroundManager_;
 
     // --- パーティクル ---
     ParticleManager* particleManager_ = nullptr;
