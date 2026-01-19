@@ -83,7 +83,16 @@ void MapChipEditor::UpdateAndDrawImGui(MapData& mapData, Camera2D& camera) {
     if (ImGui::Button("Redo (Ctrl+Y)")) {
         ExecuteRedo(mapData);
     }
-    ImGui::Text("History: Undo[%d] Redo[%d]", (int)undoStack_.size(), (int)redoStack_.size());
+    ImGui::Text("History: Undo[%d] Redo[%d]", (int)undoStack_.size(), (int)redoStack_.size()); 
+
+    // マウス位置表示
+    int mouseX, mouseY;
+    Novice::GetMousePosition(&mouseX, &mouseY);
+    Vector2 worldPos = camera.ScreenToWorld({ (float)mouseX, (float)mouseY });
+    int col = (int)(worldPos.x / mapData.GetTileSize());
+    int row = (int)(worldPos.y / mapData.GetTileSize());
+    ImGui::Text("Mouse Position: (%.1f, %.1f)", worldPos.x, worldPos.y);
+    ImGui::Text("Tile Position: (%d, %d)", col, row);
 
     ImGui::Separator();
 
