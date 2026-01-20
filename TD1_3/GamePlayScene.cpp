@@ -196,7 +196,7 @@ void GamePlayScene::Update(float dt, const char* keys, const char* pre) {
 
 #ifdef _DEBUG
 	if (camera_) {
-		if (Input().TriggerKey(DIK_Z)){
+		if (Input().TriggerKey(DIK_X)){
 			isDebugCameraMove_ = !isDebugCameraMove_;
 			camera_->SetDebugCamera(isDebugCameraMove_) ;
 		}
