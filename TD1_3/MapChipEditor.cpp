@@ -170,17 +170,20 @@ void MapChipEditor::UpdateAndDrawImGui(MapData& mapData, Camera2D& camera) {
 
 		ImGui::Separator();
 
-		// ツール選択
+		// ツール選択部分を変更
 		ImGui::Text("Tools:");
 		if (ImGui::RadioButton("Pen (P)", currentMode_ == ToolMode::Pen)) currentMode_ = ToolMode::Pen;
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Eraser (E)", currentMode_ == ToolMode::Eraser)) currentMode_ = ToolMode::Eraser;
 		ImGui::SameLine();
 		if (ImGui::RadioButton("Bucket (B)", currentMode_ == ToolMode::Bucket)) currentMode_ = ToolMode::Bucket;
 		ImGui::SameLine();
 		if (ImGui::RadioButton("Rect (R)", currentMode_ == ToolMode::Rectangle)) currentMode_ = ToolMode::Rectangle;
 
 		if (!ImGui::GetIO().WantCaptureKeyboard) {
-			if (Input().TriggerKey(DIK_P)) currentMode_ = ToolMode::Pen;
-			if (Input().TriggerKey(DIK_B)) currentMode_ = ToolMode::Bucket;
+			if (Input().TriggerKey(DIK_B)) currentMode_ = ToolMode::Pen;
+			if (Input().TriggerKey(DIK_E)) currentMode_ = ToolMode::Eraser;
+			if (Input().TriggerKey(DIK_L)) currentMode_ = ToolMode::Bucket;
 			if (Input().TriggerKey(DIK_R)) currentMode_ = ToolMode::Rectangle;
 		}
 
@@ -414,86 +417,125 @@ void MapChipEditor::HandleObjectMode(MapData& mapData, Camera2D& camera) {
 }
 
 void MapChipEditor::HandleInput(MapData& mapData, Camera2D& camera) {
-	// マウス位置の計算（描画に必要なので常に実行）
+	// マウス位置の計算
 	int mouseX, mouseY;
 	Novice::GetMousePosition(&mouseX, &mouseY);
 	Vector2 worldPos = camera.ScreenToWorld({ (float)mouseX, (float)mouseY });
 	int col = (int)(worldPos.x / mapData.GetTileSize());
 	int row = (int)(worldPos.y / mapData.GetTileSize());
 
-	// 範囲外なら何もしない（矩形のドラッグ中は除く）
 	bool isInside = (col >= 0 && col < mapData.GetWidth() && row >= 0 && row < mapData.GetHeight());
 
-	// --- 描画処理（マウスキャプチャに関係なく実行）---
-
-	// Penツール用：ホバーしている1マスを常にプレビュー表示
-	if (currentMode_ == ToolMode::Pen && isInside) {
+	// --- プレビュー描画 ---
+	if ((currentMode_ == ToolMode::Pen || currentMode_ == ToolMode::Eraser) && isInside) {
 		const float ts = mapData.GetTileSize();
 		const float startX = col * ts;
 		const float startY = row * ts;
 		const float endX = (col + 1) * ts;
 		const float endY = (row + 1) * ts;
 
-		DrawSelectionRect_(camera, startX, startY, endX, endY, 0x00FF0080, 0x00FF00FF); // 緑の半透明＋枠
+		// 右クリック中または消しゴムツールなら赤、それ以外は緑
+		if (currentMode_ == ToolMode::Eraser || Novice::IsPressMouse(1)) {
+			DrawSelectionRect_(camera, startX, startY, endX, endY, 0xFF000080, 0xFF0000FF); // 赤
+		}
+		else {
+			DrawSelectionRect_(camera, startX, startY, endX, endY, 0x00FF0080, 0x00FF00FF); // 緑
+		}
 	}
 
-	// 矩形ツールのプレビュー（ドラッグ中）
+	// 矩形ツールのプレビュー
 	if (currentMode_ == ToolMode::Rectangle && isDragging_ && Novice::IsPressMouse(0)) {
 		ToolRectanglePreview(mapData, camera, col, row);
 	}
 
-	// --- ここから入力処理 ---
-	// マウスがImGuiウィンドウ上にある場合は入力処理をスキップ
+	// --- 入力処理スキップ判定 ---
 	if (ImGui::GetIO().WantCaptureMouse) return;
 
-	// 右クリック：スポイト機能
-	// ペンモードかつ、矩形やバケツでない場合に有効
-	if (currentMode_ == ToolMode::Pen && isInside) {
-		if (Novice::IsTriggerMouse(1)) { // 右クリックした瞬間
-			int pickedId = mapData.GetTile(col, row, currentLayer_);
+	// ========================================
+	// 中ボタン：スポイト
+	// ========================================
+	if (isInside && Novice::IsTriggerMouse(2)) {
+		int pickedId = mapData.GetTile(col, row, currentLayer_);
 
-			selectedTileId_ = pickedId;
+		// ペンツールに切り替えて、拾ったIDをセット
+		currentMode_ = ToolMode::Pen;
+		selectedTileId_ = pickedId;
 
-			// スポイトで吸ったものがAir以外なら、それを「次の復帰先」にする
-			if (pickedId != TileID::Air) {
-				preEraserTileId_ = pickedId;
-			}
-
-			Novice::ConsolePrintf("Pipette! Picked ID: %d\n", pickedId);
+		if (pickedId != TileID::Air) {
+			preEraserTileId_ = pickedId;
 		}
+
+		Novice::ConsolePrintf("Pipette! Picked ID: %d\n", pickedId);
 	}
 
-	// 左クリック：塗る・消す (Brush / Eraser)
-	// selectedTileId_ が 0(Air) なら消しゴム、それ以外ならペンとして機能する
-	if (Novice::IsTriggerMouse(0)) {
-		if (isInside) {
-			isDragging_ = true;
+	// ========================================
+	// 右クリック：消しゴム（ドラッグ消去）
+	// ========================================
+	static bool isRightDragging = false;
+
+	if (isInside) {
+		// 右クリック開始
+		if (Novice::IsTriggerMouse(1)) {
+			isRightDragging = true;
 			strokeCache_.clear();
-
-			if (currentMode_ == ToolMode::Rectangle) {
-				dragStartCol_ = col;
-				dragStartRow_ = row;
-			}
-			else if (currentMode_ == ToolMode::Bucket) {
-				// バケツ処理
-				ToolBucket(mapData, col, row, selectedTileId_);
-				CommitStroke(mapData);
-				isDragging_ = false;
-			}
 		}
-	}
 
-	// ドラッグ中の描画（ペンのみ）
-	if (Novice::IsPressMouse(0) && isDragging_) {
-		if (currentMode_ == ToolMode::Pen && isInside) {
+		// 右クリック中：消しゴムとして動作
+		if (Novice::IsPressMouse(1) && isRightDragging) {
 			int currentId = mapData.GetTile(col, row, currentLayer_);
-			// 違うIDの場合のみ書き換え
-			if (currentId != selectedTileId_) {
+			if (currentId != TileID::Air) {
 				std::pair<int, int> key = { col, row };
 				if (strokeCache_.find(key) == strokeCache_.end()) {
 					strokeCache_[key] = currentId;
 				}
-				mapData.SetTile(col, row, selectedTileId_, currentLayer_);
+				mapData.SetTile(col, row, TileID::Air, currentLayer_);
+
+				if (mapManager_) {
+					mapManager_->OnTileChanged(col, row, currentLayer_);
+				}
+			}
+		}
+
+		// 右クリック離した：確定
+		if (!Novice::IsPressMouse(1) && isRightDragging) {
+			CommitStroke(mapData);
+			isRightDragging = false;
+		}
+	}
+
+	// ========================================
+	// 左クリック：描画・消去
+	// ========================================
+
+	// 実際に適用するID（消しゴムツールならAir）
+	int applyTileId = (currentMode_ == ToolMode::Eraser) ? TileID::Air : selectedTileId_;
+
+	// 左クリック開始
+	if (Novice::IsTriggerMouse(0) && isInside) {
+		isDragging_ = true;
+		strokeCache_.clear();
+
+		if (currentMode_ == ToolMode::Rectangle) {
+			dragStartCol_ = col;
+			dragStartRow_ = row;
+		}
+		else if (currentMode_ == ToolMode::Bucket) {
+			ToolBucket(mapData, col, row, applyTileId);
+			CommitStroke(mapData);
+			isDragging_ = false;
+		}
+	}
+
+	// ドラッグ中（ペン・消しゴム）
+	if (Novice::IsPressMouse(0) && isDragging_) {
+		if ((currentMode_ == ToolMode::Pen || currentMode_ == ToolMode::Eraser) && isInside) {
+			int currentId = mapData.GetTile(col, row, currentLayer_);
+			if (currentId != applyTileId) {
+				std::pair<int, int> key = { col, row };
+				if (strokeCache_.find(key) == strokeCache_.end()) {
+					strokeCache_[key] = currentId;
+				}
+				mapData.SetTile(col, row, applyTileId, currentLayer_);
 
 				if (mapManager_) {
 					mapManager_->OnTileChanged(col, row, currentLayer_);
@@ -502,15 +544,17 @@ void MapChipEditor::HandleInput(MapData& mapData, Camera2D& camera) {
 		}
 	}
 
-	// 左クリック離した（確定）
+	// 左クリック離した
 	if (!Novice::IsPressMouse(0) && isDragging_) {
 		isDragging_ = false;
+
 		if (currentMode_ == ToolMode::Rectangle) {
-			ToolRectangleApply(mapData, col, row);
+			ToolRectangleApply(mapData, col, row, applyTileId);
 			if (mapManager_) {
 				mapManager_->OnTileChanged(col, row, currentLayer_);
 			}
 		}
+
 		CommitStroke(mapData);
 		dragStartCol_ = -1;
 	}
@@ -616,35 +660,29 @@ void MapChipEditor::ToolRectanglePreview(MapData& mapData, Camera2D& camera, int
 }
 
 // 矩形ツール（適用処理）
-void MapChipEditor::ToolRectangleApply(MapData& mapData, int endCol, int endRow) {
-	// 始点が無効な場合は何もしない
+void MapChipEditor::ToolRectangleApply(MapData& mapData, int endCol, int endRow, int applyTileId) { 
 	if (dragStartCol_ < 0 || dragStartRow_ < 0) return;
 
-	// 矩形の範囲を計算
 	int minX = (dragStartCol_ < endCol) ? dragStartCol_ : endCol;
 	int maxX = (dragStartCol_ > endCol) ? dragStartCol_ : endCol;
 	int minY = (dragStartRow_ < endRow) ? dragStartRow_ : endRow;
 	int maxY = (dragStartRow_ > endRow) ? dragStartRow_ : endRow;
 
-	// マップの範囲内にクランプ
 	minX = (minX < 0) ? 0 : minX;
 	maxX = (maxX >= mapData.GetWidth()) ? mapData.GetWidth() - 1 : maxX;
 	minY = (minY < 0) ? 0 : minY;
 	maxY = (maxY >= mapData.GetHeight()) ? mapData.GetHeight() - 1 : maxY;
 
-	// 矩形範囲内の全てのタイルを変更
 	for (int y = minY; y <= maxY; ++y) {
 		for (int x = minX; x <= maxX; ++x) {
 			int currentId = mapData.GetTile(x, y, currentLayer_);
-			if (currentId != selectedTileId_) {
+			if (currentId != applyTileId) {
 				std::pair<int, int> key = { x, y };
-				// 同じ操作で複数回変更された場合でも、最初の状態を保持
 				if (strokeCache_.find(key) == strokeCache_.end()) {
 					strokeCache_[key] = currentId;
 				}
-				mapData.SetTile(x, y, selectedTileId_, currentLayer_);
+				mapData.SetTile(x, y, applyTileId, currentLayer_);
 
-				// MapManagerへの通知
 				if (mapManager_) {
 					mapManager_->OnTileChanged(x, y, currentLayer_);
 				}

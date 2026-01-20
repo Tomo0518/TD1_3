@@ -25,6 +25,7 @@ struct TileChangeLog {
 // ツールの種類
 enum class ToolMode {
     Pen,
+    Eraser,
     Bucket,
     Rectangle,
     Object
@@ -83,6 +84,6 @@ private:
     // ツール処理
     void ToolBucket(MapData& mapData, int col, int row, int newId);
     void ToolRectanglePreview(MapData& mapData, Camera2D& camera, int col, int row);
-    void ToolRectangleApply(MapData& mapData, int endCol, int endRow);
+    void ToolRectangleApply(MapData& mapData, int endCol, int endRow, int applyTileId);
 #endif // _DEBUG
 };
