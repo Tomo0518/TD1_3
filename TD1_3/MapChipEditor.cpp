@@ -94,9 +94,16 @@ void MapChipEditor::UpdateAndDrawImGui(MapData& mapData, Camera2D& camera) {
 
 	ImGui::Separator();
 
+	// カーソル追従でテキストを出す
+	if (currentMode_ == ToolMode::Pen && selectedTileId_ == TileID::Air) {
+		int mx, my;
+		Novice::GetMousePosition(&mx, &my);
+		Novice::ScreenPrintf(mx + 20, my - 10, "Eraser Mode");
+	}
+
 	// --- モード選択 ---
 	ImGui::Text("Mode:");
-	if (ImGui::RadioButton("Tile Edit", currentMode_ != ToolMode::Object)) {
+	if (ImGui::RadioButton("Tile Edit (1)", currentMode_ != ToolMode::Object)) {
 		if (currentMode_ == ToolMode::Object) {
 			currentMode_ = ToolMode::Pen;
 			selectedObjectIndex_ = -1;
@@ -111,6 +118,12 @@ void MapChipEditor::UpdateAndDrawImGui(MapData& mapData, Camera2D& camera) {
 	if (!ImGui::GetIO().WantCaptureKeyboard) {
 		if (Input().TriggerKey(DIK_4)) {
 			currentMode_ = ToolMode::Object;
+		}
+
+		if (Input().TriggerKey(DIK_1)) {
+			if (currentMode_ == ToolMode::Object) {
+				currentMode_ = ToolMode::Pen;
+			}
 		}
 	}
 
@@ -173,23 +186,54 @@ void MapChipEditor::UpdateAndDrawImGui(MapData& mapData, Camera2D& camera) {
 
 		ImGui::Separator();
 
-		// タイルパレット
+		// --- タイルパレット ---
 		ImGui::Text("Select Tile:");
 		const auto& tiles = TileRegistry::GetAllTiles();
 		int buttonsPerRow = 4;
 		int count = 0;
 
 		for (const auto& tile : tiles) {
-			if (tile.id == 0 || tile.layer == currentLayer_) {
+			// ID 0 (Air) はパレットに出さない（Cキーか右クリックで選択するため）
+			if (tile.id == 0) continue;
+
+			if (tile.layer == currentLayer_) {
 				std::string label = tile.name + "##" + std::to_string(tile.id);
+				// ラジオボタンで選択されたらID更新
 				if (ImGui::RadioButton(label.c_str(), selectedTileId_ == tile.id)) {
 					selectedTileId_ = tile.id;
+					// パレットから選んだ場合は、それを「次の復帰先」としても記憶更新
+					preEraserTileId_ = selectedTileId_;
 				}
 				count++;
 				if (count % buttonsPerRow != 0) ImGui::SameLine();
 			}
 		}
 		if (count % buttonsPerRow != 0) ImGui::NewLine();
+
+		// --- 消しゴム(C) のトグル処理 ---
+		ImGui::Text("Eraser(C): %s", (selectedTileId_ == TileID::Air) ? "[Active]" : "");
+
+		if (!ImGui::GetIO().WantCaptureKeyboard) {
+			if (Input().TriggerKey(DIK_C)) {
+				if (selectedTileId_ == TileID::Air) {
+					// ■ 現在消しゴムなら -> 保存していたIDに戻す
+					// もし保存IDがAirだったら(バグ防止)、強制的に現在のレイヤーのデフォルトに戻す
+					if (preEraserTileId_ == TileID::Air) {
+						ChangeLayer(currentLayer_); // これでデフォルトが入る
+					}
+					else {
+						selectedTileId_ = preEraserTileId_;
+					}
+					Novice::ConsolePrintf("Eraser OFF: Restore Brush %d\n", selectedTileId_);
+				}
+				else {
+					// ■ 現在ペンなら -> IDを保存して消しゴム(Air)にする
+					preEraserTileId_ = selectedTileId_;
+					selectedTileId_ = TileID::Air;
+					Novice::ConsolePrintf("Eraser ON: Saved Brush %d\n", preEraserTileId_);
+				}
+			}
+		}
 
 		ImGui::Separator();
 
@@ -402,38 +446,25 @@ void MapChipEditor::HandleInput(MapData& mapData, Camera2D& camera) {
 	// マウスがImGuiウィンドウ上にある場合は入力処理をスキップ
 	if (ImGui::GetIO().WantCaptureMouse) return;
 
-	// --- Penツール：右クリックで削除（tile=0） ---
+	// 右クリック：スポイト機能
+	// ペンモードかつ、矩形やバケツでない場合に有効
 	if (currentMode_ == ToolMode::Pen && isInside) {
-		// 右クリック開始：ストローク開始
-		if (Novice::IsTriggerMouse(1)) {
-			isDragging_ = true;
-			strokeCache_.clear();
-		}
+		if (Novice::IsTriggerMouse(1)) { // 右クリックした瞬間
+			int pickedId = mapData.GetTile(col, row, currentLayer_);
 
-		// 右クリック中：削除
-		if (Novice::IsPressMouse(1)) {
-			const int currentId = mapData.GetTile(col, row, currentLayer_);
-			if (currentId != 0) {
-				const std::pair<int, int> key = { col, row };
-				if (strokeCache_.find(key) == strokeCache_.end()) {
-					strokeCache_[key] = currentId; // 元IDを保存
-				}
-				mapData.SetTile(col, row, 0, currentLayer_); // 削除
-				// MapManagerへの通知
-				if (mapManager_) {
-					mapManager_->OnTileChanged(col, row, currentLayer_);
-				}
+			selectedTileId_ = pickedId;
+
+			// スポイトで吸ったものがAir以外なら、それを「次の復帰先」にする
+			if (pickedId != TileID::Air) {
+				preEraserTileId_ = pickedId;
 			}
-		}
 
-		// 右クリック離した：確定
-		if (!Novice::IsPressMouse(1) && isDragging_) {
-			CommitStroke(mapData);
-			isDragging_ = false;
+			Novice::ConsolePrintf("Pipette! Picked ID: %d\n", pickedId);
 		}
 	}
 
-	// 左クリック開始
+	// 左クリック：塗る・消す (Brush / Eraser)
+	// selectedTileId_ が 0(Air) なら消しゴム、それ以外ならペンとして機能する
 	if (Novice::IsTriggerMouse(0)) {
 		if (isInside) {
 			isDragging_ = true;
@@ -444,6 +475,7 @@ void MapChipEditor::HandleInput(MapData& mapData, Camera2D& camera) {
 				dragStartRow_ = row;
 			}
 			else if (currentMode_ == ToolMode::Bucket) {
+				// バケツ処理
 				ToolBucket(mapData, col, row, selectedTileId_);
 				CommitStroke(mapData);
 				isDragging_ = false;
@@ -451,11 +483,11 @@ void MapChipEditor::HandleInput(MapData& mapData, Camera2D& camera) {
 		}
 	}
 
-
-	// ドラッグ中（ペンのみ、矩形プレビューは上で描画済み）
+	// ドラッグ中の描画（ペンのみ）
 	if (Novice::IsPressMouse(0) && isDragging_) {
 		if (currentMode_ == ToolMode::Pen && isInside) {
 			int currentId = mapData.GetTile(col, row, currentLayer_);
+			// 違うIDの場合のみ書き換え
 			if (currentId != selectedTileId_) {
 				std::pair<int, int> key = { col, row };
 				if (strokeCache_.find(key) == strokeCache_.end()) {
@@ -466,7 +498,6 @@ void MapChipEditor::HandleInput(MapData& mapData, Camera2D& camera) {
 				if (mapManager_) {
 					mapManager_->OnTileChanged(col, row, currentLayer_);
 				}
-
 			}
 		}
 	}
@@ -474,24 +505,14 @@ void MapChipEditor::HandleInput(MapData& mapData, Camera2D& camera) {
 	// 左クリック離した（確定）
 	if (!Novice::IsPressMouse(0) && isDragging_) {
 		isDragging_ = false;
-
 		if (currentMode_ == ToolMode::Rectangle) {
-			// 矩形を適用
 			ToolRectangleApply(mapData, col, row);
-			// MapManagerへの通知
 			if (mapManager_) {
 				mapManager_->OnTileChanged(col, row, currentLayer_);
 			}
 		}
-
 		CommitStroke(mapData);
 		dragStartCol_ = -1;
-	}
-
-	// 右クリック（スポイト）- 削除機能と競合しないように、ドラッグ中でない場合のみ
-	if (Novice::IsTriggerMouse(1) && isInside && currentMode_ != ToolMode::Pen) {
-		int pickedId = mapData.GetTile(col, row, currentLayer_);
-		if (pickedId != 0) selectedTileId_ = pickedId;
 	}
 }
 
@@ -658,9 +679,9 @@ void MapChipEditor::CommitStroke(MapData& mapData) {
 	strokeCache_.clear();
 }
 
-// ヘルパー関数の実装（クラス内など適当な場所に）
+// ヘルパー関数の実装
 void MapChipEditor::ChangeLayer(TileLayer newLayer) {
-	if (currentLayer_ == newLayer) return; // 同じなら何もしない
+	if (currentLayer_ == newLayer) return;
 
 	currentLayer_ = newLayer;
 
@@ -678,6 +699,9 @@ void MapChipEditor::ChangeLayer(TileLayer newLayer) {
 	default:
 		break;
 	}
+
+	// レイヤーを変えたら、復帰先もそのレイヤーのデフォルトに合わせておく
+	preEraserTileId_ = selectedTileId_;
 }
 
 void MapChipEditor::ExecuteUndo(MapData& mapData) {

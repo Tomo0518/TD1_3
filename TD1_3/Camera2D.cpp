@@ -177,6 +177,7 @@ void Camera2D::SetDeadZone(float width, float height) {
 }
 
 void Camera2D::UpdateFollow(float deltaTime) {
+	if (isDebugCamera_) return;
 	if (!follow_.target) return;
 
 	Vector2 targetPos = *follow_.target;
@@ -295,17 +296,18 @@ Matrix3x3 Camera2D::GetVpVpMatrix() const {
 }
 
 // ========== デバッグ用カメラ操作 ==========
-void Camera2D::DebugMove(bool isDebug) {
-	if (!isDebug) {
-		isDebugCamera_ = false;
+void Camera2D::DebugMove() {
+	if (!isDebugCamera_) {
 		return;
 	}
 
-	isDebugCamera_ = true;
+	if (InputManager::GetInstance().TriggerKey(DIK_LSHIFT)) {
+		isFollowingTarget_ = !isFollowingTarget_;
+	}
 
-	// デバッグモード中はターゲット追従を無効化
-	const Vector2* originalTarget = follow_.target;
-	follow_.target = nullptr;
+	if (isFollowingTarget_) {
+		return;
+	}
 
 	const float moveSpeed = 300.0f;      // 移動速度（ピクセル/秒）
 	const float zoomSpeed = 0.5f;        // ズーム速度
@@ -317,7 +319,7 @@ void Camera2D::DebugMove(bool isDebug) {
 	// 矢印キーで移動
 	if (IsWorldYUp()) {
 		if (input.PressKey(DIK_UP)) {
-			position_.y += moveSpeed * (1.0f / 60.0f);  // 仮に60FPS想定
+			position_.y += moveSpeed * (1.0f / 60.0f);
 		}
 		if (input.PressKey(DIK_DOWN)) {
 			position_.y -= moveSpeed * (1.0f / 60.0f);
@@ -370,7 +372,7 @@ void Camera2D::DebugMove(bool isDebug) {
 	// ========== リセット ==========
 	// Rキーでカメラリセット
 	if (input.TriggerKey(DIK_F)) {
-		position_ = { 640.0f, 360.0f };
+		position_ = *follow_.target;
 		zoom_ = 1.0f;
 		rotation_ = 0.0f;
 	}
@@ -390,15 +392,8 @@ void Camera2D::DebugMove(bool isDebug) {
 	if (input.TriggerKey(DIK_2)) {
 		ZoomTo(1.0f, 1.0f, Easing::EaseInOutQuad);
 	}
-
-	// ========== 移動テスト ==========
-	// 3キーで中央に移動
+	// 2キーでズームアウト
 	if (input.TriggerKey(DIK_3)) {
-		MoveTo({ 640.0f, 360.0f }, 2.0f, Easing::EaseOutCubic);
-	}
-
-	// デバッグモード終了時にターゲット追従を復元
-	if (!isDebug && originalTarget) {
-		follow_.target = originalTarget;
+		ZoomTo(0.5f, 0.5f, Easing::EaseInOutQuad);
 	}
 }

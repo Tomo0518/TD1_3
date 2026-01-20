@@ -45,11 +45,9 @@ private:
 	// プレイヤーデバッグの状態
 	bool showPlayerWindow_ = true;
 
-	// ★追加：パーティクルデバッグの状態
+	// パーティクルデバッグの状態
 	bool showParticleWindow_ = true;
 	bool showEnvironmentParticles_ = true;
 	bool showActiveParticles_ = true;
 	bool showParticleParams_ = false;
-
-
 };
