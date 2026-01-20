@@ -18,6 +18,20 @@ enum class TileType {
 	AutoTile    // オートタイル
 };
 
+enum TileID{
+	Air = 0,
+	Block_Ground = 1,
+	Block_Iron = 2,
+
+	Deco_Grass = 10,
+	Deco_Sign = 11,
+
+	//PlayerStart = 100,
+
+	Deco_RockBlock = 200,
+	Deco_IceBlock = 201,
+};
+
 // 描画の仕組みを定義
 enum class RenderMode {
 	Simple,      // MapChipでの描画（高速・軽量）
@@ -81,7 +95,7 @@ public:
 
 		// ID:0 空気 (テクスチャなし)
 		tiles_.push_back({
-			0, "Air",
+			TileID::Air, "Air",
 			TextureId::Count,
 			TileType::None,
 			false,
@@ -92,7 +106,7 @@ public:
 
 		// ID:1 地面 (オートタイル)
 		tiles_.push_back({
-			1, "Ground",
+			TileID::Block_Ground, "Ground",
 			TextureId::GroundAuto,
 			TileType::AutoTile,
 			true,
@@ -103,7 +117,7 @@ public:
 
 		// ID:2 鉄ブロック
 		tiles_.push_back({
-			2, "Iron",
+			TileID::Block_Iron, "Iron",
 			TextureId::GroundAuto,
 			TileType::Solid,
 			true,
@@ -117,7 +131,7 @@ public:
 		// ==================================
 		// ID:10 草 (Decoration)
 		tiles_.push_back({
-			10, "Grass", TextureId::Deco_GrassAnim, TileType::Solid, false, // 当たり判定なし
+			TileID::Deco_Grass, "Grass", TextureId::Deco_GrassAnim, TileType::Solid, false, // 当たり判定なし
 			TileLayer::Decoration, {0.0f, 8.0f}, // オフセットで位置微調整
 			RenderMode::Component,
 			{ true, 8, 1, 8, 0.15f,true,{0.5f, 0.8f} }// アニメーション設定
@@ -125,7 +139,7 @@ public:
 
 		// ID:11 看板 (Decoration)
 		tiles_.push_back({
-			11, "Sign", TextureId::Deco_Scrap, TileType::Solid, false,
+			TileID::Deco_Sign, "Sign", TextureId::Deco_Scrap, TileType::Solid, false,
 			TileLayer::Decoration, {0.0f, 0.0f},
 			RenderMode::Component,
 			{ false, 1, 1, 1, 0.0f } // アニメーションなし
@@ -144,13 +158,13 @@ public:
 		// ==================================
 		// ID:200 背景岩ブロック
 		tiles_.push_back({
-			200, "BackgroundRockBlock", TextureId::Deco_Background_RockBlock, TileType::Solid , false,
+			TileID::Deco_RockBlock, "BackgroundRockBlock", TextureId::Deco_Background_RockBlock, TileType::Solid , false,
 			TileLayer::BackgroundDecoration, {0.0f, 0.0f},
 			RenderMode::Simple,{}
 			});
 		// ID:201 背景アイスブロック 
 		tiles_.push_back({
-			201, "BackgroundIceBlock", TextureId::Deco_Background_IceBlock, TileType::None , false,
+			TileID::Deco_IceBlock, "BackgroundIceBlock", TextureId::Deco_Background_IceBlock, TileType::None , false,
 			TileLayer::BackgroundDecoration, {0.0f, 0.0f},
 			RenderMode::Simple,{}
 			});

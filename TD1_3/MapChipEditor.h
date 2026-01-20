@@ -76,6 +76,9 @@ private:
     void ExecuteRedo(MapData& mapData);
     void CommitStroke(MapData& mapData);
 
+    // レイヤーを変更する関数、モードチェンジに呼び出す
+    void ChangeLayer(TileLayer newLayer);
+
     // ツール処理
     void ToolBucket(MapData& mapData, int col, int row, int newId);
     void ToolRectanglePreview(MapData& mapData, Camera2D& camera, int col, int row);
