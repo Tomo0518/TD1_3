@@ -33,18 +33,29 @@ void DebugWindow::DrawCameraDebugWindow(Camera2D* camera) {
 
 	ImGui::Begin("Camera Debug", &showCameraWindow_);
 
+	// =======================================
+	// ショートカット説明
+	// =======================================
+	if (ImGui::TreeNode("Camera Controls Shortcut Keys")) {
+		ImGui::Text("Arrow Keys: Move Camera Up/Left/Down/Right");
+		ImGui::Text("Q/E: Zoom Camera In/Out");
+		ImGui::Text("F: Reset Camera Position and Zoom");
+		ImGui::TreePop();
+	}
+
+	ImGui::Separator();
 	// ========================================
 	// デバッグモード切り替え
 	// ========================================
 	ImGui::Text("=== Debug Mode ===");
-	if (ImGui::Checkbox("Enable Camera Debug Mode", &cameraDebugMode_)) {
-		// デバッグモードの状態を camera に反映
-		camera->isDebugCamera_ = cameraDebugMode_;
+	if (ImGui::Checkbox("Enable Camera Debug Mode", &camera->isDebugCamera_)) {
 	}
 
-	if (cameraDebugMode_) {
+	if (camera->isDebugCamera_) {
 		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "ACTIVE");
+		ImGui::SetWindowFontScale(1.4f);
+		ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "ACTIVE");
+		ImGui::SetWindowFontScale(1.0f);
 	}
 
 	ImGui::Separator();

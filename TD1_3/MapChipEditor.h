@@ -47,6 +47,7 @@ public:
 
 private:
     int selectedTileId_ = 1;
+	int preEraserTileId_ = 1;
     ToolMode currentMode_ = ToolMode::Pen;
     TileLayer currentLayer_ = TileLayer::Block;
 

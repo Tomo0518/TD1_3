@@ -196,14 +196,12 @@ void GamePlayScene::Update(float dt, const char* keys, const char* pre) {
 
 #ifdef _DEBUG
 	if (camera_) {
-		if (Input().TriggerKey(keys[DIK_C])) {
+		if (Input().TriggerKey(DIK_Z)){
 			isDebugCameraMove_ = !isDebugCameraMove_;
+			camera_->SetDebugCamera(isDebugCameraMove_) ;
 		}
-
-		camera_->DebugMove(isDebugCameraMove_);
-	}
-	else if (camera_) {
-		camera_->DebugMove(false);
+		camera_->DebugMove();
+		Novice::ScreenPrintf(10, 40, "(Z)Debug Camera Move: %s", isDebugCameraMove_ ? "ON" : "OFF");
 	}
 #endif
 
