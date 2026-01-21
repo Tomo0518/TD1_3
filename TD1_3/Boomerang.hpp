@@ -200,7 +200,7 @@ public:
 
 			// Simple return logic: Move towards player
 			Vector2 dir = ownerPos - transform_.translate;
-			if (Vector2::Length(dir) < 20.0f) {
+			if (Vector2::Length(dir) < 40.0f) {
 				state_ = BoomerangState::Idle;
 			}
 			else {
