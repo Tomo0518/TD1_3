@@ -52,7 +52,7 @@ void ParallaxLayer::Draw(Camera2D& camera) {
     }
 
 #ifdef _DEBUG
-    Novice::ConsolePrintf("[Parallax] Camera:(%.1f, %.1f) Delta:(%.1f, %.1f) ScrollOffset:%.1f Zoom:%.2f Tiles:%d\n",
-        cameraPos.x, cameraPos.y, cameraDelta.x, cameraDelta.y, scrollOffsetX, zoom, maxTiles);
+    //Novice::ConsolePrintf("[Parallax] Camera:(%.1f, %.1f) Delta:(%.1f, %.1f) ScrollOffset:%.1f Zoom:%.2f Tiles:%d\n",
+    //    cameraPos.x, cameraPos.y, cameraDelta.x, cameraDelta.y, scrollOffsetX, zoom, maxTiles);
 #endif
 }

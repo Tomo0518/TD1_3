@@ -134,7 +134,7 @@ public:
 			TileID::Deco_Grass, "Grass", TextureId::Deco_GrassAnim, TileType::Solid, false, // 当たり判定なし
 			TileLayer::Decoration, {0.0f, 8.0f}, // オフセットで位置微調整
 			RenderMode::Component,
-			{ true, 8, 1, 8, 0.15f,true,{0.5f, 0.8f} }// アニメーション設定
+			{ true, 8, 1, 8, 8.f,true,{0.5f, 0.8f} }// アニメーション設定
 			});
 
 		// ID:11 看板 (Decoration)

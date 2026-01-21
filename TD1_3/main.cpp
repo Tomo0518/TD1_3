@@ -19,7 +19,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// ライブラリの初期化
 	Novice::Initialize(kWindowTitle, (int)kWindowWidth, (int)kWindowHeight);
 
-	const float kDeltaTime = 1.0f / 60.0f;
+	const float kDeltaTime = 1.0f;
 	SceneManager sceneManager;
 
 	//Novice::SetWindowMode(kFullscreen);
