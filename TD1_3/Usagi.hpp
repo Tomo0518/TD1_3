@@ -31,7 +31,7 @@ public:
 	void Initialize() override {
 		rigidbody_.Initialize();
 		rigidbody_.deceleration = { 0.7f, 0.7f };
-		collider_.size = { 52.f, 124.f };
+		collider_.size = { 52.f, 120.f };
 		collider_.offset = { 5.f, -28.f };
 		// 描画コンポーネントの初期化があれば呼ぶ
 		drawComp_ = new DrawComponent2D(Tex().GetTexture(TextureId::UsagiIdle), 1, 1, 1, 1.f, true);
