@@ -56,12 +56,12 @@ void MapChipEditor::UpdateAndDrawImGui(MapData& mapData, Camera2D& camera) {
 
 	// 保存・ロード
 	if (ImGui::Button("Save Map")) {
-		mapData.Save("./Resources/data/debug.json");
+		mapData.Save("./Resources/data/stage1.json");
 		ImGui::OpenPopup("Saved");
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Load Map")) {
-		mapData.Load("./Resources/data/debug.json");
+		mapData.Load("./Resources/data/stage1.json");
 		undoStack_.clear();
 		redoStack_.clear();
 	}
