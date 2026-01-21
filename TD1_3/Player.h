@@ -10,7 +10,7 @@
 #endif
 
 #undef min
-
+#include "GameObjectManager.h"
 class Camera2D;
 
 /// <summary>
@@ -18,6 +18,7 @@ class Camera2D;
 /// </summary>
 class Player : public GameObject2D{
 public:
+	
 	Player();
 	~Player();
 

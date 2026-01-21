@@ -125,7 +125,8 @@ public:
         // 4. 描画コンポーネント等の更新があれば呼ぶ
         if (drawComp_) { 
 			drawComp_->SetTransform(transform_);
-            drawComp_->Update(deltaTime);}
+            drawComp_->Update(deltaTime);
+        }
     }
 
     virtual void Draw(const Camera2D& camera) {
@@ -147,6 +148,7 @@ public:
     Rigidbody2D& GetRigidbody() { return rigidbody_; }
     Collider& GetCollider() { return collider_; }
     Status& GetStatus() { return status_; }
+	
 
     // 描画コンポーネントへのアクセス（細かい設定用）
     DrawComponent2D* GetDrawComponent() { return drawComp_; }
@@ -156,8 +158,16 @@ public:
 
     // --- マネージャー連携用セッター ---
     void SetManager(GameObjectManager* manager) { manager_ = manager; }
+    GameObjectManager* GetGameObjectManager() { return manager_; }
 
     // 自分を殺す（リストから削除依頼）
     void Destroy() { isDead_ = true; }
     bool IsDead() const { return isDead_; }
+
+	// collsion detection
+    virtual int OnCollision(GameObject2D* other) {
+        // デフォルトでは何もしない
+        other;
+        return 0;
+    }
 };

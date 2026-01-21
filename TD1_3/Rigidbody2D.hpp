@@ -17,7 +17,8 @@ public:
     // 1.0f = 減速なし、0.9f = 毎秒90%に減速
     Vector2 deceleration = { 0.0f, 0.0f };
 
-    float maxSpeed = 400.0f;
+    float maxSpeedX = 6.0f;
+    float maxSpeedY = 20.0f;
 
     // --- 回転パラメータ ---
     float angularVelocity = 0.0f;
@@ -51,9 +52,13 @@ public:
         velocity += acceleration * deltaTime;
 
         // 2. 最大速度制限
-        if (Vector2::Length(velocity) > maxSpeed) {
-            velocity = Vector2::Normalize(velocity) * maxSpeed;
+        if (abs(velocity.x) > maxSpeedX) {
+			velocity.x = (velocity.x > 0 ? 1 : -1) * maxSpeedX;
         }
+        if (abs(velocity.y) > maxSpeedY) {
+			velocity.y = (velocity.y > 0 ? 1 : -1) * maxSpeedY;
+		}
+
 
         // 3. 角速度の更新
         angularVelocity += angularAcceleration * deltaTime;

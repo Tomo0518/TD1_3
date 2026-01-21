@@ -2,6 +2,7 @@
 #include "Camera2D.h"
 #include <Novice.h>
 #include <algorithm>
+#include "PhysicsManager.h"
 
 #include "SceneUtilityIncludes.h"
 
@@ -33,29 +34,34 @@ void Player::Move(float deltaTime) {
 
 	// WASD で移動
 	if (Input().PressKey(DIK_W)) {
-		rigidbody_.velocity.y = rigidbody_.maxSpeed;
+		rigidbody_.velocity.y = rigidbody_.maxSpeedY;
 	}
 
 	if (Input().PressKey(DIK_S)) {
-		rigidbody_.velocity.y = -rigidbody_.maxSpeed;
+		rigidbody_.velocity.y = -rigidbody_.maxSpeedY;
 	}
 
 	if (Input().PressKey(DIK_A)) {
-		rigidbody_.velocity.x = -rigidbody_.maxSpeed;
+		rigidbody_.velocity.x = -rigidbody_.maxSpeedX;
 	}
 
 	if (Input().PressKey(DIK_D)) {
-		rigidbody_.velocity.x = rigidbody_.maxSpeed;
+		rigidbody_.velocity.x = rigidbody_.maxSpeedX;
 	}
 
 	// 斜め移動の速度を正規化
 	if (rigidbody_.velocity.x != 0.0f && rigidbody_.velocity.y != 0.0f) {
-		rigidbody_.velocity = Vector2::Normalize(rigidbody_.velocity) * rigidbody_.maxSpeed;
+		rigidbody_.velocity = Vector2::Normalize(rigidbody_.velocity) * rigidbody_.maxSpeedX;
 	}
 
 	// 位置を更新
 	Vector2 moveDelta = rigidbody_.velocity * deltaTime;
 	transform_.translate += moveDelta;
+
+	auto& mapData = MapData::GetInstance();
+	
+	PhysicsManager::ResolveMapCollision(this, mapData);
+	
 
 	// 画面内に制限
 	//position_.x = std::clamp(position_.x, 32.0f, 1280.0f - 32.0f);
@@ -68,7 +74,18 @@ void Player::Update(float deltaTime) {
 	// 移動処理
 	Move(deltaTime);
 
+
+
 	// ========== エフェクトテスト用のキー入力 ==========
+
+	if (Novice::CheckHitKey(DIK_U)) {
+		Novice::ConsolePrintf("try spawn1\n");
+		if (manager_) {
+			Novice::ConsolePrintf("try spawn2\n");
+			auto* player = manager_->Spawn<Player>(nullptr, "player");
+			player->SetPosition({ 4700.0f, 5400.0f });
+		}
+	}
 
 	if (Input().PressKey(DIK_SPACE)) {
 		drawComp_->SetCropDirection(CropDirection::Vertical);

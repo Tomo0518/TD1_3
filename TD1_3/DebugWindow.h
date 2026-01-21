@@ -3,6 +3,7 @@
 // 前方宣言
 class Camera2D;
 class Player;
+class Usagi;
 class ParticleManager;
 
 /// <summary>
@@ -27,12 +28,12 @@ public:
 	// ========================================
 	// プレイヤーデバッグGUI
 	// ========================================
-	void DrawPlayerDebugWindow(Player* player);
+	void DrawPlayerDebugWindow(Usagi* player);
 
 	// ========================================
 	// パーティクルデバッグGUI
 	// ========================================
-	void DrawParticleDebugWindow(ParticleManager* particleManager, Player* player = nullptr);
+	void DrawParticleDebugWindow(ParticleManager* particleManager, Usagi* player = nullptr);
 
 private:
 	// カメラデバッグモードの状態

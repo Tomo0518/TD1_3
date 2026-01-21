@@ -5,6 +5,7 @@
 #include <Novice.h>
 
 #include "Player.h"
+#include "Usagi.hpp"
 #include "WorldOrigin.h"
 #include "ObjectRegistry.h"
 #include "ParticleManager.h"
@@ -35,7 +36,7 @@ void GamePlayScene::Initialize() {
 	objectManager_.Clear();
 	player_ = nullptr;
 	worldOrigin_ = nullptr;
-	
+
 	// 背景マネージャー初期化
 	backgroundManager_ = std::make_unique<BackgroundManager>();
 
@@ -93,14 +94,15 @@ void GamePlayScene::InitializeObjects() {
 
 	// Playerが生成されていない場合はデフォルト位置に配置
 	if (!player_) {
-		player_ = objectManager_.Spawn<Player>(nullptr, "Player");
+		player_ = objectManager_.Spawn<Usagi>(nullptr, "Player");
 		player_->SetPosition({ 12000.0f, 12000.0f });
+		//player_->SetManager(&objectManager_);
 	}
 
 	// WorldOriginが見つからない場合はデフォルト位置に生成
 	if (!worldOrigin_) {
 		Novice::ConsolePrintf("[GamePlayScene] No WorldOrigin found, creating at default position\n");
-		worldOrigin_ = objectManager_.Spawn<WorldOrigin>(nullptr,"WorldOrigin");
+		worldOrigin_ = objectManager_.Spawn<WorldOrigin>(nullptr, "WorldOrigin");
 		worldOrigin_->SetPosition({ 12000.0f, 12000.0f });
 	}
 
@@ -114,7 +116,7 @@ void GamePlayScene::SpawnObjectFromData(const ObjectSpawnInfo& spawn) {
 	switch (spawn.objectTypeId) {
 	case 0: // WorldOrigin（拠点・ワールド座標の原点）
 		if (!worldOrigin_) {
-			worldOrigin_ = objectManager_.Spawn<WorldOrigin>(nullptr,"WorldOrigin");
+			worldOrigin_ = objectManager_.Spawn<WorldOrigin>(nullptr, "WorldOrigin");
 			worldOrigin_->SetPosition(spawn.position);
 			Novice::ConsolePrintf("[GamePlayScene] Spawned WorldOrigin at (%.1f, %.1f)\n",
 				spawn.position.x, spawn.position.y);
@@ -123,18 +125,24 @@ void GamePlayScene::SpawnObjectFromData(const ObjectSpawnInfo& spawn) {
 
 	case 100: // PlayerStart
 		if (!player_) {
-			player_ = objectManager_.Spawn<Player>(nullptr, "Player");
+			player_ = objectManager_.Spawn<Usagi>(nullptr, "Player");
 			player_->SetPosition(spawn.position);
+			player_->Initialize();
 			Novice::ConsolePrintf("[GamePlayScene] Spawned Player at (%.1f, %.1f)\n",
 				spawn.position.x, spawn.position.y);
+			//player_->SetManager(&objectManager_);
 		}
 		break;
 
 		// 追加するオブジェクトタイプはここに追加
-		// case 101: // Enemy_Normal
-		//     auto* enemy = objectManager_.Spawn<Enemy>(nullptr, "Enemy");
-		//     enemy->SetPosition(spawn.position);
-		//     break;
+	case 101: { // Enemy_Normal
+		auto* enemy = objectManager_.Spawn<Enemy>(nullptr, "Enemy");
+		enemy->SetPosition(spawn.position);
+		enemy->Initialize();
+		Novice::ConsolePrintf("[GamePlayScene] Spawned Enemy at (%.1f, %.1f)\n",
+			spawn.position.x, spawn.position.y);
+		break;
+	}
 
 	default:
 		Novice::ConsolePrintf("[GamePlayScene] Unknown object type: %d\n", spawn.objectTypeId);
@@ -174,7 +182,7 @@ void GamePlayScene::InitializeBackground() {
 	);
 
 	// プレイヤースポーン後、カメラ初期位置を設定
-	Vector2 spawnPos = {player_->GetPosition()};
+	Vector2 spawnPos = { player_->GetPosition() };
 	backgroundManager_->SetInitialCameraPosition(spawnPos);
 }
 
@@ -196,9 +204,9 @@ void GamePlayScene::Update(float dt, const char* keys, const char* pre) {
 
 #ifdef _DEBUG
 	if (camera_) {
-		if (Input().TriggerKey(DIK_X)){
+		if (Input().TriggerKey(DIK_X)) {
 			isDebugCameraMove_ = !isDebugCameraMove_;
-			camera_->SetDebugCamera(isDebugCameraMove_) ;
+			camera_->SetDebugCamera(isDebugCameraMove_);
 		}
 		camera_->DebugMove();
 		Novice::ScreenPrintf(10, 40, "(Z)Debug Camera Move: %s", isDebugCameraMove_ ? "ON" : "OFF");
@@ -206,16 +214,17 @@ void GamePlayScene::Update(float dt, const char* keys, const char* pre) {
 #endif
 
 	// 動的タイルの更新(カリングとアニメーション更新)
-	mapManager_.Update(dt,*camera_);
+	mapManager_.Update(dt, *camera_);
 
 	// GameObjectManager 経由で更新
 	objectManager_.Update(dt);
 
 	// 当たり判定（物理演算)
-	auto& mapData = MapData::GetInstance();
+	CheckCollisions();
+	/*auto& mapData = MapData::GetInstance();
 	if (player_) {
 		PhysicsManager::ResolveMapCollision(player_, mapData);
-	}
+	}*/
 
 	// GameObjectManager でオブジェクト更新（移動処理）
 	//objectManager_.Update(dt);
@@ -223,9 +232,10 @@ void GamePlayScene::Update(float dt, const char* keys, const char* pre) {
 	// パーティクル
 	particleManager_->Update(dt);
 
+
+
 	// テスト入力（player_ は参照として使える）
 	if (player_) {
-
 		/*if (Input().TriggerKey(DIK_SPACE)) {
 			particleManager_->Emit(ParticleType::Explosion, player_->GetPosition());
 		}*/
@@ -280,4 +290,11 @@ void GamePlayScene::Draw() {
 		debugWindow_->DrawParticleDebugWindow(particleManager_, player_);
 	}
 #endif
+}
+
+void GamePlayScene::CheckCollisions() {
+	std::vector<GameObject2D*> objects = objectManager_.GetAllObjects();
+
+	PhysicsManager::ResolveObjectsCollisions(objects);
+
 }

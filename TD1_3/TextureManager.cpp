@@ -30,6 +30,35 @@ void TextureManager::LoadResources() {
 	textureResources_[static_cast<int>(TextureId::ResultClearLabel)] =
 		Novice::LoadTexture("./Resources/images/result/clear.png");
 
+	// ==========================================
+	// enemy
+	// ==========================================
+	textureResources_[static_cast<int>(TextureId::KinokoWalk)] =
+		Novice::LoadTexture("./Resources/images/enemy/kinoko_walk.png");
+
+	// ==========================================
+	// item
+	// ==========================================
+	textureResources_[static_cast<int>(TextureId::Boomerang)] =
+		Novice::LoadTexture("./Resources/images/item/boomerang.png");
+
+	// =========================================
+	// usagi
+	// =========================================
+	textureResources_[static_cast<int>(TextureId::UsagiIdle)] =
+		Novice::LoadTexture("./Resources/images/usagi/usagi_idle.png");
+	textureResources_[static_cast<int>(TextureId::UsagiBreathe)] =
+		Novice::LoadTexture("./Resources/images/usagi/usagi_breathe.png");
+	textureResources_[static_cast<int>(TextureId::UsagiRun)] =
+		Novice::LoadTexture("./Resources/images/usagi/usagi_running.png");
+	textureResources_[static_cast<int>(TextureId::UsagiAttack)] =
+		Novice::LoadTexture("./Resources/images/usagi/usagi_attack.png");
+	textureResources_[static_cast<int>(TextureId::UsagiJump)] =
+		Novice::LoadTexture("./Resources/images/usagi/usagi_jump.png");
+	textureResources_[static_cast<int>(TextureId::UsagiFall)] =
+		Novice::LoadTexture("./Resources/images/usagi/usagi_falling.png");
+
+
 	// ==================================
 	// マップチップ
 	// ==================================

@@ -1,6 +1,7 @@
 ﻿#include "DebugWindow.h"
 #include "Camera2D.h"
 #include "Player.h"
+#include "Usagi.hpp"
 #include "Easing.h"
 #include "ParticleManager.h"
 
@@ -275,7 +276,7 @@ void DebugWindow::DrawCameraDebugWindow(Camera2D* camera) {
 #endif
 }
 
-void DebugWindow::DrawPlayerDebugWindow(Player* player) {
+void DebugWindow::DrawPlayerDebugWindow(Usagi* player) {
 	player;
 #ifdef _DEBUG
 	if (!player || !showPlayerWindow_) return;
@@ -293,7 +294,7 @@ void DebugWindow::DrawPlayerDebugWindow(Player* player) {
 
 	ImGui::Text("=== Status ===");
 	ImGui::Text("Alive: %s", player->IsAlive() ? "Yes" : "No");
-	ImGui::Text("Radius: %.1f", player->GetRadius());
+	//ImGui::Text("Radius: %.1f", player->GetRadius());
 
 	ImGui::Separator();
 
@@ -323,7 +324,7 @@ void DebugWindow::DrawPlayerDebugWindow(Player* player) {
 // ========================================
 // パーティクルデバッグウィンドウ
 // ========================================
-void DebugWindow::DrawParticleDebugWindow(ParticleManager* particleManager, Player* player) {
+void DebugWindow::DrawParticleDebugWindow(ParticleManager* particleManager, Usagi* player) {
 	particleManager;
 	player;
 #ifdef _DEBUG

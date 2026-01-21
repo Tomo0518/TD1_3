@@ -13,6 +13,7 @@
 
 class SceneManager;
 class Player;
+class Usagi;
 class ParticleManager;
 class DebugWindow;
 class WorldOrigin;
@@ -30,7 +31,7 @@ private:
 
     // --- ゲームオブジェクト ---
     GameObjectManager objectManager_;
-    Player* player_ = nullptr;
+    Usagi* player_ = nullptr;
     WorldOrigin* worldOrigin_ = nullptr; // ワールド原点
 
     // --- カメラ ---
@@ -71,4 +72,7 @@ private:
     Vector2 GetWorldOriginOffset() const {
         return worldOrigin_ ? worldOrigin_->GetPosition() : Vector2{ 0.0f, 0.0f };
     }
+
+    // collsion check
+	void CheckCollisions();
 };

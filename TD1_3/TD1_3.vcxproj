@@ -163,6 +163,8 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClInclude Include="Affine2D.h" />
     <ClInclude Include="Animation.h" />
     <ClInclude Include="BackgroundManager.h" />
+    <ClInclude Include="Boomerang.hpp" />
+    <ClInclude Include="Enemy.hpp" />
     <ClInclude Include="GameObject2D.h" />
     <ClInclude Include="GameObjectManager.h" />
     <ClInclude Include="MapChip.h" />
@@ -170,9 +172,9 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClInclude Include="MapData.h" />
     <ClInclude Include="MapManager.h" />
     <ClInclude Include="ObjectRegistry.h" />
-    <ClInclude Include="ObjectSpawnInfo.h" />
     <ClInclude Include="ParallaxLayer.h" />
     <ClInclude Include="PhysicsManager.h" />
+    <ClInclude Include="PhysicsObject.hpp" />
     <ClInclude Include="PrototypeSurvivalScene.h" />
     <ClInclude Include="Rigidbody2D.hpp" />
     <ClInclude Include="SceneUtilityIncludes.h" />
@@ -231,6 +233,7 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClInclude Include="SceneType.h" />
     <ClInclude Include="SettingScene.h" />
     <ClInclude Include="StageSelectScene.h" />
+    <ClInclude Include="Star.hpp" />
     <ClInclude Include="SurvivalGameManager.h" />
     <ClInclude Include="SurvivalObjects.h" />
     <ClInclude Include="TextRenderer.h" />
@@ -240,6 +243,7 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClInclude Include="TitleScene.h" />
     <ClInclude Include="Transform2D.h" />
     <ClInclude Include="UiDrawComponent.h" />
+    <ClInclude Include="Usagi.hpp" />
     <ClInclude Include="Vector2.h" />
     <ClInclude Include="Vertex4.h" />
     <ClInclude Include="Vertex4Component.h" />
