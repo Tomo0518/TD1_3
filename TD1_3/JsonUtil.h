@@ -114,7 +114,7 @@ public:
 			file << " \"layers\": {\n";
 
 			// タイルレイヤー
-			const std::vector<std::string> layerNames = { "background", "decoration", "block" };
+			const std::vector<std::string> layerNames = { "background","backgroundDecoration", "decoration", "block" };
 			bool firstLayer = true;
 
 			for (const auto& layerName : layerNames) {
