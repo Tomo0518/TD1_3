@@ -26,10 +26,10 @@ public:
 	Boomerang(GameObject2D* owner, bool isTemp) {
 		state_ = BoomerangState::Idle;
 		owner_ = owner;
-		maxTime_ = 0.5f;
+		maxTime_ = 0.5f*60.f;
 		isTemporary_ = isTemp;
 		stayTimer_ = 0.0f;
-		maxStayTime_ = 0.5f;
+		maxStayTime_ = 0.5f*60.f;
 		collider_.offset = { 0.0f, -20.0f };
 		info_.isVisible = false;
 		info_.isActive = false;
@@ -50,7 +50,7 @@ public:
 		startPos_ = owner_->GetTransform().translate;
 		transform_.translate = startPos_;
 		moveTimer_ = 0;
-		maxTime_ = 0.5f; // Half second to go out
+		maxTime_ = 0.5f*60.f; // Half second to go out
 		hitEnemies_.clear(); // Reset hit history
 		stayTimer_ = 0.0f; // Reset stay timer
 		float range = 380.0f;
