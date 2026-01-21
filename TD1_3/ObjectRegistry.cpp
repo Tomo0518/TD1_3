@@ -1,5 +1,14 @@
 ﻿#include "ObjectRegistry.h"
 
+enum class ObjectRegistryType {
+    WorldOrigin = 0,
+    PlayerStart = 100,
+    EnemyNormal = 101,
+    // EnemyBoss = 102,
+    // ItemCoin = 200,
+    // ItemPowerUp = 201,
+};
+
 // 静的メンバの定義
 std::vector<ObjectTypeInfo> ObjectRegistry::objectTypes_;
 
@@ -31,13 +40,13 @@ void ObjectRegistry::Initialize() {
     // ===================================================================
     // 敵キャラクター（今後追加）
     // ===================================================================
-    // objectTypes_.push_back({
-    //     101,
-    //     "Enemy_Normal",
-    //     "Enemy",
-    //     0xFF00FFFF,     // color（マゼンタ）
-    //     "Enemy"
-    // });
+     objectTypes_.push_back({
+         101,
+         "Enemy_Normal",
+         "Enemy",
+         0xFF00FFFF,     // color（マゼンタ）
+         "Enemy"
+     });
 
     // objectTypes_.push_back({
     //     102,
