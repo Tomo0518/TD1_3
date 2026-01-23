@@ -170,4 +170,23 @@ public:
         other;
         return 0;
     }
+
+    // damaged
+    virtual void OnDamaged(int damage) {
+		if (damage < 0) return; // 負のダメージは無効
+        status_.currentHP -= damage;
+        if (status_.currentHP <= 0) {
+            status_.currentHP = 0;
+            Destroy();
+        }
+	}
+
+	// healed
+    virtual void OnHealed(int heal) {
+		if (heal < 0) return; // 負の回復は無効
+        status_.currentHP += heal;
+        if (status_.currentHP > status_.maxHP) {
+            status_.currentHP = status_.maxHP;
+        }
+	}
 };

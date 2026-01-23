@@ -35,12 +35,24 @@ void TextureManager::LoadResources() {
 	// ==========================================
 	textureResources_[static_cast<int>(TextureId::KinokoWalk)] =
 		Novice::LoadTexture("./Resources/images/enemy/kinoko_walk.png");
+	textureResources_[static_cast<int>(TextureId::KinokoStun)] =
+		Novice::LoadTexture("./Resources/images/enemy/kinoko_stun.png");
 
 	// ==========================================
 	// item
 	// ==========================================
 	textureResources_[static_cast<int>(TextureId::Boomerang)] =
 		Novice::LoadTexture("./Resources/images/item/boomerang.png");
+	textureResources_[static_cast<int>(TextureId::Boomerang_Charged)] =
+		Novice::LoadTexture("./Resources/images/item/boomerangCharged.png");
+
+	textureResources_[static_cast<int>(TextureId::Star_idle)] =
+		Novice::LoadTexture("./Resources/images/item/star_Idle.png");
+	textureResources_[static_cast<int>(TextureId::Star_shooting)] =
+		Novice::LoadTexture("./Resources/images/item/star_shooting.png");
+
+	textureResources_[static_cast<int>(TextureId::Mystery)] =
+		Novice::LoadTexture("./Resources/images/item/mystery.png");
 
 	// =========================================
 	// usagi
@@ -58,6 +70,18 @@ void TextureManager::LoadResources() {
 	textureResources_[static_cast<int>(TextureId::UsagiFall)] =
 		Novice::LoadTexture("./Resources/images/usagi/usagi_falling.png");
 
+	textureResources_[static_cast<int>(TextureId::BoomerangIdle)] =
+		Novice::LoadTexture("./Resources/images/usagi/boomerang_idle.png");
+	textureResources_[static_cast<int>(TextureId::BoomerangBreathe)] =
+		Novice::LoadTexture("./Resources/images/usagi/boomerang_breathe.png");
+	textureResources_[static_cast<int>(TextureId::BoomerangRun)] =
+		Novice::LoadTexture("./Resources/images/usagi/boomerang_running.png");
+	textureResources_[static_cast<int>(TextureId::BoomerangAttack)] =
+		Novice::LoadTexture("./Resources/images/usagi/boomerang_attack.png");
+	textureResources_[static_cast<int>(TextureId::BoomerangJump)] =
+		Novice::LoadTexture("./Resources/images/usagi/boomerang_jump.png");
+	textureResources_[static_cast<int>(TextureId::BoomerangFall)] =
+		Novice::LoadTexture("./Resources/images/usagi/boomerang_falling.png");
 
 	// ==================================
 	// マップチップ

@@ -4,7 +4,7 @@ enum class ObjectRegistryType {
     WorldOrigin = 0,
     PlayerStart = 100,
     EnemyNormal = 101,
-    // EnemyBoss = 102,
+    EnemySpawner = 102,
     // ItemCoin = 200,
     // ItemPowerUp = 201,
 };
@@ -48,13 +48,13 @@ void ObjectRegistry::Initialize() {
          "Enemy"
      });
 
-    // objectTypes_.push_back({
-    //     102,
-    //     "Enemy_Boss",
-    //     "Enemy",
-    //     0xFF0088FF,     // color（濃いマゼンタ）
-    //     "Boss"
-    // });
+     objectTypes_.push_back({
+         102,
+         "EnemySpawner",
+         "ObjectSpawner",
+         0xFF0088FF,     // color（濃いマゼンタ）
+         "EnemySpawner"
+     });
 
     // ===================================================================
     // アイテム（今後追加）

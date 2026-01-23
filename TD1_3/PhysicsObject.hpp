@@ -13,7 +13,7 @@ protected:
 
 public:
 	PhysicsObject() {		
-		drawComp_ = new DrawComponent2D();
+		//drawComp_ = new DrawComponent2D();
 		Initialize();
 	}
 	~PhysicsObject() {
@@ -23,6 +23,8 @@ public:
 	void Initialize() override {
 		rigidbody_.Initialize();
 		// 描画コンポーネントの初期化があれば呼ぶ
+
+
 		if (drawComp_) {
 			drawComp_->Initialize();
 		}

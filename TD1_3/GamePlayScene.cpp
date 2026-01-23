@@ -6,6 +6,7 @@
 
 #include "Player.h"
 #include "Usagi.hpp"
+#include "KinokoSpawner.hpp"
 #include "WorldOrigin.h"
 #include "ObjectRegistry.h"
 #include "ParticleManager.h"
@@ -37,6 +38,8 @@ void GamePlayScene::Initialize() {
 	player_ = nullptr;
 	worldOrigin_ = nullptr;
 
+
+
 	// 背景マネージャー初期化
 	backgroundManager_ = std::make_unique<BackgroundManager>();
 
@@ -66,6 +69,8 @@ void GamePlayScene::Initialize() {
 #endif
 
 	InitializeCamera();
+	camera_->SetZoom(0.75f);
+
 	InitializeObjects(); // ここでObject生成（マップデータから自動生成）
 	InitializeBackground();
 
@@ -140,6 +145,15 @@ void GamePlayScene::SpawnObjectFromData(const ObjectSpawnInfo& spawn) {
 		enemy->SetPosition(spawn.position);
 		enemy->Initialize();
 		Novice::ConsolePrintf("[GamePlayScene] Spawned Enemy at (%.1f, %.1f)\n",
+			spawn.position.x, spawn.position.y);
+		break;
+	}
+
+	case 102: { // Enemy_spawner
+		auto* spawner = objectManager_.Spawn<KinokoSpawner>(nullptr, "KinokoSpawner");
+		spawner->SetPosition(spawn.position);
+		spawner->Initialize();
+		Novice::ConsolePrintf("[GamePlayScene] Spawned KinokoSpawner at (%.1f, %.1f)\n",
 			spawn.position.x, spawn.position.y);
 		break;
 	}

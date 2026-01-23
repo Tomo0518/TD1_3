@@ -167,6 +167,7 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClInclude Include="Enemy.hpp" />
     <ClInclude Include="GameObject2D.h" />
     <ClInclude Include="GameObjectManager.h" />
+    <ClInclude Include="KinokoSpawner.hpp" />
     <ClInclude Include="MapChip.h" />
     <ClInclude Include="MapChipEditor.h" />
     <ClInclude Include="MapData.h" />

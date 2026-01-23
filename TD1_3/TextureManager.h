@@ -18,12 +18,16 @@ enum class TextureId {
 	// enemy
 	// =========================================
 	KinokoWalk,
+	KinokoStun,
 
 	// =========================================
 	// item
 	// =========================================
 	Boomerang,
-
+	Boomerang_Charged,
+	Star_idle,
+	Star_shooting,
+	Mystery,
 
 	// =========================================
 	// usagi
@@ -34,6 +38,13 @@ enum class TextureId {
 	UsagiAttack,
 	UsagiJump,
 	UsagiFall,
+
+	BoomerangIdle,
+	BoomerangBreathe,
+	BoomerangRun,
+	BoomerangAttack,
+	BoomerangJump,
+	BoomerangFall,
 
 	// =========================================
 	// マップチップ用テクスチャ
