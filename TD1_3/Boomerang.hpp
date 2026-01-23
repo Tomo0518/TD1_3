@@ -295,8 +295,8 @@ public:
 		RenderPos_.y = transform_.translate.y + float(rand() % 100) / 100.f * ShakeIntensity;
 
 		if (drawComp_) {						
-			//drawComp_->SetTransform(transform_);
-			//drawComp_->SetPosition(RenderPos_);
+			drawComp_->SetTransform(transform_);
+			drawComp_->SetPosition(RenderPos_);
 			drawComp_->Update(deltaTime);
 		}
 		// Update star component if stars are active

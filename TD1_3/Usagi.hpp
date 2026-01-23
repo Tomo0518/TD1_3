@@ -29,7 +29,7 @@ private:
 
 	float dashSpeed_ = 20.f;
 	float dashDuration_ = 20.f;
-	float dashCooldown_ = 30.f;
+	float dashCooldown_ = 40.f;
 	float dashDurationTimer_ = 0.f;
 	float dashCooldownTimer_ = 0.f;
 
@@ -156,8 +156,8 @@ public:
 			if (dashCooldownTimer_ <= 0.f) {
 				Vector2 dashDir = { 0.f, 0.f };
 				if (Vector2::Length(inputDir) == 0.f) {
-					//dashDir.x = isflipX_ ? -1.f : 1.f;
-					dashDir.y = 1.f;
+					dashDir.x = isflipX_ ? -1.f : 1.f;
+					//dashDir.y = 1.f;
 				}
 				else {
 					dashDir = inputDir;
