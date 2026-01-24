@@ -257,15 +257,7 @@ public:
 		bool tryThrow = false;
 		Vector2 throwDir = { 0, 0 };
 
-		if (/*Input().PressKey(DIK_UP) || Input().PressKey(DIK_DOWN) || Input().PressKey(DIK_LEFT) || Input().PressKey(DIK_RIGHT)*/
-			Input().PressKey(DIK_J)			
-			) {
-			isCharging_ = true;
-			chargeTimer_ = std::min(chargeTimer_ + deltaTime, 120.f);
-			if (chargeTimer_ == 120.f) {
-				ParticleManager::GetInstance().Emit(ParticleType::Hit, transform_.translate);
-			}
-		}
+		
 
 		if (Input().ReleaseKey(DIK_J)) {
 			tryThrow = true;
@@ -280,6 +272,16 @@ public:
 
 		for (auto boom : boomerangs_) {
 			if (!boom->IsTemporary() && boom->IsIdle()) {
+				if (/*Input().PressKey(DIK_UP) || Input().PressKey(DIK_DOWN) || Input().PressKey(DIK_LEFT) || Input().PressKey(DIK_RIGHT)*/
+					Input().PressKey(DIK_J)
+					) {
+					isCharging_ = true;
+					chargeTimer_ = std::min(chargeTimer_ + deltaTime, 120.f);
+					if (chargeTimer_ == 120.f) {
+						ParticleManager::GetInstance().Emit(ParticleType::Hit, transform_.translate);
+					}
+				}
+
 				if (!boom->isStarRetrieved()) {
 					starCount_ = boom->retrieveStarCount();
 				}

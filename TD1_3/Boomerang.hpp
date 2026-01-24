@@ -234,7 +234,7 @@ public:
 
 					float distanceFormOwner = Vector2::Length(transform_.translate - ownerPos);
 					//closer the distance bigger damage bonus
-					damageBonus_ = int((activeRange_*1.2f - distanceFormOwner) / 50.f);
+					damageBonus_ = max(0,int((activeRange_*1.2f - distanceFormOwner) / 50.f));
 
 					if (int(stayTimer_) % int(delayPerStar) == 0) AddDamageFromStar();
 					if (stayTimer_ >= maxStayTime_) hitEnemies_.clear();
