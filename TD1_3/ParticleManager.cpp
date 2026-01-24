@@ -6,6 +6,7 @@
 #include "json.hpp"
 #include "Camera2D.h"
 #include "Effect.h"
+#include "TextureManager.h"
 
 // nlohmann/json の警告を抑制
 #pragma warning(push)
@@ -918,19 +919,21 @@ const ParticleParam* ParticleManager::GetParam(ParticleType type) const {
 }
 
 void ParticleManager::LoadCommonResources() {
+	auto& textureManager = TextureManager::GetInstance();
+
 	// テクスチャを一括ロード
-	texExplosion_ = Novice::LoadTexture("./Resources/images/effect/explosion.png");
-	texDebris_ = Novice::LoadTexture("./Resources/images/effect/debris.png");
-	texHit_ = Novice::LoadTexture("./Resources/images/effect/star.png");
-	texDust_ = Novice::LoadTexture("./Resources/images/effect/star.png");
-	texRain_ = Novice::LoadTexture("./Resources/images/effect/rain.png");
-	texSnow_ = Novice::LoadTexture("./Resources/images/effect/snow.png");
-	texOrb_ = Novice::LoadTexture("./Resources/images/effect/orb.png");
-	texGlow_ = Novice::LoadTexture("./Resources/images/effect/particle_output/particle_glow.png");
-	texRing_ = Novice::LoadTexture("./Resources/images/effect/particle_output/particle_ring.png");
-	texSparkle_ = Novice::LoadTexture("./Resources/images/effect/particle_output/particle_sparkle.png");
-	texScratch_ = Novice::LoadTexture("./Resources/images/effect/particle_output/particle_scratch.png");
-	texSmoke_ = Novice::LoadTexture("./Resources/images/effect/particle_output/particle_smoke.png");
+	texExplosion_ = textureManager.GetTexture(TextureId::Particle_Explosion);
+	texDebris_ = textureManager.GetTexture(TextureId::Particle_Debris);
+	texHit_ = textureManager.GetTexture(TextureId::Particle_Hit);
+	texDust_ = textureManager.GetTexture(TextureId::Particle_Dust);
+	texRain_ = textureManager.GetTexture(TextureId::Particle_Rain);
+	texSnow_ = textureManager.GetTexture(TextureId::Particle_Snow);
+	texOrb_ = textureManager.GetTexture(TextureId::Particle_Orb);
+	texGlow_ = textureManager.GetTexture(TextureId::Particle_Glow);
+	texRing_ = textureManager.GetTexture(TextureId::Particle_Ring);
+	texSparkle_ = textureManager.GetTexture(TextureId::Particle_Sparkle);
+	texScratch_ = textureManager.GetTexture(TextureId::Particle_Scratch);
+	texSmoke_ = textureManager.GetTexture(TextureId::Particle_Smoke);
 
 
 #ifdef _DEBUG

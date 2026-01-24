@@ -160,6 +160,55 @@ void TextureManager::LoadResources() {
 	}
 
 	// ==========================================================
+	// エフェクト用テクスチャ
+	// ==========================================================
+	{
+		textureResources_[static_cast<int>(TextureId::Particle_Explosion)] =
+			Novice::LoadTexture("./Resources/images/effect/explosion.png");
+
+		textureResources_[static_cast<int>(TextureId::Particle_Debris)] =
+			Novice::LoadTexture("./Resources/images/effect/debris.png");
+
+		textureResources_[static_cast<int>(TextureId::Particle_Hit)] =
+			Novice::LoadTexture("./Resources/images/effect/star.png");
+
+		textureResources_[static_cast<int>(TextureId::Particle_Dust)] =
+			Novice::LoadTexture("./Resources/images/effect/star.png");
+
+		textureResources_[static_cast<int>(TextureId::Particle_Rain)] =
+			Novice::LoadTexture("./Resources/images/effect/rain.png");
+
+		textureResources_[static_cast<int>(TextureId::Particle_Snow)] =
+			Novice::LoadTexture("./Resources/images/effect/snow.png");
+
+		textureResources_[static_cast<int>(TextureId::Particle_Orb)] =
+			Novice::LoadTexture("./Resources/images/effect/orb.png");
+
+		textureResources_[static_cast<int>(TextureId::Particle_Glow)] =
+			Novice::LoadTexture("./Resources/images/effect/particle_output/particle_glow.png");
+
+		textureResources_[static_cast<int>(TextureId::Particle_Ring)] =
+			Novice::LoadTexture("./Resources/images/effect/particle_output/particle_ring.png");
+
+		textureResources_[static_cast<int>(TextureId::Particle_Sparkle)] =
+			Novice::LoadTexture("./Resources/images/effect/particle_output/particle_sparkle.png");
+
+		textureResources_[static_cast<int>(TextureId::Particle_Scratch)] =
+			Novice::LoadTexture("./Resources/images/effect/particle_output/particle_scratch.png");
+
+		textureResources_[static_cast<int>(TextureId::Particle_Smoke)] =
+			Novice::LoadTexture("./Resources/images/effect/particle_output/particle_smoke.png");
+
+		// ==========敵用エフェクト==========
+		textureResources_[static_cast<int>(TextureId::Particle_EnemyHit)] =
+			Novice::LoadTexture("./Resources/images/enemy/particle/hit.png");
+
+		textureResources_[static_cast<int>(TextureId::Particle_EnemyCharge)] =
+			Novice::LoadTexture("./Resources/images/enemy/particle/charge.png");
+	}
+
+
+	// ==========================================================
 	// UI用テクスチャ
 	// ==========================================================
 	// ========== ボタン ==========

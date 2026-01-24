@@ -86,6 +86,25 @@ enum class TextureId {
 	Background_Near,
 
 	// ========================================
+	// パーティクルテクスチャ
+	// ========================================
+	Particle_Explosion,
+	Particle_Debris,
+	Particle_Hit,
+	Particle_Dust,
+	Particle_Rain,
+	Particle_Snow,
+	Particle_Orb,
+	Particle_Glow,
+	Particle_Ring,
+	Particle_Sparkle,
+	Particle_Scratch,
+	Particle_Smoke,
+
+	Particle_EnemyHit,
+	Particle_EnemyCharge,
+
+	// ========================================
 	// UI用テクスチャ
 	// ========================================
 
