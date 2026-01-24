@@ -115,7 +115,14 @@ public:
 	const ParticleParam* GetParam(ParticleType type) const;
 
 private:
-	void LoadParams();
+	// レジストリベースの初期化
+	void LoadDefaultParamsFromRegistry();
+	ParticleParam GenerateDefaultParam(ParticleType type);
+
+	// JSON処理を簡略化
+	nlohmann::json SerializeParam(const ParticleParam& param) const;
+	ParticleParam DeserializeParam(const nlohmann::json& j, ParticleType type);
+
 	Particle& GetNextParticle();
 	float RandomFloat(float min, float max);
 	Vector2 GenerateEmitPosition(const Vector2& basePos, const ParticleParam& param);
@@ -163,4 +170,5 @@ private:
 	int texSmoke_ = -1;
 
 	ParticleType currentDebugType_ = ParticleType::Explosion;
+
 };

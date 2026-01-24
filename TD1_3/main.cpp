@@ -9,6 +9,8 @@
 
 #include "Camera2D.h"
 
+#include "ParticleRegistry.h"
+
 const char kWindowTitle[] = "==============ゲームタイトル==============";
 
 // Windowsアプリでのエントリーポイント(main関数)
@@ -24,8 +26,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	SoundManager::GetInstance().LoadResources();
 	Camera2D::GetInstance().SetIsWorldYUp(true);
-	ParticleManager::GetInstance().Load();
 	TextureManager::GetInstance().LoadResources();
+
+	// パーティクルレジストリの初期化
+	ParticleRegistry::Initialize();
+	ParticleManager::GetInstance().Load();
 
 	// キー入力結果を受け取る箱 
 	char keys[256] = { 0 };

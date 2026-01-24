@@ -4,6 +4,7 @@
 #include "Usagi.hpp"
 #include "Easing.h"
 #include "ParticleManager.h"
+#include "ParticleRegistry.h"
 
 #ifdef _DEBUG
 #include <imgui.h>
@@ -324,6 +325,9 @@ void DebugWindow::DrawPlayerDebugWindow(Usagi* player) {
 // ========================================
 // パーティクルデバッグウィンドウ
 // ========================================
+// ========================================
+// パーティクルデバッグウィンドウ（レジストリベース版）
+// ========================================
 void DebugWindow::DrawParticleDebugWindow(ParticleManager* particleManager, Usagi* player) {
 	particleManager;
 	player;
@@ -333,166 +337,27 @@ void DebugWindow::DrawParticleDebugWindow(ParticleManager* particleManager, Usag
 	ImGui::Begin("Particle System Debug", &showParticleWindow_);
 
 	// ========================================
-	// プレイヤー情報表示
+	// ファイル操作
 	// ========================================
-	if (player) {
-		ImGui::Text("Player Position: (%.1f, %.1f)", player->GetPosition().x, player->GetPosition().y);
-		ImGui::Separator();
-	}
+	if (ImGui::CollapsingHeader("File Operations", ImGuiTreeNodeFlags_DefaultOpen)) {
+		static char filepath[256] = "Resources/Data/particle_params.json";
+		ImGui::InputText("File Path", filepath, sizeof(filepath));
 
-	// ========================================
-	// 環境パーティクルコントロール
-	// ========================================
-	if (ImGui::CollapsingHeader("Environment Effects", ImGuiTreeNodeFlags_DefaultOpen)) {
-		ImGui::Indent();
-
-		// 警告表示：プレイヤーが必要
-		if (!player) {
-			ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "WARNING: Player reference not set!");
-			ImGui::Text("Environment particles require player position.");
-			ImGui::Unindent();
+		if (ImGui::Button("Save Parameters", ImVec2(140, 30))) {
+			if (particleManager->SaveParamsToJson(filepath)) {
+				Novice::ConsolePrintf("✓ Saved to: %s\n", filepath);
+			}
+			else {
+				Novice::ConsolePrintf("✗ Failed to save: %s\n", filepath);
+			}
 		}
-		else {
-			// プレイヤー位置への参照を取得
-			const Vector2* playerPosPtr = &player->GetPositionRef();
-
-			// 雨のコントロール
-			ImGui::PushID("Rain");
-			ImGui::Text("Rain:");
-			ImGui::SameLine(150);
-
-			bool rainActive = particleManager->continuousEmitters_.find(ParticleType::Rain) !=
-				particleManager->continuousEmitters_.end() &&
-				particleManager->continuousEmitters_[ParticleType::Rain].isActive;
-
-			if (ImGui::Button(rainActive ? "Stop##Rain" : "Start##Rain", ImVec2(80, 0))) {
-				if (rainActive) {
-					particleManager->StopEnvironmentEffect(ParticleType::Rain);
-				}
-				else {
-					// 追従ターゲットを設定してから開始
-					particleManager->StartEnvironmentEffect(ParticleType::Rain, EmitterFollowMode::FollowTarget);
-					particleManager->SetFollowTarget(ParticleType::Rain, playerPosPtr);
-				}
-			}
-
-			ImGui::SameLine();
-			if (rainActive) {
-				ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "ACTIVE");
-
-				// デバッグ情報：エミッター状態
-				auto& emitter = particleManager->continuousEmitters_[ParticleType::Rain];
-				ImGui::SameLine();
-				ImGui::Text("Timer: %.2f", emitter.timer);
+		ImGui::SameLine();
+		if (ImGui::Button("Load Parameters", ImVec2(140, 30))) {
+			if (particleManager->LoadParamsFromJson(filepath)) {
+				Novice::ConsolePrintf("✓ Loaded from: %s\n", filepath);
 			}
 			else {
-				ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1.0f), "INACTIVE");
-			}
-			ImGui::PopID();
-
-			// 雪のコントロール
-			ImGui::PushID("Snow");
-			ImGui::Text("Snow:");
-			ImGui::SameLine(150);
-
-			bool snowActive = particleManager->continuousEmitters_.find(ParticleType::Snow) !=
-				particleManager->continuousEmitters_.end() &&
-				particleManager->continuousEmitters_[ParticleType::Snow].isActive;
-
-			if (ImGui::Button(snowActive ? "Stop##Snow" : "Start##Snow", ImVec2(80, 0))) {
-				if (snowActive) {
-					particleManager->StopEnvironmentEffect(ParticleType::Snow);
-				}
-				else {
-					// ★修正：追従ターゲットを設定してから開始
-					particleManager->StartEnvironmentEffect(ParticleType::Snow, EmitterFollowMode::FollowTarget);
-					particleManager->SetFollowTarget(ParticleType::Snow, playerPosPtr);
-				}
-			}
-
-			ImGui::SameLine();
-			if (snowActive) {
-				ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "ACTIVE");
-
-				// デバッグ情報：エミッター状態
-				auto& emitter = particleManager->continuousEmitters_[ParticleType::Snow];
-				ImGui::SameLine();
-				ImGui::Text("Timer: %.2f", emitter.timer);
-			}
-			else {
-				ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1.0f), "INACTIVE");
-			}
-			ImGui::PopID();
-
-			// オーブのコントロール
-			ImGui::PushID("Orb");
-			ImGui::Text("Orb:");
-			ImGui::SameLine(150);
-
-			bool orbActive = particleManager->continuousEmitters_.find(ParticleType::Orb) !=
-				particleManager->continuousEmitters_.end() &&
-				particleManager->continuousEmitters_[ParticleType::Orb].isActive;
-
-			if (ImGui::Button(orbActive ? "Stop##Orb" : "Start##Orb", ImVec2(80, 0))) {
-				if (orbActive) {
-					particleManager->StopEnvironmentEffect(ParticleType::Orb);
-				}
-				else {
-					// 追従ターゲットを設定してから開始
-					particleManager->StartEnvironmentEffect(ParticleType::Orb, EmitterFollowMode::FollowTarget);
-					particleManager->SetFollowTarget(ParticleType::Orb, playerPosPtr);
-				}
-			}
-
-			ImGui::SameLine();
-			if (orbActive) {
-				ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "ACTIVE");
-
-				// ★デバッグ情報：エミッター状態
-				auto& emitter = particleManager->continuousEmitters_[ParticleType::Orb];
-				ImGui::SameLine();
-				ImGui::Text("Timer: %.2f", emitter.timer);
-			}
-			else {
-				ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1.0f), "INACTIVE");
-			}
-			ImGui::PopID();
-
-			ImGui::Separator();
-
-			// 全停止ボタン
-			if (ImGui::Button("Stop All Environment Effects", ImVec2(250, 0))) {
-				particleManager->StopEnvironmentEffect(ParticleType::Rain);
-				particleManager->StopEnvironmentEffect(ParticleType::Snow);
-				particleManager->StopEnvironmentEffect(ParticleType::Orb);
-			}
-
-			ImGui::Unindent();
-		}
-	}
-
-	ImGui::Separator();
-
-	// ========================================
-	// エミッターデバッグ情報
-	// ========================================
-	if (ImGui::CollapsingHeader("Emitter Status")) {
-		ImGui::Text("Active Emitters: %zu", particleManager->continuousEmitters_.size());
-
-		for (const auto& [type, emitter] : particleManager->continuousEmitters_) {
-			if (emitter.isActive) {
-				const char* typeName = "Unknown";
-				switch (type) {
-				case ParticleType::Rain: typeName = "Rain"; break;
-				case ParticleType::Snow: typeName = "Snow"; break;
-				case ParticleType::Orb: typeName = "Orb"; break;
-				default: break;
-				}
-
-				ImGui::BulletText("%s: Timer=%.2f, FollowTarget=%s",
-					typeName,
-					emitter.timer,
-					emitter.followTarget ? "SET" : "NULL");
+				Novice::ConsolePrintf("✗ Failed to load: %s\n", filepath);
 			}
 		}
 	}
@@ -520,18 +385,12 @@ void DebugWindow::DrawParticleDebugWindow(ParticleManager* particleManager, Usag
 
 		ImGui::Separator();
 
-		// タイプ別の詳細
-		ImGui::BeginChild("ParticleTypeList", ImVec2(0, 200), true);
+		// レジストリから取得してタイプ別表示
+		ImGui::BeginChild("ParticleTypeList", ImVec2(0, 150), true);
 
-		const char* typeNames[] = {
-			"Explosion", "Debris", "Hit", "Dust", "MuzzleFlash",
-			"Rain", "Snow", "Orb", "Charge",
-			"Glow", "Shockwave", "Sparkle", "Slash", "SmokeCloud"
-		};
-
-		for (int i = 0; i < 14; ++i) {
-			ParticleType type = static_cast<ParticleType>(i);
-			int count = particleCounts[type];
+		const auto& allTypes = ParticleRegistry::GetAllParticleTypes();
+		for (const auto& typeInfo : allTypes) {
+			int count = particleCounts[typeInfo.type];
 
 			if (count > 0) {
 				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 0.0f, 1.0f));
@@ -540,7 +399,7 @@ void DebugWindow::DrawParticleDebugWindow(ParticleManager* particleManager, Usag
 				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5f, 0.5f, 0.5f, 1.0f));
 			}
 
-			ImGui::BulletText("%s: %d", typeNames[i], count);
+			ImGui::BulletText("%s: %d", typeInfo.name.c_str(), count);
 			ImGui::PopStyleColor();
 		}
 
@@ -550,323 +409,191 @@ void DebugWindow::DrawParticleDebugWindow(ParticleManager* particleManager, Usag
 	ImGui::Separator();
 
 	// ========================================
-// パラメータ編集（完全版）
+// カテゴリ別パーティクルエディタ
 // ========================================
-	if (ImGui::CollapsingHeader("Parameter Editor")) {
-		static int selectedType = 5; // デフォルトはRain
-		const char* typeNames[] = {
-			"Explosion", "Debris", "Hit", "Dust", "MuzzleFlash",
-			"Rain", "Snow", "Orb", "Charge",
-			"Glow", "Shockwave", "Sparkle", "Slash", "SmokeCloud"
-		};
+	if (ImGui::CollapsingHeader("Particle Editor", ImGuiTreeNodeFlags_DefaultOpen)) {
+		const auto& allTypes = ParticleRegistry::GetAllParticleTypes();
 
-		ImGui::Combo("Particle Type", &selectedType, typeNames, 14);
+		// カテゴリごとにグループ化
+		std::map<std::string, std::vector<const ParticleTypeInfo*>> categorized;
+		for (const auto& typeInfo : allTypes) {
+			categorized[typeInfo.category].push_back(&typeInfo);
+		}
 
-		ParticleType type = static_cast<ParticleType>(selectedType);
-		ParticleParam* param = particleManager->GetParam(type);
+		// ★修正：currentEditType をタブバーの外に移動
+		static ParticleType currentEditType = ParticleType::Explosion;
 
-		if (param) {
-			ImGui::Separator();
+		// カテゴリ別タブ表示
+		if (ImGui::BeginTabBar("ParticleCategories", ImGuiTabBarFlags_None)) {
+			for (const auto& [category, types] : categorized) {
+				if (ImGui::BeginTabItem(category.c_str())) {
+					ImGui::Spacing();
 
-			// ========================================
-			// 基本設定
-			// ========================================
-			if (ImGui::TreeNode("Basic Settings")) {
-				ImGui::SliderInt("Count", &param->count, 1, 100);
-				ImGui::SliderInt("Life Min", &param->lifeMin, 1, 600);
-				ImGui::SliderInt("Life Max", &param->lifeMax, 1, 600);
-				if (param->lifeMin > param->lifeMax) {
-					param->lifeMax = param->lifeMin;
-				}
-				ImGui::TreePop();
-			}
+					// ★追加：タブが最初に開かれたときに、このカテゴリの最初のパーティクルを選択
+					if (ImGui::IsItemActivated() && !types.empty()) {
+						currentEditType = types[0]->type;
+					}
 
-			// ========================================
-			// サイズ設定
-			// ========================================
-			if (ImGui::TreeNode("Size Settings")) {
-				ImGui::SliderFloat("Size Min", &param->sizeMin, 1.0f, 256.0f);
-				ImGui::SliderFloat("Size Max", &param->sizeMax, 1.0f, 256.0f);
-				if (param->sizeMin > param->sizeMax) {
-					param->sizeMax = param->sizeMin;
-				}
-				ImGui::SliderFloat("Scale Start", &param->scaleStart, 0.0f, 5.0f);
-				ImGui::SliderFloat("Scale End", &param->scaleEnd, 0.0f, 5.0f);
-				ImGui::TreePop();
-			}
+					// パーティクルタイプ選択ボタン
+					ImGui::Text("Select Particle Type:");
 
-			// ========================================
-			// 物理設定
-			// ========================================
-			if (ImGui::TreeNode("Physics Settings")) {
-				ImGui::SliderFloat("Speed Min", &param->speedMin, 0.0f, 1000.0f);
-				ImGui::SliderFloat("Speed Max", &param->speedMax, 0.0f, 1000.0f);
-				if (param->speedMin > param->speedMax) {
-					param->speedMax = param->speedMin;
-				}
+					int buttonCount = 0;
+					for (const auto* typeInfo : types) {
+						// 選択中のパーティクルをハイライト
+						bool isSelected = (currentEditType == typeInfo->type);
 
-				ImGui::SliderFloat("Angle Base", &param->angleBase, -180.0f, 180.0f);
-				ImGui::SameLine();
-				if (ImGui::Button("↑##Up")) param->angleBase = -90.0f;
-				ImGui::SameLine();
-				if (ImGui::Button("→##Right")) param->angleBase = 0.0f;
-				ImGui::SameLine();
-				if (ImGui::Button("↓##Down")) param->angleBase = 90.0f;
-				ImGui::SameLine();
-				if (ImGui::Button("←##Left")) param->angleBase = 180.0f;
+						// レジストリの色でボタンを装飾
+						ImVec4 color = ImGui::ColorConvertU32ToFloat4(typeInfo->editorColor);
 
-				ImGui::SliderFloat("Angle Range", &param->angleRange, 0.0f, 360.0f);
-				ImGui::SameLine();
-				if (ImGui::Button("360°##Full")) param->angleRange = 360.0f;
+						// ★追加：選択中は明るく表示
+						if (isSelected) {
+							color = ImVec4(color.x * 1.5f, color.y * 1.5f, color.z * 1.5f, 1.0f);
+						}
 
-				ImGui::DragFloat2("Gravity", &param->gravity.x, 10.0f, -2000.0f, 2000.0f);
-				ImGui::DragFloat2("Acceleration", &param->acceleration.x, 10.0f, -2000.0f, 2000.0f);
+						ImGui::PushStyleColor(ImGuiCol_Button, color);
+						ImGui::PushStyleColor(ImGuiCol_ButtonHovered,
+							ImVec4(color.x * 1.2f, color.y * 1.2f, color.z * 1.2f, 1.0f));
+						ImGui::PushStyleColor(ImGuiCol_ButtonActive,
+							ImVec4(color.x * 0.8f, color.y * 0.8f, color.z * 0.8f, 1.0f));
 
-				ImGui::TreePop();
-			}
+						if (ImGui::Button(typeInfo->name.c_str(), ImVec2(130, 30))) {
+							currentEditType = typeInfo->type;
+						}
 
-			// ========================================
-			// エミッター設定
-			// ========================================
-			if (ImGui::TreeNode("Emitter Settings")) {
-				// Emitter Shape
-				const char* shapeNames[] = { "Point", "Line", "Rectangle" };
-				int currentShape = static_cast<int>(param->emitterShape);
-				if (ImGui::Combo("Emitter Shape", &currentShape, shapeNames, 3)) {
-					param->emitterShape = static_cast<EmitterShape>(currentShape);
-				}
+						ImGui::PopStyleColor(3);
 
-				ImGui::DragFloat2("Emitter Size", &param->emitterSize.x, 10.0f, 0.0f, 2000.0f);
-				ImGui::DragFloat2("Emit Range", &param->emitRange.x, 1.0f, 0.0f, 500.0f);
+						buttonCount++;
+						if (buttonCount % 4 != 0) ImGui::SameLine();
+					}
 
-				ImGui::TreePop();
-			}
+					ImGui::Separator();
 
-			// ========================================
-			// 回転設定
-			// ========================================
-			if (ImGui::TreeNode("Rotation Settings")) {
-				ImGui::SliderFloat("Rotation Speed Min", &param->rotationSpeedMin, -1.0f, 1.0f, "%.3f rad/frame");
-				ImGui::SliderFloat("Rotation Speed Max", &param->rotationSpeedMax, -1.0f, 1.0f, "%.3f rad/frame");
-				if (param->rotationSpeedMin > param->rotationSpeedMax) {
-					param->rotationSpeedMax = param->rotationSpeedMin;
-				}
-				ImGui::TreePop();
-			}
+					// 選択中のパーティクルパラメータ編集
+					ParticleParam* param = particleManager->GetParam(currentEditType);
+					if (param) {
+						const auto* currentInfo = ParticleRegistry::GetParticleType(currentEditType);
+						if (currentInfo) {
+							// ★追加：選択中のパーティクル名を強調表示
+							ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 0.0f, 1.0f));
+							ImGui::Text("Editing: %s", currentInfo->name.c_str());
+							ImGui::PopStyleColor();
+							ImGui::Separator();
+						}
 
-			// ========================================
-			// 色設定
-			// ========================================
-			if (ImGui::TreeNode("Color Settings")) {
-				// Color Start
-				ImGui::Text("Start Color:");
-				unsigned int colorStart = param->colorStart;
-				float startR = ((colorStart >> 24) & 0xFF) / 255.0f;
-				float startG = ((colorStart >> 16) & 0xFF) / 255.0f;
-				float startB = ((colorStart >> 8) & 0xFF) / 255.0f;
-				float startA = (colorStart & 0xFF) / 255.0f;
-				float startColor[4] = { startR, startG, startB, startA };
+						// ========== 基本設定（既存のコードをそのまま使用）==========
+						if (ImGui::TreeNode("Basic Settings")) {
+							ImGui::SliderInt("Count", &param->count, 1, 100);
+							ImGui::SliderInt("Life Min", &param->lifeMin, 1, 600);
+							ImGui::SliderInt("Life Max", &param->lifeMax, 1, 600);
+							if (param->lifeMin > param->lifeMax) param->lifeMax = param->lifeMin;
+							ImGui::TreePop();
+						}
 
-				if (ImGui::ColorEdit4("##StartColor", startColor)) {
-					param->colorStart =
-						(static_cast<unsigned int>(startColor[0] * 255.0f) << 24) |
-						(static_cast<unsigned int>(startColor[1] * 255.0f) << 16) |
-						(static_cast<unsigned int>(startColor[2] * 255.0f) << 8) |
-						static_cast<unsigned int>(startColor[3] * 255.0f);
-				}
+						// ========== サイズ設定 ==========
+						if (ImGui::TreeNode("Size Settings")) {
+							ImGui::SliderFloat("Size Min", &param->sizeMin, 1.0f, 256.0f);
+							ImGui::SliderFloat("Size Max", &param->sizeMax, 1.0f, 256.0f);
+							if (param->sizeMin > param->sizeMax) param->sizeMax = param->sizeMin;
+							ImGui::SliderFloat("Scale Start", &param->scaleStart, 0.0f, 5.0f);
+							ImGui::SliderFloat("Scale End", &param->scaleEnd, 0.0f, 5.0f);
+							ImGui::TreePop();
+						}
 
-				// Color End
-				ImGui::Text("End Color:");
-				unsigned int colorEnd = param->colorEnd;
-				float endR = ((colorEnd >> 24) & 0xFF) / 255.0f;
-				float endG = ((colorEnd >> 16) & 0xFF) / 255.0f;
-				float endB = ((colorEnd >> 8) & 0xFF) / 255.0f;
-				float endA = (colorEnd & 0xFF) / 255.0f;
-				float endColor[4] = { endR, endG, endB, endA };
+						// ========== 物理設定 ==========
+						if (ImGui::TreeNode("Physics Settings")) {
+							ImGui::SliderFloat("Speed Min", &param->speedMin, 0.0f, 1000.0f);
+							ImGui::SliderFloat("Speed Max", &param->speedMax, 0.0f, 1000.0f);
+							if (param->speedMin > param->speedMax) param->speedMax = param->speedMin;
 
-				if (ImGui::ColorEdit4("##EndColor", endColor)) {
-					param->colorEnd =
-						(static_cast<unsigned int>(endColor[0] * 255.0f) << 24) |
-						(static_cast<unsigned int>(endColor[1] * 255.0f) << 16) |
-						(static_cast<unsigned int>(endColor[2] * 255.0f) << 8) |
-						static_cast<unsigned int>(endColor[3] * 255.0f);
-				}
+							ImGui::SliderFloat("Angle Base", &param->angleBase, -180.0f, 180.0f);
+							ImGui::SameLine();
+							if (ImGui::SmallButton("↑")) param->angleBase = -90.0f;
+							ImGui::SameLine();
+							if (ImGui::SmallButton("→")) param->angleBase = 0.0f;
+							ImGui::SameLine();
+							if (ImGui::SmallButton("↓")) param->angleBase = 90.0f;
+							ImGui::SameLine();
+							if (ImGui::SmallButton("←")) param->angleBase = 180.0f;
 
-				ImGui::TreePop();
-			}
+							ImGui::SliderFloat("Angle Range", &param->angleRange, 0.0f, 360.0f);
+							ImGui::DragFloat2("Gravity", &param->gravity.x, 10.0f, -2000.0f, 2000.0f);
+							ImGui::DragFloat2("Acceleration", &param->acceleration.x, 10.0f, -2000.0f, 2000.0f);
+							ImGui::TreePop();
+						}
 
-			// ========================================
-			// ブレンドモード設定
-			// ========================================
-			if (ImGui::TreeNode("Blend Mode Settings")) {
-				const char* blendModes[] = {
-					"None",
-					"Normal (Alpha)",
-					"Add (Additive)",
-					"Subtract",
-					"Multiply",
-					"Screen",
-					"Exclusion"
-				};
+						// ========== 見た目設定 ==========
+						if (ImGui::TreeNode("Appearance")) {
+							ImGui::Text("Start Color:");
+							ColorRGBA startColor = ColorRGBA::FromUInt(param->colorStart);
+							float startRGBA[4] = { startColor.r, startColor.g, startColor.b, startColor.a };
+							if (ImGui::ColorEdit4("##StartColor", startRGBA)) {
+								param->colorStart = ColorRGBA(startRGBA[0], startRGBA[1], startRGBA[2], startRGBA[3]).ToUInt();
+							}
 
-				int currentBlendMode = static_cast<int>(param->blendMode);
-				if (ImGui::Combo("Blend Mode", &currentBlendMode, blendModes, 7)) {
-					param->blendMode = static_cast<BlendMode>(currentBlendMode);
-				}
+							ImGui::Text("End Color:");
+							ColorRGBA endColor = ColorRGBA::FromUInt(param->colorEnd);
+							float endRGBA[4] = { endColor.r, endColor.g, endColor.b, endColor.a };
+							if (ImGui::ColorEdit4("##EndColor", endRGBA)) {
+								param->colorEnd = ColorRGBA(endRGBA[0], endRGBA[1], endRGBA[2], endRGBA[3]).ToUInt();
+							}
+							ImGui::TreePop();
+						}
 
-				ImGui::SameLine();
-				ImGui::TextDisabled("(?)");
-				if (ImGui::IsItemHovered()) {
-					ImGui::BeginTooltip();
-					ImGui::Text("Normal: Standard alpha blending");
-					ImGui::Text("Add: Bright, glowing effect");
-					ImGui::Text("Subtract: Dark, shadow effect");
-					ImGui::EndTooltip();
-				}
+						// ========== ブレンドモード ==========
+						if (ImGui::TreeNode("Blend Mode")) {
+							const char* blendModes[] = {
+								"None", "Normal", "Add", "Subtract", "Multiply", "Screen", "Exclusion"
+							};
+							int currentBlend = static_cast<int>(param->blendMode);
+							if (ImGui::Combo("Mode", &currentBlend, blendModes, 7)) {
+								param->blendMode = static_cast<BlendMode>(currentBlend);
+							}
+							ImGui::TreePop();
+						}
 
-				ImGui::TreePop();
-			}
+						// ========== テスト発射 ==========
+						ImGui::Separator();
+						if (ImGui::Button("Emit at Center (640, 360)", ImVec2(200, 30))) {
+							particleManager->Emit(currentEditType, { 640.0f, 360.0f });
+						}
 
-			// ========================================
-			// アニメーション設定
-			// ========================================
-			if (ImGui::TreeNode("Animation Settings")) {
-				ImGui::Checkbox("Use Animation", &param->useAnimation);
-
-				if (param->useAnimation) {
-					ImGui::Indent();
-					ImGui::SliderInt("Div X", &param->divX, 1, 10);
-					ImGui::SliderInt("Div Y", &param->divY, 1, 10);
-					ImGui::SliderInt("Total Frames", &param->totalFrames, 1, 100);
-					ImGui::SliderFloat("Animation Speed", &param->animSpeed, 0.01f, 0.5f);
-					ImGui::Unindent();
-				}
-
-				ImGui::TreePop();
-			}
-
-			// ========================================
-			// 連続発生設定
-			// ========================================
-			if (ImGui::TreeNode("Continuous Emission Settings")) {
-				ImGui::Checkbox("Is Continuous", &param->isContinuous);
-
-				if (param->isContinuous) {
-					ImGui::Indent();
-					ImGui::SliderFloat("Emit Interval (sec)", &param->emitInterval, 0.01f, 5.0f);
-					ImGui::Unindent();
-				}
-
-				ImGui::TreePop();
-			}
-
-			// ========================================
-			// Homing（追従）設定
-			// ========================================
-			if (ImGui::TreeNode("Homing Settings")) {
-				ImGui::Checkbox("Use Homing", &param->useHoming);
-
-				if (param->useHoming) {
-					ImGui::Indent();
-					ImGui::SliderFloat("Homing Strength", &param->homingStrength, 0.0f, 1000.0f);
-					ImGui::Unindent();
-				}
-
-				ImGui::TreePop();
-			}
-
-			// ========================================
-			// 環境パーティクル専用設定
-			// ========================================
-			if (type == ParticleType::Rain || type == ParticleType::Snow || type == ParticleType::Orb) {
-				if (ImGui::TreeNode("Environment Specific Settings")) {
-					if (type == ParticleType::Rain) {
-						ImGui::SliderFloat("Bounce Damping", &param->bounceDamping, 0.0f, 1.0f);
-						ImGui::SameLine();
-						ImGui::TextDisabled("(?)");
-						if (ImGui::IsItemHovered()) {
-							ImGui::SetTooltip("Ground bounce coefficient (0 = no bounce, 1 = full bounce)");
+						if (ImGui::Button("Reset to Default", ImVec2(200, 30))) {
+							*param = particleManager->GenerateDefaultParam(currentEditType);
+							const auto* info = ParticleRegistry::GetParticleType(currentEditType);
+							if (info) {
+								param->textureHandle = TextureManager::GetInstance().GetTexture(info->defaultTexture);
+							}
+							Novice::ConsolePrintf("Reset: %s\n", currentInfo->name.c_str());
 						}
 					}
 
-					if (type == ParticleType::Snow) {
-						ImGui::SliderFloat("Wind Strength", &param->windStrength, 0.0f, 100.0f);
-						ImGui::SameLine();
-						ImGui::TextDisabled("(?)");
-						if (ImGui::IsItemHovered()) {
-							ImGui::SetTooltip("Horizontal wind swaying effect");
-						}
-					}
-
-					if (type == ParticleType::Orb) {
-						ImGui::SliderFloat("Float Amplitude", &param->floatAmplitude, 0.0f, 100.0f);
-						ImGui::SliderFloat("Float Frequency", &param->floatFrequency, 0.1f, 5.0f);
-						ImGui::SameLine();
-						ImGui::TextDisabled("(?)");
-						if (ImGui::IsItemHovered()) {
-							ImGui::SetTooltip("Floating motion parameters (sine wave)");
-						}
-					}
-
-					ImGui::TreePop();
+					ImGui::EndTabItem();
 				}
 			}
-
-			// ========================================
-			// プリセット・保存
-			// ========================================
-			ImGui::Separator();
-			ImGui::Text("=== Presets & Save ===");
-
-			if (ImGui::Button("Reset to Default", ImVec2(200, 0))) {
-				particleManager->LoadParams();
-				// 再度現在のパラメータを取得
-				param = particleManager->GetParam(type);
-			}
-
-			if (ImGui::Button("Save Parameters to JSON", ImVec2(200, 0))) {
-				if (particleManager->SaveParamsToJson("Resources/Data/particle_params.json")) {
-					// 成功メッセージ（オプション）
-					ImGui::OpenPopup("SaveSuccess");
-				}
-			}
-
-			// 保存成功ポップアップ
-			if (ImGui::BeginPopupModal("SaveSuccess", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-				ImGui::Text("Parameters saved successfully!");
-				if (ImGui::Button("OK", ImVec2(120, 0))) {
-					ImGui::CloseCurrentPopup();
-				}
-				ImGui::EndPopup();
-			}
-
-			if (ImGui::Button("Load Parameters from JSON", ImVec2(200, 0))) {
-				particleManager->LoadParamsFromJson("Resources/Data/particle_params.json");
-				// 再度現在のパラメータを取得
-				param = particleManager->GetParam(type);
-			}
+			ImGui::EndTabBar();
 		}
 	}
+
+	ImGui::Separator();
 
 	// ========================================
 	// クイックテスト
 	// ========================================
 	if (ImGui::CollapsingHeader("Quick Test")) {
-		ImGui::Text("Emit particles at center:");
+		ImGui::Text("Emit at screen center:");
 
-		if (ImGui::Button("Explosion", ImVec2(100, 0))) {
-			particleManager->Emit(ParticleType::Explosion, { 640.0f, 360.0f });
-		}
-		ImGui::SameLine();
-		if (ImGui::Button("Debris", ImVec2(100, 0))) {
-			particleManager->Emit(ParticleType::Debris, { 640.0f, 360.0f });
-		}
-		ImGui::SameLine();
-		if (ImGui::Button("Hit", ImVec2(100, 0))) {
-			particleManager->Emit(ParticleType::Hit, { 640.0f, 360.0f });
+		const auto& allTypes = ParticleRegistry::GetAllParticleTypes();
+		int count = 0;
+		for (const auto& typeInfo : allTypes) {
+			if (ImGui::Button(typeInfo.name.c_str(), ImVec2(100, 0))) {
+				particleManager->Emit(typeInfo.type, { player->GetPosition()});
+			}
+			count++;
+			if (count % 5 != 0) ImGui::SameLine();
 		}
 
-		if (ImGui::Button("Clear All Particles", ImVec2(250, 0))) {
+		ImGui::Separator();
+		if (ImGui::Button("Clear All Particles", ImVec2(200, 0))) {
 			particleManager->Clear();
 		}
 	}

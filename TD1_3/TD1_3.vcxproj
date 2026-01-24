@@ -120,6 +120,7 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClCompile Include="MapManager.cpp" />
     <ClCompile Include="ObjectRegistry.cpp" />
     <ClCompile Include="ParallaxLayer.cpp" />
+    <ClCompile Include="ParticleRegistry.cpp" />
     <ClCompile Include="PhysicsManager.cpp" />
     <ClCompile Include="PrototypeSurvivalScene.cpp" />
     <ClCompile Include="SoundManager.cpp" />
@@ -174,6 +175,7 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClInclude Include="MapManager.h" />
     <ClInclude Include="ObjectRegistry.h" />
     <ClInclude Include="ParallaxLayer.h" />
+    <ClInclude Include="ParticleRegistry.h" />
     <ClInclude Include="PhysicsManager.h" />
     <ClInclude Include="PhysicsObject.hpp" />
     <ClInclude Include="PrototypeSurvivalScene.h" />

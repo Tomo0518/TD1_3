@@ -172,18 +172,18 @@ void MapChipEditor::UpdateAndDrawImGui(MapData& mapData, Camera2D& camera) {
 
 		// ツール選択部分を変更
 		ImGui::Text("Tools:");
-		if (ImGui::RadioButton("Pen (P)", currentMode_ == ToolMode::Pen)) currentMode_ = ToolMode::Pen;
+		if (ImGui::RadioButton("Pen (B)", currentMode_ == ToolMode::Pen)) currentMode_ = ToolMode::Pen;
 		ImGui::SameLine();
 		if (ImGui::RadioButton("Eraser (E)", currentMode_ == ToolMode::Eraser)) currentMode_ = ToolMode::Eraser;
 		ImGui::SameLine();
-		if (ImGui::RadioButton("Bucket (B)", currentMode_ == ToolMode::Bucket)) currentMode_ = ToolMode::Bucket;
+		if (ImGui::RadioButton("Bucket", currentMode_ == ToolMode::Bucket)) currentMode_ = ToolMode::Bucket;
 		ImGui::SameLine();
 		if (ImGui::RadioButton("Rect (R)", currentMode_ == ToolMode::Rectangle)) currentMode_ = ToolMode::Rectangle;
 
 		if (!ImGui::GetIO().WantCaptureKeyboard) {
 			if (Input().TriggerKey(DIK_B)) currentMode_ = ToolMode::Pen;
 			if (Input().TriggerKey(DIK_E)) currentMode_ = ToolMode::Eraser;
-			if (Input().TriggerKey(DIK_L)) currentMode_ = ToolMode::Bucket;
+			//if (Input().TriggerKey(DIK_L)) currentMode_ = ToolMode::Bucket;
 			if (Input().TriggerKey(DIK_R)) currentMode_ = ToolMode::Rectangle;
 		}
 

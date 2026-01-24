@@ -302,14 +302,17 @@
     <ClCompile Include="MapManager.cpp">
       <Filter>KamataEngine\Source\Game\MapChipSystem\MapManager</Filter>
     </ClCompile>
-    <ClCompile Include="ParticleManager.cpp">
-      <Filter>KamataEngine\Source\library\Background</Filter>
-    </ClCompile>
     <ClCompile Include="BackgroundManager.cpp">
       <Filter>KamataEngine\Source\library\Background</Filter>
     </ClCompile>
     <ClCompile Include="ParallaxLayer.cpp">
       <Filter>KamataEngine\Source\library\Background</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleManager.cpp">
+      <Filter>KamataEngine\Source\library\2D\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleRegistry.cpp">
+      <Filter>KamataEngine\Source\library\2D\Particle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -585,6 +588,9 @@
     </ClInclude>
     <ClInclude Include="BackgroundManager.h">
       <Filter>KamataEngine\Source\library\Background</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleRegistry.h">
+      <Filter>KamataEngine\Source\library\2D\Particle</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

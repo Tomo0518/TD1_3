@@ -8,6 +8,8 @@
 #include "Effect.h"
 #include "TextureManager.h"
 
+#include "ParticleRegistry.h"
+
 // nlohmann/json の警告を抑制
 #pragma warning(push)
 #pragma warning(disable: 26495)  // 未初期化変数警告
@@ -44,14 +46,33 @@ void ParticleManager::Load() {
 }
 
 void ParticleManager::Initialize() {
-	LoadCommonResources();  // 先にテクスチャをロード
+#ifdef _DEBUG
+	Novice::ConsolePrintf("=== ParticleManager::Initialize START ===\n");
+#endif
 
-	// JSONからパラメータを読み込み（ファイルがなければデフォルトで作成）
+	// JSONからパラメータを読み込む
 	if (!LoadParamsFromJson(kDefaultParamPath)) {
-		// 読み込み失敗時はデフォルトパラメータを設定して保存
-		LoadParams();
+		// JSONが無い場合はデフォルトを作成
+		LoadDefaultParamsFromRegistry();
 		SaveParamsToJson(kDefaultParamPath);
 	}
+
+	// 必ずテクスチャを再設定
+	LoadCommonResources();
+
+#ifdef _DEBUG
+	Novice::ConsolePrintf("=== ParticleManager::Initialize Complete ===\n");
+	Novice::ConsolePrintf("  Loaded %d particle types\n", static_cast<int>(params_.size()));
+
+	// 全パラメータのテクスチャハンドルを確認
+	for (const auto& [type, param] : params_) {
+		const auto* info = ParticleRegistry::GetParticleType(type);
+		if (info) {
+			Novice::ConsolePrintf("  Final: %s -> Handle=%d\n",
+				info->name.c_str(), param.textureHandle);
+		}
+	}
+#endif
 }
 
 // ブレンドモード変換ヘルパー
@@ -78,343 +99,6 @@ BlendMode ParticleManager::StringToBlendMode(const std::string& str) {
 	if (str == "Exclusion") return kBlendModeExclusion;
 	return kBlendModeNormal;
 }
-
-void ParticleManager::LoadParams() {
-	// 1. 爆発（加算ブレンドで明るく光る）
-	ParticleParam explosion;
-	explosion.count = 1;
-	explosion.lifeMin = 40;
-	explosion.lifeMax = 40;
-	explosion.speedMin = 0.0f;
-	explosion.speedMax = 0.0f;
-	explosion.angleBase = 0.0f;
-	explosion.angleRange = 0.0f;
-	explosion.gravity = { 0.0f, 0.0f };
-	explosion.acceleration = { 0.0f, 0.0f };
-	explosion.emitRange = { 0.0f, 0.0f };
-	explosion.sizeMin = 64.0f;
-	explosion.sizeMax = 64.0f;
-	explosion.scaleStart = 1.0f;
-	explosion.scaleEnd = 1.0f;
-	explosion.colorStart = 0xFFFFFFFF;
-	explosion.colorEnd = 0xFFFFFFFF;
-	explosion.rotationSpeedMin = 0.0f;
-	explosion.rotationSpeedMax = 0.0f;
-	explosion.useAnimation = true;
-	explosion.divX = 4;
-	explosion.divY = 1;
-	explosion.totalFrames = 4;
-	explosion.animSpeed = 0.05f;
-	explosion.blendMode = kBlendModeAdd;
-	params_[ParticleType::Explosion] = explosion;
-
-	// 2. デブリ（通常ブレンド）
-	ParticleParam debris;
-	debris.count = 10;
-	debris.lifeMin = 40;
-	debris.lifeMax = 60;
-	debris.speedMin = 150.0f;
-	debris.speedMax = 300.0f;
-	debris.angleBase = 0.0f;
-	debris.angleRange = 360.0f;
-	debris.gravity = { 0.0f, -800.0f };
-	debris.acceleration = { 0.0f, 0.0f };
-	debris.emitRange = { 20.0f, 20.0f };      //少し散らす
-	debris.sizeMin = 12.0f;
-	debris.sizeMax = 24.0f;
-	debris.scaleStart = 1.0f;
-	debris.scaleEnd = 0.3f;
-	debris.colorStart = 0xFFFFFFFF;
-	debris.colorEnd = 0xFFFFFF00;
-	debris.rotationSpeedMin = -0.1f;          // 回転しながら落ちる
-	debris.rotationSpeedMax = 0.1f;
-	debris.useAnimation = false;
-	debris.divX = 1;
-	debris.divY = 1;
-	debris.totalFrames = 1;
-	debris.animSpeed = 0.0f;
-	debris.blendMode = kBlendModeNormal;
-	params_[ParticleType::Debris] = debris;
-
-	// 3. ヒットエフェクト（加算ブレンド）
-	ParticleParam hit;
-	hit.count = 40;
-	hit.lifeMin = 20;
-	hit.lifeMax = 55;
-	hit.speedMin = 1225.0f;
-	hit.speedMax = 1500.0f;
-	hit.angleBase = 90.0f;
-	hit.angleRange = 1550.0f;
-	hit.gravity = { 0.0f, -300.0f };
-	hit.acceleration = { 0.0f, 0.0f };
-	hit.emitRange = { 10.0f, 10.0f };
-	hit.sizeMin = 27.0f;
-	hit.sizeMax = 43.0f;
-	hit.scaleStart = 0.8f;
-	hit.scaleEnd = 0.2f;
-	hit.colorStart = 0xFFFFFFFF;
-	hit.colorEnd = 0xFFFFFF00;
-	hit.rotationSpeedMin = 0.0f;
-	hit.rotationSpeedMax = 0.0f;
-	hit.useAnimation = false;
-	hit.divX = 1;
-	hit.divY = 1;
-	hit.totalFrames = 1;
-	hit.animSpeed = 0.0f;
-	hit.blendMode = kBlendModeAdd;
-	params_[ParticleType::Hit] = hit;
-
-	// 4. 土煙（通常ブレンド）
-	ParticleParam dust;
-	dust.count = 8;
-	dust.lifeMin = 30;
-	dust.lifeMax = 45;
-	dust.speedMin = 50.0f;
-	dust.speedMax = 100.0f;
-	dust.angleBase = -90.0f;
-	dust.angleRange = 60.0f;
-	dust.gravity = { 0.0f, -50.0f };
-	dust.acceleration = { 0.0f, 0.0f };
-	dust.emitRange = { 30.0f, 10.0f };
-	dust.sizeMin = 32.0f;
-	dust.sizeMax = 64.0f;
-	dust.scaleStart = 0.5f;
-	dust.scaleEnd = 1.5f;
-	dust.colorStart = 0xAAAAAAAA;
-	dust.colorEnd = 0xAAAAAA00;
-	dust.rotationSpeedMin = -0.05f;
-	dust.rotationSpeedMax = 0.05f;
-	dust.useAnimation = false;
-	dust.divX = 1;
-	dust.divY = 1;
-	dust.totalFrames = 1;
-	dust.animSpeed = 0.0f;
-	dust.blendMode = kBlendModeNormal;
-	params_[ParticleType::Dust] = dust;
-
-	// 5. マズルフラッシュ（加算ブレンド）
-	ParticleParam muzzle;
-	muzzle.count = 1;
-	muzzle.lifeMin = 8;
-	muzzle.lifeMax = 12;
-	muzzle.speedMin = 0.0f;
-	muzzle.speedMax = 0.0f;
-	muzzle.angleBase = 0.0f;
-	muzzle.angleRange = 0.0f;
-	muzzle.gravity = { 0.0f, 0.0f };
-	muzzle.acceleration = { 0.0f, 0.0f };
-	muzzle.emitRange = { 0.0f, 0.0f };
-	muzzle.sizeMin = 32.0f;
-	muzzle.sizeMax = 48.0f;
-	muzzle.scaleStart = 1.2f;
-	muzzle.scaleEnd = 0.3f;
-	muzzle.colorStart = 0xFFFFFFFF;
-	muzzle.colorEnd = 0xFFFFFF00;
-	muzzle.rotationSpeedMin = 0.0f;
-	muzzle.rotationSpeedMax = 0.0f;
-	muzzle.useAnimation = false;
-	muzzle.divX = 1;
-	muzzle.divY = 1;
-	muzzle.totalFrames = 1;
-	muzzle.animSpeed = 0.0f;
-	muzzle.blendMode = kBlendModeAdd;
-	params_[ParticleType::MuzzleFlash] = muzzle;
-
-	// 6. 雨（連続発生 - 改良版）
-	ParticleParam rain;
-	rain.count = 30;                           // 1回の発生数
-	rain.lifeMin = 120;
-	rain.lifeMax = 180;
-	rain.speedMin = 0.0f;
-	rain.speedMax = 0.0f;
-	rain.angleBase = -90.0f;                   // 下向き（Y+が上なので-90度）
-	rain.angleRange = 0.0f;
-	rain.gravity = { 0.0f, -800.0f };          // 重力で高速落下
-	rain.acceleration = { 0.0f, 0.0f };
-	rain.emitterShape = EmitterShape::Line;
-	rain.emitterSize = { 1280.0f, 0.0f };      // 画面幅
-	rain.sizeMin = 2.0f;
-	rain.sizeMax = 4.0f;
-	rain.scaleStart = 1.0f;
-	rain.scaleEnd = 1.0f;
-	rain.colorStart = 0xAAAAFFFF;              // 薄い青
-	rain.colorEnd = 0xAAAAFF00;                // フェードアウト
-	rain.rotationSpeedMin = 0.0f;
-	rain.rotationSpeedMax = 0.0f;
-	rain.useAnimation = false;
-	rain.blendMode = kBlendModeNormal;
-	rain.isContinuous = true;
-	rain.emitInterval = 0.1f;                  // 0.1秒ごとに発生
-	rain.bounceDamping = 0.3f;                 // 跳ね返り係数
-	params_[ParticleType::Rain] = rain;
-
-	// 7. 雪（連続発生 - 改良版）
-	ParticleParam snow;
-	snow.count = 50;
-	snow.lifeMin = 180;
-	snow.lifeMax = 240;
-	snow.speedMin = 0.0f;
-	snow.speedMax = 0.0f;
-	snow.angleBase = -90.0f;                   // 下向き
-	snow.angleRange = 0.0f;
-	snow.gravity = { 0.0f, -50.0f };           // ゆっくり落下
-	snow.acceleration = { 0.0f, 0.0f };
-	snow.emitterShape = EmitterShape::Line;
-	snow.emitterSize = { 1280.0f, 0.0f };
-	snow.sizeMin = 4.0f;
-	snow.sizeMax = 8.0f;
-	snow.scaleStart = 1.0f;
-	snow.scaleEnd = 1.0f;
-	snow.colorStart = 0xFFFFFFFF;              // 白
-	snow.colorEnd = 0xFFFFFFFF;
-	snow.rotationSpeedMin = -0.02f;
-	snow.rotationSpeedMax = 0.02f;
-	snow.useAnimation = false;
-	snow.blendMode = kBlendModeNormal;
-	snow.isContinuous = true;
-	snow.emitInterval = 0.15f;
-	snow.windStrength = 30.0f;                 // ★横風の強さ
-	params_[ParticleType::Snow] = snow;
-
-	// 8. オーブ（ふわふわ浮遊 - 改良版）
-	ParticleParam orb;
-	orb.count = 5;                             // 少なめに変更
-	orb.lifeMin = 300;                         // 長寿命
-	orb.lifeMax = 360;
-	orb.speedMin = 0.0f;
-	orb.speedMax = 0.0f;
-	orb.angleBase = 0.0f;
-	orb.angleRange = 0.0f;
-	orb.gravity = { 0.0f, 0.0f };              // 重力なし
-	orb.acceleration = { 0.0f, 0.0f };
-	orb.emitterShape = EmitterShape::Rectangle;
-	orb.emitterSize = { 1280.0f, 720.0f };     // 画面全体
-	orb.sizeMin = 12.0f;
-	orb.sizeMax = 24.0f;
-	orb.scaleStart = 0.8f;
-	orb.scaleEnd = 1.2f;
-	orb.colorStart = 0xFFFF88FF;               // 黄色（不透明）
-	orb.colorEnd = 0xFFFF8880;                 // やや透明化
-	orb.rotationSpeedMin = -0.05f;
-	orb.rotationSpeedMax = 0.05f;
-	orb.useAnimation = false;
-	orb.blendMode = kBlendModeAdd;
-	orb.isContinuous = true;
-	orb.emitInterval = 0.2f;
-	orb.floatAmplitude = 30.0f;                // ★浮遊の振幅
-	orb.floatFrequency = 1.0f;                 // ★浮遊の周波数
-	params_[ParticleType::Orb] = orb;
-
-	// 9. チャージ（Homing）
-	ParticleParam charge;
-	charge.count = 20;
-	charge.lifeMin = 30;
-	charge.lifeMax = 60;
-	charge.speedMin = 50.0f;
-	charge.speedMax = 100.0f;
-	charge.angleBase = 0.0f;
-	charge.angleRange = 360.0f;
-	charge.gravity = { 0.0f, 0.0f };
-	charge.acceleration = { 0.0f, 0.0f };
-	charge.emitRange = { 100.0f, 100.0f };
-	charge.sizeMin = 8.0f;
-	charge.sizeMax = 16.0f;
-	charge.scaleStart = 1.0f;
-	charge.scaleEnd = 0.5f;
-	charge.colorStart = 0x00FFFFFF;  // 青
-	charge.colorEnd = 0x00FFFF00;
-	charge.rotationSpeedMin = 0.0f;
-	charge.rotationSpeedMax = 0.0f;
-	charge.useAnimation = false;
-	charge.blendMode = kBlendModeAdd;
-	charge.useHoming = true;           // Homing 有効
-	charge.homingStrength = 500.0f;    // 追従の強さ
-	params_[ParticleType::Charge] = charge;
-
-	// 10. Glow (汎用の光・オーラ)
-	ParticleParam glow;
-	glow.textureHandle = texGlow_; // ※LoadCommonResourcesで上書きされますが念のため
-	glow.count = 1;
-	glow.lifeMin = 20; glow.lifeMax = 40;
-	glow.scaleStart = 1.0f; glow.scaleEnd = 0.0f;
-	glow.colorStart = 0xFFFFFFFF;
-	glow.colorEnd = 0xFFFFFF00;
-	glow.speedMin = 0.0f; glow.speedMax = 20.0f;
-	glow.blendMode = kBlendModeAdd;
-	params_[ParticleType::Glow] = glow;
-
-	// 11. Shockwave (衝撃波リング)
-	ParticleParam ring;
-	ring.textureHandle = texRing_;
-	ring.count = 1;
-	ring.lifeMin = 15; ring.lifeMax = 20;
-	ring.scaleStart = 0.5f; ring.scaleEnd = 2.5f; // 急激に広がる
-	ring.colorStart = 0xFFFFFFCC;
-	ring.colorEnd = 0xFFFFFF00;
-	ring.speedMin = 0.0f; ring.speedMax = 0.0f;
-	ring.blendMode = kBlendModeAdd;
-	params_[ParticleType::Shockwave] = ring;
-
-	// 12. Sparkle (キラキラ)
-	ParticleParam spark;
-	spark.textureHandle = texSparkle_;
-	spark.count = 3;
-	spark.lifeMin = 30; spark.lifeMax = 50;
-	spark.scaleStart = 0.8f; spark.scaleEnd = 0.0f;
-	spark.colorStart = 0xFFFF80FF;
-	spark.colorEnd = 0xFFFF8000;
-	spark.speedMin = 100.0f; spark.speedMax = 200.0f;
-	spark.angleRange = 360.0f;
-	spark.gravity = { 0.0f, -400.0f };
-	spark.blendMode = kBlendModeAdd;
-	params_[ParticleType::Sparkle] = spark;
-
-	// 13. Slash (斬撃・軌跡)
-	ParticleParam slash;
-	slash.textureHandle = texScratch_;
-	slash.count = 1;
-	slash.lifeMin = 10; slash.lifeMax = 15;
-	slash.scaleStart = 1.5f; slash.scaleEnd = 0.5f;
-	slash.colorStart = 0xFFFFFFFF;
-	slash.colorEnd = 0xFFFFFF00;
-	slash.speedMin = 0.0f; slash.speedMax = 0.0f;
-	slash.blendMode = kBlendModeAdd;
-	params_[ParticleType::Slash] = slash;
-
-	// 14. SmokeCloud (もくもく煙)
-	ParticleParam smoke;
-	smoke.textureHandle = texSmoke_;
-	smoke.count = 2;
-	smoke.lifeMin = 60; smoke.lifeMax = 90;
-	smoke.scaleStart = 0.5f; smoke.scaleEnd = 1.5f;
-	smoke.colorStart = 0x808080DD; // 灰色
-	smoke.colorEnd = 0x00000000;
-	smoke.speedMin = 20.0f; smoke.speedMax = 50.0f;
-	smoke.gravity = { 0.0f, 100.0f }; // 上へ昇る
-	smoke.blendMode = kBlendModeNormal;
-	params_[ParticleType::SmokeCloud] = smoke;
-
-	// 15. デジタルスパーク（サイバー空間用）
-	ParticleParam digitalSpark;
-	digitalSpark.count = 30;
-	digitalSpark.lifeMin = 20;
-	digitalSpark.lifeMax = 40;
-	digitalSpark.speedMin = 200.0f;
-	digitalSpark.speedMax = 500.0f;
-	digitalSpark.angleBase = 0.0f;
-	digitalSpark.angleRange = 360.0f;
-	digitalSpark.gravity = { 0.0f, 0.0f }; // 無重力
-	digitalSpark.sizeMin = 50.0f;
-	digitalSpark.sizeMax = 70.0f;
-	digitalSpark.scaleStart = 1.0f;
-	digitalSpark.scaleEnd = 0.0f;
-	digitalSpark.colorStart = 0x00FFFFDD; // シアン
-	digitalSpark.colorEnd = 0x0000FF00;   // 青に消える
-	digitalSpark.useAnimation = false;
-	digitalSpark.textureHandle = -1;      // 後でロード
-	params_[ParticleType::DigitalSpark] = digitalSpark;
-}
-
 
 void ParticleManager::Update(float deltaTime) {
 	// 連続発生の処理（追従モード対応）
@@ -919,47 +603,34 @@ const ParticleParam* ParticleManager::GetParam(ParticleType type) const {
 }
 
 void ParticleManager::LoadCommonResources() {
-	auto& textureManager = TextureManager::GetInstance();
-
-	// テクスチャを一括ロード
-	texExplosion_ = textureManager.GetTexture(TextureId::Particle_Explosion);
-	texDebris_ = textureManager.GetTexture(TextureId::Particle_Debris);
-	texHit_ = textureManager.GetTexture(TextureId::Particle_Hit);
-	texDust_ = textureManager.GetTexture(TextureId::Particle_Dust);
-	texRain_ = textureManager.GetTexture(TextureId::Particle_Rain);
-	texSnow_ = textureManager.GetTexture(TextureId::Particle_Snow);
-	texOrb_ = textureManager.GetTexture(TextureId::Particle_Orb);
-	texGlow_ = textureManager.GetTexture(TextureId::Particle_Glow);
-	texRing_ = textureManager.GetTexture(TextureId::Particle_Ring);
-	texSparkle_ = textureManager.GetTexture(TextureId::Particle_Sparkle);
-	texScratch_ = textureManager.GetTexture(TextureId::Particle_Scratch);
-	texSmoke_ = textureManager.GetTexture(TextureId::Particle_Smoke);
-
+	const auto& allTypes = ParticleRegistry::GetAllParticleTypes();
 
 #ifdef _DEBUG
-	Novice::ConsolePrintf("ParticleManager::LoadCommonResources\n");
-	Novice::ConsolePrintf("  Explosion: %d\n", texExplosion_);
-	Novice::ConsolePrintf("  Debris: %d\n", texDebris_);
-	Novice::ConsolePrintf("  Hit: %d\n", texHit_);
-	Novice::ConsolePrintf("  Dust: %d\n", texDust_);
+	Novice::ConsolePrintf("=== LoadCommonResources START ===\n");
 #endif
 
-	// パラメータにハンドルをセット
-	params_[ParticleType::Explosion].textureHandle = texExplosion_;
-	params_[ParticleType::Debris].textureHandle = texDebris_;
-	params_[ParticleType::Hit].textureHandle = texHit_;
-	params_[ParticleType::Dust].textureHandle = texDust_;
-	params_[ParticleType::MuzzleFlash].textureHandle = texHit_;
-	params_[ParticleType::Rain].textureHandle = texRain_;
-	params_[ParticleType::Snow].textureHandle = texSnow_;
-	params_[ParticleType::Orb].textureHandle = texOrb_;
-	params_[ParticleType::Charge].textureHandle = texGlow_;
-	params_[ParticleType::Glow].textureHandle = texGlow_;
-	params_[ParticleType::Shockwave].textureHandle = texRing_;
-	params_[ParticleType::Sparkle].textureHandle = texSparkle_;
-	params_[ParticleType::Slash].textureHandle = texScratch_;
-	params_[ParticleType::SmokeCloud].textureHandle = texSmoke_;
-	params_[ParticleType::DigitalSpark].textureHandle = texHit_;
+	for (const auto& typeInfo : allTypes) {
+		// エントリが存在しない場合は作成
+		if (params_.find(typeInfo.type) == params_.end()) {
+			params_[typeInfo.type] = GenerateDefaultParam(typeInfo.type);
+		}
+
+		// テクスチャを再取得
+		int texHandle = TextureManager::GetInstance().GetTexture(typeInfo.defaultTexture);
+		params_[typeInfo.type].textureHandle = texHandle;
+
+#ifdef _DEBUG
+		Novice::ConsolePrintf("  %s: TextureId=%d -> Handle=%d (Before: %d)\n",
+			typeInfo.name.c_str(),
+			static_cast<int>(typeInfo.defaultTexture),
+			texHandle,
+			params_[typeInfo.type].textureHandle);
+#endif
+	}
+
+#ifdef _DEBUG
+	Novice::ConsolePrintf("=== LoadCommonResources END ===\n");
+#endif
 }
 
 Particle& ParticleManager::GetNextParticle() {
@@ -977,9 +648,8 @@ void ParticleManager::DrawDebugWindow() {
 #ifdef _DEBUG
 	ImGui::Begin("Particle Manager", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
 
-	// ========== ファイル操作 ==========
+	// ========== ファイル操作（既存のまま） ==========
 	ImGui::Text("=== File Operations ===");
-
 	static char filepath[256] = "Resources/Data/particle_params.json";
 	ImGui::InputText("File Path", filepath, sizeof(filepath));
 
@@ -992,11 +662,10 @@ void ParticleManager::DrawDebugWindow() {
 			Novice::ConsolePrintf("Failed to save to: %s\n", filepath);
 		}
 	}
-
 	ImGui::SameLine();
-
 	if (ImGui::Button("Load Parameters", ImVec2(140, 30))) {
 		if (LoadParamsFromJson(filepath)) {
+			LoadCommonResources();
 			Novice::ConsolePrintf("Successfully loaded from: %s\n", filepath);
 		}
 		else {
@@ -1016,274 +685,143 @@ void ParticleManager::DrawDebugWindow() {
 
 	ImGui::Separator();
 
-	// ========== 環境パーティクルコントロール ==========
-	if (ImGui::CollapsingHeader("Environment Effects Control", ImGuiTreeNodeFlags_DefaultOpen)) {
-		ImGui::Indent();
+	// ========== ★新規：カテゴリ別タブ表示 ==========
+	const auto& allTypes = ParticleRegistry::GetAllParticleTypes();
 
-		// 雨のコントロール
-		ImGui::Text("Rain:");
-		ImGui::SameLine(100);
-		static bool rainActive = false;
-		if (ImGui::Button(rainActive ? "Stop##Rain" : "Start##Rain", ImVec2(80, 0))) {
-			if (rainActive) {
-				StopEnvironmentEffect(ParticleType::Rain);
-			}
-			else {
-				StartEnvironmentEffect(ParticleType::Rain, EmitterFollowMode::FollowTarget);
-			}
-			rainActive = !rainActive;
-		}
-
-		// 雪のコントロール
-		ImGui::Text("Snow:");
-		ImGui::SameLine(100);
-		static bool snowActive = false;
-		if (ImGui::Button(snowActive ? "Stop##Snow" : "Start##Snow", ImVec2(80, 0))) {
-			if (snowActive) {
-				StopEnvironmentEffect(ParticleType::Snow);
-			}
-			else {
-				StartEnvironmentEffect(ParticleType::Snow, EmitterFollowMode::FollowTarget);
-			}
-			snowActive = !snowActive;
-		}
-
-		// オーブのコントロール
-		ImGui::Text("Orb:");
-		ImGui::SameLine(100);
-		static bool orbActive = false;
-		if (ImGui::Button(orbActive ? "Stop##Orb" : "Start##Orb", ImVec2(80, 0))) {
-			if (orbActive) {
-				StopEnvironmentEffect(ParticleType::Orb);
-			}
-			else {
-				StartEnvironmentEffect(ParticleType::Orb, EmitterFollowMode::FollowTarget);
-			}
-			orbActive = !orbActive;
-		}
-
-		ImGui::Unindent();
+	// カテゴリごとにグループ化
+	std::map<std::string, std::vector<const ParticleTypeInfo*>> categorized;
+	for (const auto& typeInfo : allTypes) {
+		categorized[typeInfo.category].push_back(&typeInfo);
 	}
 
-	ImGui::Separator();
+	if (ImGui::BeginTabBar("ParticleCategories", ImGuiTabBarFlags_None)) {
+		for (const auto& [category, types] : categorized) {
+			if (ImGui::BeginTabItem(category.c_str())) {
+				ImGui::Spacing();
 
-	// ========== エフェクトタイプ選択 ==========
-	ImGui::Text("=== Effect Type ===");
-	const char* items[] = { "Explosion", "Debris", "Hit", "Dust", "MuzzleFlash","Rain","Snow","Orb","Charge","Glow","Shockwave","Sparkle","Slash","SmokeCloud" };
-	int currentItem = static_cast<int>(currentDebugType_);
-	if (ImGui::Combo("Type", &currentItem, items, IM_ARRAYSIZE(items))) {
-		currentDebugType_ = static_cast<ParticleType>(currentItem);
-	}
+				// ★自動生成：カテゴリ内のパーティクルタイプ選択
+				ImGui::Text("Select Particle Type:");
 
-	ParticleParam& p = params_[currentDebugType_];
+				for (const auto* typeInfo : types) {
+					// レジストリの色を使用してボタン色を設定
+					ImVec4 color = ImGui::ColorConvertU32ToFloat4(typeInfo->editorColor);
+					ImGui::PushStyleColor(ImGuiCol_Button, color);
+					ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(color.x * 1.2f, color.y * 1.2f, color.z * 1.2f, 1.0f));
+					ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(color.x * 0.8f, color.y * 0.8f, color.z * 0.8f, 1.0f));
 
-	ImGui::Separator();
+					if (ImGui::Button(typeInfo->name.c_str(), ImVec2(150, 30))) {
+						currentDebugType_ = typeInfo->type;
+					}
 
-	// ========== 基本設定 ==========
-	ImGui::Text("=== Basic Settings ===");
+					ImGui::PopStyleColor(3);
 
-	ImGui::SliderInt("Count", &p.count, 1, 50);
-	ImGui::SameLine();
-	if (ImGui::Button("-##Count")) p.count = std::max(1, p.count - 1);
-	ImGui::SameLine();
-	if (ImGui::Button("+##Count")) p.count = std::min(50, p.count + 1);
+					// 4個ずつ横に並べる
+					static int count = 0;
+					count++;
+					if (count % 4 != 0) ImGui::SameLine();
+				}
 
-	ImGui::SliderInt("Life Min", &p.lifeMin, 1, 300);
-	ImGui::SliderInt("Life Max", &p.lifeMax, 1, 300);
-	if (p.lifeMin > p.lifeMax) p.lifeMax = p.lifeMin;
+				ImGui::Separator();
 
-	ImGui::Separator();
+				// ★パラメータ編集UI（既存のものを使用）
+				if (params_.find(currentDebugType_) != params_.end()) {
+					ParticleParam& p = params_[currentDebugType_];
 
-	// ========== サイズ設定 ==========
-	ImGui::Text("=== Size (Pixels) ===");
-	ImGui::SliderFloat("Size Min", &p.sizeMin, 4.0f, 256.0f);
-	ImGui::SliderFloat("Size Max", &p.sizeMax, 4.0f, 256.0f);
-	if (p.sizeMin > p.sizeMax) p.sizeMax = p.sizeMin;
+					// 現在選択中のパーティクル名を表示
+					const auto* currentInfo = ParticleRegistry::GetParticleType(currentDebugType_);
+					if (currentInfo) {
+						ImGui::Text("Editing: %s", currentInfo->name.c_str());
+						ImGui::Separator();
+					}
 
-	ImGui::Separator();
+					// ========== 基本設定（既存のコードをそのまま使用） ==========
+					ImGui::Text("=== Basic Settings ===");
+					ImGui::SliderInt("Count", &p.count, 1, 50);
+					ImGui::SliderInt("Life Min", &p.lifeMin, 1, 300);
+					ImGui::SliderInt("Life Max", &p.lifeMax, 1, 300);
+					if (p.lifeMin > p.lifeMax) p.lifeMax = p.lifeMin;
 
-	// ========== 物理設定 ==========
-	ImGui::Text("=== Physics ===");
+					ImGui::Separator();
 
-	ImGui::SliderFloat("Speed Min", &p.speedMin, 0.0f, 1000.0f);
-	ImGui::SliderFloat("Speed Max", &p.speedMax, 0.0f, 1000.0f);
-	if (p.speedMin > p.speedMax) p.speedMax = p.speedMin;
+					// ========== サイズ設定 ==========
+					ImGui::Text("=== Size (Pixels) ===");
+					ImGui::SliderFloat("Size Min", &p.sizeMin, 4.0f, 256.0f);
+					ImGui::SliderFloat("Size Max", &p.sizeMax, 4.0f, 256.0f);
+					if (p.sizeMin > p.sizeMax) p.sizeMax = p.sizeMin;
 
-	ImGui::SliderFloat("Base Angle", &p.angleBase, -180.0f, 180.0f);
-	ImGui::SameLine();
-	if (ImGui::Button("↑##Up")) p.angleBase = -90.0f;
-	ImGui::SameLine();
-	if (ImGui::Button("→##Right")) p.angleBase = 0.0f;
-	ImGui::SameLine();
-	if (ImGui::Button("↓##Down")) p.angleBase = 90.0f;
-	ImGui::SameLine();
-	if (ImGui::Button("←##Left")) p.angleBase = 180.0f;
+					ImGui::Separator();
 
-	ImGui::SliderFloat("Angle Range", &p.angleRange, 0.0f, 360.0f);
-	ImGui::SameLine();
-	if (ImGui::Button("360°##Full")) p.angleRange = 360.0f;
+					// ========== 物理設定 ==========
+					ImGui::Text("=== Physics ===");
+					ImGui::SliderFloat("Speed Min", &p.speedMin, 0.0f, 1000.0f);
+					ImGui::SliderFloat("Speed Max", &p.speedMax, 0.0f, 1000.0f);
+					ImGui::SliderFloat("Base Angle", &p.angleBase, -180.0f, 180.0f);
+					ImGui::SliderFloat("Angle Range", &p.angleRange, 0.0f, 360.0f);
+					ImGui::DragFloat2("Gravity", &p.gravity.x, 10.0f, -2000.0f, 2000.0f);
+					ImGui::DragFloat2("Acceleration", &p.acceleration.x, 10.0f, -2000.0f, 2000.0f);
 
-	ImGui::DragFloat2("Gravity", &p.gravity.x, 10.0f, -2000.0f, 2000.0f);
-	ImGui::DragFloat2("Acceleration", &p.acceleration.x, 10.0f, -2000.0f, 2000.0f);
-	ImGui::SameLine();
-	ImGui::TextDisabled("(?)");
-	if (ImGui::IsItemHovered()) {
-		ImGui::BeginTooltip();
-		ImGui::Text("Continuous force applied every frame (e.g., wind)");
-		ImGui::EndTooltip();
-	}
+					ImGui::Separator();
 
-	ImGui::Separator();
+					// ========== 環境パーティクル専用（既存） ==========
+					if (currentDebugType_ == ParticleType::Rain ||
+						currentDebugType_ == ParticleType::Snow ||
+						currentDebugType_ == ParticleType::Orb) {
+						ImGui::Text("=== Environment Specific ===");
+						if (currentDebugType_ == ParticleType::Rain) {
+							ImGui::SliderFloat("Bounce Damping", &p.bounceDamping, 0.0f, 1.0f);
+						}
+						if (currentDebugType_ == ParticleType::Snow) {
+							ImGui::SliderFloat("Wind Strength", &p.windStrength, 0.0f, 100.0f);
+						}
+						if (currentDebugType_ == ParticleType::Orb) {
+							ImGui::SliderFloat("Float Amplitude", &p.floatAmplitude, 0.0f, 100.0f);
+							ImGui::SliderFloat("Float Frequency", &p.floatFrequency, 0.1f, 5.0f);
+						}
+						ImGui::Separator();
+					}
 
-	// ========== 環境パーティクル専用パラメータ ==========
-	if (currentDebugType_ == ParticleType::Rain ||
-		currentDebugType_ == ParticleType::Snow ||
-		currentDebugType_ == ParticleType::Orb) {
-		ImGui::Text("=== Environment Specific ===");
+					// ========== 見た目設定（既存） ==========
+					ImGui::Text("=== Appearance ===");
+					ImGui::SliderFloat("Start Scale", &p.scaleStart, 0.1f, 5.0f);
+					ImGui::SliderFloat("End Scale", &p.scaleEnd, 0.0f, 5.0f);
 
-		if (currentDebugType_ == ParticleType::Rain) {
-			ImGui::SliderFloat("Bounce Damping", &p.bounceDamping, 0.0f, 1.0f);
-			ImGui::SameLine();
-			ImGui::TextDisabled("(?)");
-			if (ImGui::IsItemHovered()) {
-				ImGui::SetTooltip("Ground bounce coefficient (0 = no bounce, 1 = full bounce)");
-			}
-		}
+					ImGui::Text("Start Color:");
+					ColorRGBA startColor = ColorRGBA::FromUInt(p.colorStart);
+					float startRGBA[4] = { startColor.r, startColor.g, startColor.b, startColor.a };
+					if (ImGui::ColorEdit4("##StartColor", startRGBA)) {
+						p.colorStart = ColorRGBA(startRGBA[0], startRGBA[1], startRGBA[2], startRGBA[3]).ToUInt();
+					}
 
-		if (currentDebugType_ == ParticleType::Snow) {
-			ImGui::SliderFloat("Wind Strength", &p.windStrength, 0.0f, 100.0f);
-			ImGui::SameLine();
-			ImGui::TextDisabled("(?)");
-			if (ImGui::IsItemHovered()) {
-				ImGui::SetTooltip("Horizontal wind swaying effect");
+					ImGui::Text("End Color:");
+					ColorRGBA endColor = ColorRGBA::FromUInt(p.colorEnd);
+					float endRGBA[4] = { endColor.r, endColor.g, endColor.b, endColor.a };
+					if (ImGui::ColorEdit4("##EndColor", endRGBA)) {
+						p.colorEnd = ColorRGBA(endRGBA[0], endRGBA[1], endRGBA[2], endRGBA[3]).ToUInt();
+					}
+
+					ImGui::Separator();
+
+					// ========== テスト発射 ==========
+					ImGui::Text("=== Test ===");
+					if (ImGui::Button("Emit at Center (640, 360)", ImVec2(200, 30))) {
+						Emit(currentDebugType_, { 640.0f, 360.0f });
+					}
+
+					if (ImGui::Button("Reset to Default", ImVec2(200, 30))) {
+						// ★変更：LoadParams() → レジストリから再生成
+						p = GenerateDefaultParam(currentDebugType_);
+						const auto* info = ParticleRegistry::GetParticleType(currentDebugType_);
+						if (info) {
+							p.textureHandle = TextureManager::GetInstance().GetTexture(info->defaultTexture);
+						}
+						Novice::ConsolePrintf("Parameters reset to default values\n");
+					}
+				}
+
+				ImGui::EndTabItem();
 			}
 		}
-
-		if (currentDebugType_ == ParticleType::Orb) {
-			ImGui::SliderFloat("Float Amplitude", &p.floatAmplitude, 0.0f, 100.0f);
-			ImGui::SliderFloat("Float Frequency", &p.floatFrequency, 0.1f, 5.0f);
-			ImGui::SameLine();
-			ImGui::TextDisabled("(?)");
-			if (ImGui::IsItemHovered()) {
-				ImGui::SetTooltip("Floating motion parameters (sine wave)");
-			}
-		}
-
-		ImGui::Separator();
-	}
-
-	// ========== 生成範囲設定 ==========
-	ImGui::Text("=== Emit Range ===");
-	ImGui::DragFloat2("Range (X, Y)", &p.emitRange.x, 1.0f, 0.0f, 500.0f);
-	ImGui::SameLine();
-	ImGui::TextDisabled("(?)");
-	if (ImGui::IsItemHovered()) {
-		ImGui::BeginTooltip();
-		ImGui::Text("Random spawn position offset");
-		ImGui::Text("X: Horizontal spread, Y: Vertical spread");
-		ImGui::EndTooltip();
-	}
-
-	ImGui::Separator();
-
-	// ========== 回転設定 ==========
-	ImGui::Text("=== Rotation ===");
-	ImGui::SliderFloat("Rot Speed Min", &p.rotationSpeedMin, -1.0f, 1.0f, "%.3f rad/frame");
-	ImGui::SliderFloat("Rot Speed Max", &p.rotationSpeedMax, -1.0f, 1.0f, "%.3f rad/frame");
-	if (p.rotationSpeedMin > p.rotationSpeedMax) {
-		p.rotationSpeedMax = p.rotationSpeedMin;
-	}
-	ImGui::SameLine();
-	ImGui::TextDisabled("(?)");
-	if (ImGui::IsItemHovered()) {
-		ImGui::BeginTooltip();
-		ImGui::Text("Rotation speed in radians per frame");
-		ImGui::Text("Positive: Clockwise, Negative: Counter-clockwise");
-		ImGui::EndTooltip();
-	}
-
-	ImGui::Separator();
-
-	// ========== ブレンドモード設定 ==========
-	if (ImGui::TreeNode("Blend Mode Settings")) {
-		const char* blendModes[] = {
-			"None",
-			"Normal (Alpha)",
-			"Add (Additive)",
-			"Subtract",
-			"Multiply",
-			"Screen",
-			"Exclusion"
-		};
-
-		int currentBlendMode = static_cast<int>(p.blendMode);
-		if (ImGui::Combo("Blend Mode", &currentBlendMode, blendModes, IM_ARRAYSIZE(blendModes))) {
-			p.blendMode = static_cast<BlendMode>(currentBlendMode);
-		}
-
-		ImGui::SameLine();
-		ImGui::TextDisabled("(?)");
-		if (ImGui::IsItemHovered()) {
-			ImGui::BeginTooltip();
-			ImGui::Text("Normal: Standard alpha blending");
-			ImGui::Text("Add: Bright, glowing effect (recommended for fire, explosions)");
-			ImGui::Text("Subtract: Dark, shadow effect");
-			ImGui::Text("Multiply: Darker blending");
-			ImGui::Text("Screen: Bright, soft blending");
-			ImGui::EndTooltip();
-		}
-
-		ImGui::TreePop();
-	}
-
-	ImGui::Separator();
-
-	// ========== 見た目設定 ==========
-	ImGui::Text("=== Appearance ===");
-
-	ImGui::SliderFloat("Start Scale", &p.scaleStart, 0.1f, 5.0f);
-	ImGui::SliderFloat("End Scale", &p.scaleEnd, 0.0f, 5.0f);
-
-	ImGui::Text("Start Color:");
-	ColorRGBA startColor = ColorRGBA::FromUInt(p.colorStart);
-	float startRGBA[4] = { startColor.r, startColor.g, startColor.b, startColor.a };
-	if (ImGui::ColorEdit4("##StartColor", startRGBA)) {
-		p.colorStart = ColorRGBA(startRGBA[0], startRGBA[1], startRGBA[2], startRGBA[3]).ToUInt();
-	}
-
-	ImGui::Text("End Color:");
-	ColorRGBA endColor = ColorRGBA::FromUInt(p.colorEnd);
-	float endRGBA[4] = { endColor.r, endColor.g, endColor.b, endColor.a };
-	if (ImGui::ColorEdit4("##EndColor", endRGBA)) {
-		p.colorEnd = ColorRGBA(endRGBA[0], endRGBA[1], endRGBA[2], endRGBA[3]).ToUInt();
-	}
-
-	ImGui::Separator();
-
-	// ========== アニメーション設定 ==========
-	ImGui::Text("=== Animation (Explosion Only) ===");
-	ImGui::Checkbox("Use Animation", &p.useAnimation);
-
-	if (p.useAnimation) {
-		ImGui::Indent();
-		ImGui::SliderInt("Div X", &p.divX, 1, 10);
-		ImGui::SliderInt("Div Y", &p.divY, 1, 10);
-		ImGui::SliderInt("Total Frames", &p.totalFrames, 1, 100);
-		ImGui::SliderFloat("Anim Speed", &p.animSpeed, 0.01f, 0.5f);
-		ImGui::Unindent();
-	}
-
-	ImGui::Separator();
-
-	// ========== テスト発射 ==========
-	ImGui::Text("=== Test ===");
-	if (ImGui::Button("Emit at Center (640, 360)", ImVec2(200, 30))) {
-		Emit(currentDebugType_, { 640.0f, 360.0f });
-	}
-
-	if (ImGui::Button("Reset to Default", ImVec2(200, 30))) {
-		LoadParams();
-		Novice::ConsolePrintf("Parameters reset to default values\n");
+		ImGui::EndTabBar();
 	}
 
 	// 活性パーティクル数表示
@@ -1307,68 +845,14 @@ json ParticleManager::SerializeParams() const {
 	json root = json::object();
 
 	for (const auto& [type, param] : params_) {
-		std::string typeName;
-		switch (type) {
-		case ParticleType::Explosion: typeName = "Explosion"; break;
-		case ParticleType::Debris: typeName = "Debris"; break;
-		case ParticleType::Hit: typeName = "Hit"; break;
-		case ParticleType::Dust: typeName = "Dust"; break;
-		case ParticleType::MuzzleFlash: typeName = "MuzzleFlash"; break;
-		case ParticleType::Rain: typeName = "Rain"; break;
-		case ParticleType::Snow: typeName = "Snow"; break;
-		case ParticleType::Orb: typeName = "Orb"; break;
-		case ParticleType::Charge: typeName = "Charge"; break;
-		case ParticleType::Glow: typeName = "Glow"; break;
-		case ParticleType::Shockwave: typeName = "Shockwave"; break;
-		case ParticleType::Sparkle: typeName = "Sparkle"; break;
-		case ParticleType::Slash: typeName = "Slash"; break;
-		case ParticleType::SmokeCloud: typeName = "SmokeCloud"; break;
-		default: typeName = "Unknown"; break;
+		// レジストリから名前を取得
+		const auto* typeInfo = ParticleRegistry::GetParticleType(type);
+		if (!typeInfo) {
+			// レジストリに登録されていない場合はスキップ
+			continue;
 		}
 
-		nlohmann::json paramJson;
-		paramJson["count"] = param.count;
-		paramJson["textureHandle"] = param.textureHandle;
-		paramJson["lifeMin"] = param.lifeMin;
-		paramJson["lifeMax"] = param.lifeMax;
-		paramJson["speedMin"] = param.speedMin;
-		paramJson["speedMax"] = param.speedMax;
-		paramJson["angleBase"] = param.angleBase;
-		paramJson["angleRange"] = param.angleRange;
-		paramJson["gravity"] = {
-			{"x", param.gravity.x},
-			{"y", param.gravity.y}
-		};
-		paramJson["acceleration"] = {
-			{"x", param.acceleration.x},
-			{"y", param.acceleration.y}
-		};
-		paramJson["emitRange"] = {
-			{"x", param.emitRange.x},
-			{"y", param.emitRange.y}
-		};
-		paramJson["sizeMin"] = param.sizeMin;
-		paramJson["sizeMax"] = param.sizeMax;
-		paramJson["scaleStart"] = param.scaleStart;
-		paramJson["scaleEnd"] = param.scaleEnd;
-		paramJson["colorStart"] = param.colorStart;
-		paramJson["colorEnd"] = param.colorEnd;
-		paramJson["rotationSpeedMin"] = param.rotationSpeedMin;
-		paramJson["rotationSpeedMax"] = param.rotationSpeedMax;
-		paramJson["useAnimation"] = param.useAnimation;
-		paramJson["divX"] = param.divX;
-		paramJson["divY"] = param.divY;
-		paramJson["totalFrames"] = param.totalFrames;
-		paramJson["animSpeed"] = param.animSpeed;
-		paramJson["blendMode"] = BlendModeToString(param.blendMode);
-
-		// ★環境パーティクル専用パラメータ
-		paramJson["bounceDamping"] = param.bounceDamping;
-		paramJson["windStrength"] = param.windStrength;
-		paramJson["floatAmplitude"] = param.floatAmplitude;
-		paramJson["floatFrequency"] = param.floatFrequency;
-
-		root[typeName] = paramJson;
+		root[typeInfo->name] = SerializeParam(param);
 	}
 
 	return root;
@@ -1378,132 +862,12 @@ bool ParticleManager::DeserializeParams(const nlohmann::json& j) {
 	try {
 		params_.clear();
 
-		std::map<std::string, ParticleType> typeMap = {
-			{"Explosion", ParticleType::Explosion},
-			{"Debris", ParticleType::Debris},
-			{"Hit", ParticleType::Hit},
-			{"Dust", ParticleType::Dust},
-			{"MuzzleFlash", ParticleType::MuzzleFlash},
-			{"Rain", ParticleType::Rain},
-			{"Snow", ParticleType::Snow},
-			{"Orb", ParticleType::Orb},
-			{"Charge", ParticleType::Charge},
-			{"Glow", ParticleType::Glow},
-			{"Shockwave", ParticleType::Shockwave},
-			{"Sparkle", ParticleType::Sparkle},
-			{"Slash", ParticleType::Slash},
-			{"SmokeCloud", ParticleType::SmokeCloud}
-		};
+		// レジストリから全タイプを取得
+		const auto& allTypes = ParticleRegistry::GetAllParticleTypes();
 
-		for (const auto& [typeName, type] : typeMap) {
-			if (j.contains(typeName)) {
-				const nlohmann::json& paramJson = j[typeName];
-				ParticleParam param;
-
-				param.count = JsonUtil::GetValue<int>(paramJson, "count", 1);
-				param.textureHandle = JsonUtil::GetValue<int>(paramJson, "textureHandle", -1);
-				param.lifeMin = JsonUtil::GetValue<int>(paramJson, "lifeMin", 30);
-				param.lifeMax = JsonUtil::GetValue<int>(paramJson, "lifeMax", 60);
-				param.speedMin = JsonUtil::GetValue<float>(paramJson, "speedMin", 100.0f);
-				param.speedMax = JsonUtil::GetValue<float>(paramJson, "speedMax", 200.0f);
-				param.angleBase = JsonUtil::GetValue<float>(paramJson, "angleBase", 0.0f);
-				param.angleRange = JsonUtil::GetValue<float>(paramJson, "angleRange", 360.0f);
-
-				// 重力
-				if (paramJson.contains("gravity")) {
-					param.gravity.x = JsonUtil::GetValue<float>(paramJson["gravity"], "x", 0.0f);
-					param.gravity.y = JsonUtil::GetValue<float>(paramJson["gravity"], "y", 0.0f);
-				}
-
-				// 加速度
-				if (paramJson.contains("acceleration")) {
-					param.acceleration.x = JsonUtil::GetValue<float>(paramJson["acceleration"], "x", 0.0f);
-					param.acceleration.y = JsonUtil::GetValue<float>(paramJson["acceleration"], "y", 0.0f);
-				}
-
-				// 生成範囲
-				if (paramJson.contains("emitRange")) {
-					param.emitRange.x = JsonUtil::GetValue<float>(paramJson["emitRange"], "x", 0.0f);
-					param.emitRange.y = JsonUtil::GetValue<float>(paramJson["emitRange"], "y", 0.0f);
-				}
-
-				param.sizeMin = JsonUtil::GetValue<float>(paramJson, "sizeMin", 16.0f);
-				param.sizeMax = JsonUtil::GetValue<float>(paramJson, "sizeMax", 32.0f);
-				param.scaleStart = JsonUtil::GetValue<float>(paramJson, "scaleStart", 1.0f);
-				param.scaleEnd = JsonUtil::GetValue<float>(paramJson, "scaleEnd", 0.0f);
-				param.colorStart = JsonUtil::GetValue<unsigned int>(paramJson, "colorStart", 0xFFFFFFFF);
-				param.colorEnd = JsonUtil::GetValue<unsigned int>(paramJson, "colorEnd", 0xFFFFFF00);
-
-				// 回転速度
-				param.rotationSpeedMin = JsonUtil::GetValue<float>(paramJson, "rotationSpeedMin", 0.0f);
-				param.rotationSpeedMax = JsonUtil::GetValue<float>(paramJson, "rotationSpeedMax", 0.0f);
-
-				// アニメーション
-				param.useAnimation = JsonUtil::GetValue<bool>(paramJson, "useAnimation", false);
-				param.divX = JsonUtil::GetValue<int>(paramJson, "divX", 1);
-				param.divY = JsonUtil::GetValue<int>(paramJson, "divY", 1);
-				param.totalFrames = JsonUtil::GetValue<int>(paramJson, "totalFrames", 1);
-				param.animSpeed = JsonUtil::GetValue<float>(paramJson, "animSpeed", 0.1f);
-
-				// ブレンドモード
-				std::string blendModeStr = JsonUtil::GetValue<std::string>(paramJson, "blendMode", "Normal");
-				param.blendMode = StringToBlendMode(blendModeStr);
-
-				// Emitter Shape
-				if (paramJson.contains("emitterShape")) {
-					std::string shapeStr = JsonUtil::GetValue<std::string>(paramJson, "emitterShape", "Point");
-					if (shapeStr == "Line") {
-						param.emitterShape = EmitterShape::Line;
-					}
-					else if (shapeStr == "Rectangle") {
-						param.emitterShape = EmitterShape::Rectangle;
-					}
-					else {
-						param.emitterShape = EmitterShape::Point;
-					}
-				}
-
-				// Emitter Size
-				if (paramJson.contains("emitterSize")) {
-					param.emitterSize.x = JsonUtil::GetValue<float>(paramJson["emitterSize"], "x", 0.0f);
-					param.emitterSize.y = JsonUtil::GetValue<float>(paramJson["emitterSize"], "y", 0.0f);
-				}
-
-				// Homing
-				param.useHoming = JsonUtil::GetValue<bool>(paramJson, "useHoming", false);
-				param.homingStrength = JsonUtil::GetValue<float>(paramJson, "homingStrength", 0.0f);
-
-				// 連続発生
-				param.isContinuous = JsonUtil::GetValue<bool>(paramJson, "isContinuous", false);
-				param.emitInterval = JsonUtil::GetValue<float>(paramJson, "emitInterval", 0.0f);
-
-				// 環境パーティクル専用パラメータ
-				param.bounceDamping = JsonUtil::GetValue<float>(paramJson, "bounceDamping", 0.3f);
-				param.windStrength = JsonUtil::GetValue<float>(paramJson, "windStrength", 0.0f);
-				param.floatAmplitude = JsonUtil::GetValue<float>(paramJson, "floatAmplitude", 0.0f);
-				param.floatFrequency = JsonUtil::GetValue<float>(paramJson, "floatFrequency", 1.0f);
-
-				// テクスチャハンドル復元
-				if (param.textureHandle == -1) {
-					switch (type) {
-					case ParticleType::Explosion: param.textureHandle = texExplosion_; break;
-					case ParticleType::Debris: param.textureHandle = texDebris_; break;
-					case ParticleType::Hit: param.textureHandle = texHit_; break;
-					case ParticleType::Dust: param.textureHandle = texDust_; break;
-					case ParticleType::MuzzleFlash: param.textureHandle = texExplosion_; break;
-					case ParticleType::Rain: param.textureHandle = texRain_; break;
-					case ParticleType::Snow: param.textureHandle = texSnow_; break;
-					case ParticleType::Orb: param.textureHandle = texOrb_; break;
-					case ParticleType::Charge: param.textureHandle = texGlow_; break;
-					case ParticleType::Glow: param.textureHandle = texGlow_; break;
-					case ParticleType::Shockwave: param.textureHandle = texRing_; break;
-					case ParticleType::Sparkle: param.textureHandle = texSparkle_; break;
-					case ParticleType::Slash: param.textureHandle = texScratch_; break;
-					case ParticleType::SmokeCloud: param.textureHandle = texSmoke_; break;
-					}
-				}
-
-				params_[type] = param;
+		for (const auto& typeInfo : allTypes) {
+			if (j.contains(typeInfo.name)) {
+				params_[typeInfo.type] = DeserializeParam(j[typeInfo.name], typeInfo.type);
 			}
 		}
 
@@ -1544,28 +908,298 @@ bool ParticleManager::SaveParamsToJson(const std::string& filepath) {
 bool ParticleManager::LoadParamsFromJson(const std::string& filepath) {
 	nlohmann::json j;
 
-	// ファイルが存在しない場合はデフォルトパラメータで新規作成
 	if (!JsonUtil::LoadFromFile(filepath, j)) {
 #ifdef _DEBUG
 		Novice::ConsolePrintf("ParticleManager: JSON file not found. Creating default parameters...\n");
 #endif
-		// デフォルトパラメータを設定
-		LoadParams();
-		// 新規作成して保存
+		LoadDefaultParamsFromRegistry();
 		return SaveParamsToJson(filepath);
 	}
 
-	// JSONからパラメータを読み込み
 	if (DeserializeParams(j)) {
 #ifdef _DEBUG
 		Novice::ConsolePrintf("ParticleManager: Parameters loaded from %s\n", filepath.c_str());
 #endif
+		// Load後にテクスチャを再設定
+		LoadCommonResources();
 		return true;
 	}
 
 #ifdef _DEBUG
 	Novice::ConsolePrintf("ParticleManager: Failed to load parameters. Using defaults.\n");
 #endif
-	LoadParams();
+	LoadDefaultParamsFromRegistry();
 	return false;
+}
+
+// ==============================================
+// レジストリベースの初期化（Phase 3 で有効化）
+// ==============================================
+void ParticleManager::LoadDefaultParamsFromRegistry() {
+	params_.clear();
+
+	const auto& allTypes = ParticleRegistry::GetAllParticleTypes();
+	for (const auto& typeInfo : allTypes) {
+		ParticleParam defaultParam = GenerateDefaultParam(typeInfo.type);
+
+		// テクスチャをレジストリから取得
+		defaultParam.textureHandle = TextureManager::GetInstance().GetTexture(typeInfo.defaultTexture);
+
+		params_[typeInfo.type] = defaultParam;
+	}
+}
+
+ParticleParam ParticleManager::GenerateDefaultParam(ParticleType type) {
+	ParticleParam param;
+
+	// カテゴリごとのデフォルト設定
+	const auto* typeInfo = ParticleRegistry::GetParticleType(type);
+	if (!typeInfo) return param;
+
+	// カテゴリベースのデフォルト設定
+	if (typeInfo->category == "Combat") {
+		param.count = 10;
+		param.lifeMin = 30;
+		param.lifeMax = 60;
+		param.speedMin = 100.0f;
+		param.speedMax = 300.0f;
+		param.angleRange = 360.0f;
+		param.blendMode = kBlendModeAdd;
+		param.scaleStart = 1.0f;
+		param.scaleEnd = 0.3f;
+		param.colorStart = 0xFFFFFFFF;
+		param.colorEnd = 0xFFFFFF00;
+	}
+	else if (typeInfo->category == "Environment") {
+		param.count = 30;
+		param.lifeMin = 120;
+		param.lifeMax = 180;
+		param.speedMin = 0.0f;
+		param.speedMax = 0.0f;
+		param.gravity = { 0.0f, -100.0f };
+		param.isContinuous = true;
+		param.emitInterval = 0.1f;
+		param.blendMode = kBlendModeNormal;
+		param.scaleStart = 1.0f;
+		param.scaleEnd = 1.0f;
+	}
+	else if (typeInfo->category == "Visual") {
+		param.count = 5;
+		param.lifeMin = 20;
+		param.lifeMax = 40;
+		param.speedMin = 50.0f;
+		param.speedMax = 150.0f;
+		param.blendMode = kBlendModeAdd;
+		param.scaleStart = 1.0f;
+		param.scaleEnd = 0.0f;
+		param.colorStart = 0xFFFFFFFF;
+		param.colorEnd = 0xFFFFFF00;
+	}
+	else { // General
+		param.count = 8;
+		param.lifeMin = 30;
+		param.lifeMax = 60;
+		param.speedMin = 50.0f;
+		param.speedMax = 100.0f;
+		param.blendMode = kBlendModeNormal;
+		param.scaleStart = 1.0f;
+		param.scaleEnd = 0.5f;
+	}
+
+	// タイプ固有の調整（既存の LoadParams から移植）
+	switch (type) {
+	case ParticleType::Explosion:
+		param.count = 1;
+		param.lifeMin = 40;
+		param.lifeMax = 40;
+		param.speedMin = 0.0f;
+		param.speedMax = 0.0f;
+		param.sizeMin = 64.0f;
+		param.sizeMax = 64.0f;
+		param.useAnimation = true;
+		param.divX = 4;
+		param.divY = 1;
+		param.totalFrames = 4;
+		param.animSpeed = 0.05f;
+		break;
+
+	case ParticleType::Rain:
+		param.gravity = { 0.0f, -800.0f };
+		param.emitterShape = EmitterShape::Line;
+		param.emitterSize = { 1280.0f, 0.0f };
+		param.sizeMin = 2.0f;
+		param.sizeMax = 4.0f;
+		param.bounceDamping = 0.3f;
+		param.colorStart = 0xAAAAFFFF;
+		param.colorEnd = 0xAAAAFF00;
+		break;
+
+	case ParticleType::Snow:
+		param.gravity = { 0.0f, -50.0f };
+		param.emitterShape = EmitterShape::Line;
+		param.emitterSize = { 1280.0f, 0.0f };
+		param.sizeMin = 4.0f;
+		param.sizeMax = 8.0f;
+		param.windStrength = 30.0f;
+		param.rotationSpeedMin = -0.02f;
+		param.rotationSpeedMax = 0.02f;
+		param.emitInterval = 0.15f;
+		param.colorStart = 0xFFFFFFFF;
+		param.colorEnd = 0xFFFFFFFF;
+		break;
+
+	case ParticleType::Orb:
+		param.count = 5;
+		param.lifeMin = 300;
+		param.lifeMax = 360;
+		param.emitterShape = EmitterShape::Rectangle;
+		param.emitterSize = { 1280.0f, 720.0f };
+		param.sizeMin = 12.0f;
+		param.sizeMax = 24.0f;
+		param.floatAmplitude = 30.0f;
+		param.floatFrequency = 1.0f;
+		param.emitInterval = 0.2f;
+		param.colorStart = 0xFFFF88FF;
+		param.colorEnd = 0xFFFF8880;
+		break;
+
+	case ParticleType::Charge:
+		param.useHoming = true;
+		param.homingStrength = 500.0f;
+		param.emitRange = { 100.0f, 100.0f };
+		param.sizeMin = 8.0f;
+		param.sizeMax = 16.0f;
+		param.colorStart = 0x00FFFFFF;
+		param.colorEnd = 0x00FFFF00;
+		break;
+
+		// その他のタイプは基本設定を使用
+	default:
+		break;
+	}
+
+	return param;
+}
+
+// ==============================================
+// JSON処理の簡略化（Phase 4 で SerializeParams を置き換え）
+// ==============================================
+nlohmann::json ParticleManager::SerializeParam(const ParticleParam& param) const {
+	nlohmann::json j;
+
+	j["count"] = param.count;
+	j["lifeMin"] = param.lifeMin;
+	j["lifeMax"] = param.lifeMax;
+	j["speedMin"] = param.speedMin;
+	j["speedMax"] = param.speedMax;
+	j["angleBase"] = param.angleBase;
+	j["angleRange"] = param.angleRange;
+	j["gravity"] = { {"x", param.gravity.x}, {"y", param.gravity.y} };
+	j["acceleration"] = { {"x", param.acceleration.x}, {"y", param.acceleration.y} };
+	j["emitRange"] = { {"x", param.emitRange.x}, {"y", param.emitRange.y} };
+	j["sizeMin"] = param.sizeMin;
+	j["sizeMax"] = param.sizeMax;
+	j["scaleStart"] = param.scaleStart;
+	j["scaleEnd"] = param.scaleEnd;
+	j["colorStart"] = param.colorStart;
+	j["colorEnd"] = param.colorEnd;
+	j["rotationSpeedMin"] = param.rotationSpeedMin;
+	j["rotationSpeedMax"] = param.rotationSpeedMax;
+	j["useAnimation"] = param.useAnimation;
+	j["divX"] = param.divX;
+	j["divY"] = param.divY;
+	j["totalFrames"] = param.totalFrames;
+	j["animSpeed"] = param.animSpeed;
+	j["blendMode"] = BlendModeToString(param.blendMode);
+	j["bounceDamping"] = param.bounceDamping;
+	j["windStrength"] = param.windStrength;
+	j["floatAmplitude"] = param.floatAmplitude;
+	j["floatFrequency"] = param.floatFrequency;
+
+	return j;
+}
+
+ParticleParam ParticleManager::DeserializeParam(const nlohmann::json& j, ParticleType type) {
+	ParticleParam param;
+
+	param.count = JsonUtil::GetValue<int>(j, "count", 1);
+	param.lifeMin = JsonUtil::GetValue<int>(j, "lifeMin", 30);
+	param.lifeMax = JsonUtil::GetValue<int>(j, "lifeMax", 60);
+	param.speedMin = JsonUtil::GetValue<float>(j, "speedMin", 100.0f);
+	param.speedMax = JsonUtil::GetValue<float>(j, "speedMax", 200.0f);
+	param.angleBase = JsonUtil::GetValue<float>(j, "angleBase", 0.0f);
+	param.angleRange = JsonUtil::GetValue<float>(j, "angleRange", 360.0f);
+
+	if (j.contains("gravity")) {
+		param.gravity.x = JsonUtil::GetValue<float>(j["gravity"], "x", 0.0f);
+		param.gravity.y = JsonUtil::GetValue<float>(j["gravity"], "y", 0.0f);
+	}
+
+	if (j.contains("acceleration")) {
+		param.acceleration.x = JsonUtil::GetValue<float>(j["acceleration"], "x", 0.0f);
+		param.acceleration.y = JsonUtil::GetValue<float>(j["acceleration"], "y", 0.0f);
+	}
+
+	if (j.contains("emitRange")) {
+		param.emitRange.x = JsonUtil::GetValue<float>(j["emitRange"], "x", 0.0f);
+		param.emitRange.y = JsonUtil::GetValue<float>(j["emitRange"], "y", 0.0f);
+	}
+
+	param.sizeMin = JsonUtil::GetValue<float>(j, "sizeMin", 16.0f);
+	param.sizeMax = JsonUtil::GetValue<float>(j, "sizeMax", 32.0f);
+	param.scaleStart = JsonUtil::GetValue<float>(j, "scaleStart", 1.0f);
+	param.scaleEnd = JsonUtil::GetValue<float>(j, "scaleEnd", 0.0f);
+	param.colorStart = JsonUtil::GetValue<unsigned int>(j, "colorStart", 0xFFFFFFFF);
+	param.colorEnd = JsonUtil::GetValue<unsigned int>(j, "colorEnd", 0xFFFFFF00);
+	param.rotationSpeedMin = JsonUtil::GetValue<float>(j, "rotationSpeedMin", 0.0f);
+	param.rotationSpeedMax = JsonUtil::GetValue<float>(j, "rotationSpeedMax", 0.0f);
+	param.useAnimation = JsonUtil::GetValue<bool>(j, "useAnimation", false);
+	param.divX = JsonUtil::GetValue<int>(j, "divX", 1);
+	param.divY = JsonUtil::GetValue<int>(j, "divY", 1);
+	param.totalFrames = JsonUtil::GetValue<int>(j, "totalFrames", 1);
+	param.animSpeed = JsonUtil::GetValue<float>(j, "animSpeed", 0.1f);
+
+	std::string blendModeStr = JsonUtil::GetValue<std::string>(j, "blendMode", "Normal");
+	param.blendMode = StringToBlendMode(blendModeStr);
+
+	if (j.contains("emitterShape")) {
+		std::string shapeStr = JsonUtil::GetValue<std::string>(j, "emitterShape", "Point");
+		if (shapeStr == "Line") {
+			param.emitterShape = EmitterShape::Line;
+		}
+		else if (shapeStr == "Rectangle") {
+			param.emitterShape = EmitterShape::Rectangle;
+		}
+		else {
+			param.emitterShape = EmitterShape::Point;
+		}
+	}
+
+	if (j.contains("emitterSize")) {
+		param.emitterSize.x = JsonUtil::GetValue<float>(j["emitterSize"], "x", 0.0f);
+		param.emitterSize.y = JsonUtil::GetValue<float>(j["emitterSize"], "y", 0.0f);
+	}
+
+	param.useHoming = JsonUtil::GetValue<bool>(j, "useHoming", false);
+	param.homingStrength = JsonUtil::GetValue<float>(j, "homingStrength", 0.0f);
+	param.isContinuous = JsonUtil::GetValue<bool>(j, "isContinuous", false);
+	param.emitInterval = JsonUtil::GetValue<float>(j, "emitInterval", 0.0f);
+	param.bounceDamping = JsonUtil::GetValue<float>(j, "bounceDamping", 0.3f);
+	param.windStrength = JsonUtil::GetValue<float>(j, "windStrength", 0.0f);
+	param.floatAmplitude = JsonUtil::GetValue<float>(j, "floatAmplitude", 0.0f);
+	param.floatFrequency = JsonUtil::GetValue<float>(j, "floatFrequency", 1.0f);
+
+	// テクスチャハンドルが-1の場合、レジストリから取得
+	const auto* typeInfo = ParticleRegistry::GetParticleType(type);
+	if (typeInfo) {
+		param.textureHandle = TextureManager::GetInstance().GetTexture(typeInfo->defaultTexture);
+	}
+	else {
+		param.textureHandle = -1;
+#ifdef _DEBUG
+		Novice::ConsolePrintf("  DeserializeParam: Type not found in registry!\n");
+#endif
+	}
+
+	return param;
 }
