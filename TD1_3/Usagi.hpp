@@ -34,6 +34,7 @@ private:
 	float dashCooldown_ = 40.f;
 	float dashDurationTimer_ = 0.f;
 	float dashCooldownTimer_ = 0.f;
+	bool dashAvailable_ = true;
 
 	float walkSpeed_ = 6.f;
 public:
@@ -154,8 +155,14 @@ public:
 
 		inputDir = Vector2::Normalize(inputDir);
 
+		if (isGrounded_) {
+			dashAvailable_ = true;
+		}
+
 		if (Input().TriggerKey(DIK_K)) {
-			if (dashCooldownTimer_ <= 0.f) {
+			if (dashCooldownTimer_ <= 0.f && dashAvailable_) {
+				dashAvailable_ = false;
+
 				Vector2 dashDir = { 0.f, 0.f };
 				if (Vector2::Length(inputDir) == 0.f) {
 					dashDir.x = isflipX_ ? -1.f : 1.f;
@@ -190,6 +197,10 @@ public:
 
 		if (isCharging_) {
 			isGravityEnabled_ = false;
+			if (inputDir.x != 0) {
+				isflipX_ = inputDir.x < 0.f;
+			}
+			
 		}
 
 		if (dashDurationTimer_ <= 0.f && !isCharging_) {

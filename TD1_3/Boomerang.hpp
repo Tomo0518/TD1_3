@@ -176,7 +176,7 @@ public:
 
 	void AddDamageFromStar() {
 		if (starCount_ <= 0) return;
-		damage_ += 2;
+		damage_ += 4;
 		starCount_ -= 1;
 	}
 
@@ -198,7 +198,7 @@ public:
 				moveTimer_ += deltaTime;
 
 				if (moveTimer_ >= maxTime_) hitEnemies_.clear();
-				if (moveTimer_ >= maxTime_ / 2.f) collider_.canCollide = false;
+				if (moveTimer_ >= maxTime_ / 1.7f) collider_.canCollide = false;
 
 				float t = moveTimer_ / maxTime_;
 				if (t > 1.0f) t = 1.0f;
@@ -256,7 +256,7 @@ public:
 					stayTimer_ = 0;
 					// Update target pos to be current pos for smooth return calculation if needed
 					targetPos_ = transform_.translate;
-					damage_ += 3;
+					damage_ += 8;
 				}
 			}
 		}
