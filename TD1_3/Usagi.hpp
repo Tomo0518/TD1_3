@@ -259,10 +259,6 @@ public:
 		if (tryThrow) {
 			ThrowBoomerang(throwDir);
 		}
-
-
-
-
 		ClearDeadBoomerangs();
 	}
 
