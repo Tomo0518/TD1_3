@@ -20,7 +20,7 @@ GamePlayScene::GamePlayScene(SceneManager& mgr)
 
 	Initialize();
 
-	particleManager_ = new ParticleManager();
+	particleManager_ = &ParticleManager::GetInstance();
 
 	const float groundY = 0.0f;
 	particleManager_->SetGroundLevel(groundY);
@@ -38,8 +38,6 @@ void GamePlayScene::Initialize() {
 	player_ = nullptr;
 	worldOrigin_ = nullptr;
 
-
-
 	// 背景マネージャー初期化
 	backgroundManager_ = std::make_unique<BackgroundManager>();
 
@@ -56,6 +54,7 @@ void GamePlayScene::Initialize() {
 	// 1. エディタ初期化（タイル定義のロード）
 	mapEditor_.Initialize(&mapManager_);
 #endif
+	ParticleManager::GetInstance().LoadParamsFromJson("./Resources/Data/particle_params.json");
 
 	// 3. マップ描画クラスの初期化
 	mapChip_.Initialize();

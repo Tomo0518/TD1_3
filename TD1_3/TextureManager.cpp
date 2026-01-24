@@ -172,6 +172,12 @@ void TextureManager::LoadResources() {
 		textureResources_[static_cast<int>(TextureId::Particle_Hit)] =
 			Novice::LoadTexture("./Resources/images/effect/star.png");
 
+		textureResources_[static_cast<int>(TextureId::Particle_Enemy_HitSmoke)] =
+			Novice::LoadTexture("./Resources/images/effect/smoke.png");
+
+		textureResources_[static_cast<int>(TextureId::Particle_Enemy_Dead)] =
+			Novice::LoadTexture("./Resources/images/effect/snow.png");
+
 		textureResources_[static_cast<int>(TextureId::Particle_Dust)] =
 			Novice::LoadTexture("./Resources/images/effect/star.png");
 

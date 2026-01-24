@@ -521,6 +521,72 @@ void DebugWindow::DrawParticleDebugWindow(ParticleManager* particleManager, Usag
 							ImGui::TreePop();
 						}
 
+						// ========= エミッター ============
+						ImGui::Text("=== Emitter Settings ===");
+
+						// EmitterShape 選択
+						const char* shapeNames[] = { "Point", "Line", "Rectangle" };
+						int currentShape = static_cast<int>(param->emitterShape);
+						if (ImGui::Combo("Emitter Shape", &currentShape, shapeNames, 3)) {
+							param->emitterShape = static_cast<EmitterShape>(currentShape);
+						}
+
+						ImGui::SameLine();
+						ImGui::TextDisabled("(?)");
+						if (ImGui::IsItemHovered()) {
+							ImGui::BeginTooltip();
+							ImGui::Text("Point: Spawn at a single point with random offset");
+							ImGui::Text("Line: Spawn along a horizontal line");
+							ImGui::Text("Rectangle: Spawn within a rectangular area");
+							ImGui::EndTooltip();
+						}
+
+						// EmitterSize (width, height)
+						ImGui::DragFloat2("Emitter Size", &param->emitterSize.x, 10.0f, 0.0f, 2000.0f);
+						ImGui::SameLine();
+						ImGui::TextDisabled("(?)");
+						if (ImGui::IsItemHovered()) {
+							ImGui::BeginTooltip();
+							ImGui::Text("Width and Height of emitter area");
+							ImGui::Text("Line: Uses only X (width)");
+							ImGui::Text("Rectangle: Uses both X and Y");
+							ImGui::EndTooltip();
+						}
+
+						// EmitRange (Point用のランダムオフセット)
+						ImGui::DragFloat2("Emit Range", &param->emitRange.x, 1.0f, 0.0f, 500.0f);
+						ImGui::SameLine();
+						ImGui::TextDisabled("(?)");
+						if (ImGui::IsItemHovered()) {
+							ImGui::BeginTooltip();
+							ImGui::Text("Random position offset (used for Point emitter)");
+							ImGui::Text("X: Horizontal spread, Y: Vertical spread");
+							ImGui::EndTooltip();
+						}
+
+						// ビジュアルプレビュー（オプション）
+						if (ImGui::TreeNode("Emitter Preview")) {
+							ImGui::Text("Center: (%.0f, %.0f)", 640.0f, 360.0f);
+
+							switch (param->emitterShape) {
+							case EmitterShape::Point:
+								ImGui::BulletText("Single point with ±(%.0f, %.0f) random offset",
+									param->emitRange.x / 2, param->emitRange.y / 2);
+								break;
+							case EmitterShape::Line:
+								ImGui::BulletText("Horizontal line: width = %.0f", param->emitterSize.x);
+								break;
+							case EmitterShape::Rectangle:
+								ImGui::BulletText("Rectangle: %.0f x %.0f",
+									param->emitterSize.x, param->emitterSize.y);
+								break;
+							}
+
+							ImGui::TreePop();
+						}
+
+						ImGui::Separator();
+
 						// ========== 見た目設定 ==========
 						if (ImGui::TreeNode("Appearance")) {
 							ImGui::Text("Start Color:");
@@ -553,8 +619,8 @@ void DebugWindow::DrawParticleDebugWindow(ParticleManager* particleManager, Usag
 
 						// ========== テスト発射 ==========
 						ImGui::Separator();
-						if (ImGui::Button("Emit at Center (640, 360)", ImVec2(200, 30))) {
-							particleManager->Emit(currentEditType, { 640.0f, 360.0f });
+						if (ImGui::Button("Emit at Player", ImVec2(200, 30))) {
+							particleManager->Emit(currentEditType, { player->GetPosition()});
 						}
 
 						if (ImGui::Button("Reset to Default", ImVec2(200, 30))) {

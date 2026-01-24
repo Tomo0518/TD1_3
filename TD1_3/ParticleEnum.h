@@ -26,6 +26,8 @@ enum class ParticleType {
 	Explosion,
 	Debris,
 	Hit,
+	Enemy_HitSmoke,
+	Enemy_Dead,
 	Dust,
 	MuzzleFlash,
 	Rain,       // 雨

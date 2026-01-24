@@ -155,20 +155,6 @@ private:
 
 	float groundLevel_ = 0.0f;  // 地面のY座標
 
-	int texExplosion_ = -1;
-	int texDebris_ = -1;
-	int texHit_ = -1;
-	int texDust_ = -1;
-	int texRain_ = -1;
-	int texSnow_ = -1;
-	int texOrb_ = -1;
-
-	int texGlow_ = -1;
-	int texRing_ = -1;
-	int texSparkle_ = -1;
-	int texScratch_ = -1;
-	int texSmoke_ = -1;
-
 	ParticleType currentDebugType_ = ParticleType::Explosion;
 
 };

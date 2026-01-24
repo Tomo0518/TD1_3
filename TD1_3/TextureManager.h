@@ -91,6 +91,8 @@ enum class TextureId {
 	Particle_Explosion,
 	Particle_Debris,
 	Particle_Hit,
+	Particle_Enemy_HitSmoke,
+	Particle_Enemy_Dead,
 	Particle_Dust,
 	Particle_Rain,
 	Particle_Snow,

@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "PhysicsObject.hpp"
+#include "ParticleManager.h"
 
 enum class EnemyState {
 	Patrolling,
@@ -174,8 +175,10 @@ public:
 		status_.currentHP -= damage;
 		if (status_.currentHP <= 0) {
 			status_.currentHP = 0;
+			ParticleManager::GetInstance().Emit(ParticleType::Enemy_Dead, transform_.translate);
 			Destroy();
 		} else {
+			ParticleManager::GetInstance().Emit(ParticleType::Enemy_HitSmoke, transform_.translate);
 			Stun();
 		}
 	}

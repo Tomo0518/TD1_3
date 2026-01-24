@@ -1,1 +1,665 @@
-{}
+{
+ "Charge": {
+  "acceleration": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "angleBase": 0.0,
+  "angleRange": 360.0,
+  "animSpeed": 0.10000000149011612,
+  "blendMode": "Add",
+  "bounceDamping": 0.30000001192092896,
+  "colorEnd": 16776960,
+  "colorStart": 16777215,
+  "count": 5,
+  "divX": 1,
+  "divY": 1,
+  "emitRange": {
+   "x": 100.0,
+   "y": 100.0
+  },
+  "floatAmplitude": 0.0,
+  "floatFrequency": 1.0,
+  "gravity": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "lifeMax": 40,
+  "lifeMin": 20,
+  "rotationSpeedMax": 0.0,
+  "rotationSpeedMin": 0.0,
+  "scaleEnd": 0.0,
+  "scaleStart": 1.0,
+  "sizeMax": 16.0,
+  "sizeMin": 8.0,
+  "speedMax": 150.0,
+  "speedMin": 50.0,
+  "totalFrames": 1,
+  "useAnimation": false,
+  "windStrength": 0.0
+ },
+ "Debris": {
+  "acceleration": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "angleBase": 0.0,
+  "angleRange": 360.0,
+  "animSpeed": 0.10000000149011612,
+  "blendMode": "Normal",
+  "bounceDamping": 0.30000001192092896,
+  "colorEnd": 4294967040,
+  "colorStart": 4294967295,
+  "count": 8,
+  "divX": 1,
+  "divY": 1,
+  "emitRange": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "floatAmplitude": 0.0,
+  "floatFrequency": 1.0,
+  "gravity": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "lifeMax": 60,
+  "lifeMin": 30,
+  "rotationSpeedMax": 0.0,
+  "rotationSpeedMin": 0.0,
+  "scaleEnd": 0.5,
+  "scaleStart": 1.0,
+  "sizeMax": 32.0,
+  "sizeMin": 16.0,
+  "speedMax": 100.0,
+  "speedMin": 50.0,
+  "totalFrames": 1,
+  "useAnimation": false,
+  "windStrength": 0.0
+ },
+ "DigitalSpark": {
+  "acceleration": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "angleBase": 0.0,
+  "angleRange": 360.0,
+  "animSpeed": 0.10000000149011612,
+  "blendMode": "Add",
+  "bounceDamping": 0.30000001192092896,
+  "colorEnd": 4294967040,
+  "colorStart": 4294967295,
+  "count": 5,
+  "divX": 1,
+  "divY": 1,
+  "emitRange": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "floatAmplitude": 0.0,
+  "floatFrequency": 1.0,
+  "gravity": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "lifeMax": 40,
+  "lifeMin": 20,
+  "rotationSpeedMax": 0.0,
+  "rotationSpeedMin": 0.0,
+  "scaleEnd": 0.0,
+  "scaleStart": 1.0,
+  "sizeMax": 32.0,
+  "sizeMin": 16.0,
+  "speedMax": 150.0,
+  "speedMin": 50.0,
+  "totalFrames": 1,
+  "useAnimation": false,
+  "windStrength": 0.0
+ },
+ "Dust": {
+  "acceleration": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "angleBase": 0.0,
+  "angleRange": 360.0,
+  "animSpeed": 0.10000000149011612,
+  "blendMode": "Normal",
+  "bounceDamping": 0.30000001192092896,
+  "colorEnd": 4294967040,
+  "colorStart": 4294967295,
+  "count": 8,
+  "divX": 1,
+  "divY": 1,
+  "emitRange": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "floatAmplitude": 0.0,
+  "floatFrequency": 1.0,
+  "gravity": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "lifeMax": 60,
+  "lifeMin": 30,
+  "rotationSpeedMax": 0.0,
+  "rotationSpeedMin": 0.0,
+  "scaleEnd": 0.5,
+  "scaleStart": 1.0,
+  "sizeMax": 32.0,
+  "sizeMin": 16.0,
+  "speedMax": 100.0,
+  "speedMin": 50.0,
+  "totalFrames": 1,
+  "useAnimation": false,
+  "windStrength": 0.0
+ },
+ "Enemy_Dead": {
+  "acceleration": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "angleBase": 0.0,
+  "angleRange": 360.0,
+  "animSpeed": 0.10000000149011612,
+  "blendMode": "Normal",
+  "bounceDamping": 0.30000001192092896,
+  "colorEnd": 4294967040,
+  "colorStart": 4291151232,
+  "count": 9,
+  "divX": 1,
+  "divY": 1,
+  "emitRange": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "floatAmplitude": 0.0,
+  "floatFrequency": 1.0,
+  "gravity": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "lifeMax": 97,
+  "lifeMin": 65,
+  "rotationSpeedMax": 0.0,
+  "rotationSpeedMin": 0.0,
+  "scaleEnd": 0.30000001192092896,
+  "scaleStart": 1.0,
+  "sizeMax": 116.45600128173828,
+  "sizeMin": 62.465999603271484,
+  "speedMax": 237.78500366210938,
+  "speedMin": 84.69100189208984,
+  "totalFrames": 1,
+  "useAnimation": false,
+  "windStrength": 0.0
+ },
+ "Enemy_HitSmoke": {
+  "acceleration": {
+   "x": 0.0,
+   "y": 370.0
+  },
+  "angleBase": 0.0,
+  "angleRange": 360.0,
+  "animSpeed": 0.10000000149011612,
+  "blendMode": "Add",
+  "bounceDamping": 0.30000001192092896,
+  "colorEnd": 4294967040,
+  "colorStart": 4294967295,
+  "count": 10,
+  "divX": 1,
+  "divY": 1,
+  "emitRange": {
+   "x": 116.0,
+   "y": 124.0
+  },
+  "floatAmplitude": 0.0,
+  "floatFrequency": 1.0,
+  "gravity": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "lifeMax": 60,
+  "lifeMin": 30,
+  "rotationSpeedMax": 0.0,
+  "rotationSpeedMin": 0.0,
+  "scaleEnd": 0.30000001192092896,
+  "scaleStart": 1.0,
+  "sizeMax": 49.17599868774414,
+  "sizeMin": 33.39400100708008,
+  "speedMax": 100.97699737548828,
+  "speedMin": 54.39699935913086,
+  "totalFrames": 1,
+  "useAnimation": false,
+  "windStrength": 0.0
+ },
+ "Explosion": {
+  "acceleration": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "angleBase": 0.0,
+  "angleRange": 360.0,
+  "animSpeed": 0.05000000074505806,
+  "blendMode": "Add",
+  "bounceDamping": 0.30000001192092896,
+  "colorEnd": 4294967040,
+  "colorStart": 4294967295,
+  "count": 1,
+  "divX": 4,
+  "divY": 1,
+  "emitRange": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "floatAmplitude": 0.0,
+  "floatFrequency": 1.0,
+  "gravity": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "lifeMax": 40,
+  "lifeMin": 40,
+  "rotationSpeedMax": 0.0,
+  "rotationSpeedMin": 0.0,
+  "scaleEnd": 0.30000001192092896,
+  "scaleStart": 1.0,
+  "sizeMax": 64.0,
+  "sizeMin": 64.0,
+  "speedMax": 0.0,
+  "speedMin": 0.0,
+  "totalFrames": 4,
+  "useAnimation": true,
+  "windStrength": 0.0
+ },
+ "Glow": {
+  "acceleration": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "angleBase": 0.0,
+  "angleRange": 360.0,
+  "animSpeed": 0.10000000149011612,
+  "blendMode": "Add",
+  "bounceDamping": 0.30000001192092896,
+  "colorEnd": 4294967040,
+  "colorStart": 4294967295,
+  "count": 5,
+  "divX": 1,
+  "divY": 1,
+  "emitRange": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "floatAmplitude": 0.0,
+  "floatFrequency": 1.0,
+  "gravity": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "lifeMax": 40,
+  "lifeMin": 20,
+  "rotationSpeedMax": 0.0,
+  "rotationSpeedMin": 0.0,
+  "scaleEnd": 0.0,
+  "scaleStart": 1.0,
+  "sizeMax": 32.0,
+  "sizeMin": 16.0,
+  "speedMax": 150.0,
+  "speedMin": 50.0,
+  "totalFrames": 1,
+  "useAnimation": false,
+  "windStrength": 0.0
+ },
+ "Hit": {
+  "acceleration": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "angleBase": 0.0,
+  "angleRange": 360.0,
+  "animSpeed": 0.10000000149011612,
+  "blendMode": "Add",
+  "bounceDamping": 0.30000001192092896,
+  "colorEnd": 4294967040,
+  "colorStart": 4294967295,
+  "count": 10,
+  "divX": 1,
+  "divY": 1,
+  "emitRange": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "floatAmplitude": 0.0,
+  "floatFrequency": 1.0,
+  "gravity": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "lifeMax": 60,
+  "lifeMin": 30,
+  "rotationSpeedMax": 0.0,
+  "rotationSpeedMin": 0.0,
+  "scaleEnd": 0.30000001192092896,
+  "scaleStart": 1.0,
+  "sizeMax": 32.0,
+  "sizeMin": 16.0,
+  "speedMax": 300.0,
+  "speedMin": 100.0,
+  "totalFrames": 1,
+  "useAnimation": false,
+  "windStrength": 0.0
+ },
+ "MuzzleFlash": {
+  "acceleration": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "angleBase": 0.0,
+  "angleRange": 360.0,
+  "animSpeed": 0.10000000149011612,
+  "blendMode": "Add",
+  "bounceDamping": 0.30000001192092896,
+  "colorEnd": 4294967040,
+  "colorStart": 4294967295,
+  "count": 10,
+  "divX": 1,
+  "divY": 1,
+  "emitRange": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "floatAmplitude": 0.0,
+  "floatFrequency": 1.0,
+  "gravity": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "lifeMax": 60,
+  "lifeMin": 30,
+  "rotationSpeedMax": 0.0,
+  "rotationSpeedMin": 0.0,
+  "scaleEnd": 0.30000001192092896,
+  "scaleStart": 1.0,
+  "sizeMax": 32.0,
+  "sizeMin": 16.0,
+  "speedMax": 300.0,
+  "speedMin": 100.0,
+  "totalFrames": 1,
+  "useAnimation": false,
+  "windStrength": 0.0
+ },
+ "Orb": {
+  "acceleration": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "angleBase": 0.0,
+  "angleRange": 360.0,
+  "animSpeed": 0.10000000149011612,
+  "blendMode": "Normal",
+  "bounceDamping": 0.30000001192092896,
+  "colorEnd": 4294936704,
+  "colorStart": 4294936831,
+  "count": 5,
+  "divX": 1,
+  "divY": 1,
+  "emitRange": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "floatAmplitude": 30.0,
+  "floatFrequency": 1.0,
+  "gravity": {
+   "x": 0.0,
+   "y": -100.0
+  },
+  "lifeMax": 360,
+  "lifeMin": 300,
+  "rotationSpeedMax": 0.0,
+  "rotationSpeedMin": 0.0,
+  "scaleEnd": 1.0,
+  "scaleStart": 1.0,
+  "sizeMax": 24.0,
+  "sizeMin": 12.0,
+  "speedMax": 0.0,
+  "speedMin": 0.0,
+  "totalFrames": 1,
+  "useAnimation": false,
+  "windStrength": 0.0
+ },
+ "Rain": {
+  "acceleration": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "angleBase": 0.0,
+  "angleRange": 360.0,
+  "animSpeed": 0.10000000149011612,
+  "blendMode": "Normal",
+  "bounceDamping": 0.30000001192092896,
+  "colorEnd": 2863333120,
+  "colorStart": 2863333375,
+  "count": 30,
+  "divX": 1,
+  "divY": 1,
+  "emitRange": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "floatAmplitude": 0.0,
+  "floatFrequency": 1.0,
+  "gravity": {
+   "x": 0.0,
+   "y": -800.0
+  },
+  "lifeMax": 180,
+  "lifeMin": 120,
+  "rotationSpeedMax": 0.0,
+  "rotationSpeedMin": 0.0,
+  "scaleEnd": 1.0,
+  "scaleStart": 1.0,
+  "sizeMax": 4.0,
+  "sizeMin": 2.0,
+  "speedMax": 0.0,
+  "speedMin": 0.0,
+  "totalFrames": 1,
+  "useAnimation": false,
+  "windStrength": 0.0
+ },
+ "Shockwave": {
+  "acceleration": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "angleBase": 0.0,
+  "angleRange": 360.0,
+  "animSpeed": 0.10000000149011612,
+  "blendMode": "Add",
+  "bounceDamping": 0.30000001192092896,
+  "colorEnd": 4294967040,
+  "colorStart": 4294967295,
+  "count": 7,
+  "divX": 1,
+  "divY": 1,
+  "emitRange": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "floatAmplitude": 0.0,
+  "floatFrequency": 1.0,
+  "gravity": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "lifeMax": 48,
+  "lifeMin": 20,
+  "rotationSpeedMax": 0.0,
+  "rotationSpeedMin": 0.0,
+  "scaleEnd": 0.26100000739097595,
+  "scaleStart": 0.6349999904632568,
+  "sizeMax": 102.33599853515625,
+  "sizeMin": 72.43399810791016,
+  "speedMax": 195.44000244140625,
+  "speedMin": 123.77899932861328,
+  "totalFrames": 1,
+  "useAnimation": false,
+  "windStrength": 0.0
+ },
+ "Slash": {
+  "acceleration": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "angleBase": 0.0,
+  "angleRange": 360.0,
+  "animSpeed": 0.10000000149011612,
+  "blendMode": "Add",
+  "bounceDamping": 0.30000001192092896,
+  "colorEnd": 4294967040,
+  "colorStart": 4294967295,
+  "count": 5,
+  "divX": 1,
+  "divY": 1,
+  "emitRange": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "floatAmplitude": 0.0,
+  "floatFrequency": 1.0,
+  "gravity": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "lifeMax": 40,
+  "lifeMin": 20,
+  "rotationSpeedMax": 0.0,
+  "rotationSpeedMin": 0.0,
+  "scaleEnd": 0.0,
+  "scaleStart": 1.0,
+  "sizeMax": 32.0,
+  "sizeMin": 16.0,
+  "speedMax": 150.0,
+  "speedMin": 50.0,
+  "totalFrames": 1,
+  "useAnimation": false,
+  "windStrength": 0.0
+ },
+ "SmokeCloud": {
+  "acceleration": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "angleBase": 0.0,
+  "angleRange": 360.0,
+  "animSpeed": 0.10000000149011612,
+  "blendMode": "Add",
+  "bounceDamping": 0.30000001192092896,
+  "colorEnd": 4294967040,
+  "colorStart": 4294967295,
+  "count": 5,
+  "divX": 1,
+  "divY": 1,
+  "emitRange": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "floatAmplitude": 0.0,
+  "floatFrequency": 1.0,
+  "gravity": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "lifeMax": 40,
+  "lifeMin": 20,
+  "rotationSpeedMax": 0.0,
+  "rotationSpeedMin": 0.0,
+  "scaleEnd": 0.0,
+  "scaleStart": 1.0,
+  "sizeMax": 32.0,
+  "sizeMin": 16.0,
+  "speedMax": 150.0,
+  "speedMin": 50.0,
+  "totalFrames": 1,
+  "useAnimation": false,
+  "windStrength": 0.0
+ },
+ "Snow": {
+  "acceleration": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "angleBase": 0.0,
+  "angleRange": 360.0,
+  "animSpeed": 0.10000000149011612,
+  "blendMode": "Normal",
+  "bounceDamping": 0.30000001192092896,
+  "colorEnd": 4294967295,
+  "colorStart": 4294967295,
+  "count": 30,
+  "divX": 1,
+  "divY": 1,
+  "emitRange": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "floatAmplitude": 0.0,
+  "floatFrequency": 1.0,
+  "gravity": {
+   "x": 0.0,
+   "y": -50.0
+  },
+  "lifeMax": 180,
+  "lifeMin": 120,
+  "rotationSpeedMax": 0.019999999552965164,
+  "rotationSpeedMin": -0.019999999552965164,
+  "scaleEnd": 1.0,
+  "scaleStart": 1.0,
+  "sizeMax": 8.0,
+  "sizeMin": 4.0,
+  "speedMax": 0.0,
+  "speedMin": 0.0,
+  "totalFrames": 1,
+  "useAnimation": false,
+  "windStrength": 30.0
+ },
+ "Sparkle": {
+  "acceleration": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "angleBase": 0.0,
+  "angleRange": 360.0,
+  "animSpeed": 0.10000000149011612,
+  "blendMode": "Add",
+  "bounceDamping": 0.30000001192092896,
+  "colorEnd": 4294967040,
+  "colorStart": 4294967295,
+  "count": 5,
+  "divX": 1,
+  "divY": 1,
+  "emitRange": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "floatAmplitude": 0.0,
+  "floatFrequency": 1.0,
+  "gravity": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "lifeMax": 40,
+  "lifeMin": 20,
+  "rotationSpeedMax": 0.0,
+  "rotationSpeedMin": 0.0,
+  "scaleEnd": 0.0,
+  "scaleStart": 1.0,
+  "sizeMax": 32.0,
+  "sizeMin": 16.0,
+  "speedMax": 150.0,
+  "speedMin": 50.0,
+  "totalFrames": 1,
+  "useAnimation": false,
+  "windStrength": 0.0
+ }
+}

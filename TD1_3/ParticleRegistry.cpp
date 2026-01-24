@@ -25,6 +25,22 @@ void ParticleRegistry::Initialize() {
 		});
 
 	particleTypes_.push_back({
+		ParticleType::Enemy_HitSmoke,
+		"Enemy_HitSmoke",
+		"Combat",
+		TextureId::Particle_Enemy_HitSmoke,
+		0xB01717FF
+		});
+
+	particleTypes_.push_back({
+		ParticleType::Enemy_Dead,
+		"Enemy_Dead",
+		"Combat",
+		TextureId::Particle_Enemy_HitSmoke,
+		0xB01717FF
+		});
+
+	particleTypes_.push_back({
 		ParticleType::MuzzleFlash,
 		"MuzzleFlash",
 		"Combat",
