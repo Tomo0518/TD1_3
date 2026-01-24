@@ -23,6 +23,8 @@ private:
 
 	std::vector<Boomerang*> boomerangs_;
 	int starCount_ = 0;
+	bool isCharging_ = false;
+	float chargeTimer_ = 0;
 
 	bool isflipX_ = false;
 	float jumpForce_ = 21.f;
@@ -152,7 +154,7 @@ public:
 
 		inputDir = Vector2::Normalize(inputDir);
 
-		if (Input().TriggerKey(DIK_LSHIFT)) {
+		if (Input().TriggerKey(DIK_K)) {
 			if (dashCooldownTimer_ <= 0.f) {
 				Vector2 dashDir = { 0.f, 0.f };
 				if (Vector2::Length(inputDir) == 0.f) {
@@ -186,7 +188,11 @@ public:
 			}
 		}
 
-		if (dashDurationTimer_ <= 0.f) {
+		if (isCharging_) {
+			isGravityEnabled_ = false;
+		}
+
+		if (dashDurationTimer_ <= 0.f && !isCharging_) {
 			isGravityEnabled_ = true;
 			rigidbody_.deceleration = { 0.7f, 0.7f };
 			rigidbody_.maxSpeedX = walkSpeed_;
@@ -240,10 +246,25 @@ public:
 		bool tryThrow = false;
 		Vector2 throwDir = { 0, 0 };
 
-		if (Input().TriggerKey(DIK_UP)) { throwDir = { 0, 1 }; tryThrow = true; }
-		else if (Input().TriggerKey(DIK_DOWN)) { throwDir = { 0, -1 }; tryThrow = true; }
-		else if (Input().TriggerKey(DIK_LEFT)) { throwDir = { -1, 0 }; tryThrow = true; }
-		else if (Input().TriggerKey(DIK_RIGHT)) { throwDir = { 1, 0 }; tryThrow = true; }
+		if (/*Input().PressKey(DIK_UP) || Input().PressKey(DIK_DOWN) || Input().PressKey(DIK_LEFT) || Input().PressKey(DIK_RIGHT)*/
+			Input().PressKey(DIK_J)			
+			) {
+			isCharging_ = true;
+			chargeTimer_ = std::min(chargeTimer_ + deltaTime, 120.f);
+			if (chargeTimer_ == 120.f) {
+				ParticleManager::GetInstance().Emit(ParticleType::Hit, transform_.translate);
+			}
+		}
+
+		if (Input().ReleaseKey(DIK_J)) {
+			tryThrow = true;
+			throwDir = {!isflipX_?1.f:-1.f, 0};
+		}
+
+		/*if (Input().ReleaseKey(DIK_UP)) { throwDir = { 0, 1 }; tryThrow = true; }
+		else if (Input().ReleaseKey(DIK_DOWN)) { throwDir = { 0, -1 }; tryThrow = true; }
+		else if (Input().ReleaseKey(DIK_LEFT)) { throwDir = { -1, 0 }; tryThrow = true; }
+		else if (Input().ReleaseKey(DIK_RIGHT)) { throwDir = { 1, 0 }; tryThrow = true; }*/
 
 
 		for (auto boom : boomerangs_) {
@@ -257,6 +278,7 @@ public:
 
 
 		if (tryThrow) {
+			isCharging_ = false;
 			ThrowBoomerang(throwDir);
 		}
 		ClearDeadBoomerangs();
@@ -280,7 +302,7 @@ public:
 			Novice::ConsolePrintf("try spawn1\n");
 			if (manager_) {
 				Novice::ConsolePrintf("try spawn2\n");
-				auto* enemy = manager_->Spawn<Enemy>(nullptr, "Enemy");
+				auto* enemy = manager_->Spawn<AttackEnemy>(nullptr, "Enemy");
 				enemy->SetPosition({ transform_.translate.x, transform_.translate.y + 50.f });
 				enemy->Initialize();
 			}
@@ -289,7 +311,11 @@ public:
 
 	virtual void UpdateDrawComponent(float deltaTime) override {
 		if (drawComp_) {
+			float shakeX = (rand() % 100 / 100.0f - 0.5f) * 2.0f * chargeTimer_/4.f;
+			float shakeY = (rand() % 100 / 100.0f - 0.5f) * 2.0f * chargeTimer_/4.f;
+			Vector2 shakeOffset = { shakeX, shakeY };
 			drawComp_->SetTransform(transform_);
+			drawComp_->SetPosition(transform_.translate + shakeOffset);
 			drawComp_->Update(deltaTime);
 		}
 		if (BoomerangDrawComp_) {
@@ -443,7 +469,8 @@ public:
 			}
 
 			if (b) {
-				b->Throw(throwDir, starCount_);
+				b->Throw(throwDir, starCount_, chargeTimer_);
+				chargeTimer_ = 0;
 				if (Input().PressKey(DIK_DOWN)) {
 					rigidbody_.acceleration.y = 0;
 					rigidbody_.velocity.y = 0;

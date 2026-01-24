@@ -30,6 +30,18 @@ void TextureManager::LoadResources() {
 	textureResources_[static_cast<int>(TextureId::ResultClearLabel)] =
 		Novice::LoadTexture("./Resources/images/result/clear.png");
 
+	// ===========================================
+	// tutorial image
+	// ===========================================
+	textureResources_[static_cast<int>(TextureId::JumpTutorial)] =
+		Novice::LoadTexture("./Resources/images/tutorial/jumpTutorial.png");
+	textureResources_[static_cast<int>(TextureId::DashTutorial)] =
+		Novice::LoadTexture("./Resources/images/tutorial/dashTutorial.png");
+	textureResources_[static_cast<int>(TextureId::ThrowTutorial)] =
+		Novice::LoadTexture("./Resources/images/tutorial/throwTutorial.png");
+	textureResources_[static_cast<int>(TextureId::BoomerangTutorial)] =
+		Novice::LoadTexture("./Resources/images/tutorial/boomerangTutorial.png");
+
 	// ==========================================
 	// enemy
 	// ==========================================

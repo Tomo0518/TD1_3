@@ -15,6 +15,14 @@ enum class TextureId {
 	ResultClearLabel,
 	PlayerAnimeNormal,
 	// =========================================
+	// tutorial image
+	// =========================================
+	JumpTutorial,
+	DashTutorial,
+	ThrowTutorial,
+	BoomerangTutorial,
+
+	// =========================================
 	// enemy
 	// =========================================
 	KinokoWalk,

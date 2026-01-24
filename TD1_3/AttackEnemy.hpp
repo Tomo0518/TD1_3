@@ -432,12 +432,16 @@ public:
 		status_.currentHP -= damage;
 		if (status_.currentHP <= 0) {
 			status_.currentHP = 0;
+			ParticleManager::GetInstance().Emit(ParticleType::Hit, transform_.translate);
+			ParticleManager::GetInstance().Emit(ParticleType::Enemy_Dead, transform_.translate);
 			Destroy();
 		}
 		else {
 			if (damage > 0) {
 				isDamaged_ = true;
 				damagedShakeTimer_ = 0.0f;
+
+				ParticleManager::GetInstance().Emit(ParticleType::Hit, transform_.translate);
 			}
 			
 

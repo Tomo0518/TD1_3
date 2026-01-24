@@ -13,6 +13,7 @@ private:
 	float damagedShakingDuration_ = 20.0f; // ダメージ時の揺れ時間
 	float damagedShakeTimer_ = 0.0f; // ダメージ時の揺れタイマー
 	float damagedShakeMagnitude_ = 4.5f; // ダメージ時の揺れの大きさ
+
 	Vector2 damagedShakeOffset_ = { 0.0f, 0.0f };
 	bool isDamaged_ = false;
 	bool isHitBoomerang_ = false;
@@ -75,7 +76,9 @@ public:
 	void Update(float deltaTime) override {
 		Behavior(deltaTime);
 		damageHandling(deltaTime);
+		Move(deltaTime);
 		UpdateDrawComponent(deltaTime);
+
 	}
 
 	virtual void UpdateDrawComponent(float deltaTime) override {
@@ -154,10 +157,7 @@ public:
 			direction_ = -1; // Change direction to left
 		}
 
-		Move(deltaTime);
-
-		// Update world matrix
-		transform_.CalculateWorldMatrix();
+		
 	}
 
 	void Draw(const Camera2D& camera) override {
@@ -211,10 +211,18 @@ public:
 		status_.currentHP -= damage;
 		if (status_.currentHP <= 0) {
 			status_.currentHP = 0;
+			ParticleManager::GetInstance().Emit(ParticleType::Hit, transform_.translate);
 			ParticleManager::GetInstance().Emit(ParticleType::Enemy_Dead, transform_.translate);
 			Destroy();
-		} else {
-			ParticleManager::GetInstance().Emit(ParticleType::Enemy_HitSmoke, transform_.translate);
+		}
+		else {
+			if (damage > 0) {
+				isDamaged_ = true;
+				damagedShakeTimer_ = 0.0f;
+
+				ParticleManager::GetInstance().Emit(ParticleType::Hit, transform_.translate);
+			}
+
 			Stun();
 		}
 	}

@@ -26,6 +26,12 @@ enum TileID{
 	Deco_Grass = 10,
 	Deco_Sign = 11,
 
+	// Tutorial Images
+	JumpTutorial = 50,
+	DashTutorial = 51,
+	ThrowTutorial = 52,
+	BoomerangTutorial = 53,
+
 	//PlayerStart = 100,
 
 	Deco_RockBlock = 200,
@@ -145,6 +151,42 @@ public:
 			{ false, 1, 1, 1, 0.0f } // アニメーションなし
 			});
 
+
+		// **************************************
+		// tutorial image (decoration)
+
+		tiles_.push_back({
+			TileID::JumpTutorial, "JumpTutorial", TextureId::JumpTutorial, TileType::Solid, false,
+			TileLayer::Decoration, {0.0f, 0.0f},
+			RenderMode::Component,
+			{ false, 1, 1, 1, 0.0f } // アニメーションなし
+			});
+
+		tiles_.push_back({
+			TileID::DashTutorial, "DashTutorial", TextureId::DashTutorial, TileType::Solid, false,
+			TileLayer::Decoration, {0.0f, 0.0f},
+			RenderMode::Component,
+			{ false, 1, 1, 1, 0.0f } // アニメーションなし
+			});
+
+		tiles_.push_back({
+			TileID::ThrowTutorial, "ThrowTutorial", TextureId::ThrowTutorial, TileType::Solid, false,
+			TileLayer::Decoration, {0.0f, 0.0f},
+			RenderMode::Component,
+			{ false, 1, 1, 1, 0.0f } // アニメーションなし
+			});
+
+		tiles_.push_back({
+			TileID::BoomerangTutorial, "BoomerangTutorial", TextureId::BoomerangTutorial, TileType::Solid, false,
+			TileLayer::Decoration, {0.0f, 0.0f},
+			RenderMode::Component,
+			{ false, 1, 1, 1, 0.0f } // アニメーションなし
+			});
+
+
+
+		// **************************************
+		
 		// --- Object Layer (配置物) ---
 		// ID:100 プレイヤースタート位置
 		tiles_.push_back({

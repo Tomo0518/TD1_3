@@ -8,7 +8,7 @@ class KinokoSpawner : public PhysicsObject {
 private:
 	float spawnInterval_ = 300.0f; // スポーン間隔（フレーム数）
 	float timer_ = 0.0f;
-	int maxSpawned_ = 2; // 最大同時スポーン数
+	int maxSpawned_ = 1; // 最大同時スポーン数
 	std::vector<Enemy*> spawnedEnemies_;
 public:
 	KinokoSpawner() {
@@ -65,7 +65,7 @@ class AttackKinokoSpawner : public PhysicsObject {
 private:
 	float spawnInterval_ = 300.0f; // スポーン間隔（フレーム数）
 	float timer_ = 0.0f;
-	int maxSpawned_ = 2; // 最大同時スポーン数
+	int maxSpawned_ = 1; // 最大同時スポーン数
 	std::vector<AttackEnemy*> spawnedEnemies_;
 public:
 	AttackKinokoSpawner() {

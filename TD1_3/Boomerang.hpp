@@ -29,6 +29,7 @@ private:
 	int damageBonus_ = 0;
 	float delayPerStar = 18;
 	float range_ = 360.0f;
+	float activeRange_ = range_;
 	Vector2 RenderPos_;
 
 	int starCount_;
@@ -76,7 +77,7 @@ public:
 	}
 
 
-	void Throw(Vector2 direction, int Star = 0) {
+	void Throw(Vector2 direction, int Star = 0, float Charge = 0) {
 		if (state_ != BoomerangState::Idle) return;
 		starCount_ = Star;
 		starRetrieved_ = false;
@@ -95,8 +96,8 @@ public:
 		maxTime_ = 30.f; // Half second to go out
 		hitEnemies_.clear(); // Reset hit history
 		stayTimer_ = 0.0f; // Reset stay timer
-		float range = range_;
-
+		activeRange_ = std::min(range_ + Charge * 2.f, 600.f);
+		float range = activeRange_;
 
 		// Determine if horizontal or vertical throw
 		if (abs(direction.x) > abs(direction.y)) {
@@ -197,6 +198,7 @@ public:
 				moveTimer_ += deltaTime;
 
 				if (moveTimer_ >= maxTime_) hitEnemies_.clear();
+				if (moveTimer_ >= maxTime_ / 2.f) collider_.canCollide = false;
 
 				float t = moveTimer_ / maxTime_;
 				if (t > 1.0f) t = 1.0f;
@@ -232,7 +234,7 @@ public:
 
 					float distanceFormOwner = Vector2::Length(transform_.translate - ownerPos);
 					//closer the distance bigger damage bonus
-					damageBonus_ = int((range_ - distanceFormOwner) / 50.f);
+					damageBonus_ = int((activeRange_*1.2f - distanceFormOwner) / 50.f);
 
 					if (int(stayTimer_) % int(delayPerStar) == 0) AddDamageFromStar();
 					if (stayTimer_ >= maxStayTime_) hitEnemies_.clear();
@@ -249,6 +251,7 @@ public:
 				}
 				else {
 					state_ = BoomerangState::Returning;
+					collider_.canCollide = true;
 					moveTimer_ = 0;
 					stayTimer_ = 0;
 					// Update target pos to be current pos for smooth return calculation if needed
