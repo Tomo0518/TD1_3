@@ -20,6 +20,13 @@ enum class TextureId {
 	KinokoWalk,
 	KinokoStun,
 
+	AttackKinokoWalk,
+	AttackKinokoStun,
+	AttackKinokoAttack,
+	AttackKinokoWindup,
+	AttackKinokoBattleIdle,
+	AttackKinokoRun,
+
 	// =========================================
 	// item
 	// =========================================

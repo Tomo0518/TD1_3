@@ -157,6 +157,22 @@ void GamePlayScene::SpawnObjectFromData(const ObjectSpawnInfo& spawn) {
 			spawn.position.x, spawn.position.y);
 		break;
 	}
+	case 103: { // AttackEnemy
+		auto* enemy = objectManager_.Spawn<AttackEnemy>(nullptr, "Enemy");
+		enemy->SetPosition(spawn.position);
+		enemy->Initialize();
+		Novice::ConsolePrintf("[GamePlayScene] Spawned AttackEnemy at (%.1f, %.1f)\n",
+			spawn.position.x, spawn.position.y);
+		break;
+	}
+	case 104: { // AttackEnemySpawner
+		auto* spawner = objectManager_.Spawn<AttackKinokoSpawner>(nullptr, "KinokoSpawner");
+		spawner->SetPosition(spawn.position);
+		spawner->Initialize();
+		Novice::ConsolePrintf("[GamePlayScene] Spawned AttackEnemySpawner at (%.1f, %.1f)\n",
+			spawn.position.x, spawn.position.y);
+		break;
+	}
 
 	default:
 		Novice::ConsolePrintf("[GamePlayScene] Unknown object type: %d\n", spawn.objectTypeId);

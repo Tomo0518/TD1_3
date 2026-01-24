@@ -8,6 +8,14 @@ enum class EnemyState {
 
 class Enemy : public PhysicsObject {
 private:
+	// damaged handling
+	float damagedShakingDuration_ = 20.0f; // ダメージ時の揺れ時間
+	float damagedShakeTimer_ = 0.0f; // ダメージ時の揺れタイマー
+	float damagedShakeMagnitude_ = 4.5f; // ダメージ時の揺れの大きさ
+	Vector2 damagedShakeOffset_ = { 0.0f, 0.0f };
+	bool isDamaged_ = false;
+	bool isHitBoomerang_ = false;
+
 	float patrolRange_ = 200.0f; // パトロール範囲
 	Vector2 initialPosition_;    // 初期位置
 	int direction_ = 1;         // 移動方向（1: 右, -1: 左）
@@ -28,6 +36,25 @@ public:
 		if (drawComp_ != PatrolComp_) delete PatrolComp_;
 
 	}
+
+	void damageHandling(float deltaTime) {
+		if (isDamaged_) {
+			damagedShakeTimer_ += deltaTime;
+			if (damagedShakeTimer_ >= damagedShakingDuration_) {
+				isDamaged_ = false;
+				isHitBoomerang_ = false;
+				damagedShakeTimer_ = 0.0f;
+				damagedShakeOffset_ = { 0.0f, 0.0f };
+			}
+			else {
+				// Apply shaking effect
+				float shakeX = (rand() % 100 / 100.0f - 0.5f) * 2.0f * damagedShakeMagnitude_;
+				float shakeY = (rand() % 100 / 100.0f - 0.5f) * 2.0f * damagedShakeMagnitude_;
+				damagedShakeOffset_ = { shakeX, shakeY };
+			}
+		}
+	}
+
 	void Initialize() override {
 		rigidbody_.Initialize();
 		rigidbody_.deceleration = { 0.7f, 0.7f };
@@ -40,13 +67,22 @@ public:
 		drawComp_ = PatrolComp_;
 		drawComp_->Initialize();
 		initialPosition_ = transform_.translate;
-		status_.maxHP = 15;
+		status_.maxHP = 8;
 		status_.currentHP = status_.maxHP;
 	}
 
 	void Update(float deltaTime) override {
-		Behavior(deltaTime);	
+		Behavior(deltaTime);
+		damageHandling(deltaTime);
 		UpdateDrawComponent(deltaTime);
+	}
+
+	virtual void UpdateDrawComponent(float deltaTime) override {
+		if (drawComp_) {
+			drawComp_->SetTransform(transform_);
+			drawComp_->SetPosition(transform_.translate + damagedShakeOffset_);
+			drawComp_->Update(deltaTime);
+		}
 	}
 
 	void Behavior(float deltaTime) {
@@ -62,7 +98,7 @@ public:
 			Patrol(deltaTime);
 		}
 
-		
+
 	}
 
 	void Stun() {
@@ -70,7 +106,7 @@ public:
 		stunTimer_ = stunDuration_;
 		if (drawComp_ != StunnedComp_) {
 			drawComp_ = StunnedComp_;
-			drawComp_->PlayAnimation();	
+			drawComp_->PlayAnimation();
 			drawComp_->SetTransform(transform_);
 		}
 	}
@@ -175,14 +211,34 @@ public:
 		if (status_.currentHP <= 0) {
 			status_.currentHP = 0;
 			Destroy();
-		} else {
+		}
+		else {
+			if (damage > 0) {
+				isDamaged_ = true;
+				damagedShakeTimer_ = 0.0f;
+			}
+			
+
 			Stun();
 		}
 	}
 
 	virtual int OnCollision(GameObject2D* other) override {
 		if (other->GetInfo().tag == "Boomerang") {
-			direction_ = (transform_.translate.x > other->GetTransform().translate.x) ? -1 : 1;
+			if (!isHitBoomerang_) {
+				direction_ = (transform_.translate.x > other->GetTransform().translate.x) ? -1 : 1;
+				isHitBoomerang_ = true;
+			}
+		}
+		if (other->GetInfo().tag == "Enemy") {
+			// knockback on collision with other enemies
+			Vector2 knockbackDir = Vector2::Subtract(transform_.translate, other->GetTransform().translate);
+			knockbackDir = Vector2::Normalize(knockbackDir);
+			rigidbody_.acceleration.x += knockbackDir.x * 7.5f;
+
+			// reverse direction
+			direction_ *= -1;
+
 		}
 		return 0;
 	}

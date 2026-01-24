@@ -24,12 +24,15 @@ private:
 	bool isHorizontal_;
 	std::vector<int> hitEnemies_; // Track hit enemy IDs
 	bool isTemporary_;
-	int starCount_;
+	
 	int damage_;
 	int damageBonus_ = 0;
 	float delayPerStar = 18;
-	float range_ = 560.0f;
+	float range_ = 360.0f;
 	Vector2 RenderPos_;
+
+	int starCount_;
+	bool starRetrieved_ = false;
 
 	DrawComponent2D* starComp_ = nullptr;
 	DrawComponent2D* effectComp_ = nullptr;
@@ -61,11 +64,23 @@ public:
 		delete effectComp_;
 	}
 
+	bool isStarRetrieved() const {
+		return starRetrieved_;
+	}
+
+	int retrieveStarCount() {
+		starRetrieved_ = true;
+		int temp = starCount_;
+		starCount_ = 0;
+		return temp;
+	}
+
 
 	void Throw(Vector2 direction, int Star = 0) {
 		if (state_ != BoomerangState::Idle) return;
 		starCount_ = Star;
-		
+		starRetrieved_ = false;
+
 		maxStayTime_ = defaultMaxStayTime_ + starCount_ * delayPerStar; // Each star adds 2 seconds
 
 		damage_ = 0;
@@ -374,12 +389,7 @@ public:
 			hitEnemies_.push_back(enemyId);
 			other->OnDamaged(damage_ + damageBonus_);
 			Novice::ConsolePrintf("Boomerang hit Enemy ID %d for %d damage(%d + %d).\n", enemyId, damage_ + damageBonus_, damage_, damageBonus_);
-			//other->Destroy();
-
-			Star* star = manager_->Spawn<Star>(this, "Star");
-
-			star->SetPosition(transform_.translate);
-			star->SetOwner(other);
+			//other->Destroy();			
 
 			if (IsThrown()) {
 				// On first hit during throw, immediately start returning
@@ -393,4 +403,6 @@ public:
 		}
 		return 0;
 	}
+
+
 };

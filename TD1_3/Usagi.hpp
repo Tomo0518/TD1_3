@@ -2,7 +2,7 @@
 
 #include "PhysicsObject.hpp"
 #include "Boomerang.hpp"
-#include "Enemy.hpp"
+#include "KinokoSpawner.hpp"
 
 class Usagi : public PhysicsObject {
 private:
@@ -245,9 +245,22 @@ public:
 		else if (Input().TriggerKey(DIK_LEFT)) { throwDir = { -1, 0 }; tryThrow = true; }
 		else if (Input().TriggerKey(DIK_RIGHT)) { throwDir = { 1, 0 }; tryThrow = true; }
 
+
+		for (auto boom : boomerangs_) {
+			if (!boom->IsTemporary() && boom->IsIdle()) {
+				if (!boom->isStarRetrieved()) {
+					starCount_ = boom->retrieveStarCount();
+				}
+				break;
+			}
+		}
+
+
 		if (tryThrow) {
 			ThrowBoomerang(throwDir);
 		}
+
+
 
 
 		ClearDeadBoomerangs();
@@ -323,8 +336,10 @@ public:
 			// if found a non temporary boomerang that is not idle, draw boomerang
 			for (auto boom : boomerangs_) {
 				if (!boom->IsTemporary() && boom->IsIdle()) {
-					BoomerangDrawComp_->Draw(camera);
-					DrawStar(camera);
+					if (boom->isStarRetrieved()) {
+						BoomerangDrawComp_->Draw(camera);
+						DrawStar(camera);
+					}
 					break;
 				}
 			}

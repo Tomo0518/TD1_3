@@ -162,6 +162,7 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClInclude Include="..\DirectXGame\3d\Camera.h" />
     <ClInclude Include="Affine2D.h" />
     <ClInclude Include="Animation.h" />
+    <ClInclude Include="AttackEnemy.hpp" />
     <ClInclude Include="BackgroundManager.h" />
     <ClInclude Include="Boomerang.hpp" />
     <ClInclude Include="Enemy.hpp" />
