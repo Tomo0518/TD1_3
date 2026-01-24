@@ -3,9 +3,7 @@
 #ifdef _DEBUG
 #include <imgui.h>
 #endif
-
 #include "SceneManager.h"
-
 #include "SoundManager.h"
 #include "TextureManager.h"
 
@@ -29,7 +27,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ParticleManager::GetInstance().Load();
 	TextureManager::GetInstance().LoadResources();
 
-	// キー入力結果を受け取る箱
+	// キー入力結果を受け取る箱 
 	char keys[256] = { 0 };
 	char preKeys[256] = { 0 };
 

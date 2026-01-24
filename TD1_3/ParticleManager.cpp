@@ -425,7 +425,7 @@ void ParticleManager::Update(float deltaTime) {
 		if (!param.isContinuous) continue;
 
 		// タイマー更新
-		emitter.timer += deltaTime;
+		emitter.timer += deltaTime / 60.0f;
 
 		// 発生間隔を超えたら発生
 		if (emitter.timer >= param.emitInterval) {
@@ -463,7 +463,7 @@ void ParticleManager::Update(float deltaTime) {
 				const ParticleParam& param = params_[pType];
 				if (param.windStrength > 0.0f) {
 					// sine波で横揺れ
-					float windOffset = sinf(p.GetPosition().y * 0.01f) * param.windStrength * deltaTime;
+					float windOffset = sinf(p.GetPosition().y * 0.01f) * param.windStrength * deltaTime / 60.0f;
 					Vector2 currentPos = p.GetPosition();
 					currentPos.x += windOffset;
 					// 注意：Particleクラスに SetPosition を追加する必要があります
@@ -471,7 +471,7 @@ void ParticleManager::Update(float deltaTime) {
 			}
 
 			// 通常の更新処理
-			p.Update(deltaTime);
+			p.Update(deltaTime / 60.0f);
 
 			// 地面衝突判定（雨と雪のみ）
 			if (pType == ParticleType::Rain || pType == ParticleType::Snow) {
