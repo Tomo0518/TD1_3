@@ -1,90 +1,108 @@
 ﻿#include "ObjectRegistry.h"
 
 enum class ObjectRegistryType {
-    WorldOrigin = 0,
-    PlayerStart = 100,
-    EnemyNormal = 101,
-    EnemySpawner = 102,
-    // ItemCoin = 200,
-    // ItemPowerUp = 201,
+	WorldOrigin = 0,
+	PlayerStart = 100,
+	EnemyNormal = 101,
+	EnemySpawner = 102,
+
+	AttackEnemy = 103,
+	AttackEnemySpawner = 104,
+	// ItemCoin = 200,
+	// ItemPowerUp = 201,
 };
 
 // 静的メンバの定義
 std::vector<ObjectTypeInfo> ObjectRegistry::objectTypes_;
 
 void ObjectRegistry::Initialize() {
-    objectTypes_.clear();
+	objectTypes_.clear();
 
-    // ===================================================================
-    // システムオブジェクト
-    // ===================================================================
-    objectTypes_.push_back({
-        0,                  // id
-        "WorldOrigin",      // name
-        "System",           // category
-        0xFF0000FF,         // color（赤）
-        "WorldOrigin"       // tag
-        });
+	// ===================================================================
+	// システムオブジェクト
+	// ===================================================================
+	objectTypes_.push_back({
+		0,                  // id
+		"WorldOrigin",      // name
+		"System",           // category
+		0xFF0000FF,         // color（赤）
+		"WorldOrigin"       // tag
+		});
 
-    // ===================================================================
-    // プレイヤー関連
-    // ===================================================================
-    objectTypes_.push_back({
-        100,                // id
-        "PlayerStart",      // name
-        "Player",           // category
-        0x00FF00FF,         // color（緑）
-        "Player"            // tag
-        });
+	// ===================================================================
+	// プレイヤー関連
+	// ===================================================================
+	objectTypes_.push_back({
+		100,                // id
+		"PlayerStart",      // name
+		"Player",           // category
+		0x00FF00FF,         // color（緑）
+		"Player"            // tag
+		});
 
-    // ===================================================================
-    // 敵キャラクター（今後追加）
-    // ===================================================================
-     objectTypes_.push_back({
-         101,
-         "Enemy_Normal",
-         "Enemy",
-         0xFF00FFFF,     // color（マゼンタ）
-         "Enemy"
-     });
+	// ===================================================================
+	// 敵キャラクター（今後追加）
+	// ===================================================================
+	objectTypes_.push_back({
+		101,
+		"Enemy_Normal",
+		"Enemy",
+		0xFF00FFFF,     // color（マゼンタ）
+		"Enemy"
+		});
 
-     objectTypes_.push_back({
-         102,
-         "EnemySpawner",
-         "ObjectSpawner",
-         0xFF0088FF,     // color（濃いマゼンタ）
-         "EnemySpawner"
-     });
+	objectTypes_.push_back({
+		102,
+		"EnemySpawner",
+		"ObjectSpawner",
+		0xFF0088FF,     // color（濃いマゼンタ）
+		"EnemySpawner"
+		});
 
-    // ===================================================================
-    // アイテム（今後追加）
-    // ===================================================================
-    // objectTypes_.push_back({
-    //     200,
-    //     "Item_Coin",
-    //     "Item",
-    //     0xFFFF00FF,     // color（黄色）
-    //     "Coin"
-    // });
+	objectTypes_.push_back({
+	   103,
+	   "AttackEnemy",
+	   "Enemy",
+	   0xFFFF00FF,     // color（黄色）
+	   "AttackEnemy"
+		});
+	objectTypes_.push_back({
+		104,
+		"AttackEnemySpawner",
+		"ObjectSpawner",
+		0xFF8800FF,     // color（オレンジ）
+		"AttackEnemySpawner"
+		});
 
-    // objectTypes_.push_back({
-    //     201,
-    //     "Item_PowerUp",
-    //     "Item",
-    //     0xFF8800FF,     // color（オレンジ）
-    //     "PowerUp"
-    // });
+	// ===================================================================
+	// アイテム（今後追加）
+	// ===================================================================
+	// objectTypes_.push_back({
+	//     200,
+	//     "Item_Coin",
+	//     "Item",
+	//     0xFFFF00FF,     // color（黄色）
+	//     "Coin"
+	// });
+
+	// objectTypes_.push_back({
+	//     201,
+	//     "Item_PowerUp",
+	//     "Item",
+	//     0xFF8800FF,     // color（オレンジ）
+	//     "PowerUp"
+	// });
 }
 
 const std::vector<ObjectTypeInfo>& ObjectRegistry::GetAllObjectTypes() {
-    return objectTypes_;
+	return objectTypes_;
 }
 
 const ObjectTypeInfo* ObjectRegistry::GetObjectType(int objectTypeId) {
-    for (const auto& objType : objectTypes_) {
-        if (objType.id == objectTypeId) {
-            return &objType;
-        }
-    }
-    return nullptr;  // 該当するIDが見つからない
+	for (const auto& objType : objectTypes_) {
+		if (objType.id == objectTypeId) {
+			return &objType;
+		}
+	}
+	return nullptr;  // 該当するIDが見つからない
 }

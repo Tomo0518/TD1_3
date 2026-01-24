@@ -583,6 +583,9 @@
     <ClInclude Include="KinokoSpawner.hpp">
       <Filter>KamataEngine\Source\Game\Object\PhysicsGameObject</Filter>
     </ClInclude>
+    <ClInclude Include="AttackEnemy.hpp">
+      <Filter>KamataEngine\Source\Game\Object\PhysicsGameObject</Filter>
+    </ClInclude>
     <ClInclude Include="ParallaxLayer.h">
       <Filter>KamataEngine\Source\library\Background</Filter>
     </ClInclude>

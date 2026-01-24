@@ -38,6 +38,20 @@ void TextureManager::LoadResources() {
 	textureResources_[static_cast<int>(TextureId::KinokoStun)] =
 		Novice::LoadTexture("./Resources/images/enemy/kinoko_stun.png");
 
+	textureResources_[static_cast<int>(TextureId::AttackKinokoWalk)] =
+		Novice::LoadTexture("./Resources/images/enemy/attackKinoko_walk.png");
+	textureResources_[static_cast<int>(TextureId::AttackKinokoStun)] =
+		Novice::LoadTexture("./Resources/images/enemy/attackKinoko_stun.png");
+	textureResources_[static_cast<int>(TextureId::AttackKinokoAttack)] =
+		Novice::LoadTexture("./Resources/images/enemy/attackKinoko_attack.png");
+	textureResources_[static_cast<int>(TextureId::AttackKinokoWindup)] =
+		Novice::LoadTexture("./Resources/images/enemy/attackKinoko_windup.png");
+	textureResources_[static_cast<int>(TextureId::AttackKinokoBattleIdle)] =
+		Novice::LoadTexture("./Resources/images/enemy/attackKinoko_battleIdle.png");
+	textureResources_[static_cast<int>(TextureId::AttackKinokoRun)] =
+		Novice::LoadTexture("./Resources/images/enemy/attackKinoko_run.png");
+
+
 	// ==========================================
 	// item
 	// ==========================================

@@ -129,6 +129,24 @@ public:
         pendingObjects_.clear();
     }
 
+    GameObject2D* GetObjectById(int id) {
+        for (auto& obj : objects_) {
+            if (obj->GetInfo().id == id) {
+                return obj.get();
+            }
+        }
+        return nullptr; // 見つからなかった場合
+	}
+
+    GameObject2D* GetPlayerObject() {
+        for (auto& obj : objects_) {
+            if (obj->GetInfo().tag == "Player") {
+                return obj.get();
+            }
+        }
+        return nullptr; // 見つからなかった場合
+    }
+
 
     std::vector<GameObject2D*> GetAllObjects() {
         std::vector<GameObject2D*> result;
