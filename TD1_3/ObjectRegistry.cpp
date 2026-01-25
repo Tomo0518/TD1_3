@@ -92,6 +92,21 @@ void ObjectRegistry::Initialize() {
 		0x00AAAAFF,     // color（水色）
 		"Door_1"
 		});
+
+	objectTypes_.push_back({
+		301,
+		"Button_2",
+		"Gimmick",
+		0xAAAA00FF,     // color（黄土色）
+		"Button_2"
+		});
+	objectTypes_.push_back({
+		401,
+		"Door_2",
+		"Gimmick",
+		0x00AAAAFF,     // color（水色）
+		"Door_2"
+		});
 	// ===================================================================
 	// アイテム（今後追加）
 	// ===================================================================
