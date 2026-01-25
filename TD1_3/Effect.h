@@ -158,7 +158,7 @@ public:
 	float GetFlashDuration() const { return flashBlink_.flashDuration; }
 
 	void SetFlashBlinkState(unsigned int color, int remainingCount, float duration,
-		unsigned int layer, float timer, bool isOn) {
+		unsigned int layer, float timer, BlendMode blendMode, bool isOn) {
 		flashBlink_.isActive = (remainingCount > 0);
 		flashBlink_.flashColor = color;
 		flashBlink_.flashCount = remainingCount;
@@ -166,9 +166,9 @@ public:
 		flashBlink_.flashDuration = duration;
 		flashBlink_.layer = layer;
 		flashBlink_.flashTimer = timer;
+		flashBlink_.blend = blendMode;
 		flashBlink_.isFlashOn = isOn;
 	}
-
 
 	// ========== 複合エフェクト（プリセット） ==========
 	void StartHitEffect();      // ダメージ演出（白フラッシュ + シェイク）

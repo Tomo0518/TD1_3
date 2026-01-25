@@ -37,9 +37,14 @@ public:
     bool ChangeComponent(const std::string& name) {
         auto it = components_.find(name);
         if (it != components_.end() && activeComponent_ != it->second) {
+            // 新しいコンポーネントに切り替える前に、古いフラッシュを停止
+            if (it->second) {
+                it->second->StopFlashBlink();
+            }
+
             // エフェクト状態を引き継ぐ
             TransferEffectState(activeComponent_, it->second);
-            
+
             activeComponent_ = it->second;
             activeComponentName_ = name;
             activeComponent_->PlayAnimation();
@@ -130,19 +135,25 @@ public:
             }
         }
 	}
-    void StartFlashBlink(unsigned int color, int count, float duration,BlendMode blend, unsigned int layer = 1) {
+    void StartFlashBlink(unsigned int color, int count, float duration, BlendMode blendMode, unsigned int layer = 1) {
         effectState_.isFlashBlinkActive = true;
         effectState_.flashColor = color;
         effectState_.flashCount = count;
         effectState_.flashDuration = duration;
+        effectState_.blendMode = blendMode;
         effectState_.flashLayer = layer;
         effectState_.flashTimer = 0.0f;
         effectState_.isFlashOn = true;
-        effectState_.blendMode = blend;
 
+        // アクティブなコンポーネントのみに適用
+        if (activeComponent_) {
+            activeComponent_->StartFlashBlink(color, count, duration, blendMode, layer);
+        }
+
+        // 他のコンポーネントのフラッシュを明示的に停止
         for (auto& pair : components_) {
-            if (pair.second) {
-                pair.second->StartFlashBlink(color, count, duration, blend, layer);
+            if (pair.second && pair.second != activeComponent_) {
+                pair.second->StopFlashBlink();
             }
         }
     }
@@ -204,10 +215,12 @@ private:
     void TransferEffectState(DrawComponent2D* from, DrawComponent2D* to) {
         if (!from || !to) return;
 
+        // ヒットエフェクトの転送
         if (effectState_.isHitEffectActive) {
             to->StartHitEffect();
         }
 
+        // パルスエフェクトの転送
         if (effectState_.isPulseActive) {
             to->StartPulse(
                 effectState_.pulseMinScale,
@@ -216,19 +229,25 @@ private:
             );
         }
 
-       // フラッシュ点滅の転送
+        // フラッシュ点滅の転送（改善版）
         if (effectState_.isFlashBlinkActive && effectState_.flashCount > 0) {
-            // タイマーと状態を含めて完全に引き継ぐ
+#ifdef _DEBUG
+            Novice::ConsolePrintf("[TransferEffect] Flash: count=%d, timer=%.2f, on=%d\n",
+                effectState_.flashCount, effectState_.flashTimer, effectState_.isFlashOn);
+#endif
+
             to->SetFlashBlinkState(
                 effectState_.flashColor,
                 effectState_.flashCount,
                 effectState_.flashDuration,
                 effectState_.flashLayer,
                 effectState_.flashTimer,
+				effectState_.blendMode,
                 effectState_.isFlashOn
             );
         }
     }
+
 
     struct EffectState {
         bool isHitEffectActive = false;

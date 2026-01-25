@@ -254,8 +254,8 @@ public:
 	}
 
 	void SetFlashBlinkState(unsigned int color, int remainingCount, float duration,
-		unsigned int layer, float timer, bool isOn) {
-		effect_.SetFlashBlinkState(color, remainingCount, duration, layer, timer, isOn);
+		unsigned int layer, float timer, BlendMode blendMode, bool isOn) {
+		effect_.SetFlashBlinkState(color, remainingCount, duration, layer, timer, blendMode, isOn);
 	}
 
 	void StopFade() { effect_.StopFade(); }

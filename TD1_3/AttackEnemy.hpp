@@ -224,8 +224,8 @@ public:
 			ParticleManager::GetInstance().Emit(ParticleType::Enemy_CanStan, transform_.translate);
 			emitedCanAttackEffect_ = true;
 
-			// エフェクトを開始（全コンポーネントに適用され、切り替え時も継続）
-			drawManager_.StartHitEffect();
+			// エフェクトを開始
+			drawManager_.StartFlashBlink(0xFFFFFFFF, 4, 0.3f, BlendMode::kBlendModeAdd, 2);
 		}
 
 		if (windupTimer_ >= windupDuration_ / 2) {
@@ -322,8 +322,8 @@ public:
 	void Stun() {
 		stunned_ = true;
 		stunTimer_ = stunDuration_;
-		drawManager_.StartFlashBlink(WHITE, 5, 0.1f,BlendMode::kBlendModeAdd, 3); // 白色、5回、0.1秒、3レイヤー
-		drawManager_.StartHitEffect();
+		drawManager_.StartFlashBlink(BLUE, 2, 0.2f,BlendMode::kBlendModeNormal, 1);
+		ParticleManager::GetInstance().Emit(ParticleType::Charge, transform_.translate);
 
 		attackTimer_ = 0.0f;
 		battleState_ = AttackEnemyBattleState::Idle;
@@ -410,7 +410,7 @@ public:
 		else {
 			if (damage > 0) {
 				isDamaged_ = true;
-				drawManager_.StartFlashBlink(RED, 2, 0.2f, BlendMode::kBlendModeNormal,1);
+				drawManager_.StartFlashBlink(0xFF0000CC, 4, 0.3f, BlendMode::kBlendModeNormal, 1);
 				damagedShakeTimer_ = 0.0f;
 
 				ParticleManager::GetInstance().Emit(ParticleType::Hit, transform_.translate);
