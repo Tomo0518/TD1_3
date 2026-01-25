@@ -39,7 +39,9 @@ enum class TextureId {
 	// item
 	// =========================================
 	Boomerang,
-	Boomerang_Charged,
+	Boomerang_ChargedLv1,
+	Boomerang_ChargedLv2,
+	Boomerang_ChargedLv3,
 	Star_idle,
 	Star_shooting,
 	Mystery,

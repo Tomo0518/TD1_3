@@ -69,8 +69,12 @@ void TextureManager::LoadResources() {
 	// ==========================================
 	textureResources_[static_cast<int>(TextureId::Boomerang)] =
 		Novice::LoadTexture("./Resources/images/item/boomerang.png");
-	textureResources_[static_cast<int>(TextureId::Boomerang_Charged)] =
-		Novice::LoadTexture("./Resources/images/item/boomerangCharged.png");
+	textureResources_[static_cast<int>(TextureId::Boomerang_ChargedLv1)] =
+		Novice::LoadTexture("./Resources/images/item/boomerangBonusLv1.png");
+	textureResources_[static_cast<int>(TextureId::Boomerang_ChargedLv2)] =
+		Novice::LoadTexture("./Resources/images/item/boomerangBonusLv2.png");
+	textureResources_[static_cast<int>(TextureId::Boomerang_ChargedLv3)] =
+		Novice::LoadTexture("./Resources/images/item/boomerangBonusLv3.png");
 
 	textureResources_[static_cast<int>(TextureId::Star_idle)] =
 		Novice::LoadTexture("./Resources/images/item/star_Idle.png");

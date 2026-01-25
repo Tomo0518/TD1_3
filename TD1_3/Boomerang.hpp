@@ -19,7 +19,7 @@ private:
 	float maxTime_;
 	float stayTimer_; // Timer for staying at target
 	float maxStayTime_; // Duration to stay
-	float defaultMaxStayTime_ = 20.f;
+	float defaultMaxStayTime_ = 80.f;
 	Vector2 farestDistance_;
 	bool isHorizontal_;
 	std::vector<int> hitEnemies_; // Track hit enemy IDs
@@ -35,8 +35,12 @@ private:
 	int starCount_;
 	bool starRetrieved_ = false;
 
+	float frameCount_ = 0.f;
+
 	DrawComponent2D* starComp_ = nullptr;
 	DrawComponent2D* effectComp_ = nullptr;
+	DrawComponent2D* effectCompLv2_ = nullptr;
+	DrawComponent2D* effectCompLv3_ = nullptr;
 public:
 	Boomerang(GameObject2D* owner, bool isTemp) {
 		state_ = BoomerangState::Idle;
@@ -49,6 +53,8 @@ public:
 		info_.isVisible = false;
 		info_.isActive = false;
 
+	
+
 		delete drawComp_;
 		drawComp_ = new DrawComponent2D(Tex().GetTexture(TextureId::Boomerang), 4, 1, 4, 5.f, true);
 		drawComp_->Initialize();
@@ -56,13 +62,24 @@ public:
 		starComp_ = new DrawComponent2D(Tex().GetTexture(TextureId::Star_shooting), 4, 1, 4, 5.f, true);
 		starComp_->Initialize();
 
-		effectComp_ = new DrawComponent2D(Tex().GetTexture(TextureId::Boomerang_Charged), 4, 1, 4, 5.f, true);
+		effectComp_ = new DrawComponent2D(Tex().GetTexture(TextureId::Boomerang_ChargedLv1), 8, 1, 8, 2.f, true);
 		effectComp_->Initialize();
+		effectComp_->SetBaseColor({ 1.f, 1.f, 1.f, 0.8f });
+
+		effectCompLv2_ = new DrawComponent2D(Tex().GetTexture(TextureId::Boomerang_ChargedLv2), 8, 1, 8, 2.f, true);
+		effectCompLv2_->Initialize();
+		effectCompLv2_->SetBaseColor({ 1.f, 1.f, 1.f, 0.8f });
+
+		effectCompLv3_ = new DrawComponent2D(Tex().GetTexture(TextureId::Boomerang_ChargedLv3), 8, 1, 8, 2.f, true);
+		effectCompLv3_->Initialize();
+		effectCompLv3_->SetBaseColor({ 1.f, 1.f, 1.f, 0.8f });
 	}
 
 	~Boomerang() {
 		delete starComp_;
 		delete effectComp_;
+		delete effectCompLv2_;
+		delete effectCompLv3_;
 	}
 
 	bool isStarRetrieved() const {
@@ -82,7 +99,7 @@ public:
 		starCount_ = Star;
 		starRetrieved_ = false;
 
-		maxStayTime_ = defaultMaxStayTime_ + starCount_ * delayPerStar; // Each star adds 2 seconds
+		maxStayTime_ = defaultMaxStayTime_ + starCount_ * delayPerStar + Charge/2.f; // Each star adds 2 seconds
 
 		damage_ = 0;
 		damageBonus_ = 0;
@@ -187,17 +204,36 @@ public:
 			return;
 		}
 
-		transform_.rotation -= (0.3f + float(damage_ + damageBonus_) / 10.f) * deltaTime;
+		frameCount_ += deltaTime;
 
-		// Custom movement logic based on provided requirements
+		transform_.rotation -= (0.03f + float(damage_ + damageBonus_) / 20.f) * deltaTime;		
+
+		
 		Vector2 ownerPos = owner_->GetTransform().translate;
+
+		if (int(frameCount_) % (damageBonus_ > 0 ? 1 : 7) == 0) {
+			Vector2 toOwner = ownerPos - transform_.translate;
+			Vector2 dirToOwner = Vector2::Normalize(toOwner);
+			float distanceToOwner = Vector2::Length(toOwner);
+
+			Vector2 trail = transform_.translate + dirToOwner * abs(sinf(frameCount_ / 10.f)) * (distanceToOwner);
+			ParticleManager::GetInstance().Emit(ParticleType::MuzzleFlash, trail);
+			for (int i = 0; i < std::min(5,damageBonus_ / 2); ++i) {
+				Vector2 randomOffset = { float((rand() % 200) - 100) / 100.f * 5.f, float((rand() % 200) - 100) / 100.f * 5.f };
+				ParticleManager::GetInstance().Emit(ParticleType::Sparkle, trail + randomOffset);
+			}
+		}
+
 
 		if (state_ == BoomerangState::Thrown) {
 			rigidbody_.velocity = { 0.0f, 0.0f }; // No physics movement
 			if (moveTimer_ < maxTime_) {
 				moveTimer_ += deltaTime;
 
-				if (moveTimer_ >= maxTime_) hitEnemies_.clear();
+				if (moveTimer_ >= maxTime_) {
+					hitEnemies_.clear();
+					damage_ += 8;
+				}
 				if (moveTimer_ >= maxTime_ / 1.7f) collider_.canCollide = false;
 
 				float t = moveTimer_ / maxTime_;
@@ -234,7 +270,7 @@ public:
 
 					float distanceFormOwner = Vector2::Length(transform_.translate - ownerPos);
 					//closer the distance bigger damage bonus
-					damageBonus_ = std::max(0,int((activeRange_*1.2f - distanceFormOwner) / 50.f));
+					damageBonus_ = max(0,int((activeRange_*1.4f - distanceFormOwner) / 50.f));
 
 					if (int(stayTimer_) % int(delayPerStar) == 0) AddDamageFromStar();
 					if (stayTimer_ >= maxStayTime_) hitEnemies_.clear();
@@ -256,7 +292,7 @@ public:
 					stayTimer_ = 0;
 					// Update target pos to be current pos for smooth return calculation if needed
 					targetPos_ = transform_.translate;
-					damage_ += 8;
+					
 				}
 			}
 		}
@@ -308,7 +344,7 @@ public:
 
 	void UpdateDrawComponent(float deltaTime) override {
 		if (!info_.isActive) return;
-		float ShakeIntensity = std::max(0.f, float(/*damage_ + */damageBonus_) * (IsReturning() ? 1.f : 5.f));
+		float ShakeIntensity = max(0.f, float(/*damage_ + */damageBonus_) * (IsReturning() ? 1.f : 3.f));
 		RenderPos_.x = transform_.translate.x + float(rand() % 100) / 100.f * ShakeIntensity;
 		RenderPos_.y = transform_.translate.y + float(rand() % 100) / 100.f * ShakeIntensity;
 
@@ -324,8 +360,23 @@ public:
 
 		if (effectComp_) {
 			//effectComp_->SetTransform(transform_);
-			effectComp_->SetPosition(RenderPos_);
+			//effectComp_->SetPosition(RenderPos_);
+			effectComp_->SetPosition(transform_.translate);
 			effectComp_->Update(deltaTime);
+		}
+
+		if (effectCompLv2_) {
+			//effectCompLv2_->SetTransform(transform_);
+			//effectCompLv2_->SetPosition(RenderPos_);
+			effectCompLv2_->SetPosition(transform_.translate);
+			effectCompLv2_->Update(deltaTime);
+		}
+
+		if (effectCompLv3_) {
+			//effectCompLv3_->SetTransform(transform_);
+			//effectCompLv3_->SetPosition(RenderPos_);
+			effectCompLv3_->SetPosition(transform_.translate);
+			effectCompLv3_->Update(deltaTime);
 		}
 	}
 
@@ -361,8 +412,29 @@ public:
 		if (drawComp_) {
 			drawComp_->Draw(camera);
 		}
-		if (effectComp_ && (damageBonus_) >= 0 && damage_ > 1 && IsReturning()) {
+
+		Novice::ScreenPrintf(600, 360, "Boomerang Damage: %d + %d = %d", damage_, damageBonus_ , damageBonus_ + damage_);
+
+		if (effectComp_ && (damageBonus_ + damage_) > 8) {
+			float ratio = (float(damageBonus_ + damage_) - 8.f) / 10.f;
+			ratio = (std::min)(ratio, 1.f);
+			float alpha =  ratio;
+			effectComp_->SetBaseColor({ 1.f, 1.f, 1.f, alpha });
 			effectComp_->Draw(camera);
+		}
+		if (effectCompLv2_ && (damageBonus_ + damage_) > 18 ) {
+			float ratio = float(damageBonus_ + damage_ - 18) / 10.f;
+			ratio = (std::min)(ratio, 1.f);
+			float alpha =  ratio;
+			effectCompLv2_->SetBaseColor({ 1.f, 1.f, 1.f, alpha });
+			effectCompLv2_->Draw(camera);
+		}
+		if (effectCompLv3_ && (damageBonus_ + damage_) > 28 ) {
+			float ratio = float(damageBonus_ + damage_ - 28) / 10.f;
+			ratio = (std::min)(ratio, 1.f);
+			float alpha = ratio;
+			effectCompLv3_->SetBaseColor({ 1.f, 1.f, 1.f, alpha });
+			effectCompLv3_->Draw(camera);
 		}
 
 		DrawStar(camera);
