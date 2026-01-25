@@ -37,6 +37,8 @@ private:
 
 	float frameCount_ = 0.f;
 
+	bool waitingToReturn_ = false;
+
 	DrawComponent2D* starComp_ = nullptr;
 	DrawComponent2D* effectComp_ = nullptr;
 	DrawComponent2D* effectCompLv2_ = nullptr;
@@ -197,6 +199,18 @@ public:
 		starCount_ -= 1;
 	}
 
+	void SwitchToReturn() {
+		if (state_ != BoomerangState::Thrown) return;
+		if (!waitingToReturn_) return;
+		waitingToReturn_ = false;
+		state_ = BoomerangState::Returning;
+		collider_.canCollide = true;
+		moveTimer_ = 0;
+		stayTimer_ = 0;
+		// Update target pos to be current pos for smooth return calculation if needed
+		targetPos_ = transform_.translate;
+	}
+
 	void Update(float deltaTime = 1.0f) override {
 		if (state_ == BoomerangState::Idle) {
 			info_.isActive = false;
@@ -233,6 +247,7 @@ public:
 				if (moveTimer_ >= maxTime_) {
 					hitEnemies_.clear();
 					damage_ += 8;
+					waitingToReturn_ = true;
 				}
 				if (moveTimer_ >= maxTime_ / 1.7f) collider_.canCollide = false;
 
@@ -265,12 +280,18 @@ public:
 			}
 			else {
 				// Stay logic
-				if (stayTimer_ < maxStayTime_) {
+				//if (stayTimer_ < maxStayTime_) {
 					stayTimer_ += deltaTime;
 
 					float distanceFormOwner = Vector2::Length(transform_.translate - ownerPos);
 					//closer the distance bigger damage bonus
 					damageBonus_ = std::max(0,int((activeRange_*1.4f - distanceFormOwner) / 50.f));
+
+					if (distanceFormOwner > activeRange_ * 2.5f) {
+						damageBonus_ = 0;
+						damage_ = 0;;
+						SwitchToReturn();
+					}
 
 					if (int(stayTimer_) % int(delayPerStar) == 0) AddDamageFromStar();
 					if (stayTimer_ >= maxStayTime_) hitEnemies_.clear();
@@ -278,22 +299,22 @@ public:
 					// Still follow player while staying
 					if (isHorizontal_) {
 						transform_.translate.x = farestDistance_.x;
-						transform_.translate.y = ownerPos.y;
+						//transform_.translate.y = ownerPos.y;
 					}
 					else {
 						transform_.translate.y = farestDistance_.y;
 						transform_.translate.x = ownerPos.x;
 					}
-				}
-				else {
-					state_ = BoomerangState::Returning;
-					collider_.canCollide = true;
-					moveTimer_ = 0;
-					stayTimer_ = 0;
-					// Update target pos to be current pos for smooth return calculation if needed
-					targetPos_ = transform_.translate;
+				//}
+				//else {
+					//state_ = BoomerangState::Returning;
+					//collider_.canCollide = true;
+					//moveTimer_ = 0;
+					//stayTimer_ = 0;
+					//// Update target pos to be current pos for smooth return calculation if needed
+					//targetPos_ = transform_.translate;
 					
-				}
+				//}
 			}
 		}
 		else if (state_ == BoomerangState::Returning) {
@@ -309,7 +330,7 @@ public:
 				if (isHorizontal_) {
 					// Only x moves back, y matches player
 					transform_.translate.x += dir.x * speed;
-					transform_.translate.y = ownerPos.y;
+					transform_.translate.y += dir.y * speed/2.f;
 				}
 				else {
 					// Only y moves back, x matches player

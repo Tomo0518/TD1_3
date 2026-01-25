@@ -271,21 +271,29 @@ public:
 
 
 		for (auto boom : boomerangs_) {
-			if (!boom->IsTemporary() && boom->IsIdle()) {
-				if (/*Input().PressKey(DIK_UP) || Input().PressKey(DIK_DOWN) || Input().PressKey(DIK_LEFT) || Input().PressKey(DIK_RIGHT)*/
-					Input().PressKey(DIK_J)
-					) {
-					isCharging_ = true;
-					chargeTimer_ = std::min(chargeTimer_ + deltaTime, 120.f);
-					if (chargeTimer_ == 120.f) {
-						ParticleManager::GetInstance().Emit(ParticleType::Hit, transform_.translate);
+			if (!boom->IsTemporary()) {
+				if (boom->IsIdle()) {
+					if (/*Input().PressKey(DIK_UP) || Input().PressKey(DIK_DOWN) || Input().PressKey(DIK_LEFT) || Input().PressKey(DIK_RIGHT)*/
+						Input().PressKey(DIK_J)
+						) {
+						isCharging_ = true;
+						chargeTimer_ = std::min(chargeTimer_ + deltaTime, 120.f);
+						if (chargeTimer_ == 120.f) {
+							ParticleManager::GetInstance().Emit(ParticleType::Hit, transform_.translate);
+						}
 					}
-				}
 
-				if (!boom->isStarRetrieved()) {
-					starCount_ = boom->retrieveStarCount();
+					if (!boom->isStarRetrieved()) {
+						starCount_ = boom->retrieveStarCount();
+					}
+					break;
 				}
-				break;
+				else {
+					if (Input().PressKey(DIK_J)) {
+						boom->SwitchToReturn();
+					}
+						
+				}
 			}
 		}
 
@@ -468,7 +476,7 @@ public:
 			}
 
 			// If no idle, try use star
-			if (!b && starCount_ > 0) {
+			/*if (!b && starCount_ > 0) {
 				starCount_--;
 				if (manager_) {
 					Boomerang* starB = manager_->Spawn<Boomerang>(this, "Boomerang", this, true);
@@ -479,7 +487,7 @@ public:
 					Novice::ScreenPrintf(10, 100, "Created Star Boomerang!");
 				}
 
-			}
+			}*/
 
 			if (b) {
 				b->Throw(throwDir, starCount_, chargeTimer_);
