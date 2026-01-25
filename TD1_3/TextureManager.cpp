@@ -299,5 +299,50 @@ void TextureManager::LoadResources() {
 
 		//textureResources_[static_cast<int>(TextureId::UI_Button_StageSelect)] =
 		//	Novice::LoadTexture("./Resources/images/ui/button/stageSelect_default.png");
+
+		// UI: HP
+		//PlayerHPFrame, PlayerHPBar,
+		//	BossHPFrame, BossHPBar,
+
+		//	// UI: Key Guide
+		//	KeyW, KeyA, KeyS, KeyD,
+		//	KeySpace, KeyEnter, KeyEsc,
+
+		//	// UI: Scenes
+		//	PauseText, PauseBg,
+		//	ResultClear, ResultOver,
+
+		textureResources_[static_cast<int>(TextureId::PlayerHPFrame)] =
+			Novice::LoadTexture("./Resources/images/ui/hp/player_hp_frame.png");
+		textureResources_[static_cast<int>(TextureId::PlayerHPBar)] =
+			Novice::LoadTexture("./Resources/images/ui/hp/player_hp_bar.png");
+
+		textureResources_[static_cast<int>(TextureId::BossHPFrame)] =
+			Novice::LoadTexture("./Resources/images/ui/hp/boss_hp_frame.png");
+		textureResources_[static_cast<int>(TextureId::BossHPBar)] =
+			Novice::LoadTexture("./Resources/images/ui/hp/boss_hp_bar.png");
+		textureResources_[static_cast<int>(TextureId::KeyW)] =
+			Novice::LoadTexture("./Resources/images/ui/keyGuide/key_w.png");
+		textureResources_[static_cast<int>(TextureId::KeyA)] =
+			Novice::LoadTexture("./Resources/images/ui/keyGuide/key_a.png");
+		textureResources_[static_cast<int>(TextureId::KeyS)] =
+			Novice::LoadTexture("./Resources/images/ui/keyGuide/key_s.png");
+		textureResources_[static_cast<int>(TextureId::KeyD)] =
+			Novice::LoadTexture("./Resources/images/ui/keyGuide/key_d.png");
+		textureResources_[static_cast<int>(TextureId::KeySpace)] =
+			Novice::LoadTexture("./Resources/images/ui/keyGuide/key_space.png");
+		textureResources_[static_cast<int>(TextureId::KeyEnter)] =
+			Novice::LoadTexture("./Resources/images/ui/keyGuide/key_enter.png");
+		textureResources_[static_cast<int>(TextureId::KeyEsc)] =
+			Novice::LoadTexture("./Resources/images/ui/keyGuide/key_esc.png");
+		textureResources_[static_cast<int>(TextureId::PauseText)] =
+			Novice::LoadTexture("./Resources/images/ui/scenes/pause_text.png");
+		textureResources_[static_cast<int>(TextureId::PauseBg)] =
+			Novice::LoadTexture("./Resources/images/ui/scenes/pause_bg.png");
+		textureResources_[static_cast<int>(TextureId::ResultClear)] =
+			Novice::LoadTexture("./Resources/images/ui/scenes/result_clear.png");
+		textureResources_[static_cast<int>(TextureId::ResultOver)] =
+			Novice::LoadTexture("./Resources/images/ui/scenes/result_over.png");
+		
 	}
 }

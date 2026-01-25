@@ -152,6 +152,21 @@ enum class TextureId {
 	UI_Button_Title,
 	UI_Button_Title_Selected,
 
+	// UI: HP
+	PlayerHPFrame, PlayerHPBar,
+	BossHPFrame, BossHPBar,
+
+	// UI: Key Guide
+	KeyW, KeyA, KeyS, KeyD,
+	KeySpace, KeyEnter, KeyEsc,
+
+	// UI: Scenes
+	PauseText, PauseBg,
+	ResultClear, ResultOver,
+
+	// Dummy for compilation
+	White1x1,
+
 	None,		// テクスチャなし用
 	Count,	// 最後
 };

@@ -317,6 +317,9 @@
     <ClCompile Include="ParticleRegistry.cpp">
       <Filter>KamataEngine\Source\library\2D\Particle</Filter>
     </ClCompile>
+    <ClCompile Include="UIManager.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\audio\Audio.h">
@@ -601,5 +604,6 @@
     <ClInclude Include="DrawComponentManager.hpp">
       <Filter>KamataEngine\Source\library\2D\Draw\DrawComponent2D\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="UIManager.h" />
   </ItemGroup>
 </Project>

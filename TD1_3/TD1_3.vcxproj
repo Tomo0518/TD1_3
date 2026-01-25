@@ -154,6 +154,7 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClCompile Include="TileInstance.cpp" />
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="UiDrawComponent.cpp" />
+    <ClCompile Include="UIManager.cpp" />
     <ClCompile Include="Vector2.cpp" />
     <ClCompile Include="Vertex4.cpp" />
     <ClCompile Include="Vertex4Component.cpp" />
@@ -248,6 +249,7 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClInclude Include="TitleScene.h" />
     <ClInclude Include="Transform2D.h" />
     <ClInclude Include="UiDrawComponent.h" />
+    <ClInclude Include="UIManager.h" />
     <ClInclude Include="Usagi.hpp" />
     <ClInclude Include="Vector2.h" />
     <ClInclude Include="Vertex4.h" />
