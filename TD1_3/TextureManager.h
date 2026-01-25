@@ -46,6 +46,11 @@ enum class TextureId {
 	Star_shooting,
 	Mystery,
 
+	Button_On,
+	Button_Off,
+	Door_Open,
+	Door_Closed,
+
 	// =========================================
 	// usagi
 	// =========================================

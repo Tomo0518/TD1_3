@@ -147,6 +147,15 @@ public:
         return nullptr; // 見つからなかった場合
     }
 
+    std::vector<GameObject2D*> GetObjectsByTag(const std::string& tag) {
+        std::vector<GameObject2D*> result;
+        for (auto& obj : objects_) {
+            if (obj->GetInfo().tag == tag) {
+                result.push_back(obj.get());
+            }
+        }
+        return result;
+    }
 
     std::vector<GameObject2D*> GetAllObjects() {
         std::vector<GameObject2D*> result;

@@ -10,6 +10,8 @@
 #include "WorldOrigin.h"
 #include "ObjectRegistry.h"
 #include "ParticleManager.h"
+#include "Button.hpp"
+#include "Door.hpp"
 
 #include "PhysicsManager.h"
 
@@ -169,6 +171,22 @@ void GamePlayScene::SpawnObjectFromData(const ObjectSpawnInfo& spawn) {
 		spawner->SetPosition(spawn.position);
 		spawner->Initialize();
 		Novice::ConsolePrintf("[GamePlayScene] Spawned AttackEnemySpawner at (%.1f, %.1f)\n",
+			spawn.position.x, spawn.position.y);
+		break;
+	}
+	case 300: { // Button1
+		auto* button = objectManager_.Spawn<Button1>(nullptr, "Button");
+		button->SetPosition(spawn.position);
+		button->Initialize();
+		Novice::ConsolePrintf("[GamePlayScene] Spawned Button at (%.1f, %.1f)\n",
+			spawn.position.x, spawn.position.y);
+		break;
+	}
+	case 400: {
+		auto* door = objectManager_.Spawn<Door1>(nullptr, "Door");
+		door->SetPosition(spawn.position);
+		door->Initialize();
+		Novice::ConsolePrintf("[GamePlayScene] Spawned Door at (%.1f, %.1f)\n",
 			spawn.position.x, spawn.position.y);
 		break;
 	}
