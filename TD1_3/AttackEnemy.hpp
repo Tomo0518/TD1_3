@@ -14,6 +14,74 @@ enum class AttackEnemyBattleState {
 	Attacking,
 };
 
+class AttackEnemyHitBox : public PhysicsObject {
+	float lifetime_ = 15.f;
+public:
+	AttackEnemyHitBox() {
+		delete drawComp_;
+		drawComp_ = nullptr;
+		//Initialize();
+	}
+	~AttackEnemyHitBox() {
+	}
+	void Initialize() override {
+		rigidbody_.Initialize();
+		info_.isActive = true;
+		info_.isVisible = true;
+		collider_.size = { 80.f, 80.f };
+		collider_.offset = { 0.f, 0.f };
+		isGravityEnabled_ = false;
+	}
+
+	int OnCollision(GameObject2D* other) override {
+		if (other->GetInfo().tag == "Player") {
+			// Here you can add logic to damage the player
+			Novice::ConsolePrintf("\n!!!!!!Player Hit by AttackEnemy!!!!!!!!!\n");
+			info_.isActive = false; // Deactivate hitbox after hit
+			
+			Vector2 knockbackDir = Vector2::Subtract(transform_.translate, other->GetTransform().translate);
+			knockbackDir = Vector2::Normalize(knockbackDir) * -1.f;
+			other->GetRigidbody().acceleration.x += knockbackDir.x * 14.5f;
+			other->GetRigidbody().acceleration.y += 6.5f;
+
+			Destroy();
+
+		}
+		return 0;
+	}
+
+	void Draw(const Camera2D& camera) override {
+		// Draw hitbox for debug
+		Novice::ConsolePrintf("transform: %f, %f\n", transform_.translate.x, transform_.translate.y);
+		Vector2 screenPos = const_cast<Camera2D&>(camera).WorldToScreen(transform_.translate);
+		Vector2 colliderSize = const_cast<Vector2&>(collider_.size);
+		Vector2 colliderOffset = const_cast<Vector2&>(collider_.offset);
+		Novice::DrawBox(
+			int(screenPos.x + colliderOffset.x - colliderSize.x / 2.f),
+			int(screenPos.y + colliderOffset.y - colliderSize.y / 2.f),
+			int(colliderSize.x), int(colliderSize.y),
+			0.0f,
+			0xFF0000FF,
+			kFillModeWireFrame
+		);
+	}
+
+	void Update(float deltaTime) override {
+		
+		lifetime_ -= deltaTime;
+		if (lifetime_ <= 0.f) {
+			info_.isActive = false; // Deactivate hitbox after lifetime ends
+			Destroy();
+		}
+	}
+
+	void setLifetime(float time) {
+		lifetime_ = time;
+	}
+
+};
+
+
 class AttackEnemy : public PhysicsObject {
 private:
 	int direction_ = 1;         // 移動方向（1: 右, -1: 左）
@@ -69,6 +137,8 @@ private:
 	// 描画マネージャー（全てのDrawComponent2Dを管理）
 	DrawComponentManager drawManager_;
 
+	Vector2 DrawOffset_ = { -28.f, 45.f };
+
 	// 描画コンポーネント
 	//DrawComponent2D* StunnedComp_ = nullptr;
 	//DrawComponent2D* PatrolComp_ = nullptr;
@@ -92,8 +162,8 @@ public:
 	void Initialize() override {
 		rigidbody_.Initialize();
 		rigidbody_.deceleration = { 0.7f, 0.7f };
-		collider_.size = { 80.f, 80.f };
-		collider_.offset = { 0.f, -20.f };
+		collider_.size = { 64.f, 80.f };
+		collider_.offset = { 0.f, 0.f };
 
 		// マネージャーにコンポーネントを登録
 		drawManager_.RegisterComponent("Patrol",
@@ -153,12 +223,16 @@ public:
 
 
 	void UpdateDrawComponent(float deltaTime) override {
+		drawManager_.SetFlipX(direction_ == 1);
 		Vector2 renderPos;
 		renderPos.x = transform_.translate.x + float(rand() % 100) / 100.f * windupShakeMagnitude_;
 		renderPos.y = transform_.translate.y + float(rand() % 100) / 100.f * windupShakeMagnitude_;
 
+		Vector2 DrawOffset = DrawOffset_;
+		DrawOffset.x = DrawOffset.x * (direction_ == 1 ? -1.f : 1.f);
+
 		drawManager_.SetTransform(transform_);
-		drawManager_.SetPosition(renderPos + damagedShakeOffset_);
+		drawManager_.SetPosition(renderPos + damagedShakeOffset_ + DrawOffset);
 		drawManager_.Update(deltaTime);
 	}
 
@@ -237,6 +311,9 @@ public:
 			windupTimer_ = 0.0f;
 			windupShakeMagnitude_ = 0.0f;
 			emitedCanAttackEffect_ = false;
+
+			// Create and position the hitbox
+			SpawnHitBox(15.f);
 		}
 	}
 
@@ -266,10 +343,11 @@ public:
 		Move(deltaTime);
 		damageHandling(deltaTime);
 		UpdateDrawComponent(deltaTime);
+
 	}
 
 	void Behavior(float deltaTime) {
-		drawManager_.SetFlipX(direction_ == 1);
+		//drawManager_.SetFlipX(direction_ == 1);
 		FindPlayer();
 
 		if (stunned_) {
@@ -286,7 +364,7 @@ public:
 		}
 	}
 
-	
+
 	void ReturnToPatrol() {
 		state_ = AttackEnemyPhase::Patrolling;
 		battleState_ = AttackEnemyBattleState::Idle;
@@ -371,9 +449,38 @@ public:
 		}
 	}
 
+	void SpawnHitBox(float lifetime) {
+		AttackEnemyHitBox* hitbox = manager_->Spawn<AttackEnemyHitBox>(this, "AttackEnemyHitBox");
+		hitbox->SetPosition(transform_.translate + Vector2(64.f, 0.f) * float(direction_));
+		hitbox->setLifetime(lifetime);		
+	}
+
 	void Draw(const Camera2D& camera) override {
 		if (!info_.isActive || !info_.isVisible) return;
+
 		drawManager_.Draw(camera);
+
+		/*Vector2 screenPos = const_cast<Camera2D&>(camera).WorldToScreen(transform_.translate);
+		Vector2 colliderSize = const_cast<Vector2&>(collider_.size);
+		Vector2 colliderOffset = const_cast<Vector2&>(collider_.offset);
+
+		Novice::DrawBox(
+			int(screenPos.x + colliderOffset.x - colliderSize.x / 2.f),
+			int(screenPos.y + colliderOffset.y - colliderSize.y / 2.f),
+			int(colliderSize.x), int(colliderSize.y),
+			0.0f,
+			0xFF0000FF,
+			kFillModeWireFrame
+		);
+
+		Novice::DrawBox(
+			int(screenPos.x - 5.f),
+			int(screenPos.y -5.f),
+			10, 10,
+			0.0f,
+			0xFF0000FF,
+			kFillModeWireFrame
+		);*/
 	}
 
 	void damageHandling(float deltaTime) {
