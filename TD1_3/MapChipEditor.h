@@ -7,7 +7,6 @@
 #include <map>
 #include "MapManager.h"
 
-
 #ifdef _DEBUG
 #include <imgui.h>
 #endif // _DEBUG
@@ -53,6 +52,9 @@ private:
     TileLayer currentLayer_ = TileLayer::Block;
 
 	MapManager* mapManager_ = nullptr;
+
+    // ファイルパス指定用
+    char currentFilePath_[256] = "./Resources/data/yoshikawa.json";
 
     // オブジェクトモード用
     int selectedObjectTypeId_ = 100;  // デフォルト: PlayerStart

@@ -312,37 +312,39 @@ void TextureManager::LoadResources() {
 		//	PauseText, PauseBg,
 		//	ResultClear, ResultOver,
 
-		/*textureResources_[static_cast<int>(TextureId::PlayerHPFrame)] =
-			Novice::LoadTexture("./Resources/images/ui/hp/player_hp_frame.png");
+		textureResources_[static_cast<int>(TextureId::PlayerHPFrame)] =
+			Novice::LoadTexture("./Resources/images/ui/Gauge/player_hp_frame.png");
 		textureResources_[static_cast<int>(TextureId::PlayerHPBar)] =
-			Novice::LoadTexture("./Resources/images/ui/hp/player_hp_bar.png");
+			Novice::LoadTexture("./Resources/images/ui/Gauge/player_hp_bar.png");
 
-		textureResources_[static_cast<int>(TextureId::BossHPFrame)] =
+	/*	textureResources_[static_cast<int>(TextureId::BossHPFrame)] =
 			Novice::LoadTexture("./Resources/images/ui/hp/boss_hp_frame.png");
 		textureResources_[static_cast<int>(TextureId::BossHPBar)] =
-			Novice::LoadTexture("./Resources/images/ui/hp/boss_hp_bar.png");
+			Novice::LoadTexture("./Resources/images/ui/hp/boss_hp_bar.png");*/
 		textureResources_[static_cast<int>(TextureId::KeyW)] =
-			Novice::LoadTexture("./Resources/images/ui/keyGuide/key_w.png");
+			Novice::LoadTexture("./Resources/images/ui/keyGuide/w.png");
 		textureResources_[static_cast<int>(TextureId::KeyA)] =
-			Novice::LoadTexture("./Resources/images/ui/keyGuide/key_a.png");
+			Novice::LoadTexture("./Resources/images/ui/keyGuide/a.png");
 		textureResources_[static_cast<int>(TextureId::KeyS)] =
-			Novice::LoadTexture("./Resources/images/ui/keyGuide/key_s.png");
+			Novice::LoadTexture("./Resources/images/ui/keyGuide/s.png");
 		textureResources_[static_cast<int>(TextureId::KeyD)] =
-			Novice::LoadTexture("./Resources/images/ui/keyGuide/key_d.png");
+			Novice::LoadTexture("./Resources/images/ui/keyGuide/d.png");
 		textureResources_[static_cast<int>(TextureId::KeySpace)] =
-			Novice::LoadTexture("./Resources/images/ui/keyGuide/key_space.png");
+			Novice::LoadTexture("./Resources/images/ui/keyGuide/space.png");
 		textureResources_[static_cast<int>(TextureId::KeyEnter)] =
-			Novice::LoadTexture("./Resources/images/ui/keyGuide/key_enter.png");
+			Novice::LoadTexture("./Resources/images/ui/keyGuide/enter.png");
 		textureResources_[static_cast<int>(TextureId::KeyEsc)] =
-			Novice::LoadTexture("./Resources/images/ui/keyGuide/key_esc.png");
+			Novice::LoadTexture("./Resources/images/ui/keyGuide/esc.png");
 		textureResources_[static_cast<int>(TextureId::PauseText)] =
-			Novice::LoadTexture("./Resources/images/ui/scenes/pause_text.png");
-		textureResources_[static_cast<int>(TextureId::PauseBg)] =
-			Novice::LoadTexture("./Resources/images/ui/scenes/pause_bg.png");
+			Novice::LoadTexture("./Resources/images/ui/pause.png");
+		/*textureResources_[static_cast<int>(TextureId::PauseBg)] =
+			Novice::LoadTexture("./Resources/images/ui/pause_bg.png");
 		textureResources_[static_cast<int>(TextureId::ResultClear)] =
 			Novice::LoadTexture("./Resources/images/ui/scenes/result_clear.png");
 		textureResources_[static_cast<int>(TextureId::ResultOver)] =
 			Novice::LoadTexture("./Resources/images/ui/scenes/result_over.png");*/
+
+
 		
 	}
 }

@@ -55,19 +55,29 @@ void MapChipEditor::UpdateAndDrawImGui(MapData& mapData, Camera2D& camera) {
 	ImGui::Begin("Map Editor");
 
 	// 保存・ロード
+	ImGui::Begin("Map Editor");
+
+	// ファイルパス指定
+	ImGui::Text("File Path:");
+	ImGui::InputText("##filepath", currentFilePath_, IM_ARRAYSIZE(currentFilePath_));
+
+	ImGui::Separator();
+
+	// 保存・ロード
 	if (ImGui::Button("Save Map")) {
-		mapData.Save("./Resources/data/stage1.json");
+		mapData.Save(currentFilePath_);
 		ImGui::OpenPopup("Saved");
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Load Map")) {
-		mapData.Load("./Resources/data/stage1.json");
+		mapData.Load(currentFilePath_);
 		undoStack_.clear();
 		redoStack_.clear();
 	}
 
 	if (ImGui::BeginPopup("Saved")) {
 		ImGui::Text("Save Complete!");
+		ImGui::Text("Path: %s", currentFilePath_);
 		ImGui::EndPopup();
 	}
 

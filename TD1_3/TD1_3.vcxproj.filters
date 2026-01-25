@@ -318,7 +318,7 @@
       <Filter>KamataEngine\Source\library\2D\Particle</Filter>
     </ClCompile>
     <ClCompile Include="UIManager.cpp">
-      <Filter>KamataEngine</Filter>
+      <Filter>KamataEngine\Source\library\2D\Ui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -604,6 +604,8 @@
     <ClInclude Include="DrawComponentManager.hpp">
       <Filter>KamataEngine\Source\library\2D\Draw\DrawComponent2D\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="UIManager.h" />
+    <ClInclude Include="UIManager.h">
+      <Filter>KamataEngine\Source\library\2D\Ui</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

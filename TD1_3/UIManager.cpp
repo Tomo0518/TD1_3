@@ -185,7 +185,7 @@ void UIManager::Draw() {
 	if (isGamePlay_) {
 		// 座標は適宜調整
 		playerHP_->Draw({ 250.0f, 650.0f }, 1.0f);
-		bossHP_->Draw({ 640.0f, 50.0f }, 0.8f);
+		//bossHP_->Draw({ 640.0f, 50.0f }, 0.8f);
 
 		keyW_->DrawScreen();
 		keyA_->DrawScreen();
