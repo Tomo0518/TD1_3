@@ -330,7 +330,7 @@ public:
 				if (isHorizontal_) {
 					// Only x moves back, y matches player
 					transform_.translate.x += dir.x * speed;
-					transform_.translate.y = ownerPos.y;
+					transform_.translate.y += dir.y * speed/2.f;
 				}
 				else {
 					// Only y moves back, x matches player
