@@ -605,5 +605,11 @@
       <Filter>KamataEngine\Source\library\2D\Draw\DrawComponent2D\Manager</Filter>
     </ClInclude>
     <ClInclude Include="UIManager.h" />
+    <ClInclude Include="Door.hpp">
+      <Filter>KamataEngine\Source\Game\Object\PhysicsGameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Button.hpp">
+      <Filter>KamataEngine\Source\Game\Object\PhysicsGameObject</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
