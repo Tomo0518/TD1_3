@@ -155,6 +155,45 @@
   "useAnimation": false,
   "windStrength": 0.0
  },
+ "Enemy_CanStan": {
+  "acceleration": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "angleBase": 86.7750015258789,
+  "angleRange": 71.53099822998047,
+  "animSpeed": 0.10000000149011612,
+  "blendMode": "Add",
+  "bounceDamping": 0.30000001192092896,
+  "colorEnd": 4294967040,
+  "colorStart": 1402667007,
+  "count": 3,
+  "divX": 1,
+  "divY": 1,
+  "emitRange": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "floatAmplitude": 0.0,
+  "floatFrequency": 1.0,
+  "gravity": {
+   "x": 0.0,
+   "y": 0.0
+  },
+  "lifeMax": 65,
+  "lifeMin": 42,
+  "rotationSpeedMax": 0.0,
+  "rotationSpeedMin": 0.0,
+  "scaleEnd": 0.375,
+  "scaleStart": 1.6610000133514404,
+  "sizeMax": 47.51499938964844,
+  "sizeMin": 35.055999755859375,
+  "speedMax": 312.7040100097656,
+  "speedMin": 250.81399536132813,
+  "totalFrames": 1,
+  "useAnimation": false,
+  "windStrength": 0.0
+ },
  "Enemy_Dead": {
   "acceleration": {
    "x": 0.0,

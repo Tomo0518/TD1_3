@@ -229,9 +229,35 @@ public:
 	void StartColorTransition(const ColorRGBA& targetColor, float duration) {
 		effect_.StartColorTransition(targetColor, duration);
 	}
-	void StartFlash(const ColorRGBA& flashColor, float duration, float intensity = 1.0f) {
-		effect_.StartFlash(flashColor, duration, intensity);
+
+	// エフェクト経由で使用（Effect.hのメソッドを委譲）
+	void StartFlashBlink(unsigned int color, int count, float duration, BlendMode blend, unsigned int layer = 1) {
+		effect_.StartFlashBlink(color, count, duration, blend, layer);
 	}
+	void StopFlashBlink() { effect_.StopFlashBlink(); }
+	bool IsFlashBlinking() const { return effect_.IsFlashBlinking(); }
+
+
+	/// フラッシュの残り回数を取得
+	int GetFlashRemainingCount() const {
+		return effect_.GetFlashRemainingCount();
+	}
+
+	/// フラッシュの経過時間を取得
+	float GetFlashTimer() const {
+		return effect_.GetFlashTimer();
+	}
+
+	/// フラッシュが現在ONかどうか
+	bool IsFlashCurrentlyOn() const {
+		return effect_.IsFlashOn();
+	}
+
+	void SetFlashBlinkState(unsigned int color, int remainingCount, float duration,
+		unsigned int layer, float timer, bool isOn) {
+		effect_.SetFlashBlinkState(color, remainingCount, duration, layer, timer, isOn);
+	}
+
 	void StopFade() { effect_.StopFade(); }
 
 	// 複合エフェクト

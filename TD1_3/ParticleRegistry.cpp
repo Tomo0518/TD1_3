@@ -33,6 +33,14 @@ void ParticleRegistry::Initialize() {
 		});
 
 	particleTypes_.push_back({
+	ParticleType::Enemy_CanStan,
+	"Enemy_CanStan",
+	"Combat",
+	TextureId::Particle_Hit,
+	0xB01717FF
+		});
+	
+	particleTypes_.push_back({
 		ParticleType::Enemy_Dead,
 		"Enemy_Dead",
 		"Combat",

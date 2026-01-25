@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "PhysicsObject.hpp"
+#include "DrawComponentManager.hpp"
 
 enum class AttackEnemyPhase {
 	Patrolling,
@@ -14,7 +15,7 @@ enum class AttackEnemyBattleState {
 };
 
 class AttackEnemy : public PhysicsObject {
-private:	
+private:
 	int direction_ = 1;         // 移動方向（1: 右, -1: 左）
 
 	// 移動速度
@@ -62,28 +63,30 @@ private:
 	float windupTimer_ = 0.0f; // 溜めタイマー
 	float windupShakeMagnitude_ = 0.0f; // 溜め時の画面揺れの大きさ
 	float windupShakeIncrement_ = 0.1f; // 画面揺れの増加量
+	bool emitedCanAttackEffect_ = false;
 	AttackEnemyBattleState battleState_ = AttackEnemyBattleState::Idle;
 
+	// 描画マネージャー（全てのDrawComponent2Dを管理）
+	DrawComponentManager drawManager_;
+
 	// 描画コンポーネント
-	DrawComponent2D* StunnedComp_ = nullptr;
-	DrawComponent2D* PatrolComp_ = nullptr;
-	DrawComponent2D* AttackComp_ = nullptr;
-	DrawComponent2D* runComp_ = nullptr;
-	DrawComponent2D* windupComp_ = nullptr;
-	DrawComponent2D* battleIdleComp_ = nullptr;
+	//DrawComponent2D* StunnedComp_ = nullptr;
+	//DrawComponent2D* PatrolComp_ = nullptr;
+	//DrawComponent2D* AttackComp_ = nullptr;
+	//DrawComponent2D* runComp_ = nullptr;
+	//DrawComponent2D* windupComp_ = nullptr;
+	//DrawComponent2D* battleIdleComp_ = nullptr;
 public:
 	AttackEnemy() {
-		delete drawComp_;
-		drawComp_ = nullptr;
-		//Initialize();
+		// 親クラスのdrawComp_を削除して無効化
+		if (drawComp_) {
+			delete drawComp_;
+			drawComp_ = nullptr;
+		}
 	}
+
 	~AttackEnemy() {
-		if (drawComp_ != StunnedComp_) delete StunnedComp_;
-		if (drawComp_ != PatrolComp_) delete PatrolComp_;
-		if (drawComp_ != AttackComp_) delete AttackComp_;
-		if (drawComp_ != runComp_) delete runComp_;
-		if (drawComp_ != windupComp_) delete windupComp_;
-		if (drawComp_ != battleIdleComp_) delete battleIdleComp_;
+		drawComp_ = nullptr;
 	}
 
 	void Initialize() override {
@@ -92,27 +95,31 @@ public:
 		collider_.size = { 80.f, 80.f };
 		collider_.offset = { 0.f, -20.f };
 
-		// 描画コンポーネントの初期化があれば呼ぶ
-		PatrolComp_ = new DrawComponent2D(Tex().GetTexture(TextureId::AttackKinokoWalk), 10, 1, 10, 5.f, true);
-		StunnedComp_ = new DrawComponent2D(Tex().GetTexture(TextureId::AttackKinokoStun), 4, 1, 4, 5.f, false);
-		AttackComp_ = new DrawComponent2D(Tex().GetTexture(TextureId::AttackKinokoAttack), 9, 1, 9, 5.f, false);
-		runComp_ = new DrawComponent2D(Tex().GetTexture(TextureId::AttackKinokoRun), 4, 1, 4, 5.f, true);
-		windupComp_ = new DrawComponent2D(Tex().GetTexture(TextureId::AttackKinokoWindup), 4, 1, 4, 5.f, false);
-		battleIdleComp_ = new DrawComponent2D(Tex().GetTexture(TextureId::AttackKinokoBattleIdle), 6, 1, 6, 5.f, true);
+		// マネージャーにコンポーネントを登録
+		drawManager_.RegisterComponent("Patrol",
+			new DrawComponent2D(Tex().GetTexture(TextureId::AttackKinokoWalk), 10, 1, 10, 5.f, true));
+		drawManager_.RegisterComponent("Stunned",
+			new DrawComponent2D(Tex().GetTexture(TextureId::AttackKinokoStun), 4, 1, 4, 5.f, false));
+		drawManager_.RegisterComponent("Attack",
+			new DrawComponent2D(Tex().GetTexture(TextureId::AttackKinokoAttack), 9, 1, 9, 5.f, false));
+		drawManager_.RegisterComponent("Run",
+			new DrawComponent2D(Tex().GetTexture(TextureId::AttackKinokoRun), 4, 1, 4, 5.f, true));
+		drawManager_.RegisterComponent("Windup",
+			new DrawComponent2D(Tex().GetTexture(TextureId::AttackKinokoWindup), 4, 1, 4, 5.f, false));
+		drawManager_.RegisterComponent("BattleIdle",
+			new DrawComponent2D(Tex().GetTexture(TextureId::AttackKinokoBattleIdle), 6, 1, 6, 5.f, true));
 
-		PatrolComp_->Initialize();
-		StunnedComp_->Initialize();
-		AttackComp_->Initialize();
-		runComp_->Initialize();
-		windupComp_->Initialize();
-		battleIdleComp_->Initialize();
-
-		drawComp_ = PatrolComp_;
+		// 全コンポーネントを初期化
+		auto compNames = { "Patrol", "Stunned", "Attack", "Run", "Windup", "BattleIdle" };
+		for (const auto& name : compNames) {
+			if (auto* comp = drawManager_.GetComponent(name)) {
+				comp->Initialize();
+			}
+		}
 
 		initialPosition_ = transform_.translate;
 		status_.maxHP = 15;
 		status_.currentHP = status_.maxHP;
-
 	}
 
 	bool IsFacingPlayer() {
@@ -122,7 +129,7 @@ public:
 	}
 
 	void FindPlayer() {
-		if(!playerRef_) {
+		if (!playerRef_) {
 			if (manager_) {
 				playerRef_ = manager_->GetPlayerObject();
 			}
@@ -145,21 +152,20 @@ public:
 
 
 
-	void UpdateDrawComponent(float deltaTime) override{
-		if (drawComp_) {
-			Vector2 renderPos;
-			renderPos.x = transform_.translate.x + float(rand() % 100) / 100.f * windupShakeMagnitude_;
-			renderPos.y = transform_.translate.y + float(rand() % 100) / 100.f * windupShakeMagnitude_;
-			drawComp_->SetTransform(transform_);
-			drawComp_->SetPosition(renderPos + damagedShakeOffset_);
-			drawComp_->Update(deltaTime);
-		}
+	void UpdateDrawComponent(float deltaTime) override {
+		Vector2 renderPos;
+		renderPos.x = transform_.translate.x + float(rand() % 100) / 100.f * windupShakeMagnitude_;
+		renderPos.y = transform_.translate.y + float(rand() % 100) / 100.f * windupShakeMagnitude_;
+
+		drawManager_.SetTransform(transform_);
+		drawManager_.SetPosition(renderPos + damagedShakeOffset_);
+		drawManager_.Update(deltaTime);
 	}
 
 	void Stunning(float deltaTime) {
 		stunTimer_ -= deltaTime;
 		if (stunTimer_ <= 0) {
-			stunned_ = false;			
+			stunned_ = false;
 		}
 	}
 
@@ -199,8 +205,8 @@ public:
 			transform_.translate.x += directionToPlayer.x * moveSpeed_;
 			return;
 		}
-		
-		if (distanceToPlayer_ <= attackRange_) {		
+
+		if (distanceToPlayer_ <= attackRange_) {
 			// 攻撃範囲内
 			if (attackTimer_ >= attackCooldown_) {
 				attackTimer_ = 0.0f;
@@ -212,11 +218,17 @@ public:
 	}
 
 	void Windup(float deltaTime) {
-		// 溜め動作
 		windupTimer_ += deltaTime;
 
-		if(windupTimer_ >= windupDuration_ / 2) {
-			// 画面揺れエフェクト開始
+		if (!emitedCanAttackEffect_) {
+			ParticleManager::GetInstance().Emit(ParticleType::Enemy_CanStan, transform_.translate);
+			emitedCanAttackEffect_ = true;
+
+			// エフェクトを開始（全コンポーネントに適用され、切り替え時も継続）
+			drawManager_.StartHitEffect();
+		}
+
+		if (windupTimer_ >= windupDuration_ / 2) {
 			windupShakeMagnitude_ += windupShakeIncrement_ * deltaTime;
 		}
 
@@ -224,6 +236,7 @@ public:
 			battleState_ = AttackEnemyBattleState::Attacking;
 			windupTimer_ = 0.0f;
 			windupShakeMagnitude_ = 0.0f;
+			emitedCanAttackEffect_ = false;
 		}
 	}
 
@@ -240,7 +253,6 @@ public:
 		}
 	}
 
-
 	void ChangeDrawComponent(DrawComponent2D* newComp) {
 		if (drawComp_ != newComp) {
 			drawComp_ = newComp;
@@ -256,11 +268,11 @@ public:
 	}
 
 	void Behavior(float deltaTime) {
-		drawComp_->SetFlipX(direction_ == 1);
-
+		drawManager_.SetFlipX(direction_ == 1);
 		FindPlayer();
 
 		if (stunned_) {
+			drawManager_.ChangeComponent("Stunned");
 			Stunning(deltaTime);
 			return;
 		}
@@ -271,9 +283,9 @@ public:
 		else if (state_ == AttackEnemyPhase::Battle) {
 			BattleBehavior(deltaTime);
 		}
-
 	}
 
+	
 	void ReturnToPatrol() {
 		state_ = AttackEnemyPhase::Patrolling;
 		battleState_ = AttackEnemyBattleState::Idle;
@@ -282,66 +294,44 @@ public:
 
 	void BattleBehavior(float deltaTime) {
 		if (distanceToPlayer_ > escapeRange_) {
-			// プレイヤーから離れすぎたらパトロールに戻る
 			ReturnToPatrol();
 			return;
 		}
 
 		switch (battleState_) {
-			case AttackEnemyBattleState::Idle:
-			{
-				ChangeDrawComponent(battleIdleComp_);
-
-				BattleIdle(deltaTime);
-
-				break;
-			}
-			case AttackEnemyBattleState::Running:
-			{
-				ChangeDrawComponent(runComp_);
-				RunTowardsPlayer(deltaTime);
-				break;
-			}
-			case AttackEnemyBattleState::Windup:
-			{
-				ChangeDrawComponent(windupComp_);
-				
-				Windup(deltaTime);
-
-				break;
-			}
-			case AttackEnemyBattleState::Attacking:
-			{
-				ChangeDrawComponent(AttackComp_);
-				// 攻撃処理
-				Attack(deltaTime);
-				break;
-			}
+		case AttackEnemyBattleState::Idle:
+			drawManager_.ChangeComponent("BattleIdle");
+			BattleIdle(deltaTime);
+			break;
+		case AttackEnemyBattleState::Running:
+			drawManager_.ChangeComponent("Run");
+			RunTowardsPlayer(deltaTime);
+			break;
+		case AttackEnemyBattleState::Windup:
+			drawManager_.ChangeComponent("Windup");
+			Windup(deltaTime);
+			break;
+		case AttackEnemyBattleState::Attacking:
+			drawManager_.ChangeComponent("Attack");
+			Attack(deltaTime);
+			break;
 		}
 	}
 
-
-	
 
 	void Stun() {
 		stunned_ = true;
 		stunTimer_ = stunDuration_;
+		drawManager_.StartFlashBlink(WHITE, 5, 0.1f,BlendMode::kBlendModeAdd, 3); // 白色、5回、0.1秒、3レイヤー
+		drawManager_.StartHitEffect();
 
 		attackTimer_ = 0.0f;
 		battleState_ = AttackEnemyBattleState::Idle;
 
-		if (drawComp_ != StunnedComp_) {
-			drawComp_ = StunnedComp_;
-			drawComp_->PlayAnimation();
-			drawComp_->SetTransform(transform_);
-		}
 	}
 
 	void Patrol(float deltaTime) {
-		if (drawComp_ != PatrolComp_) {
-			drawComp_ = PatrolComp_;
-			drawComp_->PlayAnimation();
-		}
+		drawManager_.ChangeComponent("Patrol");
 
 		// パトロール範囲内で移動
 		transform_.translate.x += direction_ * moveSpeed_ * deltaTime;
@@ -377,31 +367,12 @@ public:
 		const TileDefinition* RBDef = TileRegistry::GetTile(RBtileID);
 		if (RBDef == nullptr || !RBDef->isSolid) {
 			direction_ = -1; // Change direction to left
-		}		
+		}
 	}
 
 	void Draw(const Camera2D& camera) override {
 		if (!info_.isActive || !info_.isVisible) return;
-		// DrawComponent2Dを使って描画
-		if (drawComp_) {
-			drawComp_->Draw(camera);
-		}
-
-		// draw collider for debug
-		/*
-		Vector2 screenPos = const_cast<Camera2D&>(camera).WorldToScreen(transform_.translate);
-		Vector2 colliderSize = const_cast<Vector2&>(collider_.size);
-		Vector2 colliderOffset = const_cast<Vector2&>(collider_.offset);
-
-		Novice::DrawBox(
-			int(screenPos.x + colliderOffset.x - colliderSize.x / 2.f),
-			int(screenPos.y + colliderOffset.y),
-			int(colliderSize.x), int(colliderSize.y),
-			0.0f,
-			0xFF0000FF,
-			kFillModeWireFrame
-		);
-		*/
+		drawManager_.Draw(camera);
 	}
 
 	void damageHandling(float deltaTime) {
@@ -439,17 +410,18 @@ public:
 		else {
 			if (damage > 0) {
 				isDamaged_ = true;
+				drawManager_.StartFlashBlink(RED, 2, 0.2f, BlendMode::kBlendModeNormal,1);
 				damagedShakeTimer_ = 0.0f;
 
 				ParticleManager::GetInstance().Emit(ParticleType::Hit, transform_.translate);
 			}
-			
+
 
 			if (battleState_ == AttackEnemyBattleState::Windup) {
 				Stun();
 
 				SpawnStar();
-			}			
+			}
 		}
 	}
 

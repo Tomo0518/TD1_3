@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "Vector2.h"
 #include <functional>
+#include <Novice.h>
 
 // ========== RGBA色管理 ==========
 struct ColorRGBA {
@@ -69,6 +70,18 @@ struct FlashEffect {
 	float intensity = 1.0f;  // 0.0 ~ 1.0
 };
 
+struct FlashBlinkState {
+	bool isActive = false;
+	unsigned int flashColor = 0xFFFFFFFF;
+	int flashCount = 0;
+	int totalFlashCount = 0;
+	float flashDuration = 0.0f;
+	float flashTimer = 0.0f;
+	bool isFlashOn = false;
+	unsigned int layer = 1;
+	BlendMode blend = BlendMode::kBlendModeAdd;
+};
+
 struct ScaleEffect {
 	bool isActive = false;
 	float minScale = 1.0f;
@@ -132,6 +145,31 @@ public:
 	void StartFlash(const ColorRGBA& flashColor, float duration, float intensity = 1.0f);
 	void StopFade();
 
+	void StartFlashBlink(unsigned int color, int count, float duration, BlendMode blend = BlendMode::kBlendModeAdd,unsigned int layer = 1);
+	void StopFlashBlink();
+
+	bool IsFlashBlinking() const {return flashBlink_.isActive;}
+	int GetFlashRemainingCount() const { return flashBlink_.flashCount; }
+	float GetFlashTimer() const { return flashBlink_.flashTimer; }
+	bool IsFlashOn() const { return flashBlink_.isActive && flashBlink_.isFlashOn; }
+	unsigned int GetFlashColor() const { return flashBlink_.flashColor; }
+	BlendMode GetFlashBlendMode() const { return flashBlink_.blend; }
+	unsigned int GetFlashLayer() const { return flashBlink_.layer; }
+	float GetFlashDuration() const { return flashBlink_.flashDuration; }
+
+	void SetFlashBlinkState(unsigned int color, int remainingCount, float duration,
+		unsigned int layer, float timer, bool isOn) {
+		flashBlink_.isActive = (remainingCount > 0);
+		flashBlink_.flashColor = color;
+		flashBlink_.flashCount = remainingCount;
+		flashBlink_.totalFlashCount = remainingCount;
+		flashBlink_.flashDuration = duration;
+		flashBlink_.layer = layer;
+		flashBlink_.flashTimer = timer;
+		flashBlink_.isFlashOn = isOn;
+	}
+
+
 	// ========== 複合エフェクト（プリセット） ==========
 	void StartHitEffect();      // ダメージ演出（白フラッシュ + シェイク）
 	void StartDeathEffect();    // 消滅演出（フェードアウト + 縮小）
@@ -159,6 +197,7 @@ private:
 	RotationEffect rotationEffect_;
 	FadeEffect fadeEffect_;
 	FlashEffect flashEffect_;
+	FlashBlinkState flashBlink_;
 	ScaleEffect scaleEffect_;
 	WobbleEffect wobbleEffect_;
 	SquashEffect squashEffect_;

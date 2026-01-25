@@ -167,6 +167,9 @@
     <Filter Include="KamataEngine\Source\Game\Object\PhysicsGameObject">
       <UniqueIdentifier>{f5d45f70-558d-4149-a2bc-a206d3eee3d0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="KamataEngine\Source\library\2D\Draw\DrawComponent2D\Manager">
+      <UniqueIdentifier>{03a2112a-fd6e-416b-b5f2-b5b70cb599a5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -594,6 +597,9 @@
     </ClInclude>
     <ClInclude Include="ParticleRegistry.h">
       <Filter>KamataEngine\Source\library\2D\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawComponentManager.hpp">
+      <Filter>KamataEngine\Source\library\2D\Draw\DrawComponent2D\Manager</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

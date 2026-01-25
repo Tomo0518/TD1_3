@@ -166,6 +166,7 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClInclude Include="AttackEnemy.hpp" />
     <ClInclude Include="BackgroundManager.h" />
     <ClInclude Include="Boomerang.hpp" />
+    <ClInclude Include="DrawComponentManager.hpp" />
     <ClInclude Include="Enemy.hpp" />
     <ClInclude Include="GameObject2D.h" />
     <ClInclude Include="GameObjectManager.h" />

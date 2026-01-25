@@ -2,6 +2,7 @@
 #include <random>
 #include <algorithm>
 #include <cmath>
+#include <Novice.h>
 
 // ========== ColorRGBA 実装 ==========
 ColorRGBA ColorRGBA::FromUInt(unsigned int color) {
@@ -37,10 +38,10 @@ ColorRGBA ColorRGBA::Multiply(const ColorRGBA& a, const ColorRGBA& b) {
 
 ColorRGBA ColorRGBA::Add(const ColorRGBA& a, const ColorRGBA& b) {
 	return ColorRGBA(
-		std::min(a.r + b.r, 1.0f),
-		std::min(a.g + b.g, 1.0f),
-		std::min(a.b + b.b, 1.0f),
-		std::min(a.a + b.a, 1.0f)
+		(std::min)(a.r + b.r, 1.0f),
+		(std::min)(a.g + b.g, 1.0f),
+		(std::min)(a.b + b.b, 1.0f),
+		(std::min)(a.a + b.a, 1.0f)
 	);
 }
 
@@ -60,6 +61,23 @@ void Effect::Update(float deltaTime) {
 	UpdateScale(deltaTime);
 	UpdateWobble(deltaTime);
 	UpdateSquash(deltaTime);
+
+	// フラッシュ点滅の更新
+	if (flashBlink_.isActive) {
+		flashBlink_.flashTimer += deltaTime;
+
+		if (flashBlink_.flashTimer >= flashBlink_.flashDuration) {
+			flashBlink_.flashTimer -= flashBlink_.flashDuration;
+			flashBlink_.isFlashOn = !flashBlink_.isFlashOn;
+
+			if (!flashBlink_.isFlashOn) {
+				flashBlink_.flashCount--;
+				if (flashBlink_.flashCount <= 0) {
+					StopFlashBlink();
+				}
+			}
+		}
+	}
 }
 
 // ========== シェイク ==========
@@ -281,7 +299,7 @@ void Effect::UpdateSquash(float deltaTime) {
 
 // ========== 複合エフェクト ==========
 void Effect::StartHitEffect() {
-	StartFlash(ColorRGBA::Red(), 0.1f, 0.8f);
+	StartFlash(ColorRGBA::White(), 0.3f, 4.8f);
 	StartShake(5.0f, 0.2f);
 }
 
@@ -358,7 +376,7 @@ bool Effect::IsAnyActive() const {
 	return shakeEffect_.isActive || rotationEffect_.isActive ||
 		fadeEffect_.isActive || flashEffect_.isActive ||
 		scaleEffect_.isActive || wobbleEffect_.isActive ||
-		squashEffect_.isActive;
+		squashEffect_.isActive || IsFlashBlinking();
 }
 
 void Effect::StopAll() {
@@ -366,9 +384,31 @@ void Effect::StopAll() {
 	StopRotation();
 	StopFade();
 	StopScale();
+	StopFlashBlink();
 
 	// フェード色をリセット
 	fadeEffect_.currentColor = ColorRGBA::White();
 	fadeEffect_.startColor = ColorRGBA::White();
 	fadeEffect_.targetColor = ColorRGBA::White();
 }
+
+
+void Effect::StartFlashBlink(unsigned int color, int count, float duration, BlendMode blend, unsigned int layer) {
+	flashBlink_.isActive = true;
+	flashBlink_.flashColor = color;
+	flashBlink_.flashCount = count;
+	flashBlink_.totalFlashCount = count;
+	flashBlink_.flashDuration = duration;
+	flashBlink_.flashTimer = 0.0f;
+	flashBlink_.isFlashOn = true;
+	flashBlink_.layer = layer;
+	flashBlink_.blend = blend;
+}
+
+void Effect::StopFlashBlink() {
+	flashBlink_.isActive = false;
+	flashBlink_.flashCount = 0;
+	flashBlink_.isFlashOn = false;
+}
+
+

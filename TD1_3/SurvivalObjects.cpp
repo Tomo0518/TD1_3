@@ -80,7 +80,7 @@ void SurvivalPlayer::OnDamage() {
 
     // 被弾演出：激しくシェイク＆赤フラッシュ
     drawComp_->StartShake(5.0f, 0.5f);
-    drawComp_->StartFlash({ 1.0f, 0.0f, 0.0f, 1.0f }, 0.2f);
+    //drawComp_->StartFlash({ 1.0f, 0.0f, 0.0f, 1.0f }, 0.2f);
 }
 
 // ==========================================

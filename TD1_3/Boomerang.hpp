@@ -214,7 +214,7 @@ public:
 					//clamp x to farest distance
 					transform_.translate.x = std::clamp(transform_.translate.x,
 						std::min(startPos_.x, farestDistance_.x),
-						max(startPos_.x, farestDistance_.x));
+						std::max(startPos_.x, farestDistance_.x));
 				}
 				else {
 					// y goes to target, x follows player
@@ -224,7 +224,7 @@ public:
 					// clamp y to farest distance
 					transform_.translate.y = std::clamp(transform_.translate.y,
 						std::min(startPos_.y, farestDistance_.y),
-						max(startPos_.y, farestDistance_.y));
+						std::max(startPos_.y, farestDistance_.y));
 				}
 			}
 			else {
@@ -234,7 +234,7 @@ public:
 
 					float distanceFormOwner = Vector2::Length(transform_.translate - ownerPos);
 					//closer the distance bigger damage bonus
-					damageBonus_ = max(0,int((activeRange_*1.2f - distanceFormOwner) / 50.f));
+					damageBonus_ = std::max(0,int((activeRange_*1.2f - distanceFormOwner) / 50.f));
 
 					if (int(stayTimer_) % int(delayPerStar) == 0) AddDamageFromStar();
 					if (stayTimer_ >= maxStayTime_) hitEnemies_.clear();
@@ -268,7 +268,7 @@ public:
 			}
 			else {
 				dir = Vector2::Normalize(dir);
-				float speed = max(4.0f, 15.0f + float(damage_ + damageBonus_));
+				float speed = std::max(4.0f, 15.0f + float(damage_ + damageBonus_));
 
 				if (isHorizontal_) {
 					// Only x moves back, y matches player
@@ -292,12 +292,12 @@ public:
 		if (isHorizontal_) {
 			transform_.translate.x = std::clamp(transform_.translate.x,
 				std::min(ownerPos.x, farestDistance_.x),
-				max(ownerPos.x, farestDistance_.x));
+				std::max(ownerPos.x, farestDistance_.x));
 		}
 		else {
 			transform_.translate.y = std::clamp(transform_.translate.y,
 				std::min(ownerPos.y, farestDistance_.y),
-				max(ownerPos.y, farestDistance_.y));
+				std::max(ownerPos.y, farestDistance_.y));
 		}
 
 		if (IsTemporary() && IsIdle()) {
@@ -308,7 +308,7 @@ public:
 
 	void UpdateDrawComponent(float deltaTime) override {
 		if (!info_.isActive) return;
-		float ShakeIntensity = max(0.f, float(/*damage_ + */damageBonus_) * (IsReturning() ? 1.f : 5.f));
+		float ShakeIntensity = std::max(0.f, float(/*damage_ + */damageBonus_) * (IsReturning() ? 1.f : 5.f));
 		RenderPos_.x = transform_.translate.x + float(rand() % 100) / 100.f * ShakeIntensity;
 		RenderPos_.y = transform_.translate.y + float(rand() % 100) / 100.f * ShakeIntensity;
 

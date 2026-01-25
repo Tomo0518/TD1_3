@@ -298,6 +298,31 @@ void DrawComponent2D::DrawInternal(const Matrix3x3* vpMatrix) {
 		graphHandle_,
 		GetFinalColor()
 	);
+
+	// フラッシュエフェクト中の加算描画
+	if (effect_.IsFlashOn()) {
+		Novice::SetBlendMode(effect_.GetFlashBlendMode());
+
+		unsigned int layerCount = effect_.GetFlashLayer();
+		unsigned int flashColor = effect_.GetFlashColor();
+
+		// layer回数分重ねて描画
+		for (unsigned int i = 0; i < layerCount; ++i) {
+			Novice::DrawQuad(
+				static_cast<int>(screenVertices[0].x), static_cast<int>(screenVertices[0].y),
+				static_cast<int>(screenVertices[1].x), static_cast<int>(screenVertices[1].y),
+				static_cast<int>(screenVertices[3].x), static_cast<int>(screenVertices[3].y),
+				static_cast<int>(screenVertices[2].x), static_cast<int>(screenVertices[2].y),
+				srcX, srcY,
+				static_cast<int>(currentSrcW),
+				static_cast<int>(currentSrcH),
+				graphHandle_,
+				flashColor
+			);
+		}
+
+		Novice::SetBlendMode(kBlendModeNormal);
+	}
 }
 
 // ========== 内部処理 ==========

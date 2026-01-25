@@ -151,10 +151,9 @@ public:
 			{ false, 1, 1, 1, 0.0f } // アニメーションなし
 			});
 
-
 		// **************************************
 		// tutorial image (decoration)
-
+		// **************************************
 		tiles_.push_back({
 			TileID::JumpTutorial, "JumpTutorial", TextureId::JumpTutorial, TileType::Solid, false,
 			TileLayer::Decoration, {0.0f, 0.0f},
