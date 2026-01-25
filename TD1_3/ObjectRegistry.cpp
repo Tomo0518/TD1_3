@@ -10,6 +10,9 @@ enum class ObjectRegistryType {
 	AttackEnemySpawner = 104,
 	// ItemCoin = 200,
 	// ItemPowerUp = 201,
+
+	Button1 = 300,
+	Door1 = 400,
 };
 
 // 静的メンバの定義
@@ -74,6 +77,21 @@ void ObjectRegistry::Initialize() {
 		"AttackEnemySpawner"
 		});
 
+	// stage gimmick
+	objectTypes_.push_back({
+		300,
+		"Button_1",
+		"Gimmick",
+		0xAAAA00FF,     // color（黄土色）
+		"Button_1"
+		});
+	objectTypes_.push_back({
+		400,
+		"Door_1",
+		"Gimmick",
+		0x00AAAAFF,     // color（水色）
+		"Door_1"
+		});
 	// ===================================================================
 	// アイテム（今後追加）
 	// ===================================================================

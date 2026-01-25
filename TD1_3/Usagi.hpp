@@ -598,4 +598,13 @@ public:
 		);
 	}
 
+	GameObject2D* GetFirstBoomerang() {
+		for (auto boom : boomerangs_) {
+			if (!boom->IsTemporary()) {
+				return boom;
+			}
+		}
+		return nullptr;
+	}
+
 };
