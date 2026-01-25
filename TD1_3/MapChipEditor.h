@@ -54,7 +54,7 @@ private:
 	MapManager* mapManager_ = nullptr;
 
     // ファイルパス指定用
-    char currentFilePath_[256] = "./Resources/data/yoshikawa.json";
+    char currentFilePath_[256] = "./Resources/data/stage1.json";
 
     // オブジェクトモード用
     int selectedObjectTypeId_ = 100;  // デフォルト: PlayerStart
