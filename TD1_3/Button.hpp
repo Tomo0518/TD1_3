@@ -88,3 +88,10 @@ public:
 		ButtonID_ = 1;
 	}
 };
+
+class Button2 : public Button {
+public:
+	Button2() {
+		ButtonID_ = 2;
+	}
+};

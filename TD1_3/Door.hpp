@@ -84,3 +84,10 @@ public:
 	}
 };
 
+class Door2 : public Door {
+public:
+	Door2() {
+		targetButtonID_ = 2;
+	}
+};
+

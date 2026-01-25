@@ -190,6 +190,22 @@ void GamePlayScene::SpawnObjectFromData(const ObjectSpawnInfo& spawn) {
 			spawn.position.x, spawn.position.y);
 		break;
 	}
+	case 301: { // Button2
+		auto* button = objectManager_.Spawn<Button2>(nullptr, "Button");
+		button->SetPosition(spawn.position);
+		button->Initialize();
+		Novice::ConsolePrintf("[GamePlayScene] Spawned Button at (%.1f, %.1f)\n",
+			spawn.position.x, spawn.position.y);
+		break;
+	}
+	case 401: {
+		auto* door = objectManager_.Spawn<Door2>(nullptr, "Door");
+		door->SetPosition(spawn.position);
+		door->Initialize();
+		Novice::ConsolePrintf("[GamePlayScene] Spawned Door at (%.1f, %.1f)\n",
+			spawn.position.x, spawn.position.y);
+		break;
+	}
 
 	default:
 		Novice::ConsolePrintf("[GamePlayScene] Unknown object type: %d\n", spawn.objectTypeId);
