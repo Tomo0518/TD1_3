@@ -270,7 +270,7 @@ public:
 
 					float distanceFormOwner = Vector2::Length(transform_.translate - ownerPos);
 					//closer the distance bigger damage bonus
-					damageBonus_ = max(0,int((activeRange_*1.4f - distanceFormOwner) / 50.f));
+					damageBonus_ = std::max(0,int((activeRange_*1.4f - distanceFormOwner) / 50.f));
 
 					if (int(stayTimer_) % int(delayPerStar) == 0) AddDamageFromStar();
 					if (stayTimer_ >= maxStayTime_) hitEnemies_.clear();
@@ -344,7 +344,7 @@ public:
 
 	void UpdateDrawComponent(float deltaTime) override {
 		if (!info_.isActive) return;
-		float ShakeIntensity = max(0.f, float(/*damage_ + */damageBonus_) * (IsReturning() ? 1.f : 3.f));
+		float ShakeIntensity = std::max(0.f, float(/*damage_ + */damageBonus_) * (IsReturning() ? 1.f : 3.f));
 		RenderPos_.x = transform_.translate.x + float(rand() % 100) / 100.f * ShakeIntensity;
 		RenderPos_.y = transform_.translate.y + float(rand() % 100) / 100.f * ShakeIntensity;
 

@@ -234,7 +234,6 @@ public:
 
 		if (windupTimer_ >= windupDuration_) {
 			battleState_ = AttackEnemyBattleState::Attacking;
-			alpha_ = 0;
 			windupTimer_ = 0.0f;
 			windupShakeMagnitude_ = 0.0f;
 			emitedCanAttackEffect_ = false;
@@ -262,7 +261,6 @@ public:
 	}
 
 	void Update(float deltaTime) override {
-		frameCounter_ += deltaTime;
 
 		Behavior(deltaTime);
 		Move(deltaTime);
@@ -327,8 +325,6 @@ public:
 		stunTimer_ = stunDuration_;
 		drawManager_.StartFlashBlink(BLUE, 2, 0.2f,BlendMode::kBlendModeNormal, 1);
 		ParticleManager::GetInstance().Emit(ParticleType::Charge, transform_.translate);
-
-		alpha_ = 0;
 
 		attackTimer_ = 0.0f;
 		battleState_ = AttackEnemyBattleState::Idle;
