@@ -37,6 +37,12 @@ private:
 	bool dashAvailable_ = true;
 
 	float walkSpeed_ = 6.f;
+
+	// ゲームパッド用のデッドゾーン
+	const float stickDeadZone_ = 0.23f;
+
+	// ブーメランの前フレームの状態(回収検知)
+	bool wasBoomerangActive_ = false;
 public:
 	Usagi() {
 		drawComp_ = nullptr;
@@ -127,18 +133,39 @@ public:
 				}
 			}
 		}
-		// 例: 矢印キーで移動
+		// 入力取得
 		Vector2 inputDir = { 0.0f, 0.0f };
+		bool jumpInput = false;
+		bool dashInput = false;
 
-		if (Input().TriggerKey(DIK_W)) {
-			if (isGrounded_) {
-				Jump();
+		// ゲームパッド入力（左スティック）
+		if (Input().GetPad()) {
+			float stickX = Input().GetPad()->GetLeftStick().x;
+			float stickY = Input().GetPad()->GetLeftStick().y;
+
+			// 左右移動（デッドゾーン適用）
+			if (abs(stickX) > stickDeadZone_) {
+				inputDir.x = stickX;
+			}
+
+			// 上下移動（デッドゾーン適用）- ダッシュで使用
+			if (abs(stickY) > stickDeadZone_) {
+				inputDir.y = stickY;
+			}
+
+			// スマブラ風ジャンプ（スティック上弾き）
+			// 接地中かつ強く上に倒した場合のみジャンプ
+			if (stickY > 0.7f && isGrounded_) {
+				jumpInput = true;
+			}
+
+			// ダッシュ（Bボタン）
+			if (Input().GetPad()->Trigger(Pad::Button::B)) {
+				dashInput = true;
 			}
 		}
 
-		/*if (Input().PressKey(DIK_S)) {
-			inputDir.y -= 1.0f;
-		}*/
+		// キーボード入力（フォールバック）
 		if (Input().PressKey(DIK_A)) {
 			inputDir.x -= 1.0f;
 		}
@@ -151,22 +178,41 @@ public:
 		if (Input().PressKey(DIK_S)) {
 			inputDir.y -= 1.0f;
 		}
-		// 入力方向を正規化して速度に変換
 
+		// キーボードジャンプ
+		if (Input().TriggerKey(DIK_W)) {
+			jumpInput = true;
+		}
+
+		// キーボードダッシュ
+		if (Input().TriggerKey(DIK_K)) {
+			dashInput = true;
+		}
+
+		// 入力方向を正規化
 		inputDir = Vector2::Normalize(inputDir);
+
+		// ジャンプ処理
+		if (jumpInput && isGrounded_) {
+			Jump();
+		}
 
 		if (isGrounded_) {
 			dashAvailable_ = true;
 		}
 
-		if (Input().TriggerKey(DIK_K)) {
+		// ダッシュ処理
+		if (dashInput) {
 			if (dashCooldownTimer_ <= 0.f && dashAvailable_) {
+				if (Input().GetInputMode() == InputMode::Gamepad) {
+					Input().GetPad()->StartVibration(0.5f, 0.5f, 10);
+				}
+
 				dashAvailable_ = false;
 
 				Vector2 dashDir = { 0.f, 0.f };
 				if (Vector2::Length(inputDir) == 0.f) {
 					dashDir.x = isflipX_ ? -1.f : 1.f;
-					//dashDir.y = 1.f;
 				}
 				else {
 					dashDir = inputDir;
@@ -175,7 +221,7 @@ public:
 				rigidbody_.velocity = { 0.f, 0.f };
 				rigidbody_.acceleration += dashDir * dashSpeed_;
 
-				if (dashDir.y == 0.f) transform_.translate.y += 2.f; // 地面から少し浮かせる
+				if (dashDir.y == 0.f) transform_.translate.y += 2.f;
 
 				dashDurationTimer_ = dashDuration_;
 				dashCooldownTimer_ = dashCooldown_;
@@ -184,11 +230,9 @@ public:
 				rigidbody_.deceleration = { 0.9f, 0.9f };
 				rigidbody_.maxSpeedX = dashSpeed_;
 
-				// ジャンプアニメーションに切り替え
 				if (drawComp_ != jumpComp_) {
 					drawComp_ = jumpComp_;
 					BoomerangDrawComp_ = BoomerangJumpComp_;
-					//drawComp_->StopAnimation();
 					drawComp_->PlayAnimation();
 					BoomerangDrawComp_->PlayAnimation();
 				}
@@ -259,7 +303,7 @@ public:
 
 		
 
-		if (Input().ReleaseKey(DIK_J)) {
+		if (Input().ReleaseKey(DIK_J) || Input().GetPad()->Trigger(Pad::Button::A)) {
 			tryThrow = true;
 			throwDir = {!isflipX_?1.f:-1.f, 0};
 		}
@@ -274,7 +318,7 @@ public:
 			if (!boom->IsTemporary()) {
 				if (boom->IsIdle()) {
 					if (/*Input().PressKey(DIK_UP) || Input().PressKey(DIK_DOWN) || Input().PressKey(DIK_LEFT) || Input().PressKey(DIK_RIGHT)*/
-						Input().PressKey(DIK_J)
+						Input().PressKey(DIK_J) || Input().GetPad()->Trigger(Pad::Button::A)
 						) {
 						isCharging_ = true;
 						chargeTimer_ = std::min(chargeTimer_ + deltaTime, 120.f);
@@ -289,7 +333,7 @@ public:
 					break;
 				}
 				else {
-					if (Input().PressKey(DIK_J)) {
+					if (Input().PressKey(DIK_J) || Input().GetPad()->Trigger(Pad::Button::A)) {
 						boom->SwitchToReturn();
 					}
 						
@@ -314,6 +358,8 @@ public:
 		Move(deltaTime);
 		HandleBoomerang(deltaTime);
 
+		UpdateBoomerangPadVibration();
+
 		if (drawComp_) drawComp_->SetFlipX(isflipX_);
 		if (BoomerangDrawComp_) BoomerangDrawComp_->SetFlipX(isflipX_);
 		UpdateDrawComponent(deltaTime);
@@ -328,6 +374,38 @@ public:
 				enemy->Initialize();
 			}
 		}
+	}
+
+	void UpdateBoomerangPadVibration() {
+		// ブーメランの滞空振動と回収検出
+		bool currentBoomerangActive = false;
+		for (auto boom : boomerangs_) {
+			if (!boom->IsTemporary() && !boom->IsIdle()) {
+				currentBoomerangActive = true;
+				// ブーメランとプレイヤーの距離を計算
+				Vector2 boomerangPos = boom->GetPosition();
+				Vector2 playerPos = transform_.translate;
+				float distance = Vector2::Length(boomerangPos - playerPos);
+				// 距離に応じた振動（近いほど強く、最大距離800.0fと仮定）
+				float maxDistance = 800.0f;
+				float minDistance = 100.0f;
+				if (distance > minDistance && distance < maxDistance) {
+					// 距離が近いほど強く振動（0.0f～0.2f）
+					float vibrationPower = (1.0f - (distance - minDistance) / (maxDistance - minDistance)) * 0.2f;
+					if (Input().GetInputMode() == InputMode::Gamepad) {
+						Input().GetPad()->StartVibration(vibrationPower, vibrationPower, 2);
+					}
+				}
+				break;
+			}
+		}
+		// ブーメラン回収時の振動検出
+		if (wasBoomerangActive_ && !currentBoomerangActive) {
+			if (Input().GetInputMode() == InputMode::Gamepad) {
+				Input().GetPad()->StartVibration(0.5f, 0.5f, 15);
+			}
+		}
+		wasBoomerangActive_ = currentBoomerangActive;
 	}
 
 	virtual void UpdateDrawComponent(float deltaTime) override {
@@ -492,6 +570,13 @@ public:
 			if (b) {
 				b->Throw(throwDir, starCount_, chargeTimer_);
 				chargeTimer_ = 0;
+
+				// ブーメラン投げ時の振動
+
+				if (Input().GetInputMode() == InputMode::Gamepad) {
+					Input().GetPad()->StartVibration(0.3f, 0.3f, 10);
+				}
+
 				if (Input().PressKey(DIK_DOWN)) {
 					rigidbody_.acceleration.y = 0;
 					rigidbody_.velocity.y = 0;

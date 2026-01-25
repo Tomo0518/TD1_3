@@ -164,8 +164,6 @@ enum class TextureId {
 	PauseText, PauseBg,
 	ResultClear, ResultOver,
 
-	// Dummy for compilation
-	White1x1,
 
 	None,		// テクスチャなし用
 	Count,	// 最後

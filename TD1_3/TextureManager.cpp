@@ -312,7 +312,7 @@ void TextureManager::LoadResources() {
 		//	PauseText, PauseBg,
 		//	ResultClear, ResultOver,
 
-		textureResources_[static_cast<int>(TextureId::PlayerHPFrame)] =
+		/*textureResources_[static_cast<int>(TextureId::PlayerHPFrame)] =
 			Novice::LoadTexture("./Resources/images/ui/hp/player_hp_frame.png");
 		textureResources_[static_cast<int>(TextureId::PlayerHPBar)] =
 			Novice::LoadTexture("./Resources/images/ui/hp/player_hp_bar.png");
@@ -342,7 +342,7 @@ void TextureManager::LoadResources() {
 		textureResources_[static_cast<int>(TextureId::ResultClear)] =
 			Novice::LoadTexture("./Resources/images/ui/scenes/result_clear.png");
 		textureResources_[static_cast<int>(TextureId::ResultOver)] =
-			Novice::LoadTexture("./Resources/images/ui/scenes/result_over.png");
+			Novice::LoadTexture("./Resources/images/ui/scenes/result_over.png");*/
 		
 	}
 }

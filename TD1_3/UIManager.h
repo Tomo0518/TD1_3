@@ -6,24 +6,6 @@
 #include "InputManager.h"
 #include "TextureManager.h"
 
-// ※プロジェクトのテクスチャID定義に合わせて変更してください
-enum class TextureId {
-	// UI: HP
-	PlayerHPFrame, PlayerHPBar,
-	BossHPFrame, BossHPBar,
-
-	// UI: Key Guide
-	KeyW, KeyA, KeyS, KeyD,
-	KeySpace, KeyEnter, KeyEsc,
-
-	// UI: Scenes
-	PauseText, PauseBg,
-	ResultClear, ResultOver,
-
-	// Dummy for compilation
-	White1x1,
-};
-
 class UIManager {
 private:
 	// =================================================================
