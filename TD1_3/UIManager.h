@@ -13,6 +13,7 @@ private:
 	// =================================================================
 	class Gauge {
 	public:
+
 		// コンストラクタ
 		Gauge(TextureId frameId, TextureId barId, const Vector2& offset = { 0.0f, 0.0f });
 
@@ -43,7 +44,7 @@ public:
 	// =================================================================
 	// UIManager 本体
 	// =================================================================
-	static UIManager& Instance() {
+	static UIManager& GetInstance() {
 		static UIManager instance;
 		return instance;
 	}
@@ -52,7 +53,7 @@ public:
 	void Initialize();
 
 	// 更新
-	void Update();
+	void Update(float dt = 1.0f);
 
 	// 描画
 	void Draw();
@@ -104,7 +105,7 @@ private:
 	std::unique_ptr<DrawComponent2D> resultImage_;
 
 	// --- 状態管理 ---
-	bool isTitle_ = true;
+	bool isTitle_ = false;
 	bool isGamePlay_ = false;
 	bool isPaused_ = false;
 	bool isResult_ = false;

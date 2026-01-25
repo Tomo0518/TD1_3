@@ -38,6 +38,9 @@ private:
 
 	float walkSpeed_ = 6.f;
 
+	float currentHp_ = 100.f;
+	float maxHp_ = 100.f;
+
 	// ゲームパッド用のデッドゾーン
 	const float stickDeadZone_ = 0.23f;
 
@@ -607,4 +610,25 @@ public:
 		return nullptr;
 	}
 
+
+	void TakeDamage(float damage) {
+		currentHp_ -= damage;
+		currentHp_ = std::max(0.f, currentHp_);
+		ParticleManager::GetInstance().Emit(ParticleType::Hit, transform_.translate);
+		if (currentHp_ <= 0.f) {
+			// Handle death (e.g., respawn, game over)
+			//info_.isActive = false;
+		}
+	}
+
+	float GetCurrentHp() const {
+		return currentHp_;
+	}
+	float GetMaxHp() const {
+		return maxHp_;
+	}
+
+	void SetCurrentHp(float hp) {
+		currentHp_ = std::clamp(hp, 0.f, maxHp_);
+	}
 };

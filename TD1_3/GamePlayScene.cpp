@@ -14,6 +14,7 @@
 #include "Door.hpp"
 
 #include "PhysicsManager.h"
+#include "UIManager.h"
 
 #include "SceneUtilityIncludes.h"
 
@@ -34,6 +35,8 @@ GamePlayScene::~GamePlayScene() {
 }
 
 void GamePlayScene::Initialize() {
+	UIManager::GetInstance().SetIsGamePlay(true);
+
 	fade_ = 0.0f;
 
 	objectManager_.Clear();
@@ -250,6 +253,8 @@ void GamePlayScene::InitializeBackground() {
 }
 
 void GamePlayScene::Update(float dt, const char* keys, const char* pre) {
+	UIManager::GetInstance().Update(dt);
+
 	if (fade_ < 1.0f) {
 		fade_ += dt * 4.0f;
 	}
@@ -311,6 +316,18 @@ void GamePlayScene::Update(float dt, const char* keys, const char* pre) {
 		}
 	}
 
+#ifdef _DEBUG
+	if(Input().TriggerKey(DIK_H)) {
+		player_->TakeDamage(10.0f);
+	}
+#endif
+
+	float playerHp = player_ ? player_->GetCurrentHp() : 0.0f;
+	float playerMaxHp = player_ ? player_->GetMaxHp() : 1.0f;
+
+	UIManager::GetInstance().SetPlayerHP(playerHp, playerMaxHp);
+	UIManager::GetInstance().Update(dt);
+
 	if (camera_) {
 		camera_->Update(dt);
 	}
@@ -340,6 +357,8 @@ void GamePlayScene::Draw() {
 	if (camera_) {
 		objectManager_.Draw(*camera_);
 	}
+
+	UIManager::GetInstance().Draw();
 
 #ifdef _DEBUG
 

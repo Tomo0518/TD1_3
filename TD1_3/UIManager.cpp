@@ -11,18 +11,14 @@ UIManager::Gauge::Gauge(TextureId frameId, TextureId barId, const Vector2& offse
 	, ghost_(barId, 1, 1, 1, 0.0f) // ゴーストも同じ画像を使用
 	, barOffset_(offset)
 {
-	// ■重要: バーは左端を基準にクロップするため、アンカーはデフォルト(0.5, 0.5)でも良いが
-	// 位置合わせのために今回は左端中央(0.0, 0.5)を基準にすると扱いやすい
-	Vector2 leftAnchor = { 0.0f, 0.5f };
-	bar_.SetAnchorPoint(leftAnchor);
-	ghost_.SetAnchorPoint(leftAnchor);
+	Vector2 anchor = { 0.5f, 0.5f };
+	bar_.SetAnchorPoint(anchor);
+	ghost_.SetAnchorPoint(anchor);
 
 	// クロップ方向を水平に設定
 	bar_.SetCropDirection(CropDirection::Horizontal);
 	ghost_.SetCropDirection(CropDirection::Horizontal);
 
-	// ゴーストバーの色設定（少し暗い赤などにしてリスクを強調）
-	// 元画像が白なら綺麗に色が乗る。着色済みの場合はブレンドモード等で調整が必要かも
 	ghost_.SetBaseColor(0xFF4444FF);
 }
 
@@ -56,10 +52,11 @@ void UIManager::Gauge::Update(float deltaTime) {
 		if (!frame_.IsShakeActive()) {
 			frame_.StartShakeContinuous(2.0f);
 		}
+
 		// バーを赤く点滅させる（警告）
 		if (!bar_.IsFlashBlinking()) {
 			// 赤色で無限回点滅
-			bar_.StartFlashBlink(0xFF0000FF, 9999, 0.2f, kBlendModeAdd);
+			bar_.StartFlashBlink(0xFF0000FF, 9999, 0.2f, kBlendModeNormal);
 		}
 	}
 	else {
@@ -120,7 +117,7 @@ void UIManager::Gauge::SetRatio(float ratio) {
 void UIManager::Initialize() {
 	// --- ゲージ初期化 ---
 	// オフセットはアセットに合わせて調整してください（例: -200px左にずらす）
-	playerHP_ = std::make_unique<Gauge>(TextureId::PlayerHPFrame, TextureId::PlayerHPBar, Vector2(-200.0f, 0.0f));
+	playerHP_ = std::make_unique<Gauge>(TextureId::PlayerHPFrame, TextureId::PlayerHPBar, Vector2(0.0f, 0.0f));
 	playerHP_->SetColor(0x00FF00FF); // 緑
 
 	bossHP_ = std::make_unique<Gauge>(TextureId::BossHPFrame, TextureId::BossHPBar, Vector2(-150.0f, 0.0f));
@@ -141,9 +138,7 @@ void UIManager::Initialize() {
 	resultImage_ = std::make_unique<DrawComponent2D>(TextureId::ResultClear, 1, 1, 1, 0.0f);
 }
 
-void UIManager::Update() {
-	float dt = 1.0f / 60.0f; // デルタタイム
-
+void UIManager::Update(float dt) {
 	if (isTitle_) return;
 
 	// ポーズ切り替え入力
@@ -215,8 +210,8 @@ void UIManager::Draw() {
 void UIManager::UpdateKeyGuides() {
 	InputManager& input = InputManager::GetInstance();
 
-	// キー配置（左下）
-	Vector2 basePos = { 100.0f, 600.0f };
+	// キー配置（左上）
+	Vector2 basePos = { 100.0f, 30.0f };
 	float offset = 60.0f;
 
 	// 各キーの位置設定と入力アニメーション
@@ -240,11 +235,11 @@ void UIManager::UpdateKeyGuides() {
 }
 
 void UIManager::TogglePause() {
-	isPaused_ = !isPaused_;
-	if (isPaused_) {
-		// ポーズ開始時にテキストをPopさせる
-		pauseText_->StartPulse(0.0f, 1.0f, 0.2f, false);
-	}
+	//isPaused_ = !isPaused_;
+	//if (isPaused_) {
+	//	// ポーズ開始時にテキストをPopさせる
+	//	pauseText_->StartPulse(0.0f, 1.0f, 0.2f, false);
+	//}
 }
 
 void UIManager::ShowResult(bool isClear) {
