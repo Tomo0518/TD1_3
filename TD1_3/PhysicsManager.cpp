@@ -30,8 +30,18 @@ HitDirection PhysicsManager::ResolveMapCollision(GameObject2D* obj, const MapDat
 	int topTile = (int)(objTop / tileSize);
 	int bottomTile = (int)(objBottom / tileSize);
 
-	// マップ範囲外チェックは MapData::GetTile 内で行われるのでここではざっくりでOK
-	// ただしループ範囲は制限する
+	// 最もめり込みが深い衝突を記録するための変数
+	float maxPenetration = 0.0f;
+
+	// 移動方向を取得（速度ベクトル）
+	Vector2 moveDirection = { rb.velocity.x, rb.velocity.y };
+	float moveSpeed = std::sqrt(moveDirection.x * moveDirection.x + moveDirection.y * moveDirection.y);
+
+	// 移動方向の正規化（ゼロ除算回避）
+	if (moveSpeed > 0.01f) {
+		moveDirection.x /= moveSpeed;
+		moveDirection.y /= moveSpeed;
+	}
 
 	// 3. 周囲のブロックを走査して衝突チェック
 	for (int y = topTile; y <= bottomTile; ++y) {
@@ -61,39 +71,93 @@ HitDirection PhysicsManager::ResolveMapCollision(GameObject2D* obj, const MapDat
 
 			// AABB判定（念のため）
 			if (dx1 > 0 && dx2 > 0 && dy1 > 0 && dy2 > 0) {
+
 				// 最もめり込みが浅い方向（＝脱出最短ルート）を探す
-				float ox = (dx1 < dx2) ? -dx1 : dx2; // X軸の修正量（絶対値が小さい方）
-				float oy = (dy1 < dy2) ? -dy1 : dy2; // Y軸の修正量（絶対値が小さい方）
+				float ox = (dx1 < dx2) ? dx1 : dx2; // X軸の修正量（絶対値が小さい方）
+				float oy = (dy1 < dy2) ? dy1 : dy2; // Y軸の修正量（絶対値が小さい方）
 
-				if (std::abs(ox) < std::abs(oy)) {
+				// めり込みの深さ（最小の修正量）
+				float penetrationDepth = std::min(ox, oy);
+
+				// 移動方向との整合性をチェック
+				// 移動方向と逆方向の衝突は優先度を下げる
+				float directionPriority = 1.0f;
+
+				if (ox < oy) {
+					// X方向の衝突
+					bool movingRight = rb.velocity.x > 0.1f;
+					bool movingLeft = rb.velocity.x < -0.1f;
+					bool collidingFromRight = (dx2 < dx1); // 右から当たっている
+					bool collidingFromLeft = (dx1 < dx2);  // 左から当たっている
+
+					// 移動方向と衝突方向が一致しない場合は優先度を下げる
+					if ((movingRight && collidingFromLeft) || (movingLeft && collidingFromRight)) {
+						directionPriority = 0.5f; // 優先度を下げる
+					}
+				}
+				else {
+					// Y方向の衝突
+					bool movingUp = rb.velocity.y > 0.1f;
+					bool movingDown = rb.velocity.y < -0.1f;
+					bool collidingFromTop = (dy1 < dy2);    // 上から当たっている
+					bool collidingFromBottom = (dy2 < dy1); // 下から当たっている
+
+					// 移動方向と衝突方向が一致しない場合は優先度を下げる
+					if ((movingUp && collidingFromBottom) || (movingDown && collidingFromTop)) {
+						directionPriority = 0.5f; // 優先度を下げる
+					}
+				}
+
+				// 優先度を考慮した実効的な深さ
+				float effectivePenetration = penetrationDepth * directionPriority;
+
+				if (ox < oy) {
 					// X軸方向のめり込みの方が浅い -> 横に押し出す
-					transform.translate.x += (dx1 < dx2) ? dx1 : -dx2;
-					if (rb.velocity.x != 0.f) Novice::ConsolePrintf("Hit X Velocity: %f\n", rb.velocity.x);
-					rb.velocity.x = 0.0f; // 壁にぶつかったので速度リセット
+					bool movingIntoWall = (dx1 < dx2 && rb.velocity.x < -0.5f) ||
+						(dx1 >= dx2 && rb.velocity.x > 0.5f);
+					bool significantPenetration = ox > 0.5f;
 
-					// 座標更新に伴いAABB情報も更新しないと、次のブロック判定でおかしくなる
-					objLeft = transform.translate.x + collider.offset.x - collider.size.x * 0.5f;
-					objRight = objLeft + objW;
+					if (movingIntoWall || significantPenetration) {
+						// 基本の押し出し + 微小な余白（0.4px）
+						float extraPush = 0.4f;
+						float pushAmount = (dx1 < dx2) ? (dx1 + extraPush) : -(dx2 + extraPush);
+						transform.translate.x += pushAmount;
 
-					hitDir = (dx1 < dx2) ? HitDirection::Left : HitDirection::Right;
+						// 速度リセットは移動中のみ
+						if (movingIntoWall) {
+							rb.velocity.x = 0.0f;
+						}
+
+						objLeft = transform.translate.x + collider.offset.x - collider.size.x * 0.5f;
+						objRight = objLeft + objW;
+
+						// ★ 優先度を考慮して方向を更新
+						if (effectivePenetration > maxPenetration) {
+							maxPenetration = effectivePenetration;
+							hitDir = (dx1 < dx2) ? HitDirection::Left : HitDirection::Right;
+						}
+					}
 				}
 				else {
 					// Y軸方向のめり込みの方が浅い -> 縦に押し出す
 					transform.translate.y += (dy1 < dy2) ? dy1 : -dy2;
-					if (rb.velocity.y != 0.f) Novice::ConsolePrintf("Hit Y Velocity: %f\n", rb.velocity.y);
-					rb.velocity.y = 0.0f; // 床/天井にぶつかったので速度リセット
+					rb.velocity.y = 0.0f;
 
 					// 座標更新
 					objTop = transform.translate.y + collider.offset.y - collider.size.y * 0.5f;
 					objBottom = objTop + objH;
 
-					hitDir = (dy1 < dy2) ? HitDirection::Top : HitDirection::Bottom;
+					// 優先度を考慮して方向を更新
+					if (effectivePenetration > maxPenetration) {
+						maxPenetration = effectivePenetration;
+						hitDir = (dy1 < dy2) ? HitDirection::Top : HitDirection::Bottom;
+					}
 				}
 			}
 		}
 	}
 
-	// 最後にワールド行列を再計算（位置が変わったため）
+	// 最後にワールド行列を再計算
 	transform.CalculateWorldMatrix();
 
 	return hitDir;
