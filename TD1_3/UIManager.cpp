@@ -211,7 +211,7 @@ void UIManager::UpdateKeyGuides() {
 	InputManager& input = InputManager::GetInstance();
 
 	// キー配置（左上）
-	Vector2 basePos = { 100.0f, 30.0f };
+	Vector2 basePos = { 100.0f, 100.0f };
 	float offset = 60.0f;
 
 	// 各キーの位置設定と入力アニメーション
