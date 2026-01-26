@@ -195,6 +195,8 @@ void TextureManager::LoadResources() {
 			Novice::LoadTexture("./Resources/images/gamePlay/background/middle.png");
 		textureResources_[static_cast<int>(TextureId::Background_Near)] =
 			Novice::LoadTexture("./Resources/images/gamePlay/background/near.png");
+		textureResources_[static_cast<int>(TextureId::Background_Foreground)] =
+			Novice::LoadTexture("./Resources/images/gamePlay/background/near.png");
 
 	}
 
@@ -321,15 +323,15 @@ void TextureManager::LoadResources() {
 		//	PauseText, PauseBg,
 		//	ResultClear, ResultOver,
 
+		// ====================================
+		// UI
+		// ====================================
 		textureResources_[static_cast<int>(TextureId::PlayerHPFrame)] =
 			Novice::LoadTexture("./Resources/images/ui/Gauge/player_hp_frame.png");
 		textureResources_[static_cast<int>(TextureId::PlayerHPBar)] =
 			Novice::LoadTexture("./Resources/images/ui/Gauge/player_hp_bar.png");
 
-	/*	textureResources_[static_cast<int>(TextureId::BossHPFrame)] =
-			Novice::LoadTexture("./Resources/images/ui/hp/boss_hp_frame.png");
-		textureResources_[static_cast<int>(TextureId::BossHPBar)] =
-			Novice::LoadTexture("./Resources/images/ui/hp/boss_hp_bar.png");*/
+		// =========== Key Guide ==========
 		textureResources_[static_cast<int>(TextureId::KeyW)] =
 			Novice::LoadTexture("./Resources/images/ui/keyGuide/w.png");
 		textureResources_[static_cast<int>(TextureId::KeyA)] =
@@ -338,6 +340,12 @@ void TextureManager::LoadResources() {
 			Novice::LoadTexture("./Resources/images/ui/keyGuide/s.png");
 		textureResources_[static_cast<int>(TextureId::KeyD)] =
 			Novice::LoadTexture("./Resources/images/ui/keyGuide/d.png");
+		textureResources_[static_cast<int>(TextureId::KeyK)] =
+			Novice::LoadTexture("./Resources/images/ui/keyGuide/k.png");
+		textureResources_[static_cast<int>(TextureId::KeyJ)] =
+			Novice::LoadTexture("./Resources/images/ui/keyGuide/j.png");
+
+
 		textureResources_[static_cast<int>(TextureId::KeySpace)] =
 			Novice::LoadTexture("./Resources/images/ui/keyGuide/space.png");
 		textureResources_[static_cast<int>(TextureId::KeyEnter)] =
@@ -346,6 +354,16 @@ void TextureManager::LoadResources() {
 			Novice::LoadTexture("./Resources/images/ui/keyGuide/esc.png");
 		textureResources_[static_cast<int>(TextureId::PauseText)] =
 			Novice::LoadTexture("./Resources/images/ui/pause.png");
+
+		// ========= Icon ==========
+		textureResources_[static_cast<int>(TextureId::Icon_BoomerangReturn)] =
+			Novice::LoadTexture("./Resources/images/ui/icon/boomerang_return.png");
+		textureResources_[static_cast<int>(TextureId::Icon_BoomerangThrow)] =
+			Novice::LoadTexture("./Resources/images/ui/icon/boomerang_throw.png");
+		textureResources_[static_cast<int>(TextureId::Icon_Dash)] =
+			Novice::LoadTexture("./Resources/images/ui/icon/dash.png");
+
+
 		/*textureResources_[static_cast<int>(TextureId::PauseBg)] =
 			Novice::LoadTexture("./Resources/images/ui/pause_bg.png");
 		textureResources_[static_cast<int>(TextureId::ResultClear)] =

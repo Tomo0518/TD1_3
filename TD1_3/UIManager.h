@@ -91,11 +91,42 @@ private:
 	std::unique_ptr<Gauge> playerHP_;
 	std::unique_ptr<Gauge> bossHP_;
 
+	// ========== Icon ================
+	std::unique_ptr<DrawComponent2D> iconJump_;
+	std::unique_ptr<DrawComponent2D> iconDash_;
+	std::unique_ptr<DrawComponent2D> iconDashEmpty_;
+	std::unique_ptr<DrawComponent2D> iconBoomerangThrow_;
+	std::unique_ptr<DrawComponent2D> iconBoomerangReturn_;
+
 	// キーガイド（入力連動用）
 	std::unique_ptr<DrawComponent2D> keyW_;
 	std::unique_ptr<DrawComponent2D> keyA_;
 	std::unique_ptr<DrawComponent2D> keyS_;
 	std::unique_ptr<DrawComponent2D> keyD_;
+	std::unique_ptr<DrawComponent2D> keyK_;
+	std::unique_ptr<DrawComponent2D> keyJ_;
+	
+
+	// Jump, Dash, Throwのキーガイド
+	std::unique_ptr<DrawComponent2D> keyJump_;
+	std::unique_ptr<DrawComponent2D> keyDash_;
+	std::unique_ptr<DrawComponent2D> keyBoomerangReturn_;
+	std::unique_ptr<DrawComponent2D> keyBoomerangThrow_;
+
+	
+
+	// ========= Padキーガイド =========
+	std::unique_ptr<DrawComponent2D> padStickUp_;
+	std::unique_ptr<DrawComponent2D> padStickDown_;
+	std::unique_ptr<DrawComponent2D> padStickLeft_;
+	std::unique_ptr<DrawComponent2D> padStickRight_;
+
+	std::unique_ptr<DrawComponent2D> padButtonA_;
+	std::unique_ptr<DrawComponent2D> padButtonB_;
+
+	std::unique_ptr<DrawComponent2D> padButtonJump_;
+	std::unique_ptr<DrawComponent2D> padButtonDash_;
+	std::unique_ptr<DrawComponent2D> padButtonBoomerang_;
 
 	// ポーズ画面
 	std::unique_ptr<DrawComponent2D> pauseBg_;   // 半透明黒

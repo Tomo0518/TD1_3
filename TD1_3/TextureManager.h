@@ -106,6 +106,7 @@ enum class TextureId {
 	Background_Far,
 	Background_Middle,
 	Background_Near,
+	Background_Foreground,
 
 	// ========================================
 	// パーティクルテクスチャ
@@ -131,6 +132,9 @@ enum class TextureId {
 	// ========================================
 	// UI用テクスチャ
 	// ========================================
+	// Icon
+	Icon_BoomerangReturn,Icon_BoomerangThrow,
+	Icon_Dash,
 
 	// ========== ボタン ==========
 	UI_Button_Play,
@@ -162,8 +166,15 @@ enum class TextureId {
 	BossHPFrame, BossHPBar,
 
 	// UI: Key Guide
-	KeyW, KeyA, KeyS, KeyD,
+	KeyW, KeyA, KeyS, KeyD, KeyK, KeyJ,
 	KeySpace, KeyEnter, KeyEsc,
+
+	KeyDush, KeyThrow, KeyJump,
+	// Pad Guide
+	PadStickUp, PadStickDown, PadStickLeft, PadStickRight,
+	PadButtonA, PadButtonB, PadButtonX, PadButtonY,
+	PadMove, PadDash, PadThrow, PadJump,
+
 
 	// UI: Scenes
 	PauseText, PauseBg,

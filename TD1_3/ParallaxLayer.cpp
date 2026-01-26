@@ -3,12 +3,13 @@
 #include <cmath>
 
 
-ParallaxLayer::ParallaxLayer(TextureId textureId, float scrollSpeed, float repeatWidth)
+ParallaxLayer::ParallaxLayer(TextureId textureId, float scrollSpeed, std::string layerName,float repeatWidth)
     : textureHandle_(TextureManager::GetInstance().GetTexture(textureId))
     , scrollSpeed_(scrollSpeed)
     , repeatWidth_(repeatWidth)
     , verticalOffset_(360.0f)  // 画面中央(720 / 2)
-    , initialCameraPosition_({ 0.0f, 0.0f }) {
+    , initialCameraPosition_({ 0.0f, 0.0f })
+    , layerNameTag_(layerName) {
 }
 
 void ParallaxLayer::Draw(Camera2D& camera) {

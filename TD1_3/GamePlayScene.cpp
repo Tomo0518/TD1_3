@@ -223,6 +223,7 @@ void GamePlayScene::InitializeBackground() {
 	backgroundManager_->AddLayer(
 		TextureId::Background_Base,
 		0.0f,    // カメラの0%の速度
+		"base",
 		1280.0f  // テクスチャ幅
 	);
 
@@ -230,6 +231,7 @@ void GamePlayScene::InitializeBackground() {
 	backgroundManager_->AddLayer(
 		TextureId::Background_Far,
 		0.1f,    // カメラの10%の速度
+		"far",
 		1280.0f  // テクスチャ幅
 	);
 
@@ -237,6 +239,7 @@ void GamePlayScene::InitializeBackground() {
 	backgroundManager_->AddLayer(
 		TextureId::Background_Middle,
 		0.3f,
+		"middle",
 		1280.0f
 	);
 
@@ -244,6 +247,15 @@ void GamePlayScene::InitializeBackground() {
 	backgroundManager_->AddLayer(
 		TextureId::Background_Near,
 		0.6f,
+		"near",
+		1280.0f
+	);
+
+	// レイヤー4: 前景の岩
+	backgroundManager_->AddLayer(
+		TextureId::Background_Foreground,
+		0.8f,
+		"foreground",
 		1280.0f
 	);
 
@@ -360,6 +372,9 @@ void GamePlayScene::Draw() {
 	if (camera_) {
 		objectManager_.Draw(*camera_);
 	}
+
+	// 前景背景描画
+	backgroundManager_->Draw(*camera_, "foreground");
 
 	UIManager::GetInstance().Draw();
 

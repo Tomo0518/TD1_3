@@ -127,6 +127,24 @@ void UIManager::Initialize() {
 	keyA_ = std::make_unique<DrawComponent2D>(TextureId::KeyA, 1, 1, 1, 0.0f);
 	keyS_ = std::make_unique<DrawComponent2D>(TextureId::KeyS, 1, 1, 1, 0.0f);
 	keyD_ = std::make_unique<DrawComponent2D>(TextureId::KeyD, 1, 1, 1, 0.0f);
+	keyK_ = std::make_unique<DrawComponent2D>(TextureId::KeyK, 1, 1, 1, 0.0f);
+	keyJ_ = std::make_unique<DrawComponent2D>(TextureId::KeyJ, 1, 1, 1, 0.0f);
+
+	keyDash_ = std::make_unique<DrawComponent2D>(TextureId::Icon_Dash, 1, 1, 1, 0.0f);
+	keyJump_ = std::make_unique<DrawComponent2D>(TextureId::KeyJump, 1, 1, 1, 0.0f);
+	keyBoomerangThrow_ = std::make_unique<DrawComponent2D>(TextureId::Icon_BoomerangThrow, 1, 1, 1, 0.0f);
+	keyBoomerangReturn_ = std::make_unique<DrawComponent2D>(TextureId::Icon_BoomerangReturn, 1, 1, 1, 0.0f);
+
+	// ========= Padキーガイド 初期化 =========
+	padStickUp_ = std::make_unique<DrawComponent2D>(TextureId::PadStickUp, 1, 1, 1, 0.0f);
+	padStickDown_ = std::make_unique<DrawComponent2D>(TextureId::PadStickDown, 1, 1, 1, 0.0f);
+	padStickLeft_ = std::make_unique<DrawComponent2D>(TextureId::PadStickLeft, 1, 1, 1, 0.0f);
+	padStickRight_ = std::make_unique<DrawComponent2D>(TextureId::PadStickRight, 1, 1, 1, 0.0f);
+	padButtonA_ = std::make_unique<DrawComponent2D>(TextureId::PadButtonA, 1, 1, 1, 0.0f);
+	padButtonB_ = std::make_unique<DrawComponent2D>(TextureId::PadButtonB, 1, 1, 1, 0.0f);
+	/*padButtonDash_ = std::make_unique<DrawComponent2D>(TextureId::PadButtonDash, 1, 1, 1, 0.0f);
+	padButtonJump_ = std::make_unique<DrawComponent2D>(TextureId::PadButtonJump, 1, 1, 1, 0.0f);
+	padButtonBoomerang_ = std::make_unique<DrawComponent2D>(TextureId::PadButtonBoomerang, 1, 1, 1, 0.0f);*/
 
 	// --- ポーズ・リザルト ---
 	pauseText_ = std::make_unique<DrawComponent2D>(TextureId::PauseText, 1, 1, 1, 0.0f);
