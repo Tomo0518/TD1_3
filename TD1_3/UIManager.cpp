@@ -149,9 +149,9 @@ void UIManager::Initialize() {
 	iconBoomerangThrow_ = std::make_unique<DrawComponent2D>(TextureId::Icon_BoomerangThrow, 1, 1, 1, 0.0f);
 	iconBoomerangReturn_ = std::make_unique<DrawComponent2D>(TextureId::Icon_BoomerangReturn, 1, 1, 1, 0.0f);
 
-	skillIconDash_ = std::make_unique<SkillIcon>(skillIconPos_);
+	skillIconDash_ = std::make_unique<SkillIcon>(skillIconPos_ + skillIconOffset_);
 	skillIconDash_->AddIconTexture(TextureId::Icon_Dash);
-	skillIconBoomerang_ = std::make_unique<SkillIcon>(skillIconPos_ + skillIconOffset_);
+	skillIconBoomerang_ = std::make_unique<SkillIcon>(skillIconPos_ );
 	skillIconBoomerang_->AddIconTexture(TextureId::Icon_BoomerangThrow);
 	skillIconBoomerang_->AddIconTexture(TextureId::Icon_BoomerangReturn);
 
@@ -316,13 +316,13 @@ void UIManager::UpdateKeyGuides() {
 		}
 
 		// Kはダッシュアイコンの下に描画
-		keyK_->SetPosition({ skillIconPos_ + controllKeyOffset_ });
+		keyK_->SetPosition({ skillIconPos_ + controllKeyOffset_ + skillIconOffset_ });
 		if (input.TriggerKey(DIK_K)) {
 			keyK_->StartSquash({ 1.2f, 0.8f }, 0.1f);
 		}
 
 		// Jはブーメランアイコンの下に描画
-		keyJ_->SetPosition({ skillIconPos_ + controllKeyOffset_ + skillIconOffset_ });
+		keyJ_->SetPosition({ skillIconPos_ + controllKeyOffset_ });
 		if (input.TriggerKey(DIK_J)) {
 			keyJ_->StartSquash({ 1.2f, 0.8f }, 0.1f);
 		}
