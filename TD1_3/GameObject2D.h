@@ -193,6 +193,7 @@ public:
     void ShowDebugGuiWindow() {
         if (!this) return;
 
+#ifdef _DEBUG
         // デバッグ用GUIウィンドウ表示
         if (ImGui::TreeNode(("GameObject ID: " + std::to_string(info_.id)).c_str())) {
             ImGui::Text(("Tag: " + info_.tag).c_str());
@@ -218,5 +219,6 @@ public:
 
 			ImGui::TreePop();
         }
+#endif
     }
 };

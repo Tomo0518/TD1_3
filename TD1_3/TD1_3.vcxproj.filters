@@ -113,12 +113,6 @@
     <Filter Include="KamataEngine\Source\library\Input\InputManager">
       <UniqueIdentifier>{2f2c72dd-2908-45bc-8ec8-f3ffd4fef0e0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="KamataEngine\Source\Game\Scene\Proto">
-      <UniqueIdentifier>{615acf88-9878-48ba-8f00-ed05406a7850}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="KamataEngine\Source\Game\Scene\Proto\PrototypeSurvivalScene">
-      <UniqueIdentifier>{cac08d67-7d46-436f-bb69-fefd7ec1725d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="KamataEngine\Source\library\2D\Draw\Effect">
       <UniqueIdentifier>{3c214814-9fc5-485b-93fa-667b00dab85b}</UniqueIdentifier>
     </Filter>
@@ -271,15 +265,6 @@
     </ClCompile>
     <ClCompile Include="MapChipEditor.cpp">
       <Filter>KamataEngine\Source\Game\MapChipSystem\MapChipEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="PrototypeSurvivalScene.cpp">
-      <Filter>KamataEngine\Source\Game\Scene\Proto\PrototypeSurvivalScene</Filter>
-    </ClCompile>
-    <ClCompile Include="SurvivalGameManager.cpp">
-      <Filter>KamataEngine\Source\Game\Scene\Proto\PrototypeSurvivalScene</Filter>
-    </ClCompile>
-    <ClCompile Include="SurvivalObjects.cpp">
-      <Filter>KamataEngine\Source\Game\Scene\Proto\PrototypeSurvivalScene</Filter>
     </ClCompile>
     <ClCompile Include="PhysicsManager.cpp">
       <Filter>KamataEngine\Source\Game\MapChipSystem\PhysicsManager</Filter>
@@ -534,15 +519,6 @@
     </ClInclude>
     <ClInclude Include="TileRegistry.h">
       <Filter>KamataEngine\Source\Game\MapChipSystem\TileRegistry</Filter>
-    </ClInclude>
-    <ClInclude Include="PrototypeSurvivalScene.h">
-      <Filter>KamataEngine\Source\Game\Scene\Proto\PrototypeSurvivalScene</Filter>
-    </ClInclude>
-    <ClInclude Include="SurvivalGameManager.h">
-      <Filter>KamataEngine\Source\Game\Scene\Proto\PrototypeSurvivalScene</Filter>
-    </ClInclude>
-    <ClInclude Include="SurvivalObjects.h">
-      <Filter>KamataEngine\Source\Game\Scene\Proto\PrototypeSurvivalScene</Filter>
     </ClInclude>
     <ClInclude Include="Transform2D.h">
       <Filter>KamataEngine\Source\library\2D</Filter>

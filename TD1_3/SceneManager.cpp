@@ -7,7 +7,6 @@
 #include "Stage1Scene.h"
 #include "GamePlayScene.h"
 
-#include "PrototypeSurvivalScene.h"
 
 #include "SceneUtilityIncludes.h"
 
@@ -158,10 +157,6 @@ void SceneManager::ChangeScene(SceneType type) {
 
 	case SceneType::Setting:
 		currentScene_ = std::make_unique<SettingScene>(*this);
-		break;
-
-	case SceneType::PrototypeSurvival:
-		currentScene_ = std::make_unique<PrototypeSurvivalScene>(*this);
 		break;
 
 	//case SceneType::GamePlay:

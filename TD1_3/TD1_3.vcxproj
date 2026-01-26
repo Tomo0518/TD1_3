@@ -122,7 +122,6 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClCompile Include="ParallaxLayer.cpp" />
     <ClCompile Include="ParticleRegistry.cpp" />
     <ClCompile Include="PhysicsManager.cpp" />
-    <ClCompile Include="PrototypeSurvivalScene.cpp" />
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="Background.cpp" />
     <ClCompile Include="Button.cpp" />
@@ -147,8 +146,6 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="SettingScene.cpp" />
     <ClCompile Include="StageSelectScene.cpp" />
-    <ClCompile Include="SurvivalGameManager.cpp" />
-    <ClCompile Include="SurvivalObjects.cpp" />
     <ClCompile Include="TextRenderer.cpp" />
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="TileInstance.cpp" />
@@ -182,7 +179,6 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClInclude Include="ParticleRegistry.h" />
     <ClInclude Include="PhysicsManager.h" />
     <ClInclude Include="PhysicsObject.hpp" />
-    <ClInclude Include="PrototypeSurvivalScene.h" />
     <ClInclude Include="Rigidbody2D.hpp" />
     <ClInclude Include="SceneUtilityIncludes.h" />
     <ClInclude Include="SoundManager.h" />
@@ -241,8 +237,6 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClInclude Include="SettingScene.h" />
     <ClInclude Include="StageSelectScene.h" />
     <ClInclude Include="Star.hpp" />
-    <ClInclude Include="SurvivalGameManager.h" />
-    <ClInclude Include="SurvivalObjects.h" />
     <ClInclude Include="TextRenderer.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="TileInstance.h" />

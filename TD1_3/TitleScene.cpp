@@ -95,11 +95,6 @@ void TitleScene::InitializeButtons() {
 		sceneManager_.RequestTransition(SceneType::GamePlay);
 		};
 
-	// ボタンのコールバック
-	auto goToStageSelect = [&]() {
-		sceneManager_.RequestTransition(SceneType::PrototypeSurvival);
-		};
-
 	auto goToSettings = [&]() {
 		sceneManager_.RequestOpenSettings();
 		};
@@ -119,13 +114,7 @@ void TitleScene::InitializeButtons() {
 		goToGamePlay);
 
 	buttonManager_.AddButton(
-		{ centerX, startY + buttonSpacing }, buttonSize,
-		Tex().GetTexture(TextureId::UI_Button_StageSelect), 
-		Tex().GetTexture(TextureId::UI_Button_StageSelect_Selected), 
-		goToStageSelect);
-
-	buttonManager_.AddButton(
-		Vector2{ centerX, startY + buttonSpacing *2},
+		Vector2{ centerX, startY + buttonSpacing *1},
 		buttonSize,
 		Tex().GetTexture(TextureId::UI_Button_Settings),
 		Tex().GetTexture(TextureId::UI_Button_Settings_Selected),
@@ -133,7 +122,7 @@ void TitleScene::InitializeButtons() {
 	);
 
 	buttonManager_.AddButton(
-		Vector2{ centerX, startY + buttonSpacing * 3 },
+		Vector2{ centerX, startY + buttonSpacing * 2 },
 		buttonSize,
 		Tex().GetTexture(TextureId::UI_Button_Quit),
 		Tex().GetTexture(TextureId::UI_Button_Quit_Selected),
