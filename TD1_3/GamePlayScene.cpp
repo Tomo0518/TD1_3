@@ -252,12 +252,12 @@ void GamePlayScene::InitializeBackground() {
 	);
 
 	// レイヤー4: 前景の岩
-	backgroundManager_->AddLayer(
+	/*backgroundManager_->AddLayer(
 		TextureId::Background_Foreground,
 		0.8f,
 		"foreground",
 		1280.0f
-	);
+	);*/
 
 	// プレイヤースポーン後、カメラ初期位置を設定
 	Vector2 spawnPos = { player_->GetPosition() };

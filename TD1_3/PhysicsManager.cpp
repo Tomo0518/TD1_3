@@ -61,7 +61,6 @@ HitDirection PhysicsManager::ResolveMapCollision(GameObject2D* obj, const MapDat
 
 			// AABB判定（念のため）
 			if (dx1 > 0 && dx2 > 0 && dy1 > 0 && dy2 > 0) {
-
 				// 最もめり込みが浅い方向（＝脱出最短ルート）を探す
 				float ox = (dx1 < dx2) ? -dx1 : dx2; // X軸の修正量（絶対値が小さい方）
 				float oy = (dy1 < dy2) ? -dy1 : dy2; // Y軸の修正量（絶対値が小さい方）
@@ -69,6 +68,7 @@ HitDirection PhysicsManager::ResolveMapCollision(GameObject2D* obj, const MapDat
 				if (std::abs(ox) < std::abs(oy)) {
 					// X軸方向のめり込みの方が浅い -> 横に押し出す
 					transform.translate.x += (dx1 < dx2) ? dx1 : -dx2;
+					if (rb.velocity.x != 0.f) Novice::ConsolePrintf("Hit X Velocity: %f\n", rb.velocity.x);
 					rb.velocity.x = 0.0f; // 壁にぶつかったので速度リセット
 
 					// 座標更新に伴いAABB情報も更新しないと、次のブロック判定でおかしくなる
@@ -80,6 +80,7 @@ HitDirection PhysicsManager::ResolveMapCollision(GameObject2D* obj, const MapDat
 				else {
 					// Y軸方向のめり込みの方が浅い -> 縦に押し出す
 					transform.translate.y += (dy1 < dy2) ? dy1 : -dy2;
+					if (rb.velocity.y != 0.f) Novice::ConsolePrintf("Hit Y Velocity: %f\n", rb.velocity.y);
 					rb.velocity.y = 0.0f; // 床/天井にぶつかったので速度リセット
 
 					// 座標更新

@@ -1,4 +1,4 @@
-﻿{
+{
  "width": 500,
  "height": 500,
  "tileSize": 64.0,
@@ -2016,6 +2016,7 @@
   {"type":100,"position":{"x":5503.33154296875,"y":5127.33544921875},"tag":"player"},
   {"type":0,"position":{"x":4176.91552734375,"y":2654.588134765625},"tag":"WorldOrigin"},
   {"type":102,"position":{"x":8320.798828125,"y":5467.302734375},"tag":"EnemySpawner"},
-  {"type":104,"position":{"x":9615.107421875,"y":5342.3271484375},"tag":"AttackEnemySpawner"}
+  {"type":104,"position":{"x":9615.107421875,"y":5342.3271484375},"tag":"AttackEnemySpawner"},
+  {"type":300,"position":{"x":5868.6650390625,"y":4992.66845703125},"tag":"Button_1"}
  ]
 }
