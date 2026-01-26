@@ -151,9 +151,9 @@ void UIManager::Initialize() {
 	iconBoomerangThrow_ = std::make_unique<DrawComponent2D>(TextureId::Icon_BoomerangThrow, 1, 1, 1, 0.0f);
 	iconBoomerangReturn_ = std::make_unique<DrawComponent2D>(TextureId::Icon_BoomerangReturn, 1, 1, 1, 0.0f);
 
-	skillIconDash_ = std::make_unique<SkillIcon>(Vector2{ 1000.0f, 600.0f });
+	skillIconDash_ = std::make_unique<SkillIcon>(skillIconPos_);
 	skillIconDash_->AddIconTexture(TextureId::Icon_Dash);
-	skillIconBoomerang_ = std::make_unique<SkillIcon>(Vector2{ 1150.0f, 600.0f });
+	skillIconBoomerang_ = std::make_unique<SkillIcon>(skillIconPos_ + skillIconOffset_);
 	skillIconBoomerang_->AddIconTexture(TextureId::Icon_BoomerangThrow);
 	skillIconBoomerang_->AddIconTexture(TextureId::Icon_BoomerangReturn);
 
@@ -212,10 +212,21 @@ void UIManager::Draw() {
 		playerHP_->Draw({ 250.0f, 650.0f }, 1.0f);
 		//bossHP_->Draw({ 640.0f, 50.0f }, 0.8f);
 
-		keyW_->DrawScreen();
-		keyA_->DrawScreen();
-		keyS_->DrawScreen();
-		keyD_->DrawScreen();
+		InputManager& input = InputManager::GetInstance();
+
+		// キーガイド表示
+		if (input.GetInputMode() == InputMode::Gamepad) {
+			// パッド操作時は非表示
+		}
+		else {
+			// キーボード操作時は表示
+			keyW_->DrawScreen();
+			keyA_->DrawScreen();
+			keyS_->DrawScreen();
+			keyD_->DrawScreen();
+			keyK_->DrawScreen();
+			keyJ_->DrawScreen();
+		}
 	}
 
 	// アイコン表示
@@ -260,14 +271,10 @@ void UIManager::UpdateIcons(float dt, const PlayerSkillState& state) {
 
 	// ブーメランアイコン更新
 	if (skillIconBoomerang_) {
-		// ブーメランの状態変化を検出
-		bool isWaitingTime =
-			(state.boomerangMode == PlayerSkillState::BoomerangMode::Idle);
+		bool isRecalling = (state.boomerangMode == PlayerSkillState::BoomerangMode::Recalling);
 
-		bool isUsingBoomerang =
-			(state.boomerangMode == PlayerSkillState::BoomerangMode::Recalling);
-
-		skillIconBoomerang_->Update(dt, isUsingBoomerang, state.canUseBoomerang,isWaitingTime);
+		// canUseBoomerang = true → 不透明、false → 半透明
+		skillIconBoomerang_->Update(dt, isRecalling, state.canUseBoomerang, !state.canUseBoomerang);
 	}
 }
 
@@ -281,28 +288,46 @@ void UIManager::UpdateKeyGuides() {
 	// 各キーの位置設定と入力アニメーション
 	// 入力があった瞬間、StartSquashで「むにゅっ」とさせて手触りを良くする
 
-	// W
-	keyW_->SetPosition({ basePos.x, basePos.y - offset });
-	if (input.TriggerKey(DIK_W)) {
-		keyW_->StartSquash({ 0.8f, 1.2f }, 0.1f);
+	if (input.GetInputMode() == InputMode::Gamepad) {
+		// パッド操作時は非表示
+		return;
 	}
+	else {
+		// W
+		keyW_->SetPosition({ basePos.x, basePos.y - offset });
+		if (input.TriggerKey(DIK_W)) {
+			keyW_->StartSquash({ 0.8f, 1.2f }, 0.1f);
+		}
 
-	// A
-	keyA_->SetPosition({ basePos.x - offset, basePos.y });
-	if (input.TriggerKey(DIK_A)) {
-		keyA_->StartSquash({ 1.2f, 0.8f }, 0.1f);
-	}
+		// A
+		keyA_->SetPosition({ basePos.x - offset, basePos.y });
+		if (input.TriggerKey(DIK_A)) {
+			keyA_->StartSquash({ 1.2f, 0.8f }, 0.1f);
+		}
 
-	// S
-	keyS_->SetPosition({ basePos.x, basePos.y });
-	if (input.TriggerKey(DIK_S)) {
-		keyS_->StartSquash({ 0.8f, 1.2f }, 0.1f);
-	}
+		// S
+		keyS_->SetPosition({ basePos.x, basePos.y });
+		if (input.TriggerKey(DIK_S)) {
+			keyS_->StartSquash({ 0.8f, 1.2f }, 0.1f);
+		}
 
-	// D
-	keyD_->SetPosition({ basePos.x + offset, basePos.y });
-	if (input.TriggerKey(DIK_D)) {
-		keyD_->StartSquash({ 1.2f, 0.8f }, 0.1f);
+		// D
+		keyD_->SetPosition({ basePos.x + offset, basePos.y });
+		if (input.TriggerKey(DIK_D)) {
+			keyD_->StartSquash({ 1.2f, 0.8f }, 0.1f);
+		}
+
+		// Kはダッシュアイコンの下に描画
+		keyK_->SetPosition({ skillIconPos_ + controllKeyOffset_ });
+		if (input.TriggerKey(DIK_K)) {
+			keyK_->StartSquash({ 1.2f, 0.8f }, 0.1f);
+		}
+
+		// Jはブーメランアイコンの下に描画
+		keyJ_->SetPosition({ skillIconPos_ + controllKeyOffset_ + skillIconOffset_ });
+		if (input.TriggerKey(DIK_J)) {
+			keyJ_->StartSquash({ 1.2f, 0.8f }, 0.1f);
+		}
 	}
 }
 

@@ -246,7 +246,7 @@ public:
 			}
 		}
 
-		if (((jumpInput||JumpFriendlyTimer_ > 0.f) && isGrounded_) || (isCloseToBoomerang)) {
+		if (((jumpInput || JumpFriendlyTimer_ > 0.f) && isGrounded_) || (isCloseToBoomerang)) {
 			Jump();
 		}
 		// *******************************************
@@ -331,7 +331,7 @@ public:
 		bool tryThrow = false;
 		Vector2 throwDir = { 0, 0 };
 
-		if (Input().ReleaseKey(DIK_J) || Input().GetPad()->Release(Pad::Button::B)) { 
+		if (Input().ReleaseKey(DIK_J) || Input().GetPad()->Release(Pad::Button::B)) {
 			tryThrow = true;
 			throwDir = { !isflipX_ ? 1.f : -1.f, 0 };
 		}
@@ -672,34 +672,34 @@ public:
 	}
 
 	PlayerSkillState GetSkillState() const {
-    PlayerSkillState state;
+		PlayerSkillState state;
 
-    // ダッシュ状態
-    state.isDashing = dashDurationTimer_ > 0.f;
-    state.canDash = dashCooldownTimer_ <= 0.f && dashAvailable_;
+		// ダッシュ状態
+		state.isDashing = dashDurationTimer_ > 0.f;
+		state.canDash = dashCooldownTimer_ <= 0.f && dashAvailable_;
 
-    // ブーメランの状態を判定
-    for (auto boom : boomerangs_) {
-        if (!boom->IsTemporary()) {
-            if (boom->IsIdle()) {
-                // 待機中 → 投げることができる
-                state.boomerangMode = PlayerSkillState::BoomerangMode::Throwing;
-                state.canUseBoomerang = true;
-            }
-            else if (boom->isWaitingToReturn()) {
-                // 投げた直後、まだ回収できない（回収アイコンを半透明で表示）
-                state.boomerangMode = PlayerSkillState::BoomerangMode::Recalling;
-                state.canUseBoomerang = false; // 半透明になる
-            }
-            else {
-                // 回収可能（回収アイコンを不透明で表示）
-                state.boomerangMode = PlayerSkillState::BoomerangMode::Recalling;
-                state.canUseBoomerang = true;
-            }
-            break;
-        }
-    }
+		// ブーメランの状態を判定
+		for (auto boom : boomerangs_) {
+			if (!boom->IsTemporary()) {
+				if (boom->IsIdle()) {
+					// 待機中 → 投げることができる
+					state.boomerangMode = PlayerSkillState::BoomerangMode::Throwing;
+					state.canUseBoomerang = true;
+				}
+				else if (boom->isWaitingToReturn()) {
+					// 目標到達 → 回収可能（不透明）
+					state.boomerangMode = PlayerSkillState::BoomerangMode::Recalling;
+					state.canUseBoomerang = true;
+				}
+				else {
+					// 投げた直後 or 回収中 → 操作不可（半透明）
+					state.boomerangMode = PlayerSkillState::BoomerangMode::Recalling;
+					state.canUseBoomerang = false;
+				}
+				break;
+			}
+		}
 
-    return state;
-}
+		return state;
+	}
 };

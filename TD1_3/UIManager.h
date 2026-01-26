@@ -188,6 +188,9 @@ private:
 
 	std::unique_ptr<SkillIcon> skillIconDash_;
 	std::unique_ptr<SkillIcon> skillIconBoomerang_;
+	Vector2 skillIconPos_ = { 1050.0f,580.0f };
+	Vector2 skillIconOffset_ = { 120.0f,0.0f };
+	Vector2 controllKeyOffset_{0.0f,80.0f};
 
 	// ================================
 
