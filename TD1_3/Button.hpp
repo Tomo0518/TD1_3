@@ -7,6 +7,7 @@ class Button : public PhysicsObject {
 protected:
 	bool isPressed_ = false;
 	int ButtonID_ = 0;
+	bool isSwitch_ = false;
 	DrawComponent2D* onComp_ = nullptr;
 	DrawComponent2D* offComp_ = nullptr;
 
@@ -32,7 +33,7 @@ public:
 		offComp_->Initialize();
 		drawComp_ = offComp_;
 	}
-	
+
 	void CheckPlayerPress() {
 		FindPlayer();
 		if (playerRef_) {
@@ -46,7 +47,10 @@ public:
 				SetPressed(true);
 			}
 			else {
+				if (isSwitch_) return;
+
 				SetPressed(false);
+
 			}
 		}
 	}
@@ -93,5 +97,6 @@ class Button2 : public Button {
 public:
 	Button2() {
 		ButtonID_ = 2;
+		isSwitch_ = true;
 	}
 };

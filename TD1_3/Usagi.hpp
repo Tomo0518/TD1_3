@@ -348,6 +348,7 @@ public:
 		for (auto boom : boomerangs_) {
 			if (!boom->IsTemporary()) {
 				if (boom->IsIdle()) {
+					boom->SetPosition(transform_.translate);
 					if (/*Input().PressKey(DIK_UP) || Input().PressKey(DIK_DOWN) || Input().PressKey(DIK_LEFT) || Input().PressKey(DIK_RIGHT)*/
 						Input().PressKey(DIK_J) || Input().GetPad()->Trigger(Pad::Button::A)
 						) {
