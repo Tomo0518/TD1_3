@@ -9,6 +9,7 @@
 #ifdef _DEBUG
 #include <imgui.h>
 #endif
+#include "GameObject2D.h"
 
 DebugWindow::DebugWindow() {
 	// デフォルト値は既にヘッダーで初期化されているので、
@@ -290,6 +291,9 @@ void DebugWindow::DrawPlayerDebugWindow(Usagi* player) {
 	ImGui::Text("=== Transform ===");
 	ImGui::Text("Position: (%.1f, %.1f)", pos.x, pos.y);
 	ImGui::Text("Velocity: (%.1f, %.1f)", vel.x, vel.y);
+	ImGui::Text("isOnGround: (%s)", player->IsOnGround() ? "Yes" : "No");
+
+	player->ShowDebugGuiWindow();
 
 	ImGui::Separator();
 

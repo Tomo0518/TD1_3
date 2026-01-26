@@ -342,6 +342,7 @@ void GamePlayScene::Update(float dt, const char* keys, const char* pre) {
 	// ========= UI更新 =========
 	UIManager::GetInstance().SetPlayerHP(playerHp, playerMaxHp);
 	UIManager::GetInstance().Update(dt);
+	UIManager::GetInstance().UpdateIcons(dt, player_ ? player_->GetSkillState() : PlayerSkillState{});
 
 	if (camera_) {
 		camera_->Update(dt);
@@ -377,6 +378,7 @@ void GamePlayScene::Draw() {
 	backgroundManager_->Draw(*camera_, "foreground");
 
 	UIManager::GetInstance().Draw();
+	UIManager::GetInstance().DrawIcons();
 
 #ifdef _DEBUG
 

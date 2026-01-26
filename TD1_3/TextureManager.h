@@ -175,11 +175,9 @@ enum class TextureId {
 	PadButtonA, PadButtonB, PadButtonX, PadButtonY,
 	PadMove, PadDash, PadThrow, PadJump,
 
-
 	// UI: Scenes
 	PauseText, PauseBg,
 	ResultClear, ResultOver,
-
 
 	None,		// テクスチャなし用
 	Count,	// 最後

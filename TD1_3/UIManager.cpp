@@ -146,6 +146,17 @@ void UIManager::Initialize() {
 	padButtonJump_ = std::make_unique<DrawComponent2D>(TextureId::PadButtonJump, 1, 1, 1, 0.0f);
 	padButtonBoomerang_ = std::make_unique<DrawComponent2D>(TextureId::PadButtonBoomerang, 1, 1, 1, 0.0f);*/
 
+	// =========== Icon 初期化 ===========
+	iconDash_ = std::make_unique<DrawComponent2D>(TextureId::Icon_Dash, 1, 1, 1, 0.0f);
+	iconBoomerangThrow_ = std::make_unique<DrawComponent2D>(TextureId::Icon_BoomerangThrow, 1, 1, 1, 0.0f);
+	iconBoomerangReturn_ = std::make_unique<DrawComponent2D>(TextureId::Icon_BoomerangReturn, 1, 1, 1, 0.0f);
+
+	skillIconDash_ = std::make_unique<SkillIcon>(Vector2{ 1000.0f, 600.0f });
+	skillIconDash_->AddIconTexture(TextureId::Icon_Dash);
+	skillIconBoomerang_ = std::make_unique<SkillIcon>(Vector2{ 1150.0f, 600.0f });
+	skillIconBoomerang_->AddIconTexture(TextureId::Icon_BoomerangThrow);
+	skillIconBoomerang_->AddIconTexture(TextureId::Icon_BoomerangReturn);
+
 	// --- ポーズ・リザルト ---
 	pauseText_ = std::make_unique<DrawComponent2D>(TextureId::PauseText, 1, 1, 1, 0.0f);
 	pauseBg_ = std::make_unique<DrawComponent2D>(TextureId::White1x1, 1, 1, 1, 0.0f);
@@ -187,6 +198,8 @@ void UIManager::Update(float dt) {
 		keyA_->Update(dt);
 		keyS_->Update(dt);
 		keyD_->Update(dt);
+		keyK_->Update(dt);
+		keyJ_->Update(dt);
 	}
 }
 
@@ -205,6 +218,11 @@ void UIManager::Draw() {
 		keyD_->DrawScreen();
 	}
 
+	// アイコン表示
+	if (isGamePlay_) {
+		DrawIcons();
+	}
+
 	// --- ポーズ画面 ---
 	if (isPaused_) {
 		pauseBg_->SetPosition({ 640.0f, 360.0f }); // 中心
@@ -221,6 +239,35 @@ void UIManager::Draw() {
 
 		resultImage_->SetPosition({ 640.0f, 360.0f });
 		resultImage_->DrawScreen();
+	}
+}
+
+void UIManager::DrawIcons() {
+	// アイコン表示
+	if (isGamePlay_) {
+		skillIconDash_->Draw();
+		skillIconBoomerang_->Draw();
+	}
+}
+
+void UIManager::UpdateIcons(float dt, const PlayerSkillState& state) {
+	if (!isGamePlay_) return;
+
+	// ダッシュアイコン更新
+	if (skillIconDash_) {
+		skillIconDash_->Update(dt, state.isDashing, state.canDash);
+	}
+
+	// ブーメランアイコン更新
+	if (skillIconBoomerang_) {
+		// ブーメランの状態変化を検出
+		bool isWaitingTime =
+			(state.boomerangMode == PlayerSkillState::BoomerangMode::Idle);
+
+		bool isUsingBoomerang =
+			(state.boomerangMode == PlayerSkillState::BoomerangMode::Recalling);
+
+		skillIconBoomerang_->Update(dt, isUsingBoomerang, state.canUseBoomerang,isWaitingTime);
 	}
 }
 

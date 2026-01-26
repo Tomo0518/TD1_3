@@ -3,6 +3,7 @@
 #include "PhysicsObject.hpp"
 #include "Boomerang.hpp"
 #include "KinokoSpawner.hpp"
+#include "UIManager.h"
 
 class Usagi : public PhysicsObject {
 private:
@@ -192,8 +193,8 @@ public:
 				jumpInput = true;
 			}
 
-			// ダッシュ（Bボタン）
-			if (Input().GetPad()->Trigger(Pad::Button::B)) {
+			// ダッシュ（Aボタン）
+			if (Input().GetPad()->Trigger(Pad::Button::A)) {
 				dashInput = true;
 			}
 		}
@@ -324,17 +325,13 @@ public:
 		}
 	}
 
-
-
 	void HandleBoomerang(float deltaTime) {
 		deltaTime;
 		// Throw boomerang logic
 		bool tryThrow = false;
 		Vector2 throwDir = { 0, 0 };
 
-
-
-		if (Input().ReleaseKey(DIK_J) || Input().GetPad()->Trigger(Pad::Button::A)) {
+		if (Input().ReleaseKey(DIK_J) || Input().GetPad()->Release(Pad::Button::B)) { 
 			tryThrow = true;
 			throwDir = { !isflipX_ ? 1.f : -1.f, 0 };
 		}
@@ -349,7 +346,7 @@ public:
 			if (!boom->IsTemporary()) {
 				if (boom->IsIdle()) {
 					if (/*Input().PressKey(DIK_UP) || Input().PressKey(DIK_DOWN) || Input().PressKey(DIK_LEFT) || Input().PressKey(DIK_RIGHT)*/
-						Input().PressKey(DIK_J) || Input().GetPad()->Trigger(Pad::Button::A)
+						Input().PressKey(DIK_J) || Input().GetPad()->Press(Pad::Button::B)
 						) {
 						isCharging_ = true;
 						chargeTimer_ = std::min(chargeTimer_ + deltaTime, 120.f);
@@ -364,7 +361,7 @@ public:
 
 				}
 				else {
-					if (Input().ReleaseKey(DIK_J) || Input().GetPad()->Release(Pad::Button::A)) {
+					if (Input().ReleaseKey(DIK_J) || Input().GetPad()->Release(Pad::Button::B)) {
 						boom->SwitchToReturn();
 					}
 				}
@@ -673,4 +670,36 @@ public:
 	void SetCurrentHp(float hp) {
 		currentHp_ = std::clamp(hp, 0.f, maxHp_);
 	}
+
+	PlayerSkillState GetSkillState() const {
+    PlayerSkillState state;
+
+    // ダッシュ状態
+    state.isDashing = dashDurationTimer_ > 0.f;
+    state.canDash = dashCooldownTimer_ <= 0.f && dashAvailable_;
+
+    // ブーメランの状態を判定
+    for (auto boom : boomerangs_) {
+        if (!boom->IsTemporary()) {
+            if (boom->IsIdle()) {
+                // 待機中 → 投げることができる
+                state.boomerangMode = PlayerSkillState::BoomerangMode::Throwing;
+                state.canUseBoomerang = true;
+            }
+            else if (boom->isWaitingToReturn()) {
+                // 投げた直後、まだ回収できない（回収アイコンを半透明で表示）
+                state.boomerangMode = PlayerSkillState::BoomerangMode::Recalling;
+                state.canUseBoomerang = false; // 半透明になる
+            }
+            else {
+                // 回収可能（回収アイコンを不透明で表示）
+                state.boomerangMode = PlayerSkillState::BoomerangMode::Recalling;
+                state.canUseBoomerang = true;
+            }
+            break;
+        }
+    }
+
+    return state;
+}
 };

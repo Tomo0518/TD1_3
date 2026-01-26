@@ -97,4 +97,11 @@ public:
 	// ========== セッター ==========
 	void SetPosition(const Vector2& pos) { transform_.translate = pos; }
 	void SetAlive(bool alive) { info_.isActive = alive; }
+
+	bool IsOnGround() const {
+		return isGrounded_;
+	}
+	bool IsGravityEnabled() const {
+		return isGravityEnabled_;
+	}
 };

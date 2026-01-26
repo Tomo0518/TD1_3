@@ -189,4 +189,34 @@ public:
             status_.currentHP = status_.maxHP;
         }
 	}
+
+    void ShowDebugGuiWindow() {
+        if (!this) return;
+
+        // デバッグ用GUIウィンドウ表示
+        if (ImGui::TreeNode(("GameObject ID: " + std::to_string(info_.id)).c_str())) {
+            ImGui::Text(("Tag: " + info_.tag).c_str());
+            ImGui::Text("Active: %s", info_.isActive ? "Yes" : "No");
+            ImGui::Text("Visible: %s", info_.isVisible ? "Yes" : "No");
+            ImGui::Separator();
+            ImGui::Text("Transform:");
+            ImGui::Text("Position: (%.1f, %.1f)", transform_.translate.x, transform_.translate.y);
+            ImGui::Text("Scale: (%.1f, %.1f)", transform_.scale.x, transform_.scale.y);
+            ImGui::Text("Rotation (radians): %.2f", transform_.rotation);
+            ImGui::Separator();
+            ImGui::Text("Status:");
+            ImGui::Text("Max HP: %d", status_.maxHP);
+            ImGui::Text("Current HP: %d", status_.currentHP);
+            ImGui::Text("State Flag: %d", status_.stateFlag);
+
+            // Rigidbody
+            ImGui::Separator();
+            ImGui::Text("Rigidbody:");
+            ImGui::Text("Velocity: (%.1f, %.1f)", rigidbody_.velocity.x, rigidbody_.velocity.y);
+            ImGui::Text("Acceleration: (%.1f, %.1f)", rigidbody_.acceleration.x, rigidbody_.acceleration.y);
+            ImGui::Text("Deceleration: (%.1f, %.1f)", rigidbody_.deceleration.x, rigidbody_.deceleration.y);
+
+			ImGui::TreePop();
+        }
+    }
 };
