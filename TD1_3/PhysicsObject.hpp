@@ -14,7 +14,7 @@ protected:
 public:
 	PhysicsObject() {		
 		//drawComp_ = new DrawComponent2D();
-		Initialize();
+		Initialize();		
 	}
 	~PhysicsObject() {
 		delete drawComp_;

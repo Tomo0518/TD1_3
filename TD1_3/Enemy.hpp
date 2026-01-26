@@ -234,7 +234,12 @@ public:
 				isHitBoomerang_ = true;
 			}
 		}
-		if (other->GetInfo().tag == "Enemy") {
+		else if (other->GetInfo().tag == "Player")
+		{
+			Vector2 knockbackDir = Vector2::Subtract(transform_.translate, other->GetTransform().translate);
+			direction_ *= knockbackDir.x>0?1:-1;
+		}
+		else if (other->GetInfo().tag == "Enemy") {
 			// knockback on collision with other enemies
 			Vector2 knockbackDir = Vector2::Subtract(transform_.translate, other->GetTransform().translate);
 			knockbackDir = Vector2::Normalize(knockbackDir);
@@ -244,6 +249,9 @@ public:
 			direction_ *= -1;
 
 		}
+
+
+
 		return 0;
 	}
 

@@ -14,6 +14,74 @@ enum class AttackEnemyBattleState {
 	Attacking,
 };
 
+class AttackEnemyHitBox : public PhysicsObject {
+	float lifetime_ = 15.f;
+public:
+	AttackEnemyHitBox() {
+		delete drawComp_;
+		drawComp_ = nullptr;
+		//Initialize();
+	}
+	~AttackEnemyHitBox() {
+	}
+	void Initialize() override {
+		rigidbody_.Initialize();
+		info_.isActive = true;
+		info_.isVisible = true;
+		collider_.size = { 80.f, 80.f };
+		collider_.offset = { 0.f, 0.f };
+		isGravityEnabled_ = false;
+	}
+
+	int OnCollision(GameObject2D* other) override {
+		if (other->GetInfo().tag == "Player") {
+			// Here you can add logic to damage the player
+			Novice::ConsolePrintf("\n!!!!!!Player Hit by AttackEnemy!!!!!!!!!\n");
+			info_.isActive = false; // Deactivate hitbox after hit
+			
+			Vector2 knockbackDir = Vector2::Subtract(transform_.translate, other->GetTransform().translate);
+			knockbackDir = Vector2::Normalize(knockbackDir) * -1.f;
+			other->GetRigidbody().acceleration.x += knockbackDir.x * 14.5f;
+			other->GetRigidbody().acceleration.y += 6.5f;
+
+			Destroy();
+
+		}
+		return 0;
+	}
+
+	void Draw(const Camera2D& camera) override {
+		// Draw hitbox for debug
+		Novice::ConsolePrintf("transform: %f, %f\n", transform_.translate.x, transform_.translate.y);
+		Vector2 screenPos = const_cast<Camera2D&>(camera).WorldToScreen(transform_.translate);
+		Vector2 colliderSize = const_cast<Vector2&>(collider_.size);
+		Vector2 colliderOffset = const_cast<Vector2&>(collider_.offset);
+		Novice::DrawBox(
+			int(screenPos.x + colliderOffset.x - colliderSize.x / 2.f),
+			int(screenPos.y + colliderOffset.y - colliderSize.y / 2.f),
+			int(colliderSize.x), int(colliderSize.y),
+			0.0f,
+			0xFF0000FF,
+			kFillModeWireFrame
+		);
+	}
+
+	void Update(float deltaTime) override {
+		
+		lifetime_ -= deltaTime;
+		if (lifetime_ <= 0.f) {
+			info_.isActive = false; // Deactivate hitbox after lifetime ends
+			Destroy();
+		}
+	}
+
+	void setLifetime(float time) {
+		lifetime_ = time;
+	}
+
+};
+
+
 class AttackEnemy : public PhysicsObject {
 private:
 	int direction_ = 1;         // 移動方向（1: 右, -1: 左）
@@ -69,6 +137,8 @@ private:
 	// 描画マネージャー（全てのDrawComponent2Dを管理）
 	DrawComponentManager drawManager_;
 
+	Vector2 DrawOffset_ = { -28.f, 45.f };
+
 	// 描画コンポーネント
 	//DrawComponent2D* StunnedComp_ = nullptr;
 	//DrawComponent2D* PatrolComp_ = nullptr;
@@ -76,7 +146,17 @@ private:
 	//DrawComponent2D* runComp_ = nullptr;
 	//DrawComponent2D* windupComp_ = nullptr;
 	//DrawComponent2D* battleIdleComp_ = nullptr;
+	enum AttackEnemyDrawState {
+		ePatrol,
+		eStunned,
+		eAttack,
+		eRun,
+		eWindup,
+		eBattleIdle
+	};
 public:
+
+
 	AttackEnemy() {
 		// 親クラスのdrawComp_を削除して無効化
 		if (drawComp_) {
@@ -92,25 +172,25 @@ public:
 	void Initialize() override {
 		rigidbody_.Initialize();
 		rigidbody_.deceleration = { 0.7f, 0.7f };
-		collider_.size = { 80.f, 80.f };
-		collider_.offset = { 0.f, -20.f };
+		collider_.size = { 64.f, 80.f };
+		collider_.offset = { 0.f, 0.f };
 
 		// マネージャーにコンポーネントを登録
-		drawManager_.RegisterComponent("Patrol",
+		drawManager_.RegisterComponent(AttackEnemyDrawState::ePatrol,
 			new DrawComponent2D(Tex().GetTexture(TextureId::AttackKinokoWalk), 10, 1, 10, 5.f, true));
-		drawManager_.RegisterComponent("Stunned",
+		drawManager_.RegisterComponent(AttackEnemyDrawState::eStunned,
 			new DrawComponent2D(Tex().GetTexture(TextureId::AttackKinokoStun), 4, 1, 4, 5.f, false));
-		drawManager_.RegisterComponent("Attack",
+		drawManager_.RegisterComponent(AttackEnemyDrawState::eAttack,
 			new DrawComponent2D(Tex().GetTexture(TextureId::AttackKinokoAttack), 9, 1, 9, 5.f, false));
-		drawManager_.RegisterComponent("Run",
+		drawManager_.RegisterComponent(AttackEnemyDrawState::eRun,
 			new DrawComponent2D(Tex().GetTexture(TextureId::AttackKinokoRun), 4, 1, 4, 5.f, true));
-		drawManager_.RegisterComponent("Windup",
+		drawManager_.RegisterComponent(AttackEnemyDrawState::eWindup,
 			new DrawComponent2D(Tex().GetTexture(TextureId::AttackKinokoWindup), 4, 1, 4, 5.f, false));
-		drawManager_.RegisterComponent("BattleIdle",
+		drawManager_.RegisterComponent(AttackEnemyDrawState::eBattleIdle,
 			new DrawComponent2D(Tex().GetTexture(TextureId::AttackKinokoBattleIdle), 6, 1, 6, 5.f, true));
 
 		// 全コンポーネントを初期化
-		auto compNames = { "Patrol", "Stunned", "Attack", "Run", "Windup", "BattleIdle" };
+		auto compNames = { AttackEnemyDrawState::ePatrol, AttackEnemyDrawState::eStunned, AttackEnemyDrawState::eAttack, AttackEnemyDrawState::eRun, AttackEnemyDrawState::eWindup, AttackEnemyDrawState::eBattleIdle };
 		for (const auto& name : compNames) {
 			if (auto* comp = drawManager_.GetComponent(name)) {
 				comp->Initialize();
@@ -153,12 +233,16 @@ public:
 
 
 	void UpdateDrawComponent(float deltaTime) override {
+		drawManager_.SetFlipX(direction_ == 1);
 		Vector2 renderPos;
 		renderPos.x = transform_.translate.x + float(rand() % 100) / 100.f * windupShakeMagnitude_;
 		renderPos.y = transform_.translate.y + float(rand() % 100) / 100.f * windupShakeMagnitude_;
 
+		Vector2 DrawOffset = DrawOffset_;
+		DrawOffset.x = DrawOffset.x * (direction_ == 1 ? -1.f : 1.f);
+
 		drawManager_.SetTransform(transform_);
-		drawManager_.SetPosition(renderPos + damagedShakeOffset_);
+		drawManager_.SetPosition(renderPos + damagedShakeOffset_ + DrawOffset);
 		drawManager_.Update(deltaTime);
 	}
 
@@ -188,15 +272,7 @@ public:
 
 		attackTimer_ += deltaTime;
 
-		direction_ = (playerPos_.x >= transform_.translate.x) ? 1 : -1;
-
-		if (distanceToPlayer_ < keepDistance_) {
-			// プレイヤーから離れる処理
-			Vector2 directionAwayFromPlayer = Vector2::Subtract(transform_.translate, playerPos_);
-			directionAwayFromPlayer = Vector2::Normalize(directionAwayFromPlayer);
-			transform_.translate.x += directionAwayFromPlayer.x * moveSpeed_;
-			return;
-		}
+		direction_ = (playerPos_.x >= transform_.translate.x) ? 1 : -1;		
 
 		if (distanceToPlayer_ > attackRange_) {
 			// プレイヤーに近づく処理
@@ -204,6 +280,13 @@ public:
 			directionToPlayer = Vector2::Normalize(directionToPlayer);
 			transform_.translate.x += directionToPlayer.x * moveSpeed_;
 			return;
+		}
+
+		if (distanceToPlayer_ < keepDistance_) {
+			// プレイヤーから離れる処理
+			Vector2 directionAwayFromPlayer = Vector2::Subtract(transform_.translate, playerPos_);
+			directionAwayFromPlayer = Vector2::Normalize(directionAwayFromPlayer);
+			transform_.translate.x += directionAwayFromPlayer.x * moveSpeed_;
 		}
 
 		if (distanceToPlayer_ <= attackRange_) {
@@ -237,6 +320,9 @@ public:
 			windupTimer_ = 0.0f;
 			windupShakeMagnitude_ = 0.0f;
 			emitedCanAttackEffect_ = false;
+
+			// Create and position the hitbox
+			SpawnHitBox(15.f);
 		}
 	}
 
@@ -266,14 +352,15 @@ public:
 		Move(deltaTime);
 		damageHandling(deltaTime);
 		UpdateDrawComponent(deltaTime);
+
 	}
 
 	void Behavior(float deltaTime) {
-		drawManager_.SetFlipX(direction_ == 1);
+		//drawManager_.SetFlipX(direction_ == 1);
 		FindPlayer();
 
 		if (stunned_) {
-			drawManager_.ChangeComponent("Stunned");
+			drawManager_.ChangeComponent(AttackEnemyDrawState::eStunned);
 			Stunning(deltaTime);
 			return;
 		}
@@ -286,7 +373,7 @@ public:
 		}
 	}
 
-	
+
 	void ReturnToPatrol() {
 		state_ = AttackEnemyPhase::Patrolling;
 		battleState_ = AttackEnemyBattleState::Idle;
@@ -301,19 +388,19 @@ public:
 
 		switch (battleState_) {
 		case AttackEnemyBattleState::Idle:
-			drawManager_.ChangeComponent("BattleIdle");
+			drawManager_.ChangeComponent(AttackEnemyDrawState::eBattleIdle);
 			BattleIdle(deltaTime);
 			break;
 		case AttackEnemyBattleState::Running:
-			drawManager_.ChangeComponent("Run");
+			drawManager_.ChangeComponent(AttackEnemyDrawState::eRun);
 			RunTowardsPlayer(deltaTime);
 			break;
 		case AttackEnemyBattleState::Windup:
-			drawManager_.ChangeComponent("Windup");
+			drawManager_.ChangeComponent(AttackEnemyDrawState::eWindup);
 			Windup(deltaTime);
 			break;
 		case AttackEnemyBattleState::Attacking:
-			drawManager_.ChangeComponent("Attack");
+			drawManager_.ChangeComponent(AttackEnemyDrawState::eAttack);
 			Attack(deltaTime);
 			break;
 		}
@@ -332,7 +419,7 @@ public:
 	}
 
 	void Patrol(float deltaTime) {
-		drawManager_.ChangeComponent("Patrol");
+		drawManager_.ChangeComponent(AttackEnemyDrawState::ePatrol);
 
 		// パトロール範囲内で移動
 		transform_.translate.x += direction_ * moveSpeed_ * deltaTime;
@@ -371,9 +458,38 @@ public:
 		}
 	}
 
+	void SpawnHitBox(float lifetime) {
+		AttackEnemyHitBox* hitbox = manager_->Spawn<AttackEnemyHitBox>(this, "AttackEnemyHitBox");
+		hitbox->SetPosition(transform_.translate + Vector2(64.f, 0.f) * float(direction_));
+		hitbox->setLifetime(lifetime);		
+	}
+
 	void Draw(const Camera2D& camera) override {
 		if (!info_.isActive || !info_.isVisible) return;
+
 		drawManager_.Draw(camera);
+
+		/*Vector2 screenPos = const_cast<Camera2D&>(camera).WorldToScreen(transform_.translate);
+		Vector2 colliderSize = const_cast<Vector2&>(collider_.size);
+		Vector2 colliderOffset = const_cast<Vector2&>(collider_.offset);
+
+		Novice::DrawBox(
+			int(screenPos.x + colliderOffset.x - colliderSize.x / 2.f),
+			int(screenPos.y + colliderOffset.y - colliderSize.y / 2.f),
+			int(colliderSize.x), int(colliderSize.y),
+			0.0f,
+			0xFF0000FF,
+			kFillModeWireFrame
+		);
+
+		Novice::DrawBox(
+			int(screenPos.x - 5.f),
+			int(screenPos.y -5.f),
+			10, 10,
+			0.0f,
+			0xFF0000FF,
+			kFillModeWireFrame
+		);*/
 	}
 
 	void damageHandling(float deltaTime) {
@@ -430,7 +546,7 @@ public:
 		if (other->GetInfo().tag == "Boomerang") {
 			direction_ = (transform_.translate.x > other->GetTransform().translate.x) ? -1 : 1;
 		}
-		if (other->GetInfo().tag == "Enemy") {
+		else if (other->GetInfo().tag == "Enemy") {
 			// knockback on collision with other enemies
 			Vector2 knockbackDir = Vector2::Subtract(transform_.translate, other->GetTransform().translate);
 			knockbackDir = Vector2::Normalize(knockbackDir);

@@ -21,7 +21,7 @@ public:
     /// <summary>
     /// コンポーネントを登録
     /// </summary>
-    void RegisterComponent(const std::string& name, DrawComponent2D* component) {
+    void RegisterComponent(const int name, DrawComponent2D* component) {
         if (component) {
             components_[name] = component;
             if (!activeComponent_) {
@@ -34,7 +34,7 @@ public:
     /// <summary>
     /// アクティブなコンポーネントを変更（エフェクト状態を自動引き継ぎ）
     /// </summary>
-    bool ChangeComponent(const std::string& name) {
+    bool ChangeComponent(const int name) {
         auto it = components_.find(name);
         if (it != components_.end() && activeComponent_ != it->second) {
             // 新しいコンポーネントに切り替える前に、古いフラッシュを停止
@@ -63,7 +63,7 @@ public:
     /// <summary>
     /// 名前でコンポーネントを取得
     /// </summary>
-    DrawComponent2D* GetComponent(const std::string& name) const {
+    DrawComponent2D* GetComponent(const int name) const {
         auto it = components_.find(name);
         return (it != components_.end()) ? it->second : nullptr;
     }
@@ -204,7 +204,7 @@ public:
     /// <summary>
     /// アクティブなコンポーネント名を取得
     /// </summary>
-    const std::string& GetActiveComponentName() const {
+    const int& GetActiveComponentName() const {
         return activeComponentName_;
     }
 
@@ -269,8 +269,8 @@ private:
         BlendMode blendMode;
     };
 
-    std::unordered_map<std::string, DrawComponent2D*> components_;
+    std::unordered_map<int, DrawComponent2D*> components_;
     DrawComponent2D* activeComponent_ = nullptr;
-    std::string activeComponentName_;
+    int activeComponentName_;
     EffectState effectState_;
 };

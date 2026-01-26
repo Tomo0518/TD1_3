@@ -6,18 +6,20 @@
 
 class Usagi : public PhysicsObject {
 private:
-	DrawComponent2D* breatheComp_ = nullptr;
+	DrawComponentManager drawManager_;
+	/*DrawComponent2D* breatheComp_ = nullptr;
 	DrawComponent2D* runComp_ = nullptr;
 	DrawComponent2D* attackComp_ = nullptr;
 	DrawComponent2D* jumpComp_ = nullptr;
-	DrawComponent2D* fallComp_ = nullptr;
+	DrawComponent2D* fallComp_ = nullptr;*/
 
-	DrawComponent2D* BoomerangDrawComp_ = nullptr;
+	DrawComponentManager boomerangDrawManager_;
+	/*DrawComponent2D* BoomerangDrawComp_ = nullptr;
 	DrawComponent2D* BoomerangBreatheComp_ = nullptr;
 	DrawComponent2D* BoomerangRunComp_ = nullptr;
 	DrawComponent2D* BoomerangAttackComp_ = nullptr;
 	DrawComponent2D* BoomerangJumpComp_ = nullptr;
-	DrawComponent2D* BoomerangFallComp_ = nullptr;
+	DrawComponent2D* BoomerangFallComp_ = nullptr;*/
 
 	DrawComponent2D* starComp_ = nullptr;
 
@@ -28,6 +30,8 @@ private:
 
 	bool isflipX_ = false;
 	float jumpForce_ = 21.f;
+	float JumpFriendlyTimer_ = 0;
+	float JumpFriendlyDuration_ = 15.f;
 
 	float dashSpeed_ = 20.f;
 	float dashDuration_ = 20.f;
@@ -35,6 +39,9 @@ private:
 	float dashDurationTimer_ = 0.f;
 	float dashCooldownTimer_ = 0.f;
 	bool dashAvailable_ = true;
+
+	float BoomerangJumpCooldown_ = 15.f;
+	float BoomerangJumpTimer_ = 0.f;
 
 	float walkSpeed_ = 6.f;
 
@@ -46,23 +53,20 @@ private:
 
 	// ブーメランの前フレームの状態(回収検知)
 	bool wasBoomerangActive_ = false;
+
+	enum DrawCompState {
+		eBreathe,
+		eRun,
+		eAttack,
+		eJump,
+		eFall
+	};
 public:
 	Usagi() {
-		drawComp_ = nullptr;
+		//delete drawComp_;
 		//Initialize();
 	}
 	~Usagi() {
-		if (breatheComp_ != drawComp_) delete breatheComp_;
-		if (runComp_ != drawComp_) delete runComp_;
-		if (attackComp_ != drawComp_) delete attackComp_;
-		if (jumpComp_ != drawComp_) delete jumpComp_;
-		if (fallComp_ != drawComp_) delete fallComp_;
-
-		delete BoomerangBreatheComp_;
-		delete BoomerangRunComp_;
-		delete BoomerangAttackComp_;
-		delete BoomerangJumpComp_;
-		delete BoomerangFallComp_;
 		delete starComp_;
 	}
 	void Initialize() override {
@@ -74,36 +78,41 @@ public:
 		delete drawComp_;
 		drawComp_ = nullptr;
 
-		breatheComp_ = new DrawComponent2D(Tex().GetTexture(TextureId::UsagiBreathe), 11, 1, 11, 5.f, true);
-		runComp_ = new DrawComponent2D(Tex().GetTexture(TextureId::UsagiRun), 8, 1, 8, 5.f, true);
-		attackComp_ = new DrawComponent2D(Tex().GetTexture(TextureId::UsagiAttack), 4, 1, 4, 5.f, false);
-		jumpComp_ = new DrawComponent2D(Tex().GetTexture(TextureId::UsagiJump), 2, 1, 2, 5.f, false);
-		fallComp_ = new DrawComponent2D(Tex().GetTexture(TextureId::UsagiFall), 2, 1, 2, 5.f, false);
+		drawManager_.RegisterComponent(DrawCompState::eBreathe,
+			new DrawComponent2D(Tex().GetTexture(TextureId::UsagiBreathe), 11, 1, 11, 5.f, true));
+		drawManager_.RegisterComponent(DrawCompState::eRun,
+			new DrawComponent2D(Tex().GetTexture(TextureId::UsagiRun), 8, 1, 8, 5.f, true));
+		drawManager_.RegisterComponent(DrawCompState::eAttack,
+			new DrawComponent2D(Tex().GetTexture(TextureId::UsagiAttack), 4, 1, 4, 5.f, false));
+		drawManager_.RegisterComponent(DrawCompState::eJump,
+			new DrawComponent2D(Tex().GetTexture(TextureId::UsagiJump), 2, 1, 2, 5.f, false));
+		drawManager_.RegisterComponent(DrawCompState::eFall,
+			new DrawComponent2D(Tex().GetTexture(TextureId::UsagiFall), 2, 1, 2, 5.f, false));
 
-		BoomerangBreatheComp_ = new DrawComponent2D(Tex().GetTexture(TextureId::BoomerangBreathe), 11, 1, 11, 5.f, true);
-		BoomerangRunComp_ = new DrawComponent2D(Tex().GetTexture(TextureId::BoomerangRun), 8, 1, 8, 5.f, true);
-		BoomerangAttackComp_ = new DrawComponent2D(Tex().GetTexture(TextureId::BoomerangAttack), 4, 1, 4, 5.f, false);
-		BoomerangJumpComp_ = new DrawComponent2D(Tex().GetTexture(TextureId::BoomerangJump), 2, 1, 2, 5.f, false);
-		BoomerangFallComp_ = new DrawComponent2D(Tex().GetTexture(TextureId::BoomerangFall), 2, 1, 2, 5.f, false);
+		boomerangDrawManager_.RegisterComponent(DrawCompState::eBreathe,
+			new DrawComponent2D(Tex().GetTexture(TextureId::BoomerangBreathe), 11, 1, 11, 5.f, true));
+		boomerangDrawManager_.RegisterComponent(DrawCompState::eRun,
+			new DrawComponent2D(Tex().GetTexture(TextureId::BoomerangRun), 8, 1, 8, 5.f, true));
+		boomerangDrawManager_.RegisterComponent(DrawCompState::eAttack,
+			new DrawComponent2D(Tex().GetTexture(TextureId::BoomerangAttack), 4, 1, 4, 5.f, false));
+		boomerangDrawManager_.RegisterComponent(DrawCompState::eJump,
+			new DrawComponent2D(Tex().GetTexture(TextureId::BoomerangJump), 2, 1, 2, 5.f, false));
+		boomerangDrawManager_.RegisterComponent(DrawCompState::eFall,
+			new DrawComponent2D(Tex().GetTexture(TextureId::BoomerangFall), 2, 1, 2, 5.f, false));
+
+		auto compNames = { DrawCompState::eBreathe, DrawCompState::eRun, DrawCompState::eAttack, DrawCompState::eJump, DrawCompState::eFall };
+		for (const auto& name : compNames) {
+			if (auto* comp = drawManager_.GetComponent(name)) {
+				comp->Initialize();
+			}
+			if (auto* comp = boomerangDrawManager_.GetComponent(name)) {
+				comp->Initialize();
+			}
+		}
 
 		starComp_ = new DrawComponent2D(Tex().GetTexture(TextureId::Star_shooting), 4, 1, 4, 5.f, true);
-
-		breatheComp_->Initialize();
-		runComp_->Initialize();
-		attackComp_->Initialize();
-		jumpComp_->Initialize();
-		fallComp_->Initialize();
-
-		BoomerangBreatheComp_->Initialize();
-		BoomerangRunComp_->Initialize();
-		BoomerangAttackComp_->Initialize();
-		BoomerangJumpComp_->Initialize();
-		BoomerangFallComp_->Initialize();
-
 		starComp_->Initialize();
 
-		BoomerangDrawComp_ = BoomerangBreatheComp_;
-		drawComp_ = breatheComp_;
 
 		//==========================================
 		boomerangs_.clear();
@@ -111,29 +120,50 @@ public:
 		boomerangs_.push_back(boomerang);
 	}
 
-	void Jump() {		
-			rigidbody_.acceleration.y += jumpForce_;
-			isGrounded_ = false;
-			// ジャンプアニメーションに切り替え
-			if (drawComp_ != jumpComp_) {
-				drawComp_ = jumpComp_;
-				BoomerangDrawComp_ = BoomerangJumpComp_;
-				//drawComp_->StopAnimation();
-				drawComp_->PlayAnimation();
-				BoomerangDrawComp_->PlayAnimation();
-			}
-		
+
+
+	void ChangeDrawComp(DrawCompState state) {
+		switch (state) {
+		case DrawCompState::eBreathe:
+			drawManager_.ChangeComponent(DrawCompState::eBreathe);
+			boomerangDrawManager_.ChangeComponent(DrawCompState::eBreathe);
+			break;
+		case DrawCompState::eRun:
+			drawManager_.ChangeComponent(DrawCompState::eRun);
+			boomerangDrawManager_.ChangeComponent(DrawCompState::eRun);
+			break;
+		case DrawCompState::eAttack:
+			drawManager_.ChangeComponent(DrawCompState::eAttack);
+			boomerangDrawManager_.ChangeComponent(DrawCompState::eAttack);
+			break;
+		case DrawCompState::eJump:
+			drawManager_.ChangeComponent(DrawCompState::eJump);
+			boomerangDrawManager_.ChangeComponent(DrawCompState::eJump);
+			break;
+		case DrawCompState::eFall:
+			drawManager_.ChangeComponent(DrawCompState::eFall);
+			boomerangDrawManager_.ChangeComponent(DrawCompState::eFall);
+			break;
+		}
+	}
+
+
+	void Jump() {
+		if (isGravityEnabled_ == false) return;
+		JumpFriendlyTimer_ = 0;
+		rigidbody_.velocity.y = 0.f; // ジャンプ前に垂直速度をリセット
+		rigidbody_.acceleration.y += jumpForce_;
+		isGrounded_ = false;
+		// ジャンプアニメーションに切り替え
+		ChangeDrawComp(DrawCompState::eJump);
+
 	}
 
 	void HandleInput() {
 		if (!isGrounded_) {
 			if (rigidbody_.velocity.y < 0) {
 				// 落下アニメーションに切り替え
-				if (drawComp_ != fallComp_) {
-					drawComp_ = fallComp_;
-					//drawComp_->StopAnimation();
-					drawComp_->PlayAnimation();
-				}
+				ChangeDrawComp(DrawCompState::eFall);
 			}
 		}
 		// 入力取得
@@ -185,6 +215,7 @@ public:
 		// キーボードジャンプ
 		if (Input().TriggerKey(DIK_W)) {
 			jumpInput = true;
+			JumpFriendlyTimer_ = JumpFriendlyDuration_;
 		}
 
 		// キーボードダッシュ
@@ -195,23 +226,45 @@ public:
 		// 入力方向を正規化
 		inputDir = Vector2::Normalize(inputDir);
 
-		// ジャンプ処理
-		if (jumpInput && isGrounded_) {
+		// *************** ジャンプ処理 ******************
+		bool isCloseToBoomerang = false;
+		for (auto boom : boomerangs_) {
+			if (!boom->IsTemporary()) {
+				if (!boom->IsIdle()) {
+					if (!isGrounded_ && boom->isWaitingToReturn() && BoomerangJumpTimer_ <= 0.f) {
+						float distance = Vector2::Length(this->GetPosition() - boom->GetPosition());
+						if (distance < 100.f) {
+							BoomerangJumpTimer_ = BoomerangJumpCooldown_;
+							isCloseToBoomerang = true;
+							//boom->SwitchToReturn();
+							ParticleManager::GetInstance().Emit(ParticleType::Hit, transform_.translate);
+						}
+					}
+				}
+				break;
+			}
+		}
+
+		if (((jumpInput||JumpFriendlyTimer_ > 0.f) && isGrounded_) || (isCloseToBoomerang)) {
 			Jump();
 		}
+		// *******************************************
 
 		if (isGrounded_) {
 			dashAvailable_ = true;
 		}
 
+
+
 		// ダッシュ処理
 		if (dashInput) {
-			if (dashCooldownTimer_ <= 0.f && dashAvailable_) {
+			if ((dashCooldownTimer_ <= 0.f && dashAvailable_)) {
 				if (Input().GetInputMode() == InputMode::Gamepad) {
 					Input().GetPad()->StartVibration(0.5f, 0.5f, 10);
 				}
 
 				dashAvailable_ = false;
+
 
 				Vector2 dashDir = { 0.f, 0.f };
 				if (Vector2::Length(inputDir) == 0.f) {
@@ -233,12 +286,7 @@ public:
 				rigidbody_.deceleration = { 0.9f, 0.9f };
 				rigidbody_.maxSpeedX = dashSpeed_;
 
-				if (drawComp_ != jumpComp_) {
-					drawComp_ = jumpComp_;
-					BoomerangDrawComp_ = BoomerangJumpComp_;
-					drawComp_->PlayAnimation();
-					BoomerangDrawComp_->PlayAnimation();
-				}
+				ChangeDrawComp(DrawCompState::eJump);
 			}
 		}
 
@@ -247,7 +295,7 @@ public:
 			if (inputDir.x != 0) {
 				isflipX_ = inputDir.x < 0.f;
 			}
-			
+
 		}
 
 		if (dashDurationTimer_ <= 0.f && !isCharging_) {
@@ -258,39 +306,19 @@ public:
 			if (inputDir.x != 0.0f) {
 				rigidbody_.acceleration.x += inputDir.x * rigidbody_.maxSpeedX / 6.f;
 
+				if (isGrounded_)	ChangeDrawComp(DrawCompState::eRun);
+
 				if (inputDir.x > 0) {
-					// キャラクターの向きを右に設定
-					if (drawComp_ != runComp_ && isGrounded_) {
-						drawComp_ = runComp_;
-						BoomerangDrawComp_ = BoomerangRunComp_;
-						//drawComp_->StopAnimation();
-						drawComp_->PlayAnimation();
-						BoomerangDrawComp_->PlayAnimation();
-					}
 					isflipX_ = false;
 				}
 				else {
-					// キャラクターの向きを左に設定
-					if (drawComp_ != runComp_ && isGrounded_) {
-						drawComp_ = runComp_;
-						BoomerangDrawComp_ = BoomerangRunComp_;
-						//drawComp_->StopAnimation();
-						drawComp_->PlayAnimation();
-						BoomerangDrawComp_->PlayAnimation();
-					}
 					isflipX_ = true;
 				}
 
 			}
 			else {
 				if (isGrounded_) {
-					if (drawComp_ != breatheComp_) {
-						drawComp_ = breatheComp_;
-						BoomerangDrawComp_ = BoomerangBreatheComp_;
-						drawComp_->PlayAnimation();
-						BoomerangDrawComp_->PlayAnimation();
-
-					}
+					ChangeDrawComp(DrawCompState::eBreathe);
 				}
 			}
 		}
@@ -304,11 +332,11 @@ public:
 		bool tryThrow = false;
 		Vector2 throwDir = { 0, 0 };
 
-		
+
 
 		if (Input().ReleaseKey(DIK_J) || Input().GetPad()->Trigger(Pad::Button::A)) {
 			tryThrow = true;
-			throwDir = {!isflipX_?1.f:-1.f, 0};
+			throwDir = { !isflipX_ ? 1.f : -1.f, 0 };
 		}
 
 		/*if (Input().ReleaseKey(DIK_UP)) { throwDir = { 0, 1 }; tryThrow = true; }
@@ -333,14 +361,15 @@ public:
 					if (!boom->isStarRetrieved()) {
 						starCount_ = boom->retrieveStarCount();
 					}
-					break;
+
 				}
 				else {
-					if (Input().PressKey(DIK_J) || Input().GetPad()->Trigger(Pad::Button::A)) {
+					if (Input().ReleaseKey(DIK_J) || Input().GetPad()->Release(Pad::Button::A)) {
 						boom->SwitchToReturn();
 					}
-						
 				}
+
+				break;
 			}
 		}
 
@@ -354,24 +383,32 @@ public:
 
 	// ========== 更新・描画 ==========
 	void Update(float deltaTime)override {
-		dashDurationTimer_ -= deltaTime;
-		dashCooldownTimer_ -= deltaTime;
+		UpdateTimer(deltaTime);
 
 		HandleInput();
 		Move(deltaTime);
-		HandleBoomerang(deltaTime);
 
+		HandleBoomerang(deltaTime);
 		UpdateBoomerangPadVibration();
 
-		if (drawComp_) drawComp_->SetFlipX(isflipX_);
-		if (BoomerangDrawComp_) BoomerangDrawComp_->SetFlipX(isflipX_);
+
 		UpdateDrawComponent(deltaTime);
 
 		//Novice::ConsolePrintf("isGrounded: %d\n", isGrounded_);
+		SpawnTestKinoko();
+	}
+
+	void UpdateTimer(float deltaTime) {
+		dashDurationTimer_ -= deltaTime;
+		dashCooldownTimer_ -= deltaTime;
+		BoomerangJumpTimer_ -= deltaTime;
+		JumpFriendlyTimer_ -= deltaTime;
+	}
+
+	void SpawnTestKinoko() {
 		if (Input().TriggerKey(DIK_U)) {
-			Novice::ConsolePrintf("try spawn1\n");
+			Novice::ConsolePrintf("\ntry spawn1\n");
 			if (manager_) {
-				Novice::ConsolePrintf("try spawn2\n");
 				auto* enemy = manager_->Spawn<AttackEnemy>(nullptr, "Enemy");
 				enemy->SetPosition({ transform_.translate.x, transform_.translate.y + 50.f });
 				enemy->Initialize();
@@ -412,18 +449,18 @@ public:
 	}
 
 	virtual void UpdateDrawComponent(float deltaTime) override {
-		if (drawComp_) {
-			float shakeX = (rand() % 100 / 100.0f - 0.5f) * 2.0f * chargeTimer_/4.f;
-			float shakeY = (rand() % 100 / 100.0f - 0.5f) * 2.0f * chargeTimer_/4.f;
-			Vector2 shakeOffset = { shakeX, shakeY };
-			drawComp_->SetTransform(transform_);
-			drawComp_->SetPosition(transform_.translate + shakeOffset);
-			drawComp_->Update(deltaTime);
-		}
-		if (BoomerangDrawComp_) {
-			BoomerangDrawComp_->SetTransform(transform_);
-			BoomerangDrawComp_->Update(deltaTime);
-		}
+		drawManager_.SetFlipX(isflipX_);
+		boomerangDrawManager_.SetFlipX(isflipX_);
+		float shakeX = (rand() % 100 / 100.0f - 0.5f) * 2.0f * chargeTimer_ / 4.f;
+		float shakeY = (rand() % 100 / 100.0f - 0.5f) * 2.0f * chargeTimer_ / 4.f;
+		Vector2 shakeOffset = { shakeX, shakeY };
+		drawManager_.SetTransform(transform_);
+		drawManager_.SetPosition(transform_.translate + shakeOffset);
+		drawManager_.Update(deltaTime);
+
+		boomerangDrawManager_.SetTransform(transform_);
+		boomerangDrawManager_.SetPosition(transform_.translate + shakeOffset);
+		boomerangDrawManager_.Update(deltaTime);
 
 		if (starComp_) {
 			starComp_->Update(deltaTime);
@@ -453,23 +490,18 @@ public:
 	void Draw(const Camera2D& camera)override {
 		if (!info_.isActive || !info_.isVisible) return;
 		// DrawComponent2Dを使って描画
-		if (drawComp_) {
-			drawComp_->Draw(camera);
-		}
-		if (BoomerangDrawComp_) {
-			// if found a non temporary boomerang that is not idle, draw boomerang
-			for (auto boom : boomerangs_) {
-				if (!boom->IsTemporary() && boom->IsIdle()) {
-					if (boom->isStarRetrieved()) {
-						BoomerangDrawComp_->Draw(camera);
-						DrawStar(camera);
-					}
-					break;
+		drawManager_.Draw(camera);
+
+		// if found a non temporary boomerang that is not idle, draw boomerang
+		for (auto boom : boomerangs_) {
+			if (!boom->IsTemporary() && boom->IsIdle()) {
+				if (boom->isStarRetrieved()) {
+					boomerangDrawManager_.Draw(camera);
+					DrawStar(camera);
 				}
+				break;
 			}
 		}
-
-
 
 		// draw hitbox for debug
 		/*Vector2 screenPos = const_cast<Camera2D&>(camera).WorldToScreen(transform_.translate);
@@ -502,7 +534,9 @@ public:
 		auto& mapData = MapData::GetInstance();
 
 		transform_.translate.y += moveDelta.y;
+		if (!isGravityEnabled_) transform_.translate.y -= 2;
 		HitDirection hitDir = PhysicsManager::ResolveMapCollision(this, mapData);
+		if (!isGravityEnabled_) transform_.translate.y += 2;
 		isGrounded_ = (hitDir == HitDirection::Top);
 		if (isGrounded_)  transform_.translate.y += 2;
 
@@ -529,6 +563,14 @@ public:
 				starCount_ = std::min(4, starCount_ + 1);
 				other->GetInfo().isActive = false;
 			}
+		}
+		if (other->GetInfo().tag == "Enemy" || other->GetInfo().tag == "Player") {
+			// knockback on collision with other enemies
+			Vector2 knockbackDir = Vector2::Subtract(transform_.translate, other->GetTransform().translate);
+			knockbackDir = Vector2::Normalize(knockbackDir);
+			rigidbody_.acceleration.x = 0.f;
+			rigidbody_.acceleration.x += knockbackDir.x * 7.5f;
+
 		}
 
 		return 0;

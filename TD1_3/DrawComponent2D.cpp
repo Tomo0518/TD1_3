@@ -175,8 +175,22 @@ void DrawComponent2D::Update(float deltaTime) {
 	effect_.Update(deltaTime);
 }
 
+namespace{
+	int DrawCount = 0;
+}
+
+void DrawComponent2D::preDrawSetup() {
+	DrawCount = 0;
+}
+
+void DrawComponent2D::postDrawCleanup() {
+	Novice::ScreenPrintf(0, 0, "Draw Calls: %d", DrawCount);
+	DrawCount = 0;
+}
+
 // ========== 描画 ==========
 void DrawComponent2D::Draw(const Camera2D& camera) {
+
 	Matrix3x3 vpMatrix = camera.GetVpVpMatrix();
 
 	// カメラのY軸反転設定を確認してスケールを調整
@@ -285,6 +299,8 @@ void DrawComponent2D::DrawInternal(const Matrix3x3* vpMatrix) {
 		std::swap(screenVertices[0], screenVertices[3]);
 		std::swap(screenVertices[1], screenVertices[2]);
 	}
+
+	DrawCount++;
 
 	// 描画
 	Novice::DrawQuad(
