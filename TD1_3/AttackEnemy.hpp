@@ -146,7 +146,17 @@ private:
 	//DrawComponent2D* runComp_ = nullptr;
 	//DrawComponent2D* windupComp_ = nullptr;
 	//DrawComponent2D* battleIdleComp_ = nullptr;
+	enum AttackEnemyDrawState {
+		ePatrol,
+		eStunned,
+		eAttack,
+		eRun,
+		eWindup,
+		eBattleIdle
+	};
 public:
+
+
 	AttackEnemy() {
 		// 親クラスのdrawComp_を削除して無効化
 		if (drawComp_) {
@@ -166,21 +176,21 @@ public:
 		collider_.offset = { 0.f, 0.f };
 
 		// マネージャーにコンポーネントを登録
-		drawManager_.RegisterComponent("Patrol",
+		drawManager_.RegisterComponent(AttackEnemyDrawState::ePatrol,
 			new DrawComponent2D(Tex().GetTexture(TextureId::AttackKinokoWalk), 10, 1, 10, 5.f, true));
-		drawManager_.RegisterComponent("Stunned",
+		drawManager_.RegisterComponent(AttackEnemyDrawState::eStunned,
 			new DrawComponent2D(Tex().GetTexture(TextureId::AttackKinokoStun), 4, 1, 4, 5.f, false));
-		drawManager_.RegisterComponent("Attack",
+		drawManager_.RegisterComponent(AttackEnemyDrawState::eAttack,
 			new DrawComponent2D(Tex().GetTexture(TextureId::AttackKinokoAttack), 9, 1, 9, 5.f, false));
-		drawManager_.RegisterComponent("Run",
+		drawManager_.RegisterComponent(AttackEnemyDrawState::eRun,
 			new DrawComponent2D(Tex().GetTexture(TextureId::AttackKinokoRun), 4, 1, 4, 5.f, true));
-		drawManager_.RegisterComponent("Windup",
+		drawManager_.RegisterComponent(AttackEnemyDrawState::eWindup,
 			new DrawComponent2D(Tex().GetTexture(TextureId::AttackKinokoWindup), 4, 1, 4, 5.f, false));
-		drawManager_.RegisterComponent("BattleIdle",
+		drawManager_.RegisterComponent(AttackEnemyDrawState::eBattleIdle,
 			new DrawComponent2D(Tex().GetTexture(TextureId::AttackKinokoBattleIdle), 6, 1, 6, 5.f, true));
 
 		// 全コンポーネントを初期化
-		auto compNames = { "Patrol", "Stunned", "Attack", "Run", "Windup", "BattleIdle" };
+		auto compNames = { AttackEnemyDrawState::ePatrol, AttackEnemyDrawState::eStunned, AttackEnemyDrawState::eAttack, AttackEnemyDrawState::eRun, AttackEnemyDrawState::eWindup, AttackEnemyDrawState::eBattleIdle };
 		for (const auto& name : compNames) {
 			if (auto* comp = drawManager_.GetComponent(name)) {
 				comp->Initialize();
@@ -351,7 +361,7 @@ public:
 		FindPlayer();
 
 		if (stunned_) {
-			drawManager_.ChangeComponent("Stunned");
+			drawManager_.ChangeComponent(AttackEnemyDrawState::eStunned);
 			Stunning(deltaTime);
 			return;
 		}
@@ -379,19 +389,19 @@ public:
 
 		switch (battleState_) {
 		case AttackEnemyBattleState::Idle:
-			drawManager_.ChangeComponent("BattleIdle");
+			drawManager_.ChangeComponent(AttackEnemyDrawState::eBattleIdle);
 			BattleIdle(deltaTime);
 			break;
 		case AttackEnemyBattleState::Running:
-			drawManager_.ChangeComponent("Run");
+			drawManager_.ChangeComponent(AttackEnemyDrawState::eRun);
 			RunTowardsPlayer(deltaTime);
 			break;
 		case AttackEnemyBattleState::Windup:
-			drawManager_.ChangeComponent("Windup");
+			drawManager_.ChangeComponent(AttackEnemyDrawState::eWindup);
 			Windup(deltaTime);
 			break;
 		case AttackEnemyBattleState::Attacking:
-			drawManager_.ChangeComponent("Attack");
+			drawManager_.ChangeComponent(AttackEnemyDrawState::eAttack);
 			Attack(deltaTime);
 			break;
 		}
@@ -410,7 +420,7 @@ public:
 	}
 
 	void Patrol(float deltaTime) {
-		drawManager_.ChangeComponent("Patrol");
+		drawManager_.ChangeComponent(AttackEnemyDrawState::ePatrol);
 
 		// パトロール範囲内で移動
 		transform_.translate.x += direction_ * moveSpeed_ * deltaTime;

@@ -199,6 +199,10 @@ public:
 		starCount_ -= 1;
 	}
 
+	bool isWaitingToReturn() const {
+		return waitingToReturn_;
+	}
+
 	void SwitchToReturn() {
 		if (state_ != BoomerangState::Thrown) return;
 		if (!waitingToReturn_) return;
@@ -366,8 +370,8 @@ public:
 	void UpdateDrawComponent(float deltaTime) override {
 		if (!info_.isActive) return;
 		float ShakeIntensity = std::max(0.f, float(/*damage_ + */damageBonus_) * (IsReturning() ? 1.f : 3.f));
-		RenderPos_.x = transform_.translate.x + float(rand() % 100) / 100.f * ShakeIntensity;
-		RenderPos_.y = transform_.translate.y + float(rand() % 100) / 100.f * ShakeIntensity;
+		RenderPos_.x = transform_.translate.x + float(rand() % 200 - 100) / 100.f * ShakeIntensity;
+		RenderPos_.y = transform_.translate.y + float(rand() % 200 - 100) / 100.f * ShakeIntensity;
 
 		if (drawComp_) {						
 			drawComp_->SetTransform(transform_);
