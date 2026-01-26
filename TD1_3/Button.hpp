@@ -14,6 +14,7 @@ protected:
 	GameObject2D* playerRef_ = nullptr;
 public:
 	Button() {
+		delete drawComp_;
 		drawComp_ = nullptr;
 		//Initialize();
 	}

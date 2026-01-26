@@ -9,6 +9,7 @@ protected:
 	DrawComponent2D* closedComp_ = nullptr;
 public:
 	Door() {
+		delete drawComp_;
 		drawComp_ = nullptr;
 		//Initialize();
 	}

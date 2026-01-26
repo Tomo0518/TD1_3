@@ -16,6 +16,9 @@ void BackgroundManager::Draw(Camera2D& camera) {
     for (auto& layer : layers_) {
         layer->Draw(camera);
     }
+
+	//Novice::DrawSprite(0, 0, TextureManager::GetInstance().GetTexture(TextureId::Background_Foreground), 1.0f, 1.0f, 0.0f, 0xFFFFFFFF);
+	
 }
 
 void BackgroundManager::Draw(Camera2D& camera, std::string layerName) {

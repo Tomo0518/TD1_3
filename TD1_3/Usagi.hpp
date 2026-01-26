@@ -535,21 +535,24 @@ public:
 		auto& mapData = MapData::GetInstance();
 
 		transform_.translate.y += moveDelta.y;
+		transform_.translate.x += moveDelta.x;
 		if (!isGravityEnabled_) transform_.translate.y -= 2;
+		Novice::ConsolePrintf("\n#first check: velocity: (%.f, %.f)\n", rigidbody_.velocity.x, rigidbody_.velocity.y);
 		HitDirection hitDir = PhysicsManager::ResolveMapCollision(this, mapData);
 		if (!isGravityEnabled_) transform_.translate.y += 2;
 		isGrounded_ = (hitDir == HitDirection::Top);
-		if (isGrounded_)  transform_.translate.y += 2;
+		/*if (isGrounded_)  transform_.translate.y += 2;
 
 		transform_.translate.x += moveDelta.x;
+		Novice::ConsolePrintf("\n#second check: velocity: (%.f, %.f)\n", rigidbody_.velocity.x, rigidbody_.velocity.y);
 		HitDirection hitDir2 = PhysicsManager::ResolveMapCollision(this, mapData);
-		if (isGrounded_)  transform_.translate.y -= 2;
+		if (isGrounded_)  transform_.translate.y -= 2;*/
 		// Apply rotation (if any)
 		transform_.rotation += rigidbody_.GetRotationDelta(deltaTime);
 
-		if ((hitDir != HitDirection::None && hitDir != HitDirection::Top) || (hitDir2 != HitDirection::None && hitDir2 != HitDirection::Top)) {
-			//Novice::ConsolePrintf("Hit Direction X: %d, Y: %d, position: (%.f, %.f)\n", static_cast<int>(hitDir2), static_cast<int>(hitDir), transform_.translate.x, transform_.translate.y);
-		}
+		//if ((hitDir != HitDirection::None && hitDir != HitDirection::Top) || (hitDir2 != HitDirection::None && hitDir2 != HitDirection::Top)) {
+		//	Novice::ConsolePrintf("Hit Direction 1: %d, 2: %d, position: (%.f, %.f)\n--------------------------------------\n\n", static_cast<int>(hitDir), static_cast<int>(hitDir2), transform_.translate.x, transform_.translate.y);
+		//}
 
 
 		transform_.CalculateWorldMatrix();
