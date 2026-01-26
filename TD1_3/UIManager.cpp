@@ -50,17 +50,16 @@ void UIManager::Gauge::Update(float deltaTime) {
 	if (currentRatio_ <= 0.2f && currentRatio_ > 0.0f) {
 		// 枠を揺らす（危機感）
 		if (!frame_.IsShakeActive()) {
-			frame_.StartShakeContinuous(2.0f);
+
 		}
 
 		// バーを赤く点滅させる（警告）
 		if (!bar_.IsFlashBlinking()) {
 			// 赤色で無限回点滅
-			bar_.StartFlashBlink(0xFF0000FF, 9999, 0.2f, kBlendModeNormal);
+			bar_.StartFlashBlink(0xFF0000FF, 9999, 0.4f, kBlendModeAdd,2);
 		}
 	}
 	else {
-		frame_.StopShake();
 		bar_.StopFlashBlink();
 	}
 
@@ -219,19 +218,27 @@ void UIManager::UpdateKeyGuides() {
 
 	// W
 	keyW_->SetPosition({ basePos.x, basePos.y - offset });
-	if (input.TriggerKey(DIK_W)) keyW_->StartSquash({ 0.8f, 1.2f }, 0.1f);
+	if (input.TriggerKey(DIK_W)) {
+		keyW_->StartSquash({ 0.8f, 1.2f }, 0.1f);
+	}
 
 	// A
 	keyA_->SetPosition({ basePos.x - offset, basePos.y });
-	if (input.TriggerKey(DIK_A)) keyA_->StartSquash({ 1.2f, 0.8f }, 0.1f);
+	if (input.TriggerKey(DIK_A)) {
+		keyA_->StartSquash({ 1.2f, 0.8f }, 0.1f);
+	}
 
 	// S
 	keyS_->SetPosition({ basePos.x, basePos.y });
-	if (input.TriggerKey(DIK_S)) keyS_->StartSquash({ 0.8f, 1.2f }, 0.1f);
+	if (input.TriggerKey(DIK_S)) {
+		keyS_->StartSquash({ 0.8f, 1.2f }, 0.1f);
+	}
 
 	// D
 	keyD_->SetPosition({ basePos.x + offset, basePos.y });
-	if (input.TriggerKey(DIK_D)) keyD_->StartSquash({ 1.2f, 0.8f }, 0.1f);
+	if (input.TriggerKey(DIK_D)) {
+		keyD_->StartSquash({ 1.2f, 0.8f }, 0.1f);
+	}
 }
 
 void UIManager::TogglePause() {

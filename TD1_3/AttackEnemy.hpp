@@ -323,7 +323,7 @@ public:
 	void Stun() {
 		stunned_ = true;
 		stunTimer_ = stunDuration_;
-		drawManager_.StartFlashBlink(BLUE, 2, 0.2f,BlendMode::kBlendModeNormal, 1);
+		drawManager_.StartFlashBlink(0x0000FFCC, 2, 0.1f,BlendMode::kBlendModeNormal, 1);
 		ParticleManager::GetInstance().Emit(ParticleType::Charge, transform_.translate);
 
 		attackTimer_ = 0.0f;

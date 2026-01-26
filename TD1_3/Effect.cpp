@@ -64,7 +64,7 @@ void Effect::Update(float deltaTime) {
 
 	// フラッシュ点滅の更新
 	if (flashBlink_.isActive) {
-		flashBlink_.flashTimer += deltaTime;
+		flashBlink_.flashTimer += deltaTime / 60.0f;
 
 		if (flashBlink_.flashTimer >= flashBlink_.flashDuration) {
 			flashBlink_.flashTimer -= flashBlink_.flashDuration;
@@ -112,7 +112,7 @@ void Effect::UpdateShake(float deltaTime) {
 	shakeEffect_.offset.y = dist(gen);
 
 	if (!shakeEffect_.continuous) {
-		shakeEffect_.elapsed += deltaTime;
+		shakeEffect_.elapsed += deltaTime / 60.0f;
 		if (shakeEffect_.elapsed >= shakeEffect_.duration) {
 			StopShake();
 		}
@@ -151,10 +151,10 @@ void Effect::StopRotation() {
 void Effect::UpdateRotation(float deltaTime) {
 	if (!rotationEffect_.isActive) return;
 
-	rotationEffect_.accumulatedAngle += rotationEffect_.speed * deltaTime;
+	rotationEffect_.accumulatedAngle += rotationEffect_.speed * deltaTime / 60.0f;
 
 	if (!rotationEffect_.continuous) {
-		rotationEffect_.elapsed += deltaTime;
+		rotationEffect_.elapsed += deltaTime / 60.0f;
 		if (rotationEffect_.elapsed >= rotationEffect_.duration) {
 			StopRotation();
 		}
@@ -163,7 +163,7 @@ void Effect::UpdateRotation(float deltaTime) {
 
 void Effect::UpdateWobble(float deltaTime) {
 	if (!wobbleEffect_.isActive) return;
-	wobbleEffect_.elapsed += deltaTime;
+	wobbleEffect_.elapsed += deltaTime / 60.0f;
 }
 
 // ========== フェード ==========
@@ -211,7 +211,7 @@ void Effect::StopFade() {
 void Effect::UpdateFade(float deltaTime) {
 	if (!fadeEffect_.isActive) return;
 
-	fadeEffect_.elapsed += deltaTime;
+	fadeEffect_.elapsed += deltaTime / 60.0f;
 	float t = fadeEffect_.elapsed / fadeEffect_.duration;
 
 	if (t >= 1.0f) {
@@ -227,7 +227,7 @@ void Effect::UpdateFade(float deltaTime) {
 void Effect::UpdateFlash(float deltaTime) {
 	if (!flashEffect_.isActive) return;
 
-	flashEffect_.elapsed += deltaTime;
+	flashEffect_.elapsed += deltaTime / 60.0f;
 	float t = flashEffect_.elapsed / flashEffect_.duration;
 
 	if (t >= 1.0f) {
@@ -262,7 +262,7 @@ void Effect::StopScale() {
 void Effect::UpdateScale(float deltaTime) {
 	if (!scaleEffect_.isActive) return;
 
-	scaleEffect_.elapsed += deltaTime;
+	scaleEffect_.elapsed += deltaTime / 60.0f;
 
 	// サイン波で 0.0 ~ 1.0 の範囲で振動
 	float t = std::sin(scaleEffect_.elapsed * scaleEffect_.speed) * 0.5f + 0.5f;
@@ -285,7 +285,7 @@ void Effect::UpdateScale(float deltaTime) {
 void Effect::UpdateSquash(float deltaTime) {
 	if (!squashEffect_.isActive) return;
 
-	squashEffect_.elapsed += deltaTime;
+	squashEffect_.elapsed += deltaTime / 60.0f;
 	float t = squashEffect_.elapsed / squashEffect_.duration;
 
 	if (t >= 1.0f) {

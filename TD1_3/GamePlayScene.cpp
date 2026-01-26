@@ -253,7 +253,6 @@ void GamePlayScene::InitializeBackground() {
 }
 
 void GamePlayScene::Update(float dt, const char* keys, const char* pre) {
-	UIManager::GetInstance().Update(dt);
 
 	if (fade_ < 1.0f) {
 		fade_ += dt * 4.0f;
@@ -320,11 +319,15 @@ void GamePlayScene::Update(float dt, const char* keys, const char* pre) {
 	if(Input().TriggerKey(DIK_H)) {
 		player_->TakeDamage(10.0f);
 	}
+	else if (Input().TriggerKey(DIK_Y)) {
+		player_->TakeDamage(-10.0f);
+	}
 #endif
 
 	float playerHp = player_ ? player_->GetCurrentHp() : 0.0f;
 	float playerMaxHp = player_ ? player_->GetMaxHp() : 1.0f;
 
+	// ========= UI更新 =========
 	UIManager::GetInstance().SetPlayerHP(playerHp, playerMaxHp);
 	UIManager::GetInstance().Update(dt);
 
