@@ -244,11 +244,20 @@ void GamePlayScene::InitializeBackground() {
 	);
 
 	// レイヤー3: 洞窟の近景
-	backgroundManager_->AddLayer(
+	/*backgroundManager_->AddLayer(
 		TextureId::Background_Near,
 		0.6f,
 		"near",
 		1280.0f
+	);*/
+
+	backgroundManager_->AddLayer(
+		TextureId::Background_Near,
+		0.8f,  // X方向スクロール速度
+		0.3f,  // Y方向スクロール速度（30%）
+		"near",
+		1280.0f,  // X方向の繰り返し幅
+		720.0f    // Y方向の繰り返し高さ
 	);
 
 	// レイヤー4: 前景の岩
@@ -258,6 +267,8 @@ void GamePlayScene::InitializeBackground() {
 		"foreground",
 		1280.0f
 	);*/
+
+
 
 	// プレイヤースポーン後、カメラ初期位置を設定
 	Vector2 spawnPos = { player_->GetPosition() };

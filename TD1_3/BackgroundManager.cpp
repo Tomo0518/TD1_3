@@ -5,6 +5,13 @@ void BackgroundManager::AddLayer(TextureId textureId, float scrollSpeed, std::st
     layers_.push_back(std::move(layer));
 }
 
+void BackgroundManager::AddLayer(TextureId textureId, float scrollSpeedX, float scrollSpeedY,
+    std::string layerName, float repeatWidth, float repeatHeight) {
+    auto layer = std::make_unique<ParallaxLayer>(textureId, scrollSpeedX, scrollSpeedY,
+        layerName, repeatWidth, repeatHeight);
+    layers_.push_back(std::move(layer));
+}
+
 void BackgroundManager::SetInitialCameraPosition(const Vector2& initialPos) {
     for (auto& layer : layers_) {
         layer->SetInitialCameraPosition(initialPos);
@@ -16,9 +23,6 @@ void BackgroundManager::Draw(Camera2D& camera) {
     for (auto& layer : layers_) {
         layer->Draw(camera);
     }
-
-	//Novice::DrawSprite(0, 0, TextureManager::GetInstance().GetTexture(TextureId::Background_Foreground), 1.0f, 1.0f, 0.0f, 0xFFFFFFFF);
-	
 }
 
 void BackgroundManager::Draw(Camera2D& camera, std::string layerName) {

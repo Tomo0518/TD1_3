@@ -26,9 +26,15 @@ void UIManager::Gauge::Update(float deltaTime) {
 	// 1. ゴーストゲージの制御（ダメージ演出）
 	if (currentRatio_ < ghostRatio_) {
 		ghostTimer_ += deltaTime;
-		if (ghostTimer_ > 0.5f) { // ダメージを受けてから0.5秒後に減り始める（タメ）
-			// 追従速度（線形補間だと最後が遅くなるので、固定値で引くかLerpか好みで）
-			ghostRatio_ += (currentRatio_ - ghostRatio_) * 5.0f * deltaTime;
+		if (ghostTimer_ > 0.5f) { // ダメージを受けてから0.5秒後に減り始める
+			float diff = ghostRatio_ - currentRatio_;
+			float t = std::min(deltaTime * 4.0f, 1.0f); // 補間速度
+
+			// EaseOutCubic: t = 1 - (1 - t)^3
+			float invT = 1.0f - t;
+			float easedT = 1.0f - invT * invT * invT;
+
+			ghostRatio_ -= diff * easedT;
 
 			if (std::abs(ghostRatio_ - currentRatio_) < 0.01f) {
 				ghostRatio_ = currentRatio_;
@@ -45,18 +51,10 @@ void UIManager::Gauge::Update(float deltaTime) {
 	bar_.SetCropRatio(currentRatio_);
 	ghost_.SetCropRatio(ghostRatio_);
 
-	// 2. 瀕死演出（リスクフィードバック）
-	// 残り20%以下かつ0より大きい場合
+	// 2. 瀕死演出
 	if (currentRatio_ <= 0.2f && currentRatio_ > 0.0f) {
-		// 枠を揺らす（危機感）
-		if (!frame_.IsShakeActive()) {
-
-		}
-
-		// バーを赤く点滅させる（警告）
 		if (!bar_.IsFlashBlinking()) {
-			// 赤色で無限回点滅
-			bar_.StartFlashBlink(0xFF0000FF, 9999, 0.4f, kBlendModeAdd,2);
+			bar_.StartFlashBlink(0xFF0000FF, 9999, 0.4f, kBlendModeAdd, 2);
 		}
 	}
 	else {
@@ -117,7 +115,7 @@ void UIManager::Initialize() {
 	// --- ゲージ初期化 ---
 	// オフセットはアセットに合わせて調整してください（例: -200px左にずらす）
 	playerHP_ = std::make_unique<Gauge>(TextureId::PlayerHPFrame, TextureId::PlayerHPBar, Vector2(0.0f, 0.0f));
-	playerHP_->SetColor(0x00FF00FF); // 緑
+	playerHP_->SetColor(0xFFFFFFFF);
 
 	bossHP_ = std::make_unique<Gauge>(TextureId::BossHPFrame, TextureId::BossHPBar, Vector2(-150.0f, 0.0f));
 	bossHP_->SetColor(0xFF0000FF);   // 赤

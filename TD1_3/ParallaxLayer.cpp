@@ -1,58 +1,112 @@
 ﻿#include "ParallaxLayer.h"
 #include <Novice.h>
-#include <cmath>
 
-
-ParallaxLayer::ParallaxLayer(TextureId textureId, float scrollSpeed, std::string layerName,float repeatWidth)
-    : textureHandle_(TextureManager::GetInstance().GetTexture(textureId))
-    , scrollSpeed_(scrollSpeed)
+ParallaxLayer::ParallaxLayer(TextureId textureId, float scrollSpeed, std::string layerName, float repeatWidth)
+    : textureId_(textureId)
+    , scrollSpeedX_(scrollSpeed)
+    , scrollSpeedY_(0.0f)
     , repeatWidth_(repeatWidth)
-    , verticalOffset_(360.0f)  // 画面中央(720 / 2)
-    , initialCameraPosition_({ 0.0f, 0.0f })
-    , layerNameTag_(layerName) {
+    , repeatHeight_(0.0f)
+    , layerName_(layerName)
+    , initialCameraPos_{ 0.0f, 0.0f }
+    , hasVerticalParallax_(false)
+{
+}
+
+// Y軸視差対応版のコンストラクタ
+ParallaxLayer::ParallaxLayer(TextureId textureId, float scrollSpeedX, float scrollSpeedY,
+    std::string layerName, float repeatWidth, float repeatHeight)
+    : textureId_(textureId)
+    , scrollSpeedX_(scrollSpeedX)
+    , scrollSpeedY_(scrollSpeedY)
+    , repeatWidth_(repeatWidth)
+    , repeatHeight_(repeatHeight)
+    , layerName_(layerName)
+    , initialCameraPos_{ 0.0f, 0.0f }
+    , hasVerticalParallax_(true)
+{
 }
 
 void ParallaxLayer::Draw(Camera2D& camera) {
     Vector2 cameraPos = camera.GetPosition();
 
     // カメラの移動量を計算
-    Vector2 cameraDelta = {
-        cameraPos.x - initialCameraPosition_.x,
-        cameraPos.y - initialCameraPosition_.y
-    };
+    float cameraDeltaX = cameraPos.x - initialCameraPos_.x;
+    float cameraDeltaY = cameraPos.y - initialCameraPos_.y;
 
-    // 背景のスクロールオフセット（X軸のみパララックス効果）
-    float scrollOffsetX = cameraDelta.x * scrollSpeed_;
+    // スクロール速度を適用
+    float offsetX = cameraDeltaX * scrollSpeedX_;
+    float offsetY = hasVerticalParallax_ ? -(cameraDeltaY * scrollSpeedY_) : 0.0f;
 
-    // 繰り返し幅は固定
-    float repeatWidth = repeatWidth_;
+    // テクスチャ情報取得
+    int textureHandle = TextureManager::GetInstance().GetTexture(textureId_);
+    int textureWidth, textureHeight;
+    Novice::GetTextureSize(textureHandle, &textureWidth, &textureHeight);
 
-    // 画面左端を基準にした最初のタイルの位置
-    float startX = -std::fmod(scrollOffsetX, repeatWidth);
-    if (startX > 0.0f) {
-        startX -= repeatWidth; // 画面左端より左から開始
+    // 画面サイズ
+    const float screenWidth = 1280.0f;
+    const float screenHeight = 720.0f;
+
+    // ========== X方向の繰り返し描画（共通）==========
+    float actualRepeatWidth = (repeatWidth_ > 0) ? repeatWidth_ : static_cast<float>(textureWidth);
+
+    // 符号を正しく
+    int startX = static_cast<int>(offsetX / actualRepeatWidth) - 1;
+    int endX = static_cast<int>((offsetX + screenWidth) / actualRepeatWidth) + 1;
+
+    // ========== Y方向の処理 ==========
+    if (hasVerticalParallax_ && repeatHeight_ > 0.0f) {
+        // Y軸視差あり + Y方向繰り返しあり：タイル状に描画
+        float actualRepeatHeight = repeatHeight_;
+
+        // Y方向も符号を正しく
+        int startY = static_cast<int>(offsetY / actualRepeatHeight) - 1;
+        int endY = static_cast<int>((offsetY + screenHeight) / actualRepeatHeight) + 1;
+
+        for (int y = startY; y <= endY; ++y) {
+            for (int x = startX; x <= endX; ++x) {
+                float drawX = x * actualRepeatWidth - offsetX;
+                float drawY = y * actualRepeatHeight - offsetY;
+
+                Novice::DrawSprite(
+                    static_cast<int>(drawX),
+                    static_cast<int>(drawY),
+                    textureHandle,
+                    1.0f, 1.0f, 0.0f, 0xFFFFFFFF
+                );
+            }
+        }
     }
+    else if (hasVerticalParallax_) {
+        // Y軸視差あり + Y方向繰り返しなし：X方向のみ繰り返し、Y方向はスクロール
+        for (int x = startX; x <= endX; ++x) {
+            float drawX = x * actualRepeatWidth - offsetX;
+            float drawY = -offsetY; // Y方向はスクロールするが繰り返しなし
 
-    // 必要なタイル数を計算（固定画面サイズベース）
-    int maxTiles = static_cast<int>(std::ceil(1280.0f / repeatWidth)) + 2;
-
-    // Y座標は固定（画面中央基準）
-    float screenY = verticalOffset_ - 360.0f; // テクスチャ中心がverticalOffset_になるように
-
-    // タイルを繰り返し描画
-    for (int i = 0; i < maxTiles; ++i) {
-        float screenX = startX + (i * repeatWidth);
-
-        Novice::DrawSprite(
-            static_cast<int>(screenX),
-            static_cast<int>(screenY),
-            textureHandle_,
-            1.0f, 1.0f, 0.0f, 0xFFFFFFFF
-        );
+            Novice::DrawSprite(
+                static_cast<int>(drawX),
+                static_cast<int>(drawY),
+                textureHandle,
+                1.0f, 1.0f, 0.0f, 0xFFFFFFFF
+            );
+        }
     }
+    else {
+        // Y軸視差なし：X方向のみ繰り返し、Y方向は固定
+        for (int x = startX; x <= endX; ++x) {
+            float drawX = x * actualRepeatWidth - offsetX;
+            float drawY = 0.0f; // Y方向は固定（カメラの動きに追従しない）
 
-#ifdef _DEBUG
-    //Novice::ConsolePrintf("[Parallax] Camera:(%.1f, %.1f) Delta:(%.1f, %.1f) ScrollOffset:%.1f Tiles:%d\n",
-    //    cameraPos.x, cameraPos.y, cameraDelta.x, cameraDelta.y, scrollOffsetX, maxTiles);
-#endif
+            Novice::DrawSprite(
+                static_cast<int>(drawX),
+                static_cast<int>(drawY),
+                textureHandle,
+                1.0f, 1.0f, 0.0f, 0xFFFFFFFF
+            );
+        }
+    }
+}
+
+void ParallaxLayer::SetInitialCameraPosition(const Vector2& initialPos) {
+    initialCameraPos_ = initialPos;
 }

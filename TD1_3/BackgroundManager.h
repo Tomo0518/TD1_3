@@ -20,6 +20,10 @@ public:
     /// <param name="repeatWidth">繰り返し幅</param>
     void AddLayer(TextureId textureId, float scrollSpeed, std::string layerName, float repeatWidth = 1280.0f);
 
+    // Y軸視差対応版
+    void AddLayer(TextureId textureId, float scrollSpeedX, float scrollSpeedY,
+        std::string layerName, float repeatWidth, float repeatHeight);
+
     /// <summary>
     /// 初期カメラ位置を設定（スポーン地点）
     /// </summary>
