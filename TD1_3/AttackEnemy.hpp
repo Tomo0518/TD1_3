@@ -272,15 +272,7 @@ public:
 
 		attackTimer_ += deltaTime;
 
-		direction_ = (playerPos_.x >= transform_.translate.x) ? 1 : -1;
-
-		if (distanceToPlayer_ < keepDistance_) {
-			// プレイヤーから離れる処理
-			Vector2 directionAwayFromPlayer = Vector2::Subtract(transform_.translate, playerPos_);
-			directionAwayFromPlayer = Vector2::Normalize(directionAwayFromPlayer);
-			transform_.translate.x += directionAwayFromPlayer.x * moveSpeed_;
-			return;
-		}
+		direction_ = (playerPos_.x >= transform_.translate.x) ? 1 : -1;		
 
 		if (distanceToPlayer_ > attackRange_) {
 			// プレイヤーに近づく処理
@@ -288,6 +280,13 @@ public:
 			directionToPlayer = Vector2::Normalize(directionToPlayer);
 			transform_.translate.x += directionToPlayer.x * moveSpeed_;
 			return;
+		}
+
+		if (distanceToPlayer_ < keepDistance_) {
+			// プレイヤーから離れる処理
+			Vector2 directionAwayFromPlayer = Vector2::Subtract(transform_.translate, playerPos_);
+			directionAwayFromPlayer = Vector2::Normalize(directionAwayFromPlayer);
+			transform_.translate.x += directionAwayFromPlayer.x * moveSpeed_;
 		}
 
 		if (distanceToPlayer_ <= attackRange_) {
@@ -547,7 +546,7 @@ public:
 		if (other->GetInfo().tag == "Boomerang") {
 			direction_ = (transform_.translate.x > other->GetTransform().translate.x) ? -1 : 1;
 		}
-		if (other->GetInfo().tag == "Enemy") {
+		else if (other->GetInfo().tag == "Enemy") {
 			// knockback on collision with other enemies
 			Vector2 knockbackDir = Vector2::Subtract(transform_.translate, other->GetTransform().translate);
 			knockbackDir = Vector2::Normalize(knockbackDir);

@@ -30,6 +30,8 @@ private:
 
 	bool isflipX_ = false;
 	float jumpForce_ = 21.f;
+	float JumpFriendlyTimer_ = 0;
+	float JumpFriendlyDuration_ = 15.f;
 
 	float dashSpeed_ = 20.f;
 	float dashDuration_ = 20.f;
@@ -147,6 +149,8 @@ public:
 
 
 	void Jump() {
+		if (isGravityEnabled_ == false) return;
+		JumpFriendlyTimer_ = 0;
 		rigidbody_.velocity.y = 0.f; // ジャンプ前に垂直速度をリセット
 		rigidbody_.acceleration.y += jumpForce_;
 		isGrounded_ = false;
@@ -211,6 +215,7 @@ public:
 		// キーボードジャンプ
 		if (Input().TriggerKey(DIK_W)) {
 			jumpInput = true;
+			JumpFriendlyTimer_ = JumpFriendlyDuration_;
 		}
 
 		// キーボードダッシュ
@@ -240,7 +245,7 @@ public:
 			}
 		}
 
-		if ((jumpInput && isGrounded_) || (isCloseToBoomerang)) {
+		if (((jumpInput||JumpFriendlyTimer_ > 0.f) && isGrounded_) || (isCloseToBoomerang)) {
 			Jump();
 		}
 		// *******************************************
@@ -397,6 +402,7 @@ public:
 		dashDurationTimer_ -= deltaTime;
 		dashCooldownTimer_ -= deltaTime;
 		BoomerangJumpTimer_ -= deltaTime;
+		JumpFriendlyTimer_ -= deltaTime;
 	}
 
 	void SpawnTestKinoko() {
@@ -528,7 +534,9 @@ public:
 		auto& mapData = MapData::GetInstance();
 
 		transform_.translate.y += moveDelta.y;
+		if (!isGravityEnabled_) transform_.translate.y -= 2;
 		HitDirection hitDir = PhysicsManager::ResolveMapCollision(this, mapData);
+		if (!isGravityEnabled_) transform_.translate.y += 2;
 		isGrounded_ = (hitDir == HitDirection::Top);
 		if (isGrounded_)  transform_.translate.y += 2;
 
@@ -555,6 +563,14 @@ public:
 				starCount_ = std::min(4, starCount_ + 1);
 				other->GetInfo().isActive = false;
 			}
+		}
+		if (other->GetInfo().tag == "Enemy" || other->GetInfo().tag == "Player") {
+			// knockback on collision with other enemies
+			Vector2 knockbackDir = Vector2::Subtract(transform_.translate, other->GetTransform().translate);
+			knockbackDir = Vector2::Normalize(knockbackDir);
+			rigidbody_.acceleration.x = 0.f;
+			rigidbody_.acceleration.x += knockbackDir.x * 7.5f;
+
 		}
 
 		return 0;

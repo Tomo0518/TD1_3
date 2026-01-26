@@ -78,6 +78,9 @@ public:
 	/// </summary>
 	void Update(float deltaTime);
 
+	static void preDrawSetup();
+	static void postDrawCleanup();
+
 	// ========== 描画 ==========
 
 	/// <summary>
