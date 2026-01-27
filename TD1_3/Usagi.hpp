@@ -670,7 +670,9 @@ public:
 			status_.currentHP = status_.maxHP;
 			transform_.translate = respawnPosition_;
 			ParticleManager::GetInstance().Emit(ParticleType::Hit, transform_.translate);
-			GetFirstBoomerang()->SetPosition(transform_.translate);
+			Boomerang* firstBoomerang = static_cast<Boomerang*>(GetFirstBoomerang());
+			firstBoomerang->ResetToIdle();
+			firstBoomerang->SetPosition(transform_.translate);
 		}
 		else {
 			if (damage > 0) {

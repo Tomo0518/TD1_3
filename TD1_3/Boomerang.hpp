@@ -206,6 +206,14 @@ public:
 		return waitingToReturn_;
 	}
 
+	void ResetToIdle() {
+		waitingToReturn_ = false;
+		starCount_ = 0;
+		state_ = BoomerangState::Idle;
+		info_.isActive = false;
+		info_.isVisible = false;
+	}
+
 	void SwitchToReturn() {
 		if (state_ != BoomerangState::Thrown) return;
 		if (!waitingToReturn_) return;
