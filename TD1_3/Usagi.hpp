@@ -549,11 +549,11 @@ public:
 		transform_.rotation += rigidbody_.GetRotationDelta(deltaTime);
 
 		// デバッグ出力
-		/*if (hitDirX != HitDirection::None || hitDirY != HitDirection::None) {
-			Novice::ConsolePrintf("Hit Direction X: %d, Y: %d, position: (%.f, %.f)\n",
+		if (hitDirX != HitDirection::None || hitDirY != HitDirection::None) {
+			/*Novice::ConsolePrintf("Hit Direction X: %d, Y: %d, position: (%.f, %.f)\n",
 				static_cast<int>(hitDirX), static_cast<int>(hitDirY),
-				transform_.translate.x, transform_.translate.y);
-		}*/
+				transform_.translate.x, transform_.translate.y);*/
+		}
 
 		transform_.CalculateWorldMatrix();
 	}
