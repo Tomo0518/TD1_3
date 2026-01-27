@@ -152,9 +152,12 @@ void TextureManager::LoadResources() {
 	textureResources_[static_cast<int>(TextureId::Deco_GrassAnim)] =
 		Novice::LoadTexture("./Resources/images/mapChip/decoration/grass_anim.png");
 
+	textureResources_[static_cast<int>(TextureId::Deco_Rock1)] =
+		Novice::LoadTexture("./Resources/images/mapChip/decoration/rock.png");
+
 	// ========Background Decoration==========
 	textureResources_[static_cast<int>(TextureId::Deco_Background_RockBlock)] =
-		Novice::LoadTexture("./Resources/images/gamePlay/background/decoration/background_rockblock.png");
+		Novice::LoadTexture("./Resources/images/mapChip/BGTile.png");
 	textureResources_[static_cast<int>(TextureId::Deco_Background_IceBlock)] =
 		Novice::LoadTexture("./Resources/images/gamePlay/background/decoration/background_iceblock.png");
 
