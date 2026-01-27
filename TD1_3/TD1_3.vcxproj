@@ -165,6 +165,7 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClInclude Include="Door.hpp" />
     <ClInclude Include="DrawComponentManager.hpp" />
     <ClInclude Include="Enemy.hpp" />
+    <ClInclude Include="FatEnemy.hpp" />
     <ClInclude Include="GameObject2D.h" />
     <ClInclude Include="GameObjectManager.h" />
     <ClInclude Include="KinokoSpawner.hpp" />

@@ -38,6 +38,14 @@ enum class TextureId {
 	AttackKinokoBattleIdle,
 	AttackKinokoRun,
 
+	FatEnemyWalk,
+	FatEnemyStun,
+	FatEnemyAttack,
+	FatEnemyWindup,
+	FatEnemyBattleIdle,
+	FatEnemyRun,
+	FatEnemyAttack2,
+
 	// =========================================
 	// item
 	// =========================================

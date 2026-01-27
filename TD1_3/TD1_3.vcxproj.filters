@@ -568,6 +568,9 @@
     <ClInclude Include="UIManager.h">
       <Filter>KamataEngine\Source\library\2D\Ui</Filter>
     </ClInclude>
-    <ClInclude Include="UsagiCheckPoint.hpp" />
+    <ClInclude Include="UsagiCheckPoint.hpp">
+      <Filter>KamataEngine\Source\Game\Object\PhysicsGameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="FatEnemy.hpp" />
   </ItemGroup>
 </Project>

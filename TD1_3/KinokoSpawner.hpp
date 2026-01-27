@@ -3,6 +3,7 @@
 #include "PhysicsObject.hpp"
 #include "Enemy.hpp"
 #include "AttackEnemy.hpp"
+#include "FatEnemy.hpp"
 
 class KinokoSpawner : public PhysicsObject {
 private:

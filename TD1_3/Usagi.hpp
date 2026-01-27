@@ -415,7 +415,7 @@ public:
 		if (Input().TriggerKey(DIK_U)) {
 			Novice::ConsolePrintf("\ntry spawn1\n");
 			if (manager_) {
-				auto* enemy = manager_->Spawn<AttackEnemy>(nullptr, "Enemy");
+				auto* enemy = manager_->Spawn<FatEnemy>(nullptr, "Enemy");
 				enemy->SetPosition({ transform_.translate.x, transform_.translate.y + 50.f });
 				enemy->Initialize();
 			}
@@ -658,6 +658,16 @@ public:
 		return nullptr;
 	}
 
+	void Respawn() {
+		starCount_ = 0;
+		status_.currentHP = status_.maxHP;
+		transform_.translate = respawnPosition_;
+		ParticleManager::GetInstance().Emit(ParticleType::Hit, transform_.translate);
+		Boomerang* firstBoomerang = static_cast<Boomerang*>(GetFirstBoomerang());
+		firstBoomerang->ResetToIdle();
+		firstBoomerang->SetPosition(transform_.translate);
+	}
+
 
 	virtual void OnDamaged(int damage) override {
 		if (damage < 0) return; // 負のダメージは無効
@@ -667,12 +677,7 @@ public:
 			ParticleManager::GetInstance().Emit(ParticleType::Hit, transform_.translate);
 			ParticleManager::GetInstance().Emit(ParticleType::Enemy_Dead, transform_.translate);
 
-			status_.currentHP = status_.maxHP;
-			transform_.translate = respawnPosition_;
-			ParticleManager::GetInstance().Emit(ParticleType::Hit, transform_.translate);
-			Boomerang* firstBoomerang = static_cast<Boomerang*>(GetFirstBoomerang());
-			firstBoomerang->ResetToIdle();
-			firstBoomerang->SetPosition(transform_.translate);
+			Respawn();
 		}
 		else {
 			if (damage > 0) {

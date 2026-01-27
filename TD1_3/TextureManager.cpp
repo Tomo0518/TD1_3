@@ -63,6 +63,21 @@ void TextureManager::LoadResources() {
 	textureResources_[static_cast<int>(TextureId::AttackKinokoRun)] =
 		Novice::LoadTexture("./Resources/images/enemy/attackKinoko_run.png");
 
+	textureResources_[static_cast<int>(TextureId::FatEnemyWalk)] = 
+		Novice::LoadTexture("./Resources/images/enemy/fatKinoko_walk.png");
+	textureResources_[static_cast<int>(TextureId::FatEnemyStun)] =
+		Novice::LoadTexture("./Resources/images/enemy/fatKinoko_stun.png");
+	textureResources_[static_cast<int>(TextureId::FatEnemyAttack)] =
+		Novice::LoadTexture("./Resources/images/enemy/fatKinoko_attack1.png");
+	textureResources_[static_cast<int>(TextureId::FatEnemyWindup)] =
+		Novice::LoadTexture("./Resources/images/enemy/fatKinoko_windup.png");
+	textureResources_[static_cast<int>(TextureId::FatEnemyBattleIdle)] =
+		Novice::LoadTexture("./Resources/images/enemy/fatKinoko_battleIdle.png");
+	textureResources_[static_cast<int>(TextureId::FatEnemyRun)] =
+		Novice::LoadTexture("./Resources/images/enemy/fatKinoko_run.png");
+	textureResources_[static_cast<int>(TextureId::FatEnemyAttack2)] =
+		Novice::LoadTexture("./Resources/images/enemy/fatKinoko_attack2.png");
+
 
 	// ==========================================
 	// item

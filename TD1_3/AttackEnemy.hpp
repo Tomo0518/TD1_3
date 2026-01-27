@@ -12,6 +12,7 @@ enum class AttackEnemyBattleState {
 	Running,
 	Windup,
 	Attacking,
+	Attacking2,
 };
 
 class AttackEnemyHitBox : public PhysicsObject {
@@ -24,6 +25,7 @@ public:
 	}
 	~AttackEnemyHitBox() {
 	}
+
 	void Initialize() override {
 		rigidbody_.Initialize();
 		info_.isActive = true;
@@ -85,7 +87,7 @@ public:
 
 
 class AttackEnemy : public PhysicsObject {
-private:
+protected:
 	int direction_ = 1;         // 移動方向（1: 右, -1: 左）
 
 	// 移動速度
@@ -171,7 +173,7 @@ public:
 		drawComp_ = nullptr;
 	}
 
-	void Initialize() override {
+	virtual void Initialize() override {
 		rigidbody_.Initialize();
 		rigidbody_.deceleration = { 0.7f, 0.7f };
 		collider_.size = { 64.f, 80.f };
@@ -234,7 +236,7 @@ public:
 
 
 
-	void UpdateDrawComponent(float deltaTime) override {
+	virtual void UpdateDrawComponent(float deltaTime) override {
 		drawManager_.SetFlipX(direction_ == 1);
 		Vector2 renderPos;
 		renderPos.x = transform_.translate.x + float(rand() % 100) / 100.f * windupShakeMagnitude_;
@@ -248,14 +250,14 @@ public:
 		drawManager_.Update(deltaTime);
 	}
 
-	void Stunning(float deltaTime) {
+	virtual void Stunning(float deltaTime) {
 		stunTimer_ -= deltaTime;
 		if (stunTimer_ <= 0) {
 			stunned_ = false;
 		}
 	}
 
-	void Attack(float deltaTime) {
+	virtual void Attack(float deltaTime) {
 		// 攻撃処理
 		windDownTimer_ += deltaTime;
 		if (windDownTimer_ >= windDownDuration_) {
@@ -265,7 +267,7 @@ public:
 
 	}
 
-	void BattleIdle(float deltaTime) {
+	virtual void BattleIdle(float deltaTime) {
 		// 待機処理
 		if (distanceToPlayer_ > battleRange_) {
 			battleState_ = AttackEnemyBattleState::Running;
@@ -302,7 +304,7 @@ public:
 
 	}
 
-	void Windup(float deltaTime) {
+	virtual void Windup(float deltaTime) {
 		windupTimer_ += deltaTime;
 
 		if (!emitedCanAttackEffect_) {
@@ -328,7 +330,7 @@ public:
 		}
 	}
 
-	void RunTowardsPlayer(float deltaTime) {
+	virtual void RunTowardsPlayer(float deltaTime) {
 		// プレイヤーに向かって走る
 		Vector2 directionToPlayer = Vector2::Subtract(playerPos_, transform_.translate);
 		directionToPlayer = Vector2::Normalize(directionToPlayer);
@@ -341,14 +343,14 @@ public:
 		}
 	}
 
-	void ChangeDrawComponent(DrawComponent2D* newComp) {
+	virtual void ChangeDrawComponent(DrawComponent2D* newComp) {
 		if (drawComp_ != newComp) {
 			drawComp_ = newComp;
 			drawComp_->PlayAnimation();
 		}
 	}
 
-	void Update(float deltaTime) override {
+	virtual void Update(float deltaTime) override {
 
 		Behavior(deltaTime);
 		Move(deltaTime);
@@ -357,7 +359,7 @@ public:
 
 	}
 
-	void Behavior(float deltaTime) {
+	virtual void Behavior(float deltaTime) {
 		//drawManager_.SetFlipX(direction_ == 1);
 		FindPlayer();
 
@@ -376,13 +378,13 @@ public:
 	}
 
 
-	void ReturnToPatrol() {
+	virtual void ReturnToPatrol() {
 		state_ = AttackEnemyPhase::Patrolling;
 		battleState_ = AttackEnemyBattleState::Idle;
 		attackTimer_ = 0.0f;
 	}
 
-	void BattleBehavior(float deltaTime) {
+	virtual void BattleBehavior(float deltaTime) {
 		if (distanceToPlayer_ > escapeRange_) {
 			ReturnToPatrol();
 			return;
@@ -408,7 +410,7 @@ public:
 		}
 	}
 
-	void Stun() {
+	virtual void Stun() {
 		stunned_ = true;
 		stunTimer_ = stunDuration_;
 		drawManager_.StartFlashBlink(0x0000FFCC, 2, 0.1f,BlendMode::kBlendModeNormal, 1);
@@ -419,7 +421,7 @@ public:
 
 	}
 
-	void Patrol(float deltaTime) {
+	virtual void Patrol(float deltaTime) {
 		drawManager_.ChangeComponent(AttackEnemyDrawState::ePatrol);
 
 		// パトロール範囲内で移動
@@ -459,7 +461,7 @@ public:
 		}
 	}
 
-	void SpawnHitBox(float lifetime) {
+	virtual void SpawnHitBox(float lifetime) {
 		AttackEnemyHitBox* hitbox = manager_->Spawn<AttackEnemyHitBox>(this, "AttackEnemyHitBox");
 		hitbox->SetPosition(transform_.translate + Vector2(64.f, 0.f) * float(direction_));
 		hitbox->setLifetime(lifetime);		
@@ -510,7 +512,7 @@ public:
 		}
 	}
 
-	void SpawnStar() {
+	virtual void SpawnStar() {
 		Star* star = manager_->Spawn<Star>(this, "Star");
 		star->SetPosition(transform_.translate);
 		star->SetOwner(this);
