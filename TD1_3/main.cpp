@@ -56,6 +56,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 
 		sceneManager.Update(kDeltaTime, keys, preKeys);
+		SoundManager::GetInstance().ShowDebugWindow();
 
 		///
 		/// ↑更新処理ここまで
