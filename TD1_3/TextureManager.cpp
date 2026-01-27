@@ -93,6 +93,11 @@ void TextureManager::LoadResources() {
 	textureResources_[static_cast<int>(TextureId::Door_Closed)] =
 		Novice::LoadTexture("./Resources/images/item/doorOff.png");
 
+	textureResources_[static_cast<int>(TextureId::UsagiCheckPoint_On)] =
+		Novice::LoadTexture("./Resources/images/item/checkPoint.png");
+	textureResources_[static_cast<int>(TextureId::UsagiCheckPoint_Off)] =
+		Novice::LoadTexture("./Resources/images/item/checkPointOff.png");
+
 	// =========================================
 	// usagi
 	// =========================================
@@ -156,6 +161,8 @@ void TextureManager::LoadResources() {
 		Novice::LoadTexture("./Resources/images/mapChip/decoration/rock.png");
 	textureResources_[static_cast<int>(TextureId::Deco_Bush1)] =
 		Novice::LoadTexture("./Resources/images/mapChip/decoration/bush.png");
+	textureResources_[static_cast<int>(TextureId::Deco_BushDark)] =
+		Novice::LoadTexture("./Resources/images/mapChip/decoration/bushDark.png");
 
 	// ========Background Decoration==========
 	textureResources_[static_cast<int>(TextureId::Deco_Background_RockBlock)] =
