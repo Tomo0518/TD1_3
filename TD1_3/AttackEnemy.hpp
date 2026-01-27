@@ -413,6 +413,8 @@ public:
 	virtual void Stun() {
 		stunned_ = true;
 		stunTimer_ = stunDuration_;
+		// 前のエフェクトを明示的に停止してから新しいエフェクトを開始
+		drawManager_.StopFlashBlink();
 		drawManager_.StartFlashBlink(0x0000FFCC, 2, 0.1f,BlendMode::kBlendModeNormal, 1);
 		ParticleManager::GetInstance().Emit(ParticleType::Charge, transform_.translate);
 
@@ -530,6 +532,9 @@ public:
 		else {
 			if (damage > 0) {
 				isDamaged_ = true;
+
+				// 前のエフェクトを明示的に停止してから新しいエフェクトを開始
+				drawManager_.StopFlashBlink();
 				drawManager_.StartFlashBlink(0xFF0000CC, 4, 0.1f, BlendMode::kBlendModeNormal, 1);
 				damagedShakeTimer_ = 0.0f;
 

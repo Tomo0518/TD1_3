@@ -32,18 +32,19 @@ public:
     }
 
     /// <summary>
-    /// アクティブなコンポーネントを変更（エフェクト状態を自動引き継ぎ）
-    /// </summary>
+/// アクティブなコンポーネントを変更（エフェクト状態を自動引き継ぎ）
+/// </summary>
     bool ChangeComponent(const int name) {
         auto it = components_.find(name);
         if (it != components_.end() && activeComponent_ != it->second) {
-            // 新しいコンポーネントに切り替える前に、古いフラッシュを停止
-            if (it->second) {
-                it->second->StopFlashBlink();
-            }
-
+            // エフェクト転送を先に行ってから停止
             // エフェクト状態を引き継ぐ
             TransferEffectState(activeComponent_, it->second);
+
+            // 古いコンポーネントのフラッシュを停止（新しいコンポーネントは既に転送済み）
+            if (activeComponent_) {
+                activeComponent_->StopFlashBlink();
+            }
 
             activeComponent_ = it->second;
             activeComponentName_ = name;
@@ -135,7 +136,16 @@ public:
             }
         }
 	}
-    void StartFlashBlink(unsigned int color, int count, float duration, BlendMode blendMode, unsigned int layer = 1) {
+
+    void StartFlashBlink(unsigned int color, int count, float duration, BlendMode blendMode, unsigned int layer = 1, bool forceOverride = false) {
+        // 既にフラッシュが実行中で、強制上書きがfalseの場合はスキップ
+        if (effectState_.isFlashBlinkActive && !forceOverride) {
+#ifdef _DEBUG
+            Novice::ConsolePrintf("[FlashBlink] Already active, skipping (count=%d remaining)\n", effectState_.flashCount);
+#endif
+            return;
+        }
+
         effectState_.isFlashBlinkActive = true;
         effectState_.flashColor = color;
         effectState_.flashCount = count;
@@ -156,6 +166,11 @@ public:
                 pair.second->StopFlashBlink();
             }
         }
+    }
+
+    // 強制的にフラッシュを開始するメソッド
+    void ForceStartFlashBlink(unsigned int color, int count, float duration, BlendMode blendMode, unsigned int layer = 1) {
+        StartFlashBlink(color, count, duration, blendMode, layer, true);
     }
 
     void StopFlashBlink() {

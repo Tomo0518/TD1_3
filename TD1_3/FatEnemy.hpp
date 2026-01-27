@@ -213,8 +213,9 @@ public:
 			ParticleManager::GetInstance().Emit(ParticleType::Enemy_CanStan, transform_.translate);
 			emitedCanAttackEffect_ = true;
 
-			// エフェクトを開始
-			drawManager_.StartFlashBlink(0xFFFFFFFF, 4, windupDuration_/8.f/60.f, BlendMode::kBlendModeAdd, 2);
+			// 前のエフェクトを明示的に停止してから新しいエフェクトを開始
+			drawManager_.StopFlashBlink();
+			drawManager_.StartFlashBlink(0xFFFFFFFF, 4, windupDuration_ / 8.f / 60.f, BlendMode::kBlendModeAdd, 2);
 		}
 
 		if (windupTimer_ >= windupDuration_ / 2) {

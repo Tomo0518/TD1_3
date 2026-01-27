@@ -49,11 +49,6 @@ enum class SeId {
 	// Item
 	StarSpawn,
 
-
-
-
-
-
 	Count // 総数
 };
 

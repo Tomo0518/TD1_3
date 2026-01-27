@@ -49,7 +49,7 @@ void GamePlayScene::Initialize() {
 
 	// シングルトンを使う
 	auto& mapData = MapData::GetInstance();
-	mapData.Load("./Resources/data/stage1.json");
+	mapData.Load("./Resources/data/yoshikawa.json");
 
 	// 1. タイル、オブジェクト定義の初期化
 	TileRegistry::Initialize();
