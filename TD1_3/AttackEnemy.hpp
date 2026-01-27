@@ -526,7 +526,7 @@ public:
 		else {
 			if (damage > 0) {
 				isDamaged_ = true;
-				drawManager_.StartFlashBlink(0xFF0000CC, 4, 0.3f, BlendMode::kBlendModeNormal, 1);
+				drawManager_.StartFlashBlink(0xFF0000CC, 4, 0.1f, BlendMode::kBlendModeNormal, 1);
 				damagedShakeTimer_ = 0.0f;
 
 				ParticleManager::GetInstance().Emit(ParticleType::Hit, transform_.translate);

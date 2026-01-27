@@ -94,7 +94,7 @@ public:
 		starCount_ = 0;
 		return temp;
 	}
-
+	bool isHitWall = false;
 
 	void Throw(Vector2 direction, int Star = 0, float Charge = 0) {
 		if (state_ != BoomerangState::Idle) return;
@@ -117,6 +117,8 @@ public:
 		stayTimer_ = 0.0f; // Reset stay timer
 		activeRange_ = std::min(range_ + Charge * 2.f, 600.f);
 		float range = activeRange_;
+
+		isHitWall = false;
 
 		// Determine if horizontal or vertical throw
 		if (abs(direction.x) > abs(direction.y)) {
@@ -172,6 +174,7 @@ public:
 					farestDistance_ = checkPos;
 					farestDistance_.x -= castDir.x * (tileSize);
 					farestDistance_.y -= castDir.y * (tileSize);
+					//isHitWall = true;
 
 					// Optional: Reduce travel time if distance is very short
 					// maxTime_ = maxTime_ * (dist / range);
@@ -265,7 +268,7 @@ public:
 				if (isHorizontal_) {
 					// x goes to target, y follows player
 					transform_.translate.x = currentTarget.x;
-					transform_.translate.y = ownerPos.y;
+					transform_.translate.y = isHitWall ? farestDistance_.y : ownerPos.y;
 					//clamp x to farest distance
 					transform_.translate.x = std::clamp(transform_.translate.x,
 						std::min(startPos_.x, farestDistance_.x),
@@ -274,7 +277,7 @@ public:
 				else {
 					// y goes to target, x follows player
 					transform_.translate.y = currentTarget.y;
-					transform_.translate.x = ownerPos.x;
+					transform_.translate.x = isHitWall ? farestDistance_.x : ownerPos.x;
 
 					// clamp y to farest distance
 					transform_.translate.y = std::clamp(transform_.translate.y,
@@ -307,7 +310,7 @@ public:
 					}
 					else {
 						transform_.translate.y = farestDistance_.y;
-						transform_.translate.x = ownerPos.x;
+						transform_.translate.x = isHitWall ? farestDistance_.x : ownerPos.x;
 					}
 				//}
 				//else {

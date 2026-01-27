@@ -30,12 +30,14 @@ enum TileID{
 
 	Deco_Grass = 10,
 	Deco_Sign = 11,
+	Deco_Rock1 = 12,
 
 	// Tutorial Images
 	JumpTutorial = 50,
 	DashTutorial = 51,
 	ThrowTutorial = 52,
 	BoomerangTutorial = 53,
+	Deco_Rock1_F = 54,
 
 	//PlayerStart = 100,
 
@@ -144,14 +146,22 @@ public:
 		// ID:10 草 (Decoration)
 		tiles_.push_back({
 			TileID::Deco_Grass, "Grass", TextureId::Deco_GrassAnim, TileType::Solid, false, // 当たり判定なし
-			TileLayer::Decoration, {0.0f, 8.0f}, // オフセットで位置微調整
+			TileLayer::Decoration, {0.0f, 32.0f}, // オフセットで位置微調整
 			RenderMode::Component,DrawLayer::Background,
-			{ true, 8, 1, 8, 8.f,true,{0.5f, 0.8f} }// アニメーション設定
+			{ true, 8, 1, 8, 12.f,true,{0.5f, 1.0f} }// アニメーション設定
 			});
 
 		// ID:11 看板 (Decoration)
 		tiles_.push_back({
 			TileID::Deco_Sign, "Sign", TextureId::Deco_Sign, TileType::Solid, false,
+			TileLayer::Decoration, {0.0f, 0.0f},
+			RenderMode::Component,DrawLayer::Background,
+			{ false, 1, 1, 1, 0.0f } // アニメーションなし
+			});
+
+		// ID:12 rock (Decoration)
+		tiles_.push_back({
+			TileID::Deco_Rock1, "Rock1", TextureId::Deco_Rock1, TileType::Solid, false,
 			TileLayer::Decoration, {0.0f, 0.0f},
 			RenderMode::Component,DrawLayer::Background,
 			{ false, 1, 1, 1, 0.0f } // アニメーションなし
@@ -188,6 +198,13 @@ public:
 			{ false, 1, 1, 1, 0.0f } // アニメーションなし
 			});
 
+		tiles_.push_back({
+			TileID::Deco_Rock1_F, "Rock1", TextureId::Deco_Rock1, TileType::Solid, false,
+			TileLayer::Decoration, {0.0f, 0.0f},
+			RenderMode::Component,DrawLayer::Foreground,
+			{ false, 1, 1, 1, 0.0f } // アニメーションなし
+			});
+
 		// **************************************
 		// --- Object Layer (配置物) ---
 		// ID:100 プレイヤースタート位置
@@ -201,7 +218,7 @@ public:
 		// ==================================
 		// ID:200 背景岩ブロック
 		tiles_.push_back({
-			TileID::Deco_RockBlock, "BackgroundRockBlock", TextureId::Deco_Background_RockBlock, TileType::Solid , false,
+			TileID::Deco_RockBlock, "BackgroundRockBlock", TextureId::Deco_Background_RockBlock, TileType::AutoTile , false,
 			TileLayer::BackgroundDecoration, {0.0f, 0.0f},
 			RenderMode::Simple,{}
 			});
