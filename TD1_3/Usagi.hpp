@@ -538,23 +538,22 @@ public:
 
 		// ========== Y方向の移動と衝突判定 ==========
 		transform_.translate.y += moveDelta.y;
-		HitDirection hitDir = PhysicsManager::ResolveMapCollision(this, mapData);
-		isGrounded_ = (hitDir == HitDirection::Top);
+		HitDirection hitDirY = PhysicsManager::ResolveMapCollisionY(this, mapData);
+		isGrounded_ = (hitDirY == HitDirection::Top);
 
 		// ========== X方向の移動と衝突判定 ==========
 		transform_.translate.x += moveDelta.x;
-		HitDirection hitDir2 = PhysicsManager::ResolveMapCollision(this, mapData);
+		HitDirection hitDirX = PhysicsManager::ResolveMapCollisionX(this, mapData);
 
 		// ========== 回転 ==========
 		transform_.rotation += rigidbody_.GetRotationDelta(deltaTime);
 
 		// デバッグ出力
-		if ((hitDir != HitDirection::None && hitDir != HitDirection::Top) ||
-			(hitDir2 != HitDirection::None && hitDir2 != HitDirection::Top)) {
+		/*if (hitDirX != HitDirection::None || hitDirY != HitDirection::None) {
 			Novice::ConsolePrintf("Hit Direction X: %d, Y: %d, position: (%.f, %.f)\n",
-				static_cast<int>(hitDir2), static_cast<int>(hitDir),
+				static_cast<int>(hitDirX), static_cast<int>(hitDirY),
 				transform_.translate.x, transform_.translate.y);
-		}
+		}*/
 
 		transform_.CalculateWorldMatrix();
 	}

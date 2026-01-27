@@ -24,11 +24,15 @@ public:
     /// </summary>
     static HitDirection ResolveMapCollision(GameObject2D* obj, const MapData& map);
 
+    // Y軸専用の衝突判定（Top/Bottom/Noneのみ返す）
+    static HitDirection ResolveMapCollisionY(GameObject2D * obj, const MapData & map);
+
+    // X軸専用の衝突判定（Left/Right/Noneのみ返す）  
+    static HitDirection ResolveMapCollisionX(GameObject2D* obj, const MapData& map);
+
 	static bool ResolveObjectsCollisions(std::vector<GameObject2D*>& objects);
 
     static bool ObjectsCollision(GameObject2D* objA, GameObject2D* objB);
-    // （必要に応じて）全オブジェクト一括処理用
-    // static void Update(std::vector<GameObject2D*>& objects, const MapData& map);
 
 private:
     // 矩形同士の衝突チェック（ヘルパー関数）
