@@ -52,10 +52,8 @@ private:
 	int grHandleButton_ = -1;
 
 	// 背景テクスチャ
-	int grHandleBackground_ = -1;
 	DrawComponent2D drawCompBackground_;
 
 	// ロゴテクスチャ
-	int grHandleLogo_ = -1;
 	DrawComponent2D drawCompLogo_;
 };

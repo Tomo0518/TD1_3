@@ -56,6 +56,8 @@ public:
 	/// <param name="graphHandle">画像ハンドル</param>
 	explicit DrawComponent2D(int graphHandle);
 
+	explicit DrawComponent2D(TextureId textureId);
+
 	/// <summary>
 	/// デフォルトコンストラクタ（後で画像を設定する場合）
 	/// </summary>

@@ -13,26 +13,7 @@
 #endif
 
 #include "Camera2D.h"
-
-//TitleScene::TitleScene(SceneManager& manager, GameShared& shared)
-//	: manager_(manager),
-//	shared_(shared) {
-//
-//	// フォント読み込み
-//	if (font_.Load("Resources/font/oxanium.fnt", "./Resources/font/oxanium_0.png")) {
-//		text_.SetFont(&font_);
-//		fontReady_ = true;
-//	}
-//
-//	// 描画コンポーネントを初期化
-//	InitializeDrawComponents();
-//
-//	// ボタン初期化
-//	InitializeButtons();
-//
-//	// BGMを再生
-//	shared_.PlayExclusive_(BgmKind::Title);
-//}
+#include "TextureManager.h"
 
 TitleScene::TitleScene(SceneManager& manager)
 	: sceneManager_(manager){
@@ -57,8 +38,7 @@ TitleScene::TitleScene(SceneManager& manager)
 
 void TitleScene::InitializeDrawComponents() {
 	// ========== 背景 ==========
-	int bgTexture = Novice::LoadTexture("./Resources/images/title/background_ver1.png");
-	drawCompBackground_ = DrawComponent2D(bgTexture);
+	drawCompBackground_ = DrawComponent2D(TextureId::TitleBackground);
 
 	// 背景の設定
 	drawCompBackground_.SetPosition({ kWindowWidth / 2.0f, kWindowHeight / 2.0f });
@@ -66,8 +46,7 @@ void TitleScene::InitializeDrawComponents() {
 	drawCompBackground_.SetAnchorPoint({ 0.5f, 0.5f });
 
 	// ========== ロゴ ==========
-	int logoTexture = Novice::LoadTexture("./Resources/images/title/logo_ver1.png");
-	drawCompLogo_ = DrawComponent2D(logoTexture);
+	drawCompLogo_ = DrawComponent2D(TextureId::TitleLogo);
 
 	// ロゴの設定
 	drawCompLogo_.SetPosition({ kWindowWidth / 2.0f, kWindowHeight / 2.0f });
@@ -75,10 +54,6 @@ void TitleScene::InitializeDrawComponents() {
 
 	// ロゴにパルスエフェクトを追加（拡大縮小）
 	drawCompLogo_.StartPulse(0.9f, 1.1f, 7.5f, true);
-
-	// テクスチャハンドルを保存（デバッグ用）
-	grHandleBackground_ = bgTexture;
-	grHandleLogo_ = logoTexture;
 }
 
 void TitleScene::InitializeButtons() {
@@ -105,8 +80,6 @@ void TitleScene::InitializeButtons() {
 
 	// 3つのボタンを追加
 
-	//void ButtonManager::AddButton(const Vector2 & position, const Vector2 & size, int normalTexture, int selectedTexture, std::function<void()> callback);
-
 	buttonManager_.AddButton(
 		{ centerX, startY }, buttonSize, 
 		Tex().GetTexture(TextureId::UI_Button_Play),
@@ -128,11 +101,6 @@ void TitleScene::InitializeButtons() {
 		Tex().GetTexture(TextureId::UI_Button_Quit_Selected),
 		quitGame
 	);
-
-	// 各ボタンにテクスチャを設定
-	//for (size_t i = 0; i < buttonManager_.GetButtonCount(); ++i) {
-	//	buttonManager_.SetButtonTexture(grHandleButton_);
-	//}
 
 	// SE設定
 	buttonManager_.SetOnSelectSound([&]() {
@@ -182,40 +150,4 @@ void TitleScene::Draw() {
 	buttonManager_.Draw();
 
 	player_.Draw(Camera2D::GetInstance());
-
-#ifdef _DEBUG
-	// デバッグ情報
-	ImGui::Begin("Title Scene Debug");
-
-	ImGui::Text("=== Background ===");
-	Vector2 bgPos = drawCompBackground_.GetPosition();
-	Vector2 bgSize = drawCompBackground_.GetDrawSize();
-	ImGui::Text("Position: (%.1f, %.1f)", bgPos.x, bgPos.y);
-	ImGui::Text("Draw Size: (%.1f, %.1f)", bgSize.x, bgSize.y);
-
-	ImGui::Separator();
-
-	ImGui::Text("=== Logo ===");
-	Vector2 logoPos = drawCompLogo_.GetPosition();
-	Vector2 logoSize = drawCompLogo_.GetDrawSize();
-	Vector2 logoImageSize = drawCompLogo_.GetImageSize();
-	ImGui::Text("Position: (%.1f, %.1f)", logoPos.x, logoPos.y);
-	ImGui::Text("Image Size: (%.1f, %.1f)", logoImageSize.x, logoImageSize.y);
-	ImGui::Text("Draw Size: (%.1f, %.1f)", logoSize.x, logoSize.y);
-	ImGui::Text("Scale Effect Active: %s",
-		drawCompLogo_.IsScaleEffectActive() ? "Yes" : "No");
-
-	ImGui::Separator();
-
-	if (ImGui::Button("Reset Logo Pulse")) {
-		drawCompLogo_.StopScale();
-		drawCompLogo_.StartPulse(0.9f, 1.1f, 0.5f, true);
-	}
-
-	if (ImGui::Button("Stop All Effects")) {
-		drawCompLogo_.StopAllEffects();
-	}
-
-	ImGui::End();
-#endif
 }

@@ -53,6 +53,20 @@ DrawComponent2D::DrawComponent2D(int graphHandle)
 	);
 }
 
+DrawComponent2D::DrawComponent2D(TextureId textureId)
+	: graphHandle_(TextureManager::GetInstance().GetTexture(textureId)) {
+
+	// 静止画として初期化（1x1分割、1フレーム）
+	InitializeImageSize(1, 1);
+
+	// 内部的には1フレームのアニメーションとして扱う
+	int frameWidth = static_cast<int>(imageSize_.x);
+	int frameHeight = static_cast<int>(imageSize_.y);
+	animation_ = std::make_unique<Animation>(
+		graphHandle_, frameWidth, frameHeight, 1, 1, 0.0f, false
+	);
+}
+
 DrawComponent2D::DrawComponent2D()
 	: graphHandle_(-1), imageSize_{ 0.0f, 0.0f }, drawSize_{ 0.0f, 0.0f } {
 }
