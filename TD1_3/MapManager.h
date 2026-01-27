@@ -17,7 +17,9 @@ public:
     void Update(float deltaTime, Camera2D& camera);
 
     // 描画
-    void Draw(const Camera2D& camera);
+   // void Draw(const Camera2D& camera);
+
+    void Draw(const Camera2D& camera,DrawLayer layer);
 
     // 特定座標のタイルに干渉
     void InteractionTile(const Vector2& worldPos);

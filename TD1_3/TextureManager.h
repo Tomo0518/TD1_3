@@ -77,6 +77,7 @@ enum class TextureId {
 	// デコレーション用
 	// ========================================
 	Deco_Scrap,
+	Deco_Sign,
 	Deco_Grass,
 	Deco_GrassAnim,
 

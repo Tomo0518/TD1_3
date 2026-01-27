@@ -373,7 +373,7 @@ void GamePlayScene::Draw() {
 	// マップ描画 
 	// =======================
 	// 動的タイル描画
-	mapManager_.Draw(*camera_);
+	mapManager_.Draw(*camera_,DrawLayer::Background);
 
 	// 静的タイル描画
 	mapChip_.Draw(*camera_, mapData);
@@ -385,8 +385,13 @@ void GamePlayScene::Draw() {
 		objectManager_.Draw(*camera_);
 	}
 
+
+	// 動的タイル描画
+	mapManager_.Draw(*camera_, DrawLayer::Foreground);
+
 	// 前景背景描画
 	backgroundManager_->Draw(*camera_, "foreground");
+
 
 	UIManager::GetInstance().Draw();
 	UIManager::GetInstance().DrawIcons();

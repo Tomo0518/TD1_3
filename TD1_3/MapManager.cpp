@@ -46,10 +46,19 @@ void MapManager::Update(float deltaTime, Camera2D& camera) {
     }
 }
 
-void MapManager::Draw(const Camera2D& camera) {
-    // 描画自体はTileInstance側でDrawComponent2Dを介して行う
+//void MapManager::Draw(const Camera2D& camera) {
+//    // 描画自体はTileInstance側でDrawComponent2Dを介して行う
+//    for (auto& tile : dynamicTiles_) {
+//        tile->Draw(camera);
+//    }
+//}
+
+void MapManager::Draw(const Camera2D& camera, DrawLayer layer) {
+    // 指定されたDrawLayerのタイルのみ描画
     for (auto& tile : dynamicTiles_) {
-        tile->Draw(camera);
+        if (tile->GetDrawLayer() == layer) {
+            tile->Draw(camera);
+        }
     }
 }
 

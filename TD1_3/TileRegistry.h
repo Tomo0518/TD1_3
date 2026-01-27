@@ -8,7 +8,12 @@ enum class TileLayer {
 	BackgroundDecoration, // 装飾タイル（当たり判定なし、背景の一つ上のレイヤー）
 	Block,      // 地形（当たり判定あり、描画順は中）
 	Decoration, // 装飾（当たり判定なし、描画順は奥 or 手前）
-	Object      // ゲームオブジェクト配置用（実行時は消える）
+	Object,      // ゲームオブジェクト配置用（実行時は消える）
+};
+
+enum class DrawLayer {
+	Background,
+	Foreground
 };
 
 // タイルの種類
@@ -65,7 +70,8 @@ struct TileDefinition {
 	Vector2 drawOffset; // 描画オフセット
 
 	RenderMode renderMode; // 描画モード(MapChipかComponentか)
-	TileAnimConfig animConfig; // アニメーション設定
+	DrawLayer drawLayer = DrawLayer::Background; // 描画レイヤー(背景か前景か)
+	TileAnimConfig animConfig = { false, 1, 1, 1, 0.0f }; // アニメーション設定
 };
 
 class TileRegistry {
@@ -139,15 +145,15 @@ public:
 		tiles_.push_back({
 			TileID::Deco_Grass, "Grass", TextureId::Deco_GrassAnim, TileType::Solid, false, // 当たり判定なし
 			TileLayer::Decoration, {0.0f, 8.0f}, // オフセットで位置微調整
-			RenderMode::Component,
+			RenderMode::Component,DrawLayer::Background,
 			{ true, 8, 1, 8, 8.f,true,{0.5f, 0.8f} }// アニメーション設定
 			});
 
 		// ID:11 看板 (Decoration)
 		tiles_.push_back({
-			TileID::Deco_Sign, "Sign", TextureId::Deco_Scrap, TileType::Solid, false,
+			TileID::Deco_Sign, "Sign", TextureId::Deco_Sign, TileType::Solid, false,
 			TileLayer::Decoration, {0.0f, 0.0f},
-			RenderMode::Component,
+			RenderMode::Component,DrawLayer::Background,
 			{ false, 1, 1, 1, 0.0f } // アニメーションなし
 			});
 
@@ -157,42 +163,38 @@ public:
 		tiles_.push_back({
 			TileID::JumpTutorial, "JumpTutorial", TextureId::JumpTutorial, TileType::Solid, false,
 			TileLayer::Decoration, {0.0f, 0.0f},
-			RenderMode::Component,
+			RenderMode::Component,DrawLayer::Foreground,
 			{ false, 1, 1, 1, 0.0f } // アニメーションなし
 			});
 
 		tiles_.push_back({
 			TileID::DashTutorial, "DashTutorial", TextureId::DashTutorial, TileType::Solid, false,
 			TileLayer::Decoration, {0.0f, 0.0f},
-			RenderMode::Component,
+			RenderMode::Component,DrawLayer::Foreground,
 			{ false, 1, 1, 1, 0.0f } // アニメーションなし
 			});
 
 		tiles_.push_back({
 			TileID::ThrowTutorial, "ThrowTutorial", TextureId::ThrowTutorial, TileType::Solid, false,
 			TileLayer::Decoration, {0.0f, 0.0f},
-			RenderMode::Component,
+			RenderMode::Component,DrawLayer::Foreground,
 			{ false, 1, 1, 1, 0.0f } // アニメーションなし
 			});
 
 		tiles_.push_back({
 			TileID::BoomerangTutorial, "BoomerangTutorial", TextureId::BoomerangTutorial, TileType::Solid, false,
 			TileLayer::Decoration, {0.0f, 0.0f},
-			RenderMode::Component,
+			RenderMode::Component,DrawLayer::Foreground,
 			{ false, 1, 1, 1, 0.0f } // アニメーションなし
 			});
 
-
-
 		// **************************************
-		
 		// --- Object Layer (配置物) ---
 		// ID:100 プレイヤースタート位置
 		tiles_.push_back({
 			100, "PlayerStart", TextureId::None, TileType::Solid, false,
 			TileLayer::Object, {0.0f, 0.0f}
 			});
-
 
 		// ==================================
 		// 背景装飾タイル (BackgroundDecoration)

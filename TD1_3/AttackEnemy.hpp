@@ -406,7 +406,6 @@ public:
 		}
 	}
 
-
 	void Stun() {
 		stunned_ = true;
 		stunTimer_ = stunDuration_;

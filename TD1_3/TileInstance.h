@@ -26,6 +26,8 @@ public:
                 float randomOffset = static_cast<float>(rand()) / RAND_MAX;
                 drawComp_->Update(randomOffset);
             }
+
+			drawLayer_ = def.drawLayer;
         }
     }
 
@@ -58,10 +60,12 @@ public:
     }
 
 	Vector2 GetWorldPos() const { return worldPos_; }
+    DrawLayer GetDrawLayer() const { return drawLayer_; }
 
 private:
     int id_;
     Vector2 worldPos_;
     bool isActive_;
     std::unique_ptr<DrawComponent2D> drawComp_;
+	DrawLayer drawLayer_;
 };
