@@ -13,6 +13,7 @@
 #include "ParticleRegistry.h"
 
 #include "UIManager.h"
+#include "MapChip.h"
 
 const char kWindowTitle[] = "==============ゲームタイトル==============";
 
@@ -63,11 +64,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓描画処理ここから
 		///
+		
 		DrawComponent2D::preDrawSetup();
+		MapChip::preDrawSetup();
 
 		sceneManager.Draw();
 
 		DrawComponent2D::postDrawCleanup();
+		MapChip::postDrawCleanup();
 
 		///
 		/// ↑描画処理ここまで

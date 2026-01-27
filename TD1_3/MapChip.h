@@ -18,6 +18,11 @@ public:
     void Draw(Camera2D& camera, const MapData& mapData,float alpha);
     void DrawBackgroundDecorationBlock(Camera2D& camera, const MapData& mapData);
 
+    static void preDrawSetup();
+
+    static void postDrawCleanup();
+
+
 private:
     MapData* mapData_ = nullptr;
     std::map<int, int> textureCache_;

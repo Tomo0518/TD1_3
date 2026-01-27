@@ -272,9 +272,6 @@
     <ClCompile Include="TileInstance.cpp">
       <Filter>KamataEngine\Source\Game\MapChipSystem\TileInstance</Filter>
     </ClCompile>
-    <ClCompile Include="MapChip.cpp">
-      <Filter>KamataEngine\Source\Game\MapChipSystem</Filter>
-    </ClCompile>
     <ClCompile Include="MapManager.cpp">
       <Filter>KamataEngine\Source\Game\MapChipSystem\MapManager</Filter>
     </ClCompile>
@@ -292,6 +289,9 @@
     </ClCompile>
     <ClCompile Include="UIManager.cpp">
       <Filter>KamataEngine\Source\library\2D\Ui</Filter>
+    </ClCompile>
+    <ClCompile Include="MapChip.cpp">
+      <Filter>KamataEngine\Source\Game\MapChipSystem\MapChip</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -199,7 +199,9 @@ void DrawComponent2D::preDrawSetup() {
 }
 
 void DrawComponent2D::postDrawCleanup() {
+#ifdef _DEBUG
 	Novice::ScreenPrintf(0, 0, "Draw Calls: %d", DrawCount);
+#endif
 	DrawCount = 0;
 }
 

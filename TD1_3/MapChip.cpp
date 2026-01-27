@@ -190,6 +190,22 @@ MapChip::SrcRect MapChip::CalculateAutoTileSrcRect(int mask, int texW, int texH)
 	return rect;
 }
 
+namespace {
+	int DrawMapChipCount = 0;
+}
+
+void MapChip::preDrawSetup() {
+	DrawMapChipCount = 0;
+}
+
+void MapChip::postDrawCleanup() {
+#ifdef _DEBUG
+	Novice::ScreenPrintf(0, 50, "Draw CallsMapChip: %d", DrawMapChipCount);
+#endif
+	DrawMapChipCount = 0;
+}
+
+
 // --- メイン描画処理 ---
 void MapChip::DrawLayer(Camera2D& camera, TileLayer layer,float alpha) {
 	if (!mapData_) return;
@@ -233,7 +249,32 @@ void MapChip::DrawLayer(Camera2D& camera, TileLayer layer,float alpha) {
 			// 6. タイル頂点計算
 			TileVertices vertices = CalculateTileVertices(x, y, tileSize, def->drawOffset, drawSize, vpVp);
 
-			// 7. src矩形計算
+			// 7. 画面外カリング判定（1280x720の画面サイズ）
+			constexpr float SCREEN_WIDTH = 1280.0f;
+			constexpr float SCREEN_HEIGHT = 720.0f;
+
+			// すべての頂点が画面の左側にある
+			if (vertices.screenLT.x < 0.0f && vertices.screenRT.x < 0.0f &&
+				vertices.screenLB.x < 0.0f && vertices.screenRB.x < 0.0f) {
+				continue;
+			}
+			// すべての頂点が画面の右側にある
+			if (vertices.screenLT.x > SCREEN_WIDTH && vertices.screenRT.x > SCREEN_WIDTH &&
+				vertices.screenLB.x > SCREEN_WIDTH && vertices.screenRB.x > SCREEN_WIDTH) {
+				continue;
+			}
+			// すべての頂点が画面の上側にある
+			if (vertices.screenLT.y < 0.0f && vertices.screenRT.y < 0.0f &&
+				vertices.screenLB.y < 0.0f && vertices.screenRB.y < 0.0f) {
+				continue;
+			}
+			// すべての頂点が画面の下側にある
+			if (vertices.screenLT.y > SCREEN_HEIGHT && vertices.screenRT.y > SCREEN_HEIGHT &&
+				vertices.screenLB.y > SCREEN_HEIGHT && vertices.screenRB.y > SCREEN_HEIGHT) {
+				continue;
+			}
+
+			// 8. src矩形計算
 			SrcRect srcRect = { 0, 0, texW, texH };
 			if (def->type == TileType::AutoTile) {
 				int mask = CalculateAutoTileMask(tileID, x, y, layer);
@@ -259,6 +300,8 @@ void MapChip::DrawLayer(Camera2D& camera, TileLayer layer,float alpha) {
 					handle,
 					color
 				);
+
+				DrawMapChipCount++;
 			}
 			else {
 				// 通常描画（Block以外）
@@ -272,6 +315,7 @@ void MapChip::DrawLayer(Camera2D& camera, TileLayer layer,float alpha) {
 					handle,
 					0xFFFFFFFF // 完全不透明
 				);
+				DrawMapChipCount++;
 			}
 		}
 	}
