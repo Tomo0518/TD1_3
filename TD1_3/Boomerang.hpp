@@ -174,7 +174,7 @@ public:
 					farestDistance_ = checkPos;
 					farestDistance_.x -= castDir.x * (tileSize);
 					farestDistance_.y -= castDir.y * (tileSize);
-					isHitWall = true;
+					//isHitWall = true;
 
 					// Optional: Reduce travel time if distance is very short
 					// maxTime_ = maxTime_ * (dist / range);
