@@ -45,6 +45,7 @@ public:
 
 	void SetMapManager(MapManager* manager) { mapManager_ = manager; }
 
+    float GetBlockLayerAlpha() const { return showBlockLayer_ ? blockLayerAlpha_ : 0.0f; }
 private:
     int selectedTileId_ = 1;
 	int preEraserTileId_ = 1;
@@ -52,6 +53,12 @@ private:
     TileLayer currentLayer_ = TileLayer::Block;
 
 	MapManager* mapManager_ = nullptr;
+
+
+	// レイヤー表示用
+    bool showBlockLayer_ = true;
+    float blockLayerAlpha_ = 1.0f; // 0.0f～1.0f（0で完全透明、1で不透明）
+    DrawLayer selectedDrawLayer_ = DrawLayer::Background;
 
     // ファイルパス指定用
     char currentFilePath_[256] = "./Resources/data/stage1.json";

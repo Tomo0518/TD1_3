@@ -201,20 +201,54 @@ void MapChipEditor::UpdateAndDrawImGui(MapData& mapData, Camera2D& camera) {
 
 		// --- タイルパレット ---
 		ImGui::Text("Select Tile:");
+
+		// Decorationレイヤーの場合はDrawLayerを選択
+		if (currentLayer_ == TileLayer::Decoration) {
+			ImGui::Text("Draw Layer:");
+			if (ImGui::RadioButton("Background (Behind Player)", selectedDrawLayer_ == DrawLayer::Background)) {
+				selectedDrawLayer_ = DrawLayer::Background;
+			}
+			ImGui::SameLine();
+			if (ImGui::RadioButton("Foreground (Front of Player)", selectedDrawLayer_ == DrawLayer::Foreground)) {
+				selectedDrawLayer_ = DrawLayer::Foreground;
+			}
+			ImGui::Separator();
+		}
+
 		const auto& tiles = TileRegistry::GetAllTiles();
 		int buttonsPerRow = 4;
 		int count = 0;
 
 		for (const auto& tile : tiles) {
-			// ID 0 (Air) はパレットに出さない（Cキーか右クリックで選択するため）
+			// ID 0 (Air) はパレットに出さない
 			if (tile.id == 0) continue;
 
+			// 現在のレイヤーと一致するかチェック
 			if (tile.layer == currentLayer_) {
-				std::string label = tile.name + "##" + std::to_string(tile.id);
-				// ラジオボタンで選択されたらID更新
+				// Decorationレイヤーの場合、さらにDrawLayerでフィルタリング
+				if (currentLayer_ == TileLayer::Decoration) {
+					if (tile.drawLayer != selectedDrawLayer_) {
+						continue; // DrawLayerが一致しない場合はスキップ
+					}
+				}
+
+				std::string label = tile.name;
+
+				// DrawLayerを視覚的に区別（オプション）
+				if (tile.renderMode == RenderMode::Component) {
+					if (tile.drawLayer == DrawLayer::Background) {
+						label += " [BG]";
+					}
+					else {
+						label += " [FG]";
+					}
+				}
+
+				label += "##" + std::to_string(tile.id);
+
+				// ラジオボタンで選択
 				if (ImGui::RadioButton(label.c_str(), selectedTileId_ == tile.id)) {
 					selectedTileId_ = tile.id;
-					// パレットから選んだ場合は、それを「次の復帰先」としても記憶更新
 					preEraserTileId_ = selectedTileId_;
 				}
 				count++;
@@ -222,6 +256,24 @@ void MapChipEditor::UpdateAndDrawImGui(MapData& mapData, Camera2D& camera) {
 			}
 		}
 		if (count % buttonsPerRow != 0) ImGui::NewLine();
+
+		ImGui::Separator();
+
+		// --- ブロックレイヤー表示制御 ---
+		ImGui::Text("Block Layer Display:");
+		if (ImGui::Checkbox("Show Block Layer", &showBlockLayer_)) {
+			// チェックボックスが変更されたときの処理
+		}
+
+		if (showBlockLayer_) {
+			if (ImGui::SliderFloat("Block Opacity", &blockLayerAlpha_, 0.0f, 1.0f, "%.2f")) {
+				// スライダーが変更されたときの処理
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Reset")) {
+				blockLayerAlpha_ = 1.0f;
+			}
+		}
 
 		// --- 消しゴム(C) のトグル処理 ---
 		ImGui::Text("Eraser(C): %s", (selectedTileId_ == TileID::Air) ? "[Active]" : "");

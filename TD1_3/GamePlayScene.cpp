@@ -376,7 +376,7 @@ void GamePlayScene::Draw() {
 	mapManager_.Draw(*camera_,DrawLayer::Background);
 
 	// 静的タイル描画
-	mapChip_.Draw(*camera_, mapData);
+	mapChip_.Draw(*camera_, mapData, mapEditor_.GetBlockLayerAlpha());
 
 	particleManager_->Draw(*camera_);
 

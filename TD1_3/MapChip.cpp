@@ -36,11 +36,11 @@ bool MapChip::IsSameTile(int myID, int tx, int ty, TileLayer layer) const {
 	return (mapData_->GetTile(tx, ty, layer) == myID);
 }
 
-void MapChip::Draw(Camera2D& camera, const MapData& mapData) {
+void MapChip::Draw(Camera2D& camera, const MapData& mapData,float alpha) {
 	if (!mapData_) return;
 	mapData_ = const_cast<MapData*>(&mapData);
 	DrawLayer(camera, TileLayer::Decoration);
-	DrawLayer(camera, TileLayer::Block);
+	DrawLayer(camera, TileLayer::Block,alpha);
 }
 
 void MapChip::DrawBackgroundDecorationBlock(Camera2D& camera, const MapData& mapData) {
@@ -191,7 +191,7 @@ MapChip::SrcRect MapChip::CalculateAutoTileSrcRect(int mask, int texW, int texH)
 }
 
 // --- メイン描画処理 ---
-void MapChip::DrawLayer(Camera2D& camera, TileLayer layer) {
+void MapChip::DrawLayer(Camera2D& camera, TileLayer layer,float alpha) {
 	if (!mapData_) return;
 
 	const int width = mapData_->GetWidth();
@@ -240,16 +240,39 @@ void MapChip::DrawLayer(Camera2D& camera, TileLayer layer) {
 				srcRect = CalculateAutoTileSrcRect(mask, texW, texH);
 			}
 
-			// 8. 描画
-			Novice::DrawQuad(
-				static_cast<int>(vertices.screenLT.x), static_cast<int>(vertices.screenLB.y),
-				static_cast<int>(vertices.screenRT.x), static_cast<int>(vertices.screenRB.y),
-				static_cast<int>(vertices.screenLB.x), static_cast<int>(vertices.screenLT.y),
-				static_cast<int>(vertices.screenRB.x), static_cast<int>(vertices.screenRT.y),
-				srcRect.x, srcRect.y, srcRect.w, srcRect.h,
-				handle,
-				0xFFFFFFFF
-			);
+			if (layer == TileLayer::Block) {
+				// アルファ値を0～255の範囲に変換（0.0f～1.0fを0～255に）
+				int drawAlpha = static_cast<int>(alpha * 255.0f);
+				drawAlpha = std::clamp(drawAlpha, 0, 255);
+
+				// 色値を作成（RGBA形式: 0xRRGGBBAA）
+				unsigned int color = 0xFFFFFF00 | drawAlpha; // RGBは白(0xFFFFFF)、Aは計算したアルファ値
+
+				// 描画
+				Novice::DrawQuad(
+					static_cast<int>(vertices.screenLT.x), static_cast<int>(vertices.screenLB.y),
+					static_cast<int>(vertices.screenRT.x), static_cast<int>(vertices.screenRB.y),
+					static_cast<int>(vertices.screenLB.x), static_cast<int>(vertices.screenLT.y),
+					static_cast<int>(vertices.screenRB.x), static_cast<int>(vertices.screenRT.y),
+					srcRect.x, srcRect.y,
+					srcRect.w, srcRect.h,
+					handle,
+					color
+				);
+			}
+			else {
+				// 通常描画（Block以外）
+				Novice::DrawQuad(
+					static_cast<int>(vertices.screenLT.x), static_cast<int>(vertices.screenLB.y),
+					static_cast<int>(vertices.screenRT.x), static_cast<int>(vertices.screenRB.y),
+					static_cast<int>(vertices.screenLB.x), static_cast<int>(vertices.screenLT.y),
+					static_cast<int>(vertices.screenRB.x), static_cast<int>(vertices.screenRT.y),
+					srcRect.x, srcRect.y,
+					srcRect.w, srcRect.h,
+					handle,
+					0xFFFFFFFF // 完全不透明
+				);
+			}
 		}
 	}
 }

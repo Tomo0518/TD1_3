@@ -15,7 +15,7 @@ public:
     ~MapChip();
 
     void Initialize();
-    void Draw(Camera2D& camera, const MapData& mapData);
+    void Draw(Camera2D& camera, const MapData& mapData,float alpha);
     void DrawBackgroundDecorationBlock(Camera2D& camera, const MapData& mapData);
 
 private:
@@ -24,7 +24,8 @@ private:
 
     void LoadTexturesFromManager();
     bool IsSameTile(int myID, int tx, int ty, TileLayer layer) const;
-    void DrawLayer(Camera2D& camera, TileLayer layer);
+    void DrawLayer(Camera2D& camera, TileLayer layer, float blockLayerAlpha = 1.0f);
+
 
     /// <summary>
     /// カリング範囲を計算（マージン付き）
