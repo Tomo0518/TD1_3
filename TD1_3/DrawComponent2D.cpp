@@ -2,6 +2,7 @@
 #include "Affine2D.h"
 #include <algorithm>
 #include "TextureManager.h"
+#include "WindowSize.h"
 
 // ========== コンストラクタ ==========
 
@@ -298,6 +299,31 @@ void DrawComponent2D::DrawInternal(const Matrix3x3* vpMatrix) {
 	if (flipY_) {
 		std::swap(screenVertices[0], screenVertices[3]);
 		std::swap(screenVertices[1], screenVertices[2]);
+	}
+
+	// 画面外カリング判定（1280x720の画面サイズ）
+	float SCREEN_WIDTH = kWindowWidth;
+	float SCREEN_HEIGHT = kWindowHeight;
+
+	// すべての頂点が画面の左側にある
+	if (screenVertices[0].x < 0.0f && screenVertices[1].x < 0.0f &&
+		screenVertices[2].x < 0.0f && screenVertices[3].x < 0.0f) {
+		return;
+	}
+	// すべての頂点が画面の右側にある
+	if (screenVertices[0].x > SCREEN_WIDTH && screenVertices[1].x > SCREEN_WIDTH &&
+		screenVertices[2].x > SCREEN_WIDTH && screenVertices[3].x > SCREEN_WIDTH) {
+		return;
+	}
+	// すべての頂点が画面の上側にある
+	if (screenVertices[0].y < 0.0f && screenVertices[1].y < 0.0f &&
+		screenVertices[2].y < 0.0f && screenVertices[3].y < 0.0f) {
+		return;
+	}
+	// すべての頂点が画面の下側にある
+	if (screenVertices[0].y > SCREEN_HEIGHT && screenVertices[1].y > SCREEN_HEIGHT &&
+		screenVertices[2].y > SCREEN_HEIGHT && screenVertices[3].y > SCREEN_HEIGHT) {
+		return;
 	}
 
 	DrawCount++;
