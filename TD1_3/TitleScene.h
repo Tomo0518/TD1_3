@@ -20,8 +20,6 @@ public:
 	void Update(float deltaTime, const char* keys, const char* preKeys) override;
 	void Draw() override;
 
-	void SetButtonTexture(int textureHandle) { grHandleButton_ = textureHandle; }
-
 private:
 	SceneManager& sceneManager_;
 //	GameShared& shared_;
@@ -42,12 +40,9 @@ private:
 	// 描画類
 	//=========================
 
-	// grHandleやコンポーネントの初期化
+	// コンポーネントの初期化
 	void InitializeDrawComponents();
 	void UpdateDrawComponents(float deltaTime);
-
-	// ボタン用テクスチャ
-	int grHandleButton_ = -1;
 
 	// 背景テクスチャ
 	DrawComponent2D drawCompBackground_;

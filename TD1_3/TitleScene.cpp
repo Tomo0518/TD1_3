@@ -56,9 +56,6 @@ void TitleScene::InitializeDrawComponents() {
 }
 
 void TitleScene::InitializeButtons() {
-	// ボタン用の白いテクスチャ
-	//grHandleButton_ = shared_.texWhite;
-
 	// ボタンの位置とサイズ
 	const float centerX = 1130.0f;
 	const float startY = 400.0f;

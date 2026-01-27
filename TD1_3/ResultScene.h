@@ -33,7 +33,6 @@ private:
 
 	// ========== ボタン管理 ==========
 	ButtonManager buttonManager_;
-	int grHandleButton_ = 0;
 
 	// ========== フォント ==========
 	bool fontReady_ = false;

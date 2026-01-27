@@ -58,22 +58,3 @@ void Vertex4Component::DrawVertexQuadWH(const Vector2& center, const float width
 		color
 	);
 }
-
-// アニメーション付き四角形描画
-
-//void Vertex4Component::DrawAnimeQuad(const Vertex4& v, int grHandle, unsigned int grDrawWidth, unsigned int grDrawHeight, int animeIndexX, int animeIndexY, unsigned int color) const {
-//	const float u0 = (static_cast<float>(animeIndexX) * grDrawWidth) / static_cast<float>(Novice::GetTextureWidth(grHandle));
-//	const float v0 = (static_cast<float>(animeIndexY) * grDrawHeight) / static_cast<float>(Novice::GetTextureHeight(grHandle));
-//	const float u1 = (static_cast<float>(animeIndexX + 1) * grDrawWidth) / static_cast<float>(Novice::GetTextureWidth(grHandle));
-//	const float v1 = (static_cast<float>(animeIndexY + 1) * grDrawHeight) / static_cast<float>(Novice::GetTextureHeight(grHandle));
-//	Novice::DrawQuad(
-//		static_cast<int>(v.leftTop.x), static_cast<int>(v.leftTop.y),
-//		static_cast<int>(v.rightTop.x), static_cast<int>(v.rightTop.y),
-//		static_cast<int>(v.leftBottom.x), static_cast<int>(v.leftBottom.y),
-//		static_cast<int>(v.rightBottom.x), static_cast<int>(v.rightBottom.y),
-//		u0, v0,
-//		u1, v1,
-//		grHandle,
-//		color
-//	);
-//}

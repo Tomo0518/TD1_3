@@ -6,11 +6,14 @@
 enum class TextureId {
 	White1x1,
 
+	// Title
 	TitleBackground,
 	TitleLogo,
 
+	// StageSelect
 	StageSelectBackground,
 
+	// Result
 	ResultBackground,
 	ResultClearLabel,
 	PlayerAnimeNormal,

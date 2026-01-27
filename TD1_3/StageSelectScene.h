@@ -39,7 +39,6 @@ private:
 	void InitializeDrawComponents();
 	void UpdateDrawComponents(float deltaTime);
 
-	int grHandleButton_ = -1;
 	DrawComponent2D* drawCompBackground_ = nullptr;
 
 	// ========== 入力制御 ==========

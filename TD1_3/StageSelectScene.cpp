@@ -37,11 +37,7 @@ StageSelectScene::~StageSelectScene() {
 }
 
 void StageSelectScene::InitializeDrawComponents() {
-	// 背景テクスチャをロード
-	int bgTexture = Novice::LoadTexture("./Resources/images/stageSelect/background_ver1.png");
-
-	// 新しい DrawComponent2D で背景を作成
-	drawCompBackground_ = new DrawComponent2D(bgTexture);
+	drawCompBackground_ = new DrawComponent2D(TextureId::StageSelectBackground);
 
 	// 背景の設定
 	drawCompBackground_->SetPosition({ kWindowWidth / 2.0f, kWindowHeight / 2.0f });
@@ -53,9 +49,6 @@ void StageSelectScene::InitializeDrawComponents() {
 }
 
 void StageSelectScene::InitializeButtons() {
-	// ボタン用の白いテクスチャ
-	grHandleButton_ = TextureManager::GetInstance().GetTexture(TextureId::White1x1);
-
 	// ボタンの位置とサイズ
 	const float centerX = 640.0f;
 	const float startY = 250.0f;
