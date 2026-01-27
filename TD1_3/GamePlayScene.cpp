@@ -186,6 +186,14 @@ void GamePlayScene::SpawnObjectFromData(const ObjectSpawnInfo& spawn) {
 			spawn.position.x, spawn.position.y);
 		break;
 	}
+	case 105: { // FatEnemy
+		auto* enemy = objectManager_.Spawn<FatEnemy>(nullptr, "Enemy");
+		enemy->SetPosition(spawn.position);
+		enemy->Initialize();
+		Novice::ConsolePrintf("[GamePlayScene] Spawned FatEnemy at (%.1f, %.1f)\n",
+			spawn.position.x, spawn.position.y);
+		break;
+	}
 	case 300: { // Button1
 		auto* button = objectManager_.Spawn<Button1>(nullptr, "Button");
 		button->SetPosition(spawn.position);

@@ -193,7 +193,7 @@ public:
 		}
 
 		initialPosition_ = transform_.translate;
-		status_.maxHP = 25;
+		status_.maxHP = 45;
 		status_.currentHP = status_.maxHP;
 	}
 

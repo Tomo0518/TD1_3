@@ -9,6 +9,7 @@ enum class ObjectRegistryType {
 
 	AttackEnemy = 103,
 	AttackEnemySpawner = 104,
+	FatEnemy = 105,
 	// ItemCoin = 200,
 	// ItemPowerUp = 201,
 
@@ -84,6 +85,13 @@ void ObjectRegistry::Initialize() {
 		"ObjectSpawner",
 		0xFF8800FF,     // color（オレンジ）
 		"AttackEnemySpawner"
+		});
+	objectTypes_.push_back({
+		105,
+		"FatEnemy",
+		"Enemy",
+		0xFF8800FF,     // color（オレンジ）
+		"FatEnemy"
 		});
 
 	// stage gimmick
