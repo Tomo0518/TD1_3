@@ -132,7 +132,6 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="FontAtlas.cpp" />
     <ClCompile Include="GamePlayScene.cpp" />
-    <ClCompile Include="GameShared.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Matrix3x3.cpp" />
@@ -217,7 +216,6 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClInclude Include="FontAtlas.h" />
     <ClInclude Include="GamePlayScene.h" />
     <ClInclude Include="IGameScene.h" />
-    <ClInclude Include="GameShared.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="JsonUtil.h" />

@@ -9,11 +9,9 @@
 
 #include "Player.h"
 
-
 class GameShared;
 class SceneManager;
 class Player;
-
 
 class TitleScene : public IScene {
 public:

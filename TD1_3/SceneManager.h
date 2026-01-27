@@ -1,9 +1,9 @@
 ﻿#pragma once
 #include "IGameScene.h"
-#include "GameShared.h"
 #include "SceneType.h"
 #include <memory>
 #include <optional>
+#include <vector>
 
 // シーン遷移情報を保持する構造体
 struct SceneTransition {
@@ -22,9 +22,6 @@ public:
 
 	// 現在のシーン情報取得
 	SceneType GetCurrentSceneType() const { return currentSceneType_; }
-
-	// 共有リソースへのアクセス
-	GameShared& Shared() { return shared_; }
 
 	// シーン遷移リクエスト（各シーンから呼ばれる）
 	void RequestTransition(SceneType targetScene);
@@ -65,9 +62,6 @@ private:
 	// 遷移リクエスト
 	std::optional<SceneTransition> pendingTransition_;
 	bool pendingOverlayClear_ = false;
-
-	// 共有リソース
-	GameShared shared_;
 
 	// ゲーム終了フラグ
 	bool shouldQuit_ = false;

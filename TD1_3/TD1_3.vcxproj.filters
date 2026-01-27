@@ -92,9 +92,6 @@
     <Filter Include="KamataEngine\Source\library\2D\Particle">
       <UniqueIdentifier>{a6f8e870-45b6-4068-a2f1-ab24ce3be498}</UniqueIdentifier>
     </Filter>
-    <Filter Include="KamataEngine\Source\Shared">
-      <UniqueIdentifier>{5faa254f-c393-4f48-ba8a-971af779a6d9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="KamataEngine\Source\library\json">
       <UniqueIdentifier>{5fb55ef0-75a1-4869-bb7c-84f0b9f104f4}</UniqueIdentifier>
     </Filter>
@@ -199,9 +196,6 @@
     </ClCompile>
     <ClCompile Include="TitleScene.cpp">
       <Filter>KamataEngine\Source\Game\Scene\Title</Filter>
-    </ClCompile>
-    <ClCompile Include="GameShared.cpp">
-      <Filter>KamataEngine\Source\Shared</Filter>
     </ClCompile>
     <ClCompile Include="Camera2D.cpp">
       <Filter>KamataEngine\Source\library\2D\Camera2D</Filter>
@@ -417,9 +411,6 @@
     </ClInclude>
     <ClInclude Include="TitleScene.h">
       <Filter>KamataEngine\Source\Game\Scene\Title</Filter>
-    </ClInclude>
-    <ClInclude Include="GameShared.h">
-      <Filter>KamataEngine\Source\Shared</Filter>
     </ClInclude>
     <ClInclude Include="Camera2D.h">
       <Filter>KamataEngine\Source\library\2D\Camera2D</Filter>

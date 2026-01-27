@@ -4,8 +4,8 @@
 #include <Novice.h>
 #include "SceneUtilityIncludes.h"
 
-PauseScene::PauseScene(SceneManager& manager, IScene& underlying, GameShared& shared)
-	: manager_(manager), underlying_(underlying), shared_(shared) {
+PauseScene::PauseScene(SceneManager& manager, IScene& underlying)
+	: manager_(manager), underlying_(underlying) {
 
 	buttonManager_ = std::make_unique<ButtonManager>();
 	InitializeButtons();
@@ -75,21 +75,20 @@ void PauseScene::InitializeButtons() {
 	);
 
 	// SE設定
-	buttonManager_->SetOnSelectSound([&]() { shared_.PlaySelectSe(); });
-	buttonManager_->SetOnDecideSound([&]() { shared_.PlayDecideSe(); });
+	buttonManager_->SetOnSelectSound([&]() { Sound().PlaySe(SeId::Select);});
+	buttonManager_->SetOnDecideSound([&]() { Sound().PlaySe(SeId::Decide); });
 	buttonManager_->SetFirstFrame(true);
 }
 
 void PauseScene::Update(float dt, const char* keys, const char* pre) {
-	shared_.pad.Update();
-	shared_.UpdateInputMode(keys, pre);
+
 	buttonManager_->Update(dt);
 
 	// ESC/B/Startでポーズ解除
 	if ((pre[DIK_ESCAPE] == 0 && keys[DIK_ESCAPE]) ||
-		shared_.pad.Trigger(Pad::Button::B) ||
-		shared_.pad.Trigger(Pad::Button::Start)) {
-		shared_.PlayBackSe();
+		Input().GetPad()->Trigger(Pad::Button::B) ||
+		Input().GetPad()->Trigger(Pad::Button::Start)) {
+		Sound().PlaySe(SeId::Back);
 		manager_.PopOverlay();
 	}
 }

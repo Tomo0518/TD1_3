@@ -6,6 +6,7 @@
 #include "SceneManager.h"
 #include "SoundManager.h"
 #include "TextureManager.h"
+#include "ParticleManager.h"
 
 #include "Camera2D.h"
 

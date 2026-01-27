@@ -15,7 +15,7 @@
 #include <Novice.h>
 
 SceneManager::SceneManager() {
-	shared_.LoadCommonTextures();
+	//shared_.LoadCommonTextures();
 	MapData::GetInstance().Load("./Resources/data/stage1.json");
 	ChangeScene(SceneType::GamePlay);
 }
@@ -96,7 +96,7 @@ void SceneManager::RequestPauseToTitle() {
 
 void SceneManager::RequestOpenPause() {
 	if (currentScene_) {
-		auto pauseScene = std::make_unique<PauseScene>(*this, *currentScene_, shared_);
+		auto pauseScene = std::make_unique<PauseScene>(*this, *currentScene_);
 		PushOverlay(std::move(pauseScene));
 	}
 }

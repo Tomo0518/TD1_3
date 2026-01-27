@@ -1,5 +1,4 @@
 ﻿#include "TitleScene.h"
-#include "GameShared.h"
 #include "Easing.h"
 #include <Novice.h>
 #include <cstring>
