@@ -44,6 +44,8 @@ public:
 			other->GetRigidbody().acceleration.x += knockbackDir.x * 14.5f;
 			other->GetRigidbody().acceleration.y += 6.5f;
 
+			other->OnDamaged(10); // Deal 10 damage to player
+
 			Destroy();
 
 		}

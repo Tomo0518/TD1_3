@@ -2,6 +2,7 @@
 
 enum class ObjectRegistryType {
 	WorldOrigin = 0,
+	PlayerCheckPoint = 99,
 	PlayerStart = 100,
 	EnemyNormal = 101,
 	EnemySpawner = 102,
@@ -41,6 +42,14 @@ void ObjectRegistry::Initialize() {
 		"Player",           // category
 		0x00FF00FF,         // color（緑）
 		"Player"            // tag
+		});
+
+	objectTypes_.push_back({
+		99,
+		"PlayerCheckPoint",
+		"Player",
+		0x00FF88FF,     // color（薄い緑）
+		"CheckPoint"
 		});
 
 	// ===================================================================

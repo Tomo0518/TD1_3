@@ -55,6 +55,8 @@ private:
 	// ブーメランの前フレームの状態(回収検知)
 	bool wasBoomerangActive_ = false;
 
+	Vector2 respawnPosition_ = { 0.f, 0.f };
+
 	enum DrawCompState {
 		eBreathe,
 		eRun,
@@ -71,6 +73,9 @@ public:
 		delete starComp_;
 	}
 	void Initialize() override {
+		status_.maxHP = 50;
+		status_.currentHP = status_.maxHP;
+
 		rigidbody_.Initialize();
 		rigidbody_.deceleration = { 0.7f, 0.7f };
 		collider_.size = { 52.f, 120.f };
@@ -563,13 +568,16 @@ public:
 				other->GetInfo().isActive = false;
 			}
 		}
-		if (other->GetInfo().tag == "Enemy" || other->GetInfo().tag == "Player") {
+		else if (other->GetInfo().tag == "Enemy" || other->GetInfo().tag == "Player") {
 			// knockback on collision with other enemies
 			Vector2 knockbackDir = Vector2::Subtract(transform_.translate, other->GetTransform().translate);
 			knockbackDir = Vector2::Normalize(knockbackDir);
 			rigidbody_.acceleration.x = 0.f;
 			rigidbody_.acceleration.x += knockbackDir.x * 7.5f;
 
+		}
+		else if (other->GetInfo().tag == "CheckPoint") {
+			respawnPosition_ = other->GetTransform().translate;
 		}
 
 		return 0;
@@ -652,25 +660,24 @@ public:
 	}
 
 
-	void TakeDamage(float damage) {
-		currentHp_ -= damage;
-		currentHp_ = std::max(0.f, currentHp_);
-		ParticleManager::GetInstance().Emit(ParticleType::Hit, transform_.translate);
-		if (currentHp_ <= 0.f) {
-			// Handle death (e.g., respawn, game over)
-			//info_.isActive = false;
+	virtual void OnDamaged(int damage) override {
+		if (damage < 0) return; // 負のダメージは無効
+		status_.currentHP -= damage;
+		if (status_.currentHP <= 0) {
+			status_.currentHP = 0;
+			ParticleManager::GetInstance().Emit(ParticleType::Hit, transform_.translate);
+			ParticleManager::GetInstance().Emit(ParticleType::Enemy_Dead, transform_.translate);
+
+			status_.currentHP = status_.maxHP;
+			transform_.translate = respawnPosition_;
+			ParticleManager::GetInstance().Emit(ParticleType::Hit, transform_.translate);
 		}
-	}
-
-	float GetCurrentHp() const {
-		return currentHp_;
-	}
-	float GetMaxHp() const {
-		return maxHp_;
-	}
-
-	void SetCurrentHp(float hp) {
-		currentHp_ = std::clamp(hp, 0.f, maxHp_);
+		else {
+			if (damage > 0) {
+				ParticleManager::GetInstance().Emit(ParticleType::Hit, transform_.translate);
+				drawManager_.StartFlashBlink(0xFF0000CC, 4, 0.1f, BlendMode::kBlendModeNormal, 1);
+			}			
+		}
 	}
 
 	PlayerSkillState GetSkillState() const {

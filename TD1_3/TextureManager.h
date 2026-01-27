@@ -54,6 +54,9 @@ enum class TextureId {
 	Door_Open,
 	Door_Closed,
 
+	UsagiCheckPoint_On,
+	UsagiCheckPoint_Off,
+
 	// =========================================
 	// usagi
 	// =========================================
@@ -84,6 +87,8 @@ enum class TextureId {
 	Deco_Grass,
 	Deco_GrassAnim,
 	Deco_Rock1,
+	Deco_Bush1,
+	Deco_BushDark,
 
 	// ========================================
 	// デコレーション用

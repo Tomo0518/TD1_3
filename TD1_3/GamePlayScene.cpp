@@ -12,6 +12,7 @@
 #include "ParticleManager.h"
 #include "Button.hpp"
 #include "Door.hpp"
+#include "UsagiCheckPoint.hpp"
 
 #include "PhysicsManager.h"
 #include "UIManager.h"
@@ -131,6 +132,14 @@ void GamePlayScene::SpawnObjectFromData(const ObjectSpawnInfo& spawn) {
 				spawn.position.x, spawn.position.y);
 		}
 		break;
+	case 99: {
+		auto* checkPoint = objectManager_.Spawn<UsagiCheckPoint>(nullptr, "UsagiCheckPoint");
+		checkPoint->SetPosition(spawn.position);
+		checkPoint->Initialize();
+		Novice::ConsolePrintf("[GamePlayScene] Spawned UsagiCheckPoint at (%.1f, %.1f)\n",
+			spawn.position.x, spawn.position.y);
+		break;
+	}
 
 	case 100: // PlayerStart
 		if (!player_) {
@@ -338,20 +347,9 @@ void GamePlayScene::Update(float dt, const char* keys, const char* pre) {
 		}
 	}
 
-#ifdef _DEBUG
-	if(Input().TriggerKey(DIK_H)) {
-		player_->TakeDamage(10.0f);
-	}
-	else if (Input().TriggerKey(DIK_Y)) {
-		player_->TakeDamage(-10.0f);
-	}
-#endif
-
-	float playerHp = player_ ? player_->GetCurrentHp() : 0.0f;
-	float playerMaxHp = player_ ? player_->GetMaxHp() : 1.0f;
 
 	// ========= UI更新 =========
-	UIManager::GetInstance().SetPlayerHP(playerHp, playerMaxHp);
+	UIManager::GetInstance().SetPlayerHP((float)player_->GetStatus().currentHP, (float)player_->GetStatus().maxHP);
 	UIManager::GetInstance().Update(dt);
 	UIManager::GetInstance().UpdateIcons(dt, player_ ? player_->GetSkillState() : PlayerSkillState{});
 

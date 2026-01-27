@@ -241,6 +241,7 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClInclude Include="Transform2D.h" />
     <ClInclude Include="UIManager.h" />
     <ClInclude Include="Usagi.hpp" />
+    <ClInclude Include="UsagiCheckPoint.hpp" />
     <ClInclude Include="Vector2.h" />
     <ClInclude Include="Vertex4.h" />
     <ClInclude Include="Vertex4Component.h" />

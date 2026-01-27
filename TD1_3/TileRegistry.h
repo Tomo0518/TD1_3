@@ -31,6 +31,7 @@ enum TileID{
 	Deco_Grass = 10,
 	Deco_Sign = 11,
 	Deco_Rock1 = 12,
+	Deco_Bush1 = 13,
 
 	// Tutorial Images
 	JumpTutorial = 50,
@@ -38,6 +39,8 @@ enum TileID{
 	ThrowTutorial = 52,
 	BoomerangTutorial = 53,
 	Deco_Rock1_F = 54,
+	Deco_Bush1_F = 55,
+	Deco_BushDark_F = 56,
 
 	//PlayerStart = 100,
 
@@ -167,6 +170,14 @@ public:
 			{ false, 1, 1, 1, 0.0f } // アニメーションなし
 			});
 
+		// ID:13 bush (Decoration)
+		tiles_.push_back({
+			TileID::Deco_Bush1, "Bush1", TextureId::Deco_Bush1, TileType::Solid, false,
+			TileLayer::Decoration, {0.0f, 0.0f},
+			RenderMode::Component,DrawLayer::Background,
+			{ false, 1, 1, 1, 0.0f } // アニメーションなし
+			});
+
 		// **************************************
 		// tutorial image (decoration)
 		// **************************************
@@ -204,6 +215,20 @@ public:
 			RenderMode::Component,DrawLayer::Foreground,
 			{ false, 1, 1, 1, 0.0f } // アニメーションなし
 			});
+
+		tiles_.push_back({
+			TileID::Deco_Bush1_F, "Bush1", TextureId::Deco_Bush1, TileType::Solid, false,
+			TileLayer::Decoration, {0.0f, 0.0f},
+			RenderMode::Component,DrawLayer::Foreground,
+			{ false, 1, 1, 1, 0.0f } // アニメーションなし
+			});
+		tiles_.push_back({
+			TileID::Deco_BushDark_F, "Bush1", TextureId::Deco_BushDark, TileType::Solid, false,
+			TileLayer::Decoration, {0.0f, 0.0f},
+			RenderMode::Component,DrawLayer::Foreground,
+			{ false, 1, 1, 1, 0.0f } // アニメーションなし
+			});
+		
 
 		// **************************************
 		// --- Object Layer (配置物) ---
