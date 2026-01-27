@@ -192,9 +192,12 @@ public:
 			if (stickY > 0.7f && isGrounded_) {
 				jumpInput = true;
 			}
+			else if (Input().GetPad()->Trigger(Pad::Button::A)) {
+				jumpInput = true;
+			}
 
-			// ダッシュ（Aボタン）
-			if (Input().GetPad()->Trigger(Pad::Button::A)) {
+			// ダッシュ
+			if (Input().GetPad()->Trigger(Pad::Button::B)) {
 				dashInput = true;
 			}
 		}
@@ -331,7 +334,7 @@ public:
 		bool tryThrow = false;
 		Vector2 throwDir = { 0, 0 };
 
-		if (Input().ReleaseKey(DIK_J) || Input().GetPad()->Release(Pad::Button::B)) {
+		if (Input().ReleaseKey(DIK_J) || Input().GetPad()->Release(Pad::Button::X)) {
 			tryThrow = true;
 			throwDir = { !isflipX_ ? 1.f : -1.f, 0 };
 		}
@@ -347,7 +350,7 @@ public:
 				if (boom->IsIdle()) {
 					boom->SetPosition(transform_.translate);
 					if (/*Input().PressKey(DIK_UP) || Input().PressKey(DIK_DOWN) || Input().PressKey(DIK_LEFT) || Input().PressKey(DIK_RIGHT)*/
-						Input().PressKey(DIK_J) || Input().GetPad()->Press(Pad::Button::B)
+						Input().PressKey(DIK_J) || Input().GetPad()->Press(Pad::Button::X)
 						) {
 						isCharging_ = true;
 						chargeTimer_ = std::min(chargeTimer_ + deltaTime, 120.f);
@@ -362,7 +365,7 @@ public:
 
 				}
 				else {
-					if (Input().ReleaseKey(DIK_J) || Input().GetPad()->Release(Pad::Button::B)) {
+					if (Input().ReleaseKey(DIK_J) || Input().GetPad()->Release(Pad::Button::X)) {
 						boom->SwitchToReturn();
 					}
 				}

@@ -224,9 +224,6 @@
     <ClCompile Include="SceneManager.cpp">
       <Filter>KamataEngine\Source\Game\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Background.cpp">
-      <Filter>KamataEngine\Source\library\Background</Filter>
-    </ClCompile>
     <ClCompile Include="GamePlayScene.cpp">
       <Filter>KamataEngine\Source\Game\Scene\Game</Filter>
     </ClCompile>
@@ -444,9 +441,6 @@
     </ClInclude>
     <ClInclude Include="SceneManager.h">
       <Filter>KamataEngine\Source\Game\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Background.h">
-      <Filter>KamataEngine\Source\library\Background</Filter>
     </ClInclude>
     <ClInclude Include="WindowSize.h">
       <Filter>KamataEngine\Source</Filter>

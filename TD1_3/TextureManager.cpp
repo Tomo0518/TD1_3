@@ -160,33 +160,6 @@ void TextureManager::LoadResources() {
 
 	// =========Background ==========
 	{
-		textureResources_[static_cast<int>(TextureId::Background0_0)] =
-			Novice::LoadTexture("./Resources/images/gamePlay/background/background0_0.png");
-
-		textureResources_[static_cast<int>(TextureId::BackgroundBlack)] =
-			Novice::LoadTexture("./Resources/images/gamePlay/background/background_black.png");
-
-		textureResources_[static_cast<int>(TextureId::Background0_2)] =
-			Novice::LoadTexture("./Resources/images/gamePlay/background/background0_2.png");
-
-		textureResources_[static_cast<int>(TextureId::Background1_0)] =
-			Novice::LoadTexture("./Resources/images/gamePlay/background/background1_0.png");
-
-		textureResources_[static_cast<int>(TextureId::Background1_1)] =
-			Novice::LoadTexture("./Resources/images/gamePlay/background/background1_1.png");
-
-		textureResources_[static_cast<int>(TextureId::Background1_2)] =
-			Novice::LoadTexture("./Resources/images/gamePlay/background/background1_2.png");
-
-		textureResources_[static_cast<int>(TextureId::Background2_0)] =
-			Novice::LoadTexture("./Resources/images/gamePlay/background/background2_0.png");
-
-		textureResources_[static_cast<int>(TextureId::Background2_1)] =
-			Novice::LoadTexture("./Resources/images/gamePlay/background/background2_1.png");
-
-		textureResources_[static_cast<int>(TextureId::Background2_2)] =
-			Novice::LoadTexture("./Resources/images/gamePlay/background/background2_2.png");
-
 		textureResources_[static_cast<int>(TextureId::None)] =
 			Novice::LoadTexture("./Resources/images/temp/none.png");
 

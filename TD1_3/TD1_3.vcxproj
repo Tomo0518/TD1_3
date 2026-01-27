@@ -123,7 +123,6 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClCompile Include="ParticleRegistry.cpp" />
     <ClCompile Include="PhysicsManager.cpp" />
     <ClCompile Include="SoundManager.cpp" />
-    <ClCompile Include="Background.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="ButtonManager.cpp" />
     <ClCompile Include="C:\KamataEngine\Adapter\Novice.cpp" />
@@ -182,7 +181,6 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClInclude Include="Rigidbody2D.hpp" />
     <ClInclude Include="SceneUtilityIncludes.h" />
     <ClInclude Include="SoundManager.h" />
-    <ClInclude Include="Background.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="ButtonManager.h" />
     <ClInclude Include="C:\KamataEngine\DirectXGame\base\StringUtility.h" />

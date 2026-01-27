@@ -90,18 +90,6 @@ enum class TextureId {
 	// ==========================================
 	// ゲームシーン背景
 	// ==========================================
-	Background0_0,
-	BackgroundBlack,
-	Background0_2,
-	Background1_0,
-	Background1_1,
-	Background1_2,
-	Background2_0,
-	Background2_1,
-	Background2_2,
-	Background3_0,
-	Background3_1,
-	Background3_2,
 
 	Background_Base,
 	Background_Far,
