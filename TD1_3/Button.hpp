@@ -91,6 +91,7 @@ class Button1 : public Button {
 public:
 	Button1() {
 		ButtonID_ = 1;
+		isSwitch_ = true;
 	}
 };
 
