@@ -374,7 +374,7 @@ public:
 			// Simple return logic: Move towards player
 			Vector2 dir = ownerPos - transform_.translate;
 
-			trailInfos_.push_back({ transform_, 5.f });
+			trailInfos_.push_back({ transform_, 10.f });
 
 			if (Vector2::Length(dir) < 40.0f) {
 				state_ = BoomerangState::Idle;
@@ -492,7 +492,7 @@ public:
 			drawComp_->Draw(camera);
 
 			for (auto& trail : trailInfos_) {
-				float alpha = trail.lifeTime / 10.f;
+				float alpha = trail.lifeTime / 20.f;
 				drawComp_->SetBaseColor({0.6f, 0.6f, 1.0f, alpha });
 				drawComp_->SetTransform(trail.pos);	
 				drawComp_->Draw(camera);
