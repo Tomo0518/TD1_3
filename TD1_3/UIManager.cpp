@@ -54,7 +54,7 @@ void UIManager::Gauge::Update(float deltaTime) {
 	// 2. 瀕死演出
 	if (currentRatio_ <= 0.2f && currentRatio_ > 0.0f) {
 		if (!bar_.IsFlashBlinking()) {
-			bar_.StartFlashBlink(0xFF0000FF, 9999, 0.4f, kBlendModeAdd, 2);
+			bar_.StartFlashBlink(0xFF0000FF, 9999, 0.3f, kBlendModeAdd, 1);
 		}
 	}
 	else {
@@ -134,12 +134,12 @@ void UIManager::Initialize() {
 	keyBoomerangReturn_ = std::make_unique<DrawComponent2D>(TextureId::Icon_BoomerangReturn, 1, 1, 1, 0.0f);
 
 	// ========= Padキーガイド 初期化 =========
-	padStickUp_ = std::make_unique<DrawComponent2D>(TextureId::PadStickUp, 1, 1, 1, 0.0f);
-	padStickDown_ = std::make_unique<DrawComponent2D>(TextureId::PadStickDown, 1, 1, 1, 0.0f);
-	padStickLeft_ = std::make_unique<DrawComponent2D>(TextureId::PadStickLeft, 1, 1, 1, 0.0f);
-	padStickRight_ = std::make_unique<DrawComponent2D>(TextureId::PadStickRight, 1, 1, 1, 0.0f);
+	padStickAndLeftAndRightArrow_ = std::make_unique<DrawComponent2D>(TextureId::PadStickAndArrow, 1, 1, 1, 0.0f);
+	padButtonJump_ = std::make_unique<DrawComponent2D>(TextureId::PadJump_A, 1, 1, 1, 0.0f);
 	padButtonA_ = std::make_unique<DrawComponent2D>(TextureId::PadButtonA, 1, 1, 1, 0.0f);
 	padButtonB_ = std::make_unique<DrawComponent2D>(TextureId::PadButtonB, 1, 1, 1, 0.0f);
+	padButtonY_ = std::make_unique<DrawComponent2D>(TextureId::PadButtonY, 1, 1, 1, 0.0f);
+	padButtonX_ = std::make_unique<DrawComponent2D>(TextureId::PadButtonX, 1, 1, 1, 0.0f);
 	/*padButtonDash_ = std::make_unique<DrawComponent2D>(TextureId::PadButtonDash, 1, 1, 1, 0.0f);
 	padButtonJump_ = std::make_unique<DrawComponent2D>(TextureId::PadButtonJump, 1, 1, 1, 0.0f);
 	padButtonBoomerang_ = std::make_unique<DrawComponent2D>(TextureId::PadButtonBoomerang, 1, 1, 1, 0.0f);*/
@@ -192,12 +192,26 @@ void UIManager::Update(float dt) {
 
 		// キーガイド更新
 		UpdateKeyGuides();
-		keyW_->Update(dt);
-		keyA_->Update(dt);
-		keyS_->Update(dt);
-		keyD_->Update(dt);
-		keyK_->Update(dt);
-		keyJ_->Update(dt);
+
+		if (InputManager::GetInstance().GetInputMode() == InputMode::Gamepad) {
+			// パッド操作時
+			padButtonA_->Update(dt);
+			padButtonJump_->Update(dt);
+			padStickAndLeftAndRightArrow_->Update(dt);
+			padButtonB_->Update(dt);
+			padButtonX_->Update(dt);
+			padButtonY_->Update(dt);
+		}
+		else {
+			// キーボード操作時は表示
+			keyW_->Update(dt);
+			keyA_->Update(dt);
+			keyS_->Update(dt);
+			keyD_->Update(dt);
+			keyK_->Update(dt);
+			keyJ_->Update(dt);
+		}
+		
 	}
 }
 
@@ -215,6 +229,10 @@ void UIManager::Draw() {
 		// キーガイド表示
 		if (input.GetInputMode() == InputMode::Gamepad) {
 			// パッド操作時は非表示
+			padButtonJump_->DrawScreen();
+			padStickAndLeftAndRightArrow_->DrawScreen();
+			padButtonB_->DrawScreen();
+			padButtonX_->DrawScreen();
 		}
 		else {
 			// キーボード操作時は表示
@@ -280,13 +298,34 @@ void UIManager::UpdateKeyGuides() {
 	InputManager& input = InputManager::GetInstance();
 
 	// キー配置（左上）
-	Vector2 basePos = { 100.0f, 100.0f };
+	Vector2 basePos = { 100.0f, 70.0f };
 	float offset = 60.0f;
 
 	// 各キーの位置設定と入力アニメーション
 	// 入力があった瞬間、StartSquashで「むにゅっ」とさせて手触りを良くする
 
 	if (input.GetInputMode() == InputMode::Gamepad) {
+		//padButtonA_->SetPosition({ basePos.x + offset, basePos.y });
+		padButtonJump_->SetPosition({ basePos.x + 120.0f, basePos.y - 10.0f });
+		padStickAndLeftAndRightArrow_->SetPosition({ basePos.x, basePos.y});
+
+
+		padButtonX_->SetPosition({ skillIconPos_ + controllKeyOffset_ }); // 左(ブーメランアイコンの下)
+		padButtonB_->SetPosition({ skillIconPos_ + controllKeyOffset_ + skillIconOffset_ }); // 右(ダッシュアイコンの下)
+
+		if (input.GetPad()->Trigger(Pad::Button::A)) {
+			padButtonJump_->StartSquash({ 1.2f, 0.8f }, 0.1f);
+		}
+		if (input.GetPad()->Trigger(Pad::Button::B)) {
+			padButtonB_->StartSquash({ 1.2f, 0.8f }, 0.1f);
+		}
+		if (input.GetPad()->Trigger(Pad::Button::X)) {
+			padButtonX_->StartSquash({ 1.2f, 0.8f }, 0.1f);
+		}
+		if (input.GetPad()->Trigger(Pad::Button::Y)) {
+			padButtonY_->StartSquash({ 1.2f, 0.8f }, 0.1f);
+		}
+
 		// パッド操作時は非表示
 		return;
 	}

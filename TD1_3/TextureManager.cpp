@@ -289,9 +289,9 @@ void TextureManager::LoadResources() {
 
 		// Resumeボタン
 		textureResources_[static_cast<int>(TextureId::UI_Button_Resume)] =
-			Novice::LoadTexture("./Resources/images/ui/button/resume_default.png");
+			Novice::LoadTexture("./Resources/images/ui/button/resume_default_ver2.png");
 		textureResources_[static_cast<int>(TextureId::UI_Button_Resume_Selected)] =
-			Novice::LoadTexture("./Resources/images/ui/button/resume_selected.png");
+			Novice::LoadTexture("./Resources/images/ui/button/resume_selected_ver2.png");
 
 		// Retryボタン
 		textureResources_[static_cast<int>(TextureId::UI_Button_Retry)] =
@@ -365,8 +365,13 @@ void TextureManager::LoadResources() {
 			Novice::LoadTexture("./Resources/images/ui/keyGuide/pad_stick_left.png");
 		textureResources_[static_cast<int>(TextureId::PadStickRight)] =
 			Novice::LoadTexture("./Resources/images/ui/keyGuide/pad_stick_right.png");*/
+			textureResources_[static_cast<int>(TextureId::PadStickAndArrow)] =
+			Novice::LoadTexture("./Resources/images/ui/keyGuide/pad_Lstick_leftAndRight.png");
+
 		textureResources_[static_cast<int>(TextureId::PadButtonA)] =
 			Novice::LoadTexture("./Resources/images/ui/keyGuide/pad_a.png");
+		textureResources_[static_cast<int>(TextureId::PadJump_A)] =
+			Novice::LoadTexture("./Resources/images/ui/keyGuide/pad_a_jump.png");
 		textureResources_[static_cast<int>(TextureId::PadButtonB)] =
 			Novice::LoadTexture("./Resources/images/ui/keyGuide/pad_b.png");
 		textureResources_[static_cast<int>(TextureId::PadButtonX)] =

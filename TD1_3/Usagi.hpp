@@ -166,12 +166,7 @@ public:
 	}
 
 	void HandleInput() {
-		if (!isGrounded_) {
-			if (rigidbody_.velocity.y < 0) {
-				// 落下アニメーションに切り替え
-				ChangeDrawComp(DrawCompState::eFall);
-			}
-		}
+		// *************** ジャンプ処理（チャージ状態の前に処理） ******************
 		// 入力取得
 		Vector2 inputDir = { 0.0f, 0.0f };
 		bool jumpInput = false;
@@ -192,17 +187,18 @@ public:
 				inputDir.y = stickY;
 			}
 
-			// スマブラ風ジャンプ（スティック上弾き）
-			// 接地中かつ強く上に倒した場合のみジャンプ
-			if (stickY > 0.7f && isGrounded_) {
-				//jumpInput = true;
-			}
-			else if (Input().GetPad()->Trigger(Pad::Button::A)) {
+			// ジャンプ
+			if (Input().GetPad()->Trigger(Pad::Button::A)) {
+				inputDir.y += 1.0f;
 				jumpInput = true;
+				JumpFriendlyTimer_ = JumpFriendlyDuration_;
 			}
 
 			// ダッシュ
-			if (Input().GetPad()->Trigger(Pad::Button::B)) {
+			if (Input().GetPad()->Trigger(Pad::Button::B)||
+				Input().GetPad()->RightTrigger() >= 0.2f || 
+				Input().GetPad()->LeftTrigger() >= 0.2f
+				) {
 				dashInput = true;
 			}
 		}
@@ -235,7 +231,7 @@ public:
 		// 入力方向を正規化
 		inputDir = Vector2::Normalize(inputDir);
 
-		// *************** ジャンプ処理 ******************
+		// ブーメランジャンプの処理
 		bool isCloseToBoomerang = false;
 		for (auto boom : boomerangs_) {
 			if (!boom->IsTemporary()) {
@@ -245,7 +241,6 @@ public:
 						if (distance < 100.f) {
 							BoomerangJumpTimer_ = BoomerangJumpCooldown_;
 							isCloseToBoomerang = true;
-							//boom->SwitchToReturn();
 							ParticleManager::GetInstance().Emit(ParticleType::Hit, transform_.translate);
 						}
 					}
@@ -254,16 +249,22 @@ public:
 			}
 		}
 
+		// ジャンプ実行（チャージ中でも可能にする）
 		if (((jumpInput || JumpFriendlyTimer_ > 0.f) && isGrounded_) || (isCloseToBoomerang)) {
 			Jump();
+			// チャージ中にジャンプした場合、チャージを維持
 		}
-		// *******************************************
+
+		// 落下アニメーション
+		if (!isGrounded_) {
+			if (rigidbody_.velocity.y < 0) {
+				ChangeDrawComp(DrawCompState::eFall);
+			}
+		}
 
 		if (isGrounded_) {
 			dashAvailable_ = true;
 		}
-
-
 
 		// ダッシュ処理
 		if (dashInput) {
@@ -273,7 +274,6 @@ public:
 				}
 
 				dashAvailable_ = false;
-
 
 				Vector2 dashDir = { 0.f, 0.f };
 				if (Vector2::Length(inputDir) == 0.f) {
@@ -299,12 +299,15 @@ public:
 			}
 		}
 
+		// チャージ中の処理
 		if (isCharging_) {
-			isGravityEnabled_ = false;
+			// チャージ中でもジャンプは可能なので、重力の無効化はジャンプしていない場合のみ
+			if (!jumpInput) {
+				isGravityEnabled_ = false;
+			}
 			if (inputDir.x != 0) {
 				isflipX_ = inputDir.x < 0.f;
 			}
-
 		}
 
 		if (dashDurationTimer_ <= 0.f && !isCharging_) {

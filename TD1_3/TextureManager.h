@@ -177,9 +177,9 @@ enum class TextureId {
 
 	KeyDush, KeyThrow, KeyJump,
 	// Pad Guide
-	PadStickUp, PadStickDown, PadStickLeft, PadStickRight,
+	PadStickUp, PadStickDown, PadStickLeft, PadStickRight, PadStickAndArrow,
 	PadButtonA, PadButtonB, PadButtonX, PadButtonY,
-	PadMove, PadDash, PadThrow, PadJump,
+	PadMove, PadDash, PadThrow, PadJump_A,
 
 	// UI: Scenes
 	PauseText, PauseBg,

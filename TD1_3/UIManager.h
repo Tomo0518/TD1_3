@@ -212,13 +212,16 @@ private:
 	
 
 	// ========= Padキーガイド =========
-	std::unique_ptr<DrawComponent2D> padStickUp_;
-	std::unique_ptr<DrawComponent2D> padStickDown_;
-	std::unique_ptr<DrawComponent2D> padStickLeft_;
-	std::unique_ptr<DrawComponent2D> padStickRight_;
+	//std::unique_ptr<DrawComponent2D> padStickUp_;
+	//std::unique_ptr<DrawComponent2D> padStickDown_;
+	//std::unique_ptr<DrawComponent2D> padStickLeft_;
+	//std::unique_ptr<DrawComponent2D> padStickRight_;
+	std::unique_ptr<DrawComponent2D> padStickAndLeftAndRightArrow_; // 左右の矢印付き(移動操作UI用)
 
 	std::unique_ptr<DrawComponent2D> padButtonA_;
 	std::unique_ptr<DrawComponent2D> padButtonB_;
+	std::unique_ptr<DrawComponent2D> padButtonY_;
+	std::unique_ptr<DrawComponent2D> padButtonX_;
 
 	std::unique_ptr<DrawComponent2D> padButtonJump_;
 	std::unique_ptr<DrawComponent2D> padButtonDash_;
