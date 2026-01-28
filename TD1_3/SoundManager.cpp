@@ -94,7 +94,7 @@ void SoundManager::LoadResources() {
 	};
 	seResources_[static_cast<int>(SeId::PlayerLand)] = {
 		Novice::LoadAudio("./Resources/sounds/SE/player/land.mp3"),
-		0.5f,
+		0.2f,
 		"Player Land"
 	};
 

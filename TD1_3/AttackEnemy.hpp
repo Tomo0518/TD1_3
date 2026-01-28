@@ -225,12 +225,10 @@ public:
 		}
 
 		if (playerRef_) {
+			playerPos_ = playerRef_->GetPosition();
+			distanceToPlayer_ = Vector2::Length(Vector2::Subtract(playerPos_, transform_.translate));
 			if (state_ != AttackEnemyPhase::Battle) {
-
-				playerPos_ = playerRef_->GetPosition();
 				if (IsFacingPlayer()) {
-					distanceToPlayer_ = Vector2::Length(Vector2::Subtract(playerPos_, transform_.translate));
-
 					if (distanceToPlayer_ <= detectionRange_) {
 						SoundManager::GetInstance().PlaySe(foundPlayerSound);
 						state_ = AttackEnemyPhase::Battle;
