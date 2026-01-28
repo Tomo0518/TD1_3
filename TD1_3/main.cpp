@@ -14,7 +14,7 @@
 #include "UIManager.h"
 #include "MapChip.h"
 
-const char kWindowTitle[] = "==============ゲームタイトル==============";
+const char kWindowTitle[] = "1311_ルーナラン";
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
