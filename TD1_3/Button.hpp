@@ -37,10 +37,19 @@ public:
 
 	}
 
+	virtual void BackToDefault() {
+		SetPressed(false);
+	}
+
 	virtual void CheckPlayerPress() {
 		FindPlayer();
 		if (playerRef_) {
 			Usagi* player = dynamic_cast<Usagi*>(playerRef_);
+
+			if (player->GetStatus().currentHP <= 0) {
+				BackToDefault();
+				return;
+			}
 
 			Vector2 BoomerangPos = player->GetFirstBoomerang()->GetPosition();
 
@@ -144,6 +153,19 @@ public:
 		isSwitch_ = true;
 	}
 
+	void BackToDefault() override {
+		SetPressed(true);
+		// destroy all spawned enemies
+		for (auto enemy : spawnedEnemies_) {
+			if (enemy && !enemy->IsDead()) {
+				enemy->Destroy();
+			}
+		}
+		spawnedEnemies_.clear();
+		Spawned_ = false;
+
+	}
+
 	void Initialize() override {
 		rigidbody_.Initialize();
 		info_.isActive = true;
@@ -156,7 +178,7 @@ public:
 		offComp_->Initialize();
 		drawComp_ = offComp_;
 
-		isPressed_ = true;
+		SetPressed(true);
 		Spawned_ = false;
 	}
 
@@ -191,13 +213,18 @@ public:
 		if (playerRef_) {
 			Usagi* player = dynamic_cast<Usagi*>(playerRef_);
 
+			if (player->GetStatus().currentHP <= 0) {
+				BackToDefault();
+				return;
+			}
+
 			Vector2 BoomerangPos = player->GetFirstBoomerang()->GetPosition();
 
 			Vector2 buttonPos = transform_.translate;
 			float distance = Vector2::Length(Vector2::Subtract(BoomerangPos, buttonPos));
 			if (distance < activeRange_ && !Spawned_) {
 				ActivateEvent();
-				isPressed_ = false;
+				SetPressed(false);
 				Spawned_ = true;
 			}
 		}

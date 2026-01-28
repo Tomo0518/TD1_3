@@ -430,11 +430,14 @@ public:
 		attackTimer_ = 0.0f;
 		battleState_ = AttackEnemyBattleState::Idle;
 		SoundManager::GetInstance().PlaySe(DamagedSound);
+		emitedCanAttackEffect_ = false;
 
 	}
 
 	virtual void Patrol(float deltaTime) {
 		drawManager_.ChangeComponent(AttackEnemyDrawState::ePatrol);
+
+		OnHealed(1);
 
 		// パトロール範囲内で移動
 		transform_.translate.x += direction_ * moveSpeed_ * deltaTime;

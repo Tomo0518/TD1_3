@@ -57,6 +57,8 @@ private:
 	bool wasBoomerangActive_ = false;
 
 	Vector2 respawnPosition_ = { 0.f, 0.f };
+	float respawnDelay_ = 120.f;
+	float respawnTimer_ = 0.f;
 
 	enum DrawCompState {
 		eBreathe,
@@ -170,6 +172,7 @@ public:
 	}
 
 	void HandleInput() {
+		if (!info_.isActive) return;
 		// *************** ジャンプ処理（チャージ状態の前に処理） ******************
 		// 入力取得
 		Vector2 inputDir = { 0.0f, 0.0f };
@@ -399,7 +402,7 @@ public:
 
 		HandleBoomerang(deltaTime);
 		UpdateBoomerangPadVibration();
-
+		RespawnHandle();
 
 		UpdateDrawComponent(deltaTime);
 
@@ -412,6 +415,19 @@ public:
 		dashCooldownTimer_ -= deltaTime;
 		BoomerangJumpTimer_ -= deltaTime;
 		JumpFriendlyTimer_ -= deltaTime;
+		respawnTimer_ -= deltaTime;
+	}
+
+	void RespawnHandle(){
+		if (status_.currentHP <= 0.f) {
+			if (respawnTimer_ <= 0.f) {
+				// Respawn
+				Respawn();
+			}
+			if (respawnTimer_ <= respawnDelay_ * 0.5f) {
+				transform_.translate = respawnPosition_ + Vector2(0,10.f);
+			}
+		}
 	}
 
 	void SpawnTestKinoko() {
@@ -500,7 +516,21 @@ public:
 	}
 
 	void Draw(const Camera2D& camera)override {
-		if (!info_.isActive || !info_.isVisible) return;
+		if (!info_.isActive) {
+
+			float RspawnProgress = (respawnTimer_ / (respawnDelay_*0.5f));
+			unsigned int alpha = static_cast<unsigned int>(std::min(255.f,255.f *  RspawnProgress));
+			Novice::DrawBox(
+				0,0,
+				1280, 720,
+				0.0f,
+				0x00000000 | alpha,
+				kFillModeSolid
+			);
+
+			return;
+		}
+		if (!info_.isVisible) return;
 		// DrawComponent2Dを使って描画
 		drawManager_.Draw(camera);
 
@@ -677,6 +707,7 @@ public:
 	}
 
 	void Respawn() {
+		info_.isActive = true;
 		starCount_ = 0;
 		status_.currentHP = status_.maxHP;
 		transform_.translate = respawnPosition_;
@@ -695,7 +726,8 @@ public:
 			ParticleManager::GetInstance().Emit(ParticleType::Hit, transform_.translate);
 			ParticleManager::GetInstance().Emit(ParticleType::Enemy_Dead, transform_.translate);
 
-			Respawn();
+			respawnTimer_ = respawnDelay_;
+			info_.isActive = false;
 		}
 		else {
 			if (damage > 0) {
@@ -737,5 +769,9 @@ public:
 		}
 
 		return state;
+	}
+
+	bool IsInRespawnDelay() const {
+		return respawnTimer_ <= 0.f;
 	}
 };

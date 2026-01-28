@@ -308,7 +308,7 @@ public:
 					float distanceFormOwner = Vector2::Length(transform_.translate - ownerPos);
 					if (distanceFormOwner > activeRange_ * 2.5f) {
 						damageBonus_ = 0;
-						damage_ = 0;;
+						damage_ = 0;
 						SwitchToReturn();
 					}
 
@@ -352,7 +352,7 @@ public:
 			}
 			else {
 				dir = Vector2::Normalize(dir);
-				float speed = std::max(4.0f, 15.0f + float(damage_ + damageBonus_));
+				float speed = std::max(4.0f, 30.0f + float(damage_ + damageBonus_)/2.f);
 
 				if (isHorizontal_) {
 					// Only x moves back, y matches player
