@@ -194,6 +194,20 @@ void ObjectRegistry::Initialize() {
 		0x00AAAAFF,     // color（水色）
 		"EnemyEventDoor"
 		});
+	objectTypes_.push_back({
+		307,
+		"EnemyEvent2",
+		"Gimmick",
+		0xAAAA00FF,     // color（黄土色）
+		"EnemyEvent2"
+		});
+	objectTypes_.push_back({
+		407,
+		"EnemyEventDoor2",
+		"Gimmick",
+		0x00AAAAFF,     // color（水色）
+		"EnemyEventDoor2"
+		});
 	// ===================================================================
 	// アイテム（今後追加）
 	// ===================================================================

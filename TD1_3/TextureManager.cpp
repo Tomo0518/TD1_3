@@ -41,6 +41,10 @@ void TextureManager::LoadResources() {
 		Novice::LoadTexture("./Resources/images/tutorial/throwTutorial.png");
 	textureResources_[static_cast<int>(TextureId::BoomerangTutorial)] =
 		Novice::LoadTexture("./Resources/images/tutorial/boomerangTutorial.png");
+	textureResources_[static_cast<int>(TextureId::ReturnTutorial)] =
+		Novice::LoadTexture("./Resources/images/tutorial/returnTutorial.png");
+	textureResources_[static_cast<int>(TextureId::ChargeTutorial)] =
+		Novice::LoadTexture("./Resources/images/tutorial/chargeTutorial.png");
 
 	// ==========================================
 	// enemy
@@ -103,6 +107,10 @@ void TextureManager::LoadResources() {
 		Novice::LoadTexture("./Resources/images/item/buttonOn.png");
 	textureResources_[static_cast<int>(TextureId::Button_Off)] =
 		Novice::LoadTexture("./Resources/images/item/buttonOff.png");
+	textureResources_[static_cast<int>(TextureId::Button_On_Switch)] =
+		Novice::LoadTexture("./Resources/images/item/buttonOnSwitch.png");
+	textureResources_[static_cast<int>(TextureId::Button_Off_Switch)] =
+		Novice::LoadTexture("./Resources/images/item/buttonOffSwitch.png");
 	textureResources_[static_cast<int>(TextureId::Door_Open)] =
 		Novice::LoadTexture("./Resources/images/item/doorOn.png");
 	textureResources_[static_cast<int>(TextureId::Door_Closed)] =

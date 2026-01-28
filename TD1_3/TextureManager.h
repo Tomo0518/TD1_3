@@ -24,6 +24,8 @@ enum class TextureId {
 	DashTutorial,
 	ThrowTutorial,
 	BoomerangTutorial,
+	ReturnTutorial,
+	ChargeTutorial,
 
 	// =========================================
 	// enemy
@@ -59,6 +61,8 @@ enum class TextureId {
 
 	Button_On,
 	Button_Off,
+	Button_On_Switch,
+	Button_Off_Switch,
 	Door_Open,
 	Door_Closed,
 

@@ -28,6 +28,11 @@ private:
 
 	DrawComponent2D* StunnedComp_ = nullptr;
 	DrawComponent2D* PatrolComp_ = nullptr;
+
+	GameObject2D* playerRef_ = nullptr;
+	Vector2 playerPos_ = { 0.0f, 0.0f };
+	float distanceToPlayer_ = 0.f;
+	float detectionRange_ = 300.0f;
 public:
 	Enemy() {
 		drawComp_ = nullptr;
@@ -74,6 +79,7 @@ public:
 	}
 
 	void Update(float deltaTime) override {
+		FindPlayer();
 		Behavior(deltaTime);
 		damageHandling(deltaTime);
 		Move(deltaTime);
@@ -157,7 +163,39 @@ public:
 			direction_ = -1; // Change direction to left
 		}
 
-		
+
+	}
+
+	bool IsFacingPlayer() {
+		if (!playerRef_) return false;
+		return (direction_ == 1 && playerPos_.x >= transform_.translate.x) ||
+			(direction_ == -1 && playerPos_.x <= transform_.translate.x);
+	}
+
+	bool foundPlayer = false;
+
+	void FindPlayer() {
+		if (foundPlayer) return;
+
+		if (!playerRef_) {
+			if (manager_) {
+				playerRef_ = manager_->GetPlayerObject();
+			}
+		}
+
+		if (playerRef_) {
+			Novice::ConsolePrintf("try finding\n");
+			playerPos_ = playerRef_->GetPosition();
+			distanceToPlayer_ = Vector2::Length(Vector2::Subtract(playerPos_, transform_.translate));
+			if (IsFacingPlayer()) {
+				if (distanceToPlayer_ <= detectionRange_) {
+					SoundManager::GetInstance().PlaySe(SeId::EnemyFindPlayer2);
+					Novice::ConsolePrintf("Enemy id: %d found Player!\n", info_.id);
+					foundPlayer = true;
+				}
+
+			}
+		}
 	}
 
 	void Draw(const Camera2D& camera) override {
@@ -214,6 +252,7 @@ public:
 			ParticleManager::GetInstance().Emit(ParticleType::Hit, transform_.translate);
 			ParticleManager::GetInstance().Emit(ParticleType::Enemy_Dead, transform_.translate);
 			Destroy();
+			SoundManager::GetInstance().PlaySe(SeId::EnemyDamage2);
 		}
 		else {
 			if (damage > 0) {
@@ -221,6 +260,8 @@ public:
 				damagedShakeTimer_ = 0.0f;
 
 				ParticleManager::GetInstance().Emit(ParticleType::Hit, transform_.translate);
+
+				SoundManager::GetInstance().PlaySe(SeId::EnemyDamage2);
 			}
 
 			Stun();
@@ -237,7 +278,7 @@ public:
 		else if (other->GetInfo().tag == "Player")
 		{
 			Vector2 knockbackDir = Vector2::Subtract(transform_.translate, other->GetTransform().translate);
-			direction_ *= knockbackDir.x>0?1:-1;
+			direction_ *= knockbackDir.x > 0 ? 1 : -1;
 		}
 		else if (other->GetInfo().tag == "Enemy") {
 			// knockback on collision with other enemies
