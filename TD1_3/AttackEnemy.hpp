@@ -538,6 +538,7 @@ public:
 			ParticleManager::GetInstance().Emit(ParticleType::Hit, transform_.translate);
 			ParticleManager::GetInstance().Emit(ParticleType::Enemy_Dead, transform_.translate);
 			Destroy();
+			SoundManager::GetInstance().PlaySe(AttackSound);
 		}
 		else {
 			if (damage > 0) {

@@ -197,7 +197,7 @@ void TextureManager::LoadResources() {
 		textureResources_[static_cast<int>(TextureId::Background_Middle)] =
 			Novice::LoadTexture("./Resources/images/gamePlay/background/middle.png");
 		textureResources_[static_cast<int>(TextureId::Background_Near)] =
-			Novice::LoadTexture("./Resources/images/gamePlay/background/near.png");
+			Novice::LoadTexture("./Resources/images/gamePlay/background/font.png");
 		textureResources_[static_cast<int>(TextureId::Background_Foreground)] =
 			Novice::LoadTexture("./Resources/images/gamePlay/background/bgFilter.png");
 

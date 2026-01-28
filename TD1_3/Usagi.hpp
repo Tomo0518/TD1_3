@@ -332,6 +332,7 @@ public:
 			}
 		}
 	}
+	bool hitMaxCharge = false;
 
 	void HandleBoomerang(float deltaTime) {
 		deltaTime;
@@ -359,8 +360,9 @@ public:
 						) {
 						isCharging_ = true;
 						chargeTimer_ = std::min(chargeTimer_ + deltaTime, 120.f);
-						if (chargeTimer_ == 120.f) {
+						if (chargeTimer_ == 120.f && !hitMaxCharge) {
 							ParticleManager::GetInstance().Emit(ParticleType::Hit, transform_.translate);
+							hitMaxCharge = true;
 						}
 					}
 
@@ -382,6 +384,7 @@ public:
 
 		if (tryThrow) {
 			isCharging_ = false;
+			hitMaxCharge = false;
 			ThrowBoomerang(throwDir);
 		}
 		ClearDeadBoomerangs();
@@ -460,8 +463,8 @@ public:
 	virtual void UpdateDrawComponent(float deltaTime) override {
 		drawManager_.SetFlipX(isflipX_);
 		boomerangDrawManager_.SetFlipX(isflipX_);
-		float shakeX = (rand() % 100 / 100.0f - 0.5f) * 2.0f * chargeTimer_ / 4.f;
-		float shakeY = (rand() % 100 / 100.0f - 0.5f) * 2.0f * chargeTimer_ / 4.f;
+		float shakeX = (rand() % 100 / 100.0f - 0.5f) * 2.0f * chargeTimer_ / 6.f;
+		float shakeY = (rand() % 100 / 100.0f - 0.5f) * 2.0f * chargeTimer_ / 6.f;
 		Vector2 shakeOffset = { shakeX, shakeY };
 		drawManager_.SetTransform(transform_);
 		drawManager_.SetPosition(transform_.translate + shakeOffset);
@@ -585,7 +588,7 @@ public:
 			knockbackDir = Vector2::Normalize(knockbackDir);
 			//rigidbody_.acceleration.x = 0.f;
 			rigidbody_.acceleration.x += (knockbackDir.x * (rigidbody_.acceleration.x +2.5f));
-			rigidbody_.acceleration.y += (knockbackDir.y * rigidbody_.acceleration.y);
+			//rigidbody_.acceleration.y += (knockbackDir.y * rigidbody_.acceleration.y);
 
 		}
 		else if (other->GetInfo().tag == "CheckPoint") {
