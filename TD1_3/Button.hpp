@@ -28,8 +28,14 @@ public:
 		info_.isVisible = true;
 		collider_.size = { 100.f, 100.f };
 		collider_.offset = { 0.f, 0.f };
-		onComp_ = new DrawComponent2D(Tex().GetTexture(TextureId::Button_On));
-		offComp_ = new DrawComponent2D(Tex().GetTexture(TextureId::Button_Off));
+		if (isSwitch_) {
+			onComp_ = new DrawComponent2D(Tex().GetTexture(TextureId::Button_On_Switch));
+			offComp_ = new DrawComponent2D(Tex().GetTexture(TextureId::Button_Off_Switch));
+		}
+		else {
+			onComp_ = new DrawComponent2D(Tex().GetTexture(TextureId::Button_On));
+			offComp_ = new DrawComponent2D(Tex().GetTexture(TextureId::Button_Off));
+		}		
 		onComp_->Initialize();
 		offComp_->Initialize();
 		drawComp_ = offComp_;

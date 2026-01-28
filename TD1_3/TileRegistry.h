@@ -38,11 +38,11 @@ enum TileID{
 	DashTutorial = 51,
 	ThrowTutorial = 52,
 	BoomerangTutorial = 53,
-	ChargeTutorial = 54,
-	ReturnTutorial = 55,
-	Deco_Rock1_F = 56,
-	Deco_Bush1_F = 57,
-	Deco_BushDark_F = 58,
+	ChargeTutorial = 57,
+	ReturnTutorial = 58,
+	Deco_Rock1_F = 54,
+	Deco_Bush1_F = 55,
+	Deco_BushDark_F = 56,
 
 	//PlayerStart = 100,
 
