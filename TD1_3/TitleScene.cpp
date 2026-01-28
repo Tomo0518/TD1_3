@@ -59,8 +59,8 @@ void TitleScene::InitializeButtons() {
 	// ボタンの位置とサイズ
 	const float centerX = 1130.0f;
 	const float startY = 400.0f;
-	const float buttonSpacing = 80.0f;
-	const Vector2 buttonSize = { 270.0f, 80.0f };
+	const float buttonSpacing = 100.0f;
+	const Vector2 buttonSize = { 250.0f, 76.0f };
 
 	auto goToGamePlay = [&]() {
 		sceneManager_.RequestTransition(SceneType::GamePlay);
@@ -100,11 +100,11 @@ void TitleScene::InitializeButtons() {
 
 	// SE設定
 	buttonManager_.SetOnSelectSound([&]() {
-		SoundManager::GetInstance().PlaySe(SeId::PlayerShot);
+		SoundManager::GetInstance().PlaySe(SeId::Select);
 		});
 
 	buttonManager_.SetOnDecideSound([&]() {
-		SoundManager::GetInstance().PlaySe(SeId::PlayerShot);
+		SoundManager::GetInstance().PlaySe(SeId::Decide);
 		});
 
 	// 初期選択をリセット
