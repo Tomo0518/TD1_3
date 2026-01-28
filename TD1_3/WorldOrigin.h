@@ -34,7 +34,7 @@ public:
         );
         Novice::DrawLine(
             static_cast<int>(screenPos.x), static_cast<int>(screenPos.y - 20),
-            static_cast<int>(screenPos.x), static_cast<int>(screenPos.y + 20),
+            static_cast<int>(screenPos.x), static_cast<int>(screenPos.y + 20),d
             0xFF0000FF
         );
 #endif

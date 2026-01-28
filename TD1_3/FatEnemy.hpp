@@ -48,6 +48,7 @@ public:
 		Vector2 screenPos = const_cast<Camera2D&>(camera).WorldToScreen(transform_.translate);
 		Vector2 colliderSize = const_cast<Vector2&>(collider_.size);
 		Vector2 colliderOffset = const_cast<Vector2&>(collider_.offset);
+#ifdef _DEBUG
 		Novice::DrawBox(
 			int(screenPos.x + colliderOffset.x - colliderSize.x / 2.f),
 			int(screenPos.y + colliderOffset.y - colliderSize.y / 2.f),
@@ -56,6 +57,7 @@ public:
 			0xFF0000FF,
 			kFillModeWireFrame
 		);
+#endif
 	}
 
 	void Update(float deltaTime) override {

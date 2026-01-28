@@ -56,6 +56,9 @@ public:
 
 	void Draw(const Camera2D& camera) override {
 		// Draw hitbox for debug
+		camera;
+
+#ifdef _DEBUG
 		Novice::ConsolePrintf("transform: %f, %f\n", transform_.translate.x, transform_.translate.y);
 		Vector2 screenPos = const_cast<Camera2D&>(camera).WorldToScreen(transform_.translate);
 		Vector2 colliderSize = const_cast<Vector2&>(collider_.size);
@@ -68,6 +71,7 @@ public:
 			0xFF0000FF,
 			kFillModeWireFrame
 		);
+#endif
 	}
 
 	void Update(float deltaTime) override {

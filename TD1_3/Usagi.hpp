@@ -129,8 +129,6 @@ public:
 		boomerangs_.push_back(boomerang);
 	}
 
-
-
 	void ChangeDrawComp(DrawCompState state) {
 		switch (state) {
 		case DrawCompState::eBreathe:
@@ -155,7 +153,6 @@ public:
 			break;
 		}
 	}
-
 
 	void Jump(bool isDoubleJump = false) {
 		if (isGravityEnabled_ == false) return;
@@ -349,7 +346,6 @@ public:
 		else if (Input().ReleaseKey(DIK_DOWN)) { throwDir = { 0, -1 }; tryThrow = true; }
 		else if (Input().ReleaseKey(DIK_LEFT)) { throwDir = { -1, 0 }; tryThrow = true; }
 		else if (Input().ReleaseKey(DIK_RIGHT)) { throwDir = { 1, 0 }; tryThrow = true; }*/
-
 
 		for (auto boom : boomerangs_) {
 			if (!boom->IsTemporary()) {

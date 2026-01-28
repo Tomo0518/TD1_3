@@ -49,9 +49,11 @@ void GamePlayScene::Initialize() {
 	// 背景マネージャー初期化
 	backgroundManager_ = std::make_unique<BackgroundManager>();
 
+
 	// シングルトンを使う
 	auto& mapData = MapData::GetInstance();
 	mapData.Load("./Resources/data/stage1.json");
+
 
 	// 1. タイル、オブジェクト定義の初期化
 	TileRegistry::Initialize();

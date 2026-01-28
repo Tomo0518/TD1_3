@@ -34,9 +34,9 @@ public:
 	void Update(float deltaTime = 1.0f) override {
 		// Move
 		transform_.translate += rigidbody_.velocity;
+#ifdef _DEBUG
 		Novice::ScreenPrintf(0,100, "velocity: %.2f, %.2f", rigidbody_.velocity.x, rigidbody_.velocity.y);
-
-
+#endif
 		//rigidbody_.AddForce({ 0.0f, 1.f }); // Simulate slight gravity
 		// Decelerate velocity
 		//rigidbody_.velocity *= 0.95f;

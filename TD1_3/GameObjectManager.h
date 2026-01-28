@@ -94,7 +94,9 @@ public:
     //  基本ループ
     // ==========================================
     void Update(float deltaTime) {
+#ifdef _DEBUG
 		Novice::ScreenPrintf(0, 20, "Object Count: %d", static_cast<int>(objects_.size()));
+#endif
 
         // 1. 新規追加オブジェクトをメインリストへ統合
         for (auto& obj : pendingObjects_) {

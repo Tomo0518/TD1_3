@@ -371,8 +371,10 @@ public:
 		UpdateDrawComponent(deltaTime);
 
 		// clamp to farthest distance
+#ifdef _DEBUG
 		Novice::ScreenPrintf(10, 60, "Farest X: %.2f Y: %.2f", farestDistance_.x, farestDistance_.y);
 		Novice::ScreenPrintf(10, 80, "Current X: %.2f Y: %.2f", transform_.translate.x, transform_.translate.y);
+#endif
 		if (isHorizontal_) {
 			transform_.translate.x = std::clamp(transform_.translate.x,
 				std::min(ownerPos.x, farestDistance_.x),
@@ -461,7 +463,9 @@ public:
 			drawComp_->Draw(camera);
 		}
 
+#ifdef _DEBUG
 		Novice::ScreenPrintf(600, 360, "Boomerang Damage: %d + %d = %d", damage_, damageBonus_ , damageBonus_ + damage_);
+#endif
 
 		if (effectComp_ && (damageBonus_ + damage_) > 8) {
 			float ratio = (float(damageBonus_ + damage_) - 8.f) / 10.f;
