@@ -92,3 +92,31 @@ public:
 	}
 };
 
+class Door3 : public Door {
+public:
+	Door3() {
+		targetButtonID_ = 3;
+	}
+};
+
+class Door4 : public Door {
+public:
+	Door4() {
+		targetButtonID_ = 4;
+	}
+};
+
+class Door5 : public Door {
+public:
+	Door5() {
+		targetButtonID_ = 5;
+	}
+};
+
+class Door6 : public Door {
+public:
+	Door6() {
+		targetButtonID_ = 6;
+	}
+};
+

@@ -91,7 +91,6 @@ class Button1 : public Button {
 public:
 	Button1() {
 		ButtonID_ = 1;
-		isSwitch_ = true;
 	}
 };
 
@@ -100,5 +99,35 @@ public:
 	Button2() {
 		ButtonID_ = 2;
 		isSwitch_ = true;
+	}
+};
+
+class Button3 : public Button {
+public:
+	Button3() {
+		ButtonID_ = 3;
+		isSwitch_ = true;
+	}
+};
+
+class Button4 : public Button {
+public:
+	Button4() {
+		ButtonID_ = 4;
+	}
+};
+
+class Button5 : public Button {
+public:
+	Button5() {
+		ButtonID_ = 5;
+		isSwitch_ = true;
+	}
+};
+
+class Button6 : public Button {
+public:
+	Button6() {
+		ButtonID_ = 6;
 	}
 };
