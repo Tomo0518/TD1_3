@@ -296,7 +296,7 @@ public:
 		if (playerRef_) {
 			Usagi* player = dynamic_cast<Usagi*>(playerRef_);
 
-			Vector2 BoomerangPos = player->GetFirstBoomerang()->GetPosition();
+			Vector2 BoomerangPos = player->GetPosition();
 
 			Vector2 buttonPos = transform_.translate;
 			float distance = Vector2::Length(Vector2::Subtract(BoomerangPos, buttonPos));
