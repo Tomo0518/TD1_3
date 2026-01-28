@@ -26,6 +26,7 @@ private:
 
 	std::vector<Boomerang*> boomerangs_;
 	int starCount_ = 0;
+	int tempStarCount = 0;
 	bool isCharging_ = false;
 	float chargeTimer_ = 0;
 
@@ -366,7 +367,8 @@ public:
 					}
 
 					if (!boom->isStarRetrieved()) {
-						starCount_ = boom->retrieveStarCount();
+						starCount_ = std::min(4, boom->retrieveStarCount() + tempStarCount);
+						tempStarCount = 0;
 					}
 
 				}
@@ -495,15 +497,15 @@ public:
 		return angleDegrees * (3.14159265f / 180.0f);
 	}
 
-	void DrawStar(const Camera2D& camera) {
-		if (starCount_ <= 0) return;
+	void DrawStar(const Camera2D& camera, int starCount) {
+		if (starCount <= 0) return;
 
 		float radius = 50.f;
-		float angleStep = 360.f / starCount_;
+		float angleStep = 360.f / starCount;
 
 		starComp_->SetRotation(starComp_->GetRotation() - 0.2f);
 
-		for (int i = 0; i < starCount_; ++i) {
+		for (int i = 0; i < starCount; ++i) {
 			float angle = angleStep * i;
 			Vector2 offset = { cosf(AngleToRadians(angle)) * radius, sinf(AngleToRadians(angle)) * radius };
 			starComp_->SetPosition(transform_.translate + offset);
@@ -535,10 +537,14 @@ public:
 			if (!boom->IsTemporary() && boom->IsIdle()) {
 				if (boom->isStarRetrieved()) {
 					boomerangDrawManager_.Draw(camera);
-					DrawStar(camera);
+					DrawStar(camera, starCount_);
 				}
 				break;
 			}
+		}
+
+		if (tempStarCount > 0) {
+			DrawStar(camera, tempStarCount);
 		}
 
 		// draw hitbox for debug
@@ -602,7 +608,12 @@ public:
 		if (other->GetInfo().tag == "Star") {
 			if (other->GetInfo().isActive) {
 
-				starCount_ = std::min(4, starCount_ + 1);
+				if (GetFirstBoomerang()->GetInfo().isActive) {
+					tempStarCount = std::min(4, tempStarCount + 1);
+				}
+				else {
+					starCount_ = std::min(4, starCount_ + 1);
+				}				
 				other->GetInfo().isActive = false;
 
 				SoundManager::GetInstance().PlaySe(SeId::PlayerStarCollect);
