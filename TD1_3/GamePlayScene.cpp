@@ -338,7 +338,7 @@ void GamePlayScene::InitializeBackground() {
 		0.3f,  // Y方向スクロール速度（30%）
 		"near",
 		1280.0f,  // X方向の繰り返し幅
-		720.0f    // Y方向の繰り返し高さ
+		1280.0f    // Y方向の繰り返し高さ
 	);
 
 	// レイヤー4: 前景の岩
