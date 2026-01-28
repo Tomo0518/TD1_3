@@ -38,7 +38,6 @@ GamePlayScene::~GamePlayScene() {
 }
 
 void GamePlayScene::Initialize() {
-	UIManager::GetInstance().SetIsGamePlay(true);
 
 	fade_ = 0.0f;
 
@@ -53,6 +52,8 @@ void GamePlayScene::Initialize() {
 	// シングルトンを使う
 	auto& mapData = MapData::GetInstance();
 	mapData.Load("./Resources/data/stage1.json");
+
+	UIManager::GetInstance().SetGamePlay(true);
 
 
 	// 1. タイル、オブジェクト定義の初期化
@@ -441,9 +442,23 @@ void GamePlayScene::Update(float dt, const char* keys, const char* pre) {
 
 
 	// ========= UI更新 =========
-	UIManager::GetInstance().SetPlayerHP((float)player_->GetStatus().currentHP, (float)player_->GetStatus().maxHP);
+	//UIManager::GetInstance().SetPlayerHP((float)player_->GetStatus().currentHP, (float)player_->GetStatus().maxHP);
+	//UIManager::GetInstance().Update(dt);
+	//UIManager::GetInstance().UpdateIcons(dt, player_ ? player_->GetSkillState() : PlayerSkillState{});
+	 // プレイヤーのスキル状態を取得
+	if (player_) {
+		PlayerSkillState skillState = player_->GetSkillState();
+		UIManager::GetInstance().UpdateIcons(dt, skillState);
+	}
+
 	UIManager::GetInstance().Update(dt);
-	UIManager::GetInstance().UpdateIcons(dt, player_ ? player_->GetSkillState() : PlayerSkillState{});
+	UIManager::GetInstance().DrawImGui(); // ImGui描画
+
+	// プレイヤーHPの更新
+	if (player_) {
+		float hpRatio = (float)player_->GetStatus().currentHP / (float)player_->GetStatus().maxHP;
+		UIManager::GetInstance().SetPlayerHP(hpRatio);
+	}
 
 	if (camera_) {
 		camera_->Update(dt);
@@ -484,7 +499,6 @@ void GamePlayScene::Draw() {
 
 
 	UIManager::GetInstance().Draw();
-	UIManager::GetInstance().DrawIcons();
 
 #ifdef _DEBUG
 

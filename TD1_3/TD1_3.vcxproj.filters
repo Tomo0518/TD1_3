@@ -293,6 +293,9 @@
     <ClCompile Include="MapChip.cpp">
       <Filter>KamataEngine\Source\Game\MapChipSystem\MapChip</Filter>
     </ClCompile>
+    <ClCompile Include="UIElement.cpp">
+      <Filter>KamataEngine\Source\library\2D\Ui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\audio\Audio.h">
@@ -572,5 +575,8 @@
       <Filter>KamataEngine\Source\Game\Object\PhysicsGameObject</Filter>
     </ClInclude>
     <ClInclude Include="FatEnemy.hpp" />
+    <ClInclude Include="UIElement.h">
+      <Filter>KamataEngine\Source\library\2D\Ui</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
