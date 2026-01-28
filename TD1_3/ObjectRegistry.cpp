@@ -124,6 +124,62 @@ void ObjectRegistry::Initialize() {
 		0x00AAAAFF,     // color（水色）
 		"Door_2"
 		});
+	objectTypes_.push_back({
+		302,
+		"Button_3",
+		"Gimmick",
+		0xAAAA00FF,     // color（黄土色）
+		"Button_3"
+		});
+	objectTypes_.push_back({
+		402,
+		"Door_3",
+		"Gimmick",
+		0x00AAAAFF,     // color（水色）
+		"Door_3"
+		});
+	objectTypes_.push_back({
+		303,
+		"Button_4",
+		"Gimmick",
+		0xAAAA00FF,     // color（黄土色）
+		"Button_4"
+		});
+	objectTypes_.push_back({
+		403,
+		"Door_4",
+		"Gimmick",
+		0x00AAAAFF,     // color（水色）
+		"Door_4"
+		});
+	objectTypes_.push_back({
+		304,
+		"Button_5",
+		"Gimmick",
+		0xAAAA00FF,     // color（黄土色）
+		"Button_5"
+		});
+	objectTypes_.push_back({
+		404,
+		"Door_5",
+		"Gimmick",
+		0x00AAAAFF,     // color（水色）
+		"Door_5"
+		});
+	objectTypes_.push_back({
+		305,
+		"Button_6",
+		"Gimmick",
+		0xAAAA00FF,     // color（黄土色）
+		"Button_6"
+		});
+	objectTypes_.push_back({
+		405,
+		"Door_6",
+		"Gimmick",
+		0x00AAAAFF,     // color（水色）
+		"Door_6"
+		});
 	// ===================================================================
 	// アイテム（今後追加）
 	// ===================================================================
