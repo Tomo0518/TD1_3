@@ -249,7 +249,9 @@ public:
 
 			Vector2 trail = transform_.translate + dirToOwner * abs(sinf(frameCount_ / 10.f)) * (distanceToOwner);
 			ParticleManager::GetInstance().Emit(ParticleType::MuzzleFlash, trail);
-			for (int i = 0; i < std::min(5,damageBonus_ / 2); ++i) {
+			float distanceFormOwner = Vector2::Length(transform_.translate - ownerPos);
+			int sparkCount = (int)std::max(0.f, std::min(5.f, (activeRange_ * 2.5f - distanceFormOwner) / 50.f));
+			for (int i = 0; i < sparkCount; ++i) {
 				Vector2 randomOffset = { float((rand() % 200) - 100) / 100.f * 5.f, float((rand() % 200) - 100) / 100.f * 5.f };
 				ParticleManager::GetInstance().Emit(ParticleType::Sparkle, trail + randomOffset);
 			}
@@ -300,10 +302,10 @@ public:
 				//if (stayTimer_ < maxStayTime_) {
 					stayTimer_ += deltaTime;
 
-					float distanceFormOwner = Vector2::Length(transform_.translate - ownerPos);
+					
 					//closer the distance bigger damage bonus
-					damageBonus_ = std::max(0,int((activeRange_*1.4f - distanceFormOwner) / 50.f));
-
+					//damageBonus_ = std::max(0,int((activeRange_*1.4f - distanceFormOwner) / 50.f));
+					float distanceFormOwner = Vector2::Length(transform_.translate - ownerPos);
 					if (distanceFormOwner > activeRange_ * 2.5f) {
 						damageBonus_ = 0;
 						damage_ = 0;;
@@ -325,6 +327,10 @@ public:
 
 					if (int(stayTimer_) % 30 == 0) {
 						SoundManager::GetInstance().PlaySe(SeId::PlayerBoomerangFly);
+					}
+
+					if (int(stayTimer_) % 15 == 0) {
+						damageBonus_ = std::min(20, damageBonus_ + 1);
 					}
 				//}
 				//else {
@@ -386,7 +392,7 @@ public:
 
 	void UpdateDrawComponent(float deltaTime) override {
 		if (!info_.isActive) return;
-		float ShakeIntensity = std::max(0.f, float(/*damage_ + */damageBonus_) * (IsReturning() ? 1.f : 3.f));
+		float ShakeIntensity = std::max(0.f, float(damage_ + damageBonus_/10.f));
 		RenderPos_.x = transform_.translate.x + float(rand() % 200 - 100) / 100.f * ShakeIntensity;
 		RenderPos_.y = transform_.translate.y + float(rand() % 200 - 100) / 100.f * ShakeIntensity;
 

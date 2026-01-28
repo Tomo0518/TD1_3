@@ -583,8 +583,9 @@ public:
 			// knockback on collision with other enemies
 			Vector2 knockbackDir = Vector2::Subtract(transform_.translate, other->GetTransform().translate);
 			knockbackDir = Vector2::Normalize(knockbackDir);
-			rigidbody_.acceleration.x = 0.f;
-			rigidbody_.acceleration.x += knockbackDir.x * 7.5f;
+			//rigidbody_.acceleration.x = 0.f;
+			rigidbody_.acceleration.x += (knockbackDir.x * (rigidbody_.acceleration.x +2.5f));
+			rigidbody_.acceleration.y += (knockbackDir.y * rigidbody_.acceleration.y);
 
 		}
 		else if (other->GetInfo().tag == "CheckPoint") {

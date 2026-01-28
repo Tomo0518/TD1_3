@@ -163,7 +163,7 @@ void SoundManager::LoadResources() {
 		"Enemy Find Player 2"
 	};
 	seResources_[static_cast<int>(SeId::EnemyFindPlayer3)] = {
-		Novice::LoadAudio("./Resources/sounds/SE/enemy/mob_find2.mp3"),
+		Novice::LoadAudio("./Resources/sounds/SE/enemy/mob_find3.mp3"),
 		0.6f,
 		"Enemy Find Player 3"
 	};
