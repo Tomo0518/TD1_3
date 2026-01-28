@@ -296,11 +296,6 @@ public:
 		if (playerRef_) {
 			Usagi* player = dynamic_cast<Usagi*>(playerRef_);
 
-			if (player->GetStatus().currentHP <= 0) {
-				BackToDefault();
-				return;
-			}
-
 			Vector2 BoomerangPos = player->GetFirstBoomerang()->GetPosition();
 
 			Vector2 buttonPos = transform_.translate;
