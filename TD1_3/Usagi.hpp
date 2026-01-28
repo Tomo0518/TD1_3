@@ -543,10 +543,10 @@ public:
 
 		// ========== Y方向の移動と衝突判定 ==========
 		transform_.translate.y += moveDelta.y;
-		if (!isGravityEnabled_) transform_.translate.y -= 10;
+		if (!isGravityEnabled_) transform_.translate.y -= 1;
 		HitDirection hitDirY = PhysicsManager::ResolveMapCollisionY(this, mapData);
 		isGrounded_ = (hitDirY == HitDirection::Top);
-		if (!isGravityEnabled_ && !isGrounded_) transform_.translate.y += 10;
+		if (!isGravityEnabled_ && !isGrounded_) transform_.translate.y += 1;
 		// ========== X方向の移動と衝突判定 ==========
 		transform_.translate.x += moveDelta.x;
 		HitDirection hitDirX = PhysicsManager::ResolveMapCollisionX(this, mapData);
