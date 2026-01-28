@@ -16,7 +16,7 @@ void SoundManager::LoadResources() {
 	// ========================================
 	bgmResources_[static_cast<int>(BgmId::Title)] = {
 		Novice::LoadAudio("./Resources/sounds/BGM/title.mp3"),
-		0.7f,
+		0.14f,
 		"Title BGM"
 	};
 
@@ -28,7 +28,7 @@ void SoundManager::LoadResources() {
 
 	bgmResources_[static_cast<int>(BgmId::Tutorial)] = {
 		Novice::LoadAudio("./Resources/sounds/BGM/tutorial.mp3"),
-		0.75f,
+		0.05f,
 		"Tutorial BGM"
 	};
 
@@ -51,7 +51,7 @@ void SoundManager::LoadResources() {
 	// ===== Menu SE =====
 	seResources_[static_cast<int>(SeId::Select)] = {
 		Novice::LoadAudio("./Resources/sounds/SE/menu/moveSelect.mp3"),
-		0.4f,
+		1.3f,
 		"Menu Select"
 	};
 
@@ -90,7 +90,7 @@ void SoundManager::LoadResources() {
 	};
 	seResources_[static_cast<int>(SeId::PlayerDash)] = {
 		Novice::LoadAudio("./Resources/sounds/SE/player/dash.mp3"),
-		0.7f,
+		10.0f,
 		"Player Dash"
 	};
 	seResources_[static_cast<int>(SeId::PlayerDamage)] = {
