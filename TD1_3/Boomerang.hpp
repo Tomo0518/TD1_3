@@ -322,6 +322,10 @@ public:
 						transform_.translate.y = farestDistance_.y;
 						transform_.translate.x = isHitWall ? farestDistance_.x : ownerPos.x;
 					}
+
+					if (int(stayTimer_) % 30 == 0) {
+						SoundManager::GetInstance().PlaySe(SeId::PlayerBoomerangFly);
+					}
 				//}
 				//else {
 					//state_ = BoomerangState::Returning;

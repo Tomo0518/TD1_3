@@ -31,7 +31,7 @@ private:
 
 	bool isflipX_ = false;
 	float jumpForce_ = 21.f;
-	float jumpForceBooster_ = 7.f;
+	float jumpForceBooster_ = 5.f;
 	float JumpFriendlyTimer_ = 0;
 	float JumpFriendlyDuration_ = 15.f;
 
