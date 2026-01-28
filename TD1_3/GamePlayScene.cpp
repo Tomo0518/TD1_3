@@ -52,6 +52,10 @@ void GamePlayScene::Initialize() {
 	UIManager::GetInstance().SetGamePlay(true);
 
 
+	// シングルトンを使う
+	auto& mapData = MapData::GetInstance();
+	mapData.Load("./Resources/data/stage1.json");
+
 	// 1. タイル、オブジェクト定義の初期化
 	TileRegistry::Initialize();
 	ObjectRegistry::Initialize();

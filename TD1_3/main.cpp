@@ -37,9 +37,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ParticleRegistry::Initialize();
 	ParticleManager::GetInstance().Load();
 
-	// シングルトンを使う
-	auto& mapData = MapData::GetInstance();
-	mapData.Load("./Resources/data/stage1.json");
 
 	// キー入力結果を受け取る箱 
 	char keys[256] = { 0 };
