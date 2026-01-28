@@ -42,15 +42,18 @@ public:
 		// Find all buttons in the manager
 		auto buttons = manager_->GetObjectsByTag("Button");
 		bool allPressed = true;
+		int count = 0;
 		for (auto& buttonObj : buttons) {
 			Button* button = dynamic_cast<Button*>(buttonObj);
 			if (button && button->GetButtonID() == targetButtonID_) {
+				count++;
 				if (!button->IsPressed()) {
 					allPressed = false;
 					break;
 				}
 			}
 		}
+		if (count == 0) allPressed = false; // No buttons found with the target ID
 		SetOpen(allPressed);
 	}
 
@@ -72,6 +75,7 @@ public:
 			Vector2 knockbackDir = Vector2::Subtract(transform_.translate, other->GetTransform().translate);
 			knockbackDir = Vector2::Normalize(knockbackDir) * -1.f;
 			float speed = Vector2::Length(other->GetRigidbody().velocity);
+			other->GetRigidbody().velocity.x = 0.f;
 			other->GetRigidbody().acceleration.x += knockbackDir.x * (speed + 2.5f);
 		}
 		return 0;
@@ -118,6 +122,13 @@ class Door6 : public Door {
 public:
 	Door6() {
 		targetButtonID_ = 6;
+	}
+};
+
+class EventDoor : public Door {
+public:
+	EventDoor() {
+		targetButtonID_ = 101;
 	}
 };
 

@@ -22,7 +22,7 @@ public:
 		if (onComp_ != drawComp_) delete onComp_;
 		if (offComp_ != drawComp_) delete offComp_;
 	}
-	void Initialize() override {
+	virtual void Initialize() override {
 		rigidbody_.Initialize();
 		info_.isActive = true;
 		info_.isVisible = true;
@@ -37,7 +37,7 @@ public:
 
 	}
 
-	void CheckPlayerPress() {
+	virtual void CheckPlayerPress() {
 		FindPlayer();
 		if (playerRef_) {
 			Usagi* player = dynamic_cast<Usagi*>(playerRef_);
@@ -131,6 +131,82 @@ class Button6 : public Button {
 public:
 	Button6() {
 		ButtonID_ = 6;
+	}
+};
+
+class EnemyEvent : public Button {
+	std::vector<GameObject2D*> spawnedEnemies_;
+	bool Spawned_ = false;
+	float activeRange_ = 500.f;
+public:
+	EnemyEvent() {
+		ButtonID_ = 101;
+		isSwitch_ = true;
+	}
+
+	void Initialize() override {
+		rigidbody_.Initialize();
+		info_.isActive = true;
+		info_.isVisible = false;
+		collider_.size = { 100.f, 100.f };
+		collider_.offset = { 0.f, 0.f };
+		onComp_ = new DrawComponent2D(Tex().GetTexture(TextureId::Button_On));
+		offComp_ = new DrawComponent2D(Tex().GetTexture(TextureId::Button_Off));
+		onComp_->Initialize();
+		offComp_->Initialize();
+		drawComp_ = offComp_;
+
+		isPressed_ = true;
+		Spawned_ = false;
+	}
+
+	virtual void spawnEnemy() {
+		auto e = manager_->Spawn<FatEnemy>(this, "Enemy");
+		e->SetPosition({ transform_.translate.x + 200.f, transform_.translate.y + 100.f });
+		spawnedEnemies_.push_back(e);
+	}
+
+	bool CheckAllDefeated() {
+		// clear all null or dead enemies
+		spawnedEnemies_.erase(
+			std::remove_if(spawnedEnemies_.begin(), spawnedEnemies_.end(),
+				[](GameObject2D* enemy) {
+					return enemy == nullptr || enemy->IsDead();
+				}),
+			spawnedEnemies_.end());
+
+		if (spawnedEnemies_.size() > 0) {
+			return false;
+		}
+
+		return true;
+	}
+
+	virtual void ActivateEvent() {		
+		spawnEnemy();
+	}
+
+	virtual void CheckPlayerPress() override {
+		FindPlayer();
+		if (playerRef_) {
+			Usagi* player = dynamic_cast<Usagi*>(playerRef_);
+
+			Vector2 BoomerangPos = player->GetFirstBoomerang()->GetPosition();
+
+			Vector2 buttonPos = transform_.translate;
+			float distance = Vector2::Length(Vector2::Subtract(BoomerangPos, buttonPos));
+			if (distance < activeRange_ && !Spawned_) {
+				ActivateEvent();
+				isPressed_ = false;
+				Spawned_ = true;
+			}
+		}
+
+		if (Spawned_) {
+			if (CheckAllDefeated()) {
+				SetPressed(true);
+			}
+		}
 	}
 };
 

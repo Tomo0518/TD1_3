@@ -546,10 +546,10 @@ public:
 
 		// ========== Y方向の移動と衝突判定 ==========
 		transform_.translate.y += moveDelta.y;
-		if (!isGravityEnabled_) transform_.translate.y -= 1;
+		if (!isGravityEnabled_ && isCharging_) transform_.translate.y -= 1;
 		HitDirection hitDirY = PhysicsManager::ResolveMapCollisionY(this, mapData);
 		isGrounded_ = (hitDirY == HitDirection::Top);
-		if (!isGravityEnabled_ && !isGrounded_) transform_.translate.y += 1;
+		if (!isGravityEnabled_ && !isGrounded_ && isCharging_) transform_.translate.y += 1;
 		// ========== X方向の移動と衝突判定 ==========
 		transform_.translate.x += moveDelta.x;
 		HitDirection hitDirX = PhysicsManager::ResolveMapCollisionX(this, mapData);
@@ -585,8 +585,9 @@ public:
 		else if (other->GetInfo().tag == "Enemy" || other->GetInfo().tag == "Player") {
 			// knockback on collision with other enemies
 			Vector2 knockbackDir = Vector2::Subtract(transform_.translate, other->GetTransform().translate);
-			knockbackDir = Vector2::Normalize(knockbackDir);
+			knockbackDir = Vector2::Normalize(knockbackDir); 
 			//rigidbody_.acceleration.x = 0.f;
+			rigidbody_.velocity.x = 0.f;
 			rigidbody_.acceleration.x += (knockbackDir.x * (rigidbody_.acceleration.x +2.5f));
 			//rigidbody_.acceleration.y += (knockbackDir.y * rigidbody_.acceleration.y);
 
