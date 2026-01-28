@@ -49,7 +49,7 @@ void GamePlayScene::Initialize() {
 
 	// シングルトンを使う
 	auto& mapData = MapData::GetInstance();
-	mapData.Load("./Resources/data/yoshikawa.json");
+	mapData.Load("./Resources/data/stage1.json");
 
 	// 1. タイル、オブジェクト定義の初期化
 	TileRegistry::Initialize();
@@ -446,7 +446,7 @@ void GamePlayScene::Draw() {
 	mapManager_.Draw(*camera_,DrawLayer::Background);
 
 	// 静的タイル描画
-	mapChip_.Draw(*camera_, mapData, mapEditor_.GetBlockLayerAlpha());
+	mapChip_.Draw(*camera_, mapData, 1/*mapEditor_.GetBlockLayerAlpha()*/);
 
 	particleManager_->Draw(*camera_);
 

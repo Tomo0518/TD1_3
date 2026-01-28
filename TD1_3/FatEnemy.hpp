@@ -3,7 +3,7 @@
 
 class FatEnemyHitBox : public PhysicsObject {
 	float lifetime_ = 15.f;
-	float offsetXAmount_ = 64.f;
+	float offsetXAmount_ = 110.f;
 	float offsetX_ = offsetXAmount_;
 public:
 	FatEnemyHitBox() {
@@ -18,7 +18,7 @@ public:
 		rigidbody_.Initialize();
 		info_.isActive = true;
 		info_.isVisible = true;
-		collider_.size = { 140.f, 160.f };
+		collider_.size = { 160.f, 180.f };
 		collider_.offset = { 0.f, 0.f };
 		isGravityEnabled_ = false;
 	}
@@ -128,10 +128,10 @@ public:
 		playerRef_ = nullptr; // プレイヤー参照
 		playerPos_ = { 0.0f, 0.0f };
 		distanceToPlayer_ = 0.0f;
-		detectionRange_ = 500.0f; // プレイヤー検知範囲
+		detectionRange_ = 600.0f; // プレイヤー検知範囲
 
 		// stun state
-		stunDuration_ = 60.0f; // スタン状態の持続時間（フレーム数）
+		stunDuration_ = 150.0f; // スタン状態の持続時間（フレーム数）
 		stunTimer_ = 0.0f;    // スタン状態のタイマー
 
 		// patrol state
@@ -141,12 +141,12 @@ public:
 		attackRange_ = 140.0f; // 攻撃範囲
 		keepDistance_ = 110.0f; // プレイヤーとの距離維持
 		battleRange_ = 200.0f; // 戦闘維持範囲
-		escapeRange_ = 600.0f; // 戦闘離脱範囲
+		escapeRange_ = 800.0f; // 戦闘離脱範囲
 
 		attackCooldown_ = 60.0f; // 攻撃クールダウン時間
 		attackTimer_ = 0.0f; // 攻撃タイマー
 
-		windDownDuration_ = 30.0f; // 攻撃後のクールダウン時間
+		windDownDuration_ = 50.0f; // 攻撃後のクールダウン時間
 		windDownTimer_ = 0.0f; // クールダウンタイマー
 
 		windupDuration_ = 60.0f; // 攻撃の溜め時間
@@ -157,13 +157,13 @@ public:
 		battleState_ = AttackEnemyBattleState::Idle;
 
 
-		DrawOffset_ = { -64.f, 50.f };
+		DrawOffset_ = { -64.f, 95.f };
 	}
 
 	virtual void Initialize() override {
 		rigidbody_.Initialize();
 		rigidbody_.deceleration = { 0.9f, 0.9f };
-		collider_.size = { 140.f, 200.f };
+		collider_.size = { 140.f, 230.f };
 		collider_.offset = { 0.f, 0.f };
 
 		rigidbody_.maxSpeedX = chargeForce_;
@@ -204,6 +204,18 @@ public:
 			star->SetOwner(this);
 		}
 		
+	}
+
+	virtual void Stunning(float deltaTime) override {
+		stunTimer_ -= deltaTime;
+		collider_.size = { 140.f, 120.f };
+		DrawOffset_ = { -64.f, 95.f + 60.f };
+
+		if (stunTimer_ <= 0) {
+			stunned_ = false;
+			collider_.size = { 140.f, 230.f };
+			DrawOffset_ = { -64.f, 95.f };
+		}
 	}
 
 	virtual void Windup(float deltaTime) {
@@ -298,7 +310,7 @@ public:
 
 		drawManager_.Draw(camera);
 
-		Vector2 screenPos = const_cast<Camera2D&>(camera).WorldToScreen(transform_.translate);
+		/*Vector2 screenPos = const_cast<Camera2D&>(camera).WorldToScreen(transform_.translate);
 		Vector2 colliderSize = const_cast<Vector2&>(collider_.size);
 		Vector2 colliderOffset = const_cast<Vector2&>(collider_.offset);
 
@@ -318,6 +330,6 @@ public:
 			0.0f,
 			0xFF0000FF,
 			kFillModeWireFrame
-		);
+		);*/
 	}
 };

@@ -31,6 +31,7 @@ private:
 
 	bool isflipX_ = false;
 	float jumpForce_ = 21.f;
+	float jumpForceBooster_ = 7.f;
 	float JumpFriendlyTimer_ = 0;
 	float JumpFriendlyDuration_ = 15.f;
 
@@ -78,8 +79,10 @@ public:
 
 		rigidbody_.Initialize();
 		rigidbody_.deceleration = { 0.7f, 0.7f };
+		rigidbody_.maxSpeedY = jumpForceBooster_ + jumpForce_ + 5.f;
 		collider_.size = { 52.f, 120.f };
 		collider_.offset = { 5.f, -28.f };
+
 		// 描画コンポーネントの初期化があれば呼ぶ
 		delete drawComp_;
 		drawComp_ = nullptr;
@@ -154,11 +157,11 @@ public:
 	}
 
 
-	void Jump() {
+	void Jump(bool isDoubleJump = false) {
 		if (isGravityEnabled_ == false) return;
 		JumpFriendlyTimer_ = 0;
 		rigidbody_.velocity.y = 0.f; // ジャンプ前に垂直速度をリセット
-		rigidbody_.acceleration.y += jumpForce_;
+		rigidbody_.acceleration.y += jumpForce_ + (isDoubleJump ? jumpForceBooster_ : 0.f);
 		isGrounded_ = false;
 		// ジャンプアニメーションに切り替え
 		ChangeDrawComp(DrawCompState::eJump);
@@ -255,7 +258,7 @@ public:
 		}
 
 		if (((jumpInput || JumpFriendlyTimer_ > 0.f) && isGrounded_) || (isCloseToBoomerang)) {
-			Jump();
+			Jump(isCloseToBoomerang);
 		}
 		// *******************************************
 
@@ -576,6 +579,7 @@ public:
 
 		}
 		else if (other->GetInfo().tag == "CheckPoint") {
+			status_.currentHP = status_.maxHP;
 			respawnPosition_ = other->GetTransform().translate;
 		}
 

@@ -33,6 +33,8 @@ public:
 		onComp_->Initialize();
 		offComp_->Initialize();
 		drawComp_ = offComp_;
+
+
 	}
 
 	void CheckPlayerPress() {
@@ -131,3 +133,5 @@ public:
 		ButtonID_ = 6;
 	}
 };
+
+
