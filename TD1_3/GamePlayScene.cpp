@@ -30,6 +30,8 @@ GamePlayScene::GamePlayScene(SceneManager& mgr)
 	particleManager_->SetGroundLevel(groundY);
 
 	debugWindow_ = std::make_unique<DebugWindow>();
+
+	SoundManager::GetInstance().PlayBgm(BgmId::Tutorial);
 }
 
 GamePlayScene::~GamePlayScene() {

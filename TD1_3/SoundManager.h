@@ -7,6 +7,7 @@ enum class BgmId {
 	None = -1,
 	Title,
 	StageSelect,
+	Tutorial,
 	Stage,
 	Result,
 	Count // 総数

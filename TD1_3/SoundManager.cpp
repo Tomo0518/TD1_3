@@ -26,6 +26,12 @@ void SoundManager::LoadResources() {
 		"Stage Select BGM"
 	};
 
+	bgmResources_[static_cast<int>(BgmId::Tutorial)] = {
+		Novice::LoadAudio("./Resources/sounds/BGM/tutorial.mp3"),
+		0.75f,
+		"Tutorial BGM"
+	};
+
 	bgmResources_[static_cast<int>(BgmId::Stage)] = {
 		Novice::LoadAudio("./Resources/sounds/BGM/stage.mp3"),
 		0.8f,

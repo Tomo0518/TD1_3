@@ -29,8 +29,6 @@ TitleScene::TitleScene(SceneManager& manager)
 	// ボタン初期化
 	InitializeButtons();
 
-	player_.Initialize();
-
 	// BGMを再生
 	SoundManager::GetInstance().PlayBgm(BgmId::Title);
 }
@@ -129,8 +127,6 @@ void TitleScene::Update(float dt, const char* keys, const char* pre) {
 		SoundManager::GetInstance().PlaySe(SeId::Decide);
 	}
 
-	player_.Update(dt);
-	
 	// ボタンマネージャーを更新
 	buttonManager_.Update(dt);
 }
@@ -144,6 +140,4 @@ void TitleScene::Draw() {
 
 	// ボタン描画
 	buttonManager_.Draw();
-
-	player_.Draw(Camera2D::GetInstance());
 }
