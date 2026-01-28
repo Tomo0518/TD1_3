@@ -144,6 +144,7 @@ public:
 };
 
 class EnemyEvent : public Button {
+protected:
 	std::vector<GameObject2D*> spawnedEnemies_;
 	bool Spawned_ = false;
 	float activeRange_ = 500.f;
@@ -234,6 +235,24 @@ public:
 				SetPressed(true);
 			}
 		}
+	}
+};
+
+class EnemyEvent2 : public EnemyEvent {
+	public:
+	EnemyEvent2() {
+		ButtonID_ = 102;
+		isSwitch_ = true;
+		activeRange_ = 100.f;
+	}
+
+	void ActivateEvent() override {
+		auto e1 = manager_->Spawn<AttackEnemy>(this, "Enemy");
+		e1->SetPosition({ transform_.translate.x - 400.f, transform_.translate.y + 100.f });
+		spawnedEnemies_.push_back(e1);
+		auto e2 = manager_->Spawn<AttackEnemy>(this, "Enemy");
+		e2->SetPosition({ transform_.translate.x - 200.f, transform_.translate.y + 100.f });
+		spawnedEnemies_.push_back(e2);
 	}
 };
 

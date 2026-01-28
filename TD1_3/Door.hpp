@@ -132,3 +132,9 @@ public:
 	}
 };
 
+class EventDoor2 : public Door {
+public:
+	EventDoor2() {
+		targetButtonID_ = 102;
+	}
+};
