@@ -327,6 +327,38 @@ void GamePlayScene::SpawnObjectFromData(const ObjectSpawnInfo& spawn) {
 			spawn.position.x, spawn.position.y);
 		break;
 	}
+	case 308: { // EnemyEvent
+		auto* event = objectManager_.Spawn<EnemyEvent3>(nullptr, "Button");
+		event->SetPosition(spawn.position);
+		event->Initialize();
+		Novice::ConsolePrintf("[GamePlayScene] Spawned EnemyEvent at (%.1f, %.1f)\n",
+			spawn.position.x, spawn.position.y);
+		break;
+	}
+	case 408: { // Door_EnemyEvent
+		auto* door = objectManager_.Spawn<EventDoor3>(nullptr, "Door");
+		door->SetPosition(spawn.position);
+		door->Initialize();
+		Novice::ConsolePrintf("[GamePlayScene] Spawned Door_EnemyEvent at (%.1f, %.1f)\n",
+			spawn.position.x, spawn.position.y);
+		break;
+	}
+	case 309: { // EnemyEvent
+		auto* event = objectManager_.Spawn<EnemyEvent4>(nullptr, "Button");
+		event->SetPosition(spawn.position);
+		event->Initialize();
+		Novice::ConsolePrintf("[GamePlayScene] Spawned EnemyEvent at (%.1f, %.1f)\n",
+			spawn.position.x, spawn.position.y);
+		break;
+	}
+	case 409: { // Door_EnemyEvent
+		auto* door = objectManager_.Spawn<EventDoor4>(nullptr, "Door");
+		door->SetPosition(spawn.position);
+		door->Initialize();
+		Novice::ConsolePrintf("[GamePlayScene] Spawned Door_EnemyEvent at (%.1f, %.1f)\n",
+			spawn.position.x, spawn.position.y);
+		break;
+	}
 
 	case 999:{
 		auto* door = objectManager_.Spawn<EndButton>(nullptr, "EndButton");

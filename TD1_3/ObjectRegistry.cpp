@@ -223,6 +223,34 @@ void ObjectRegistry::Initialize() {
 		});
 
 
+	objectTypes_.push_back({
+		308,
+		"EnemyEvent3",
+		"Gimmick",
+		0xAAAA00FF,     // color（黄土色）
+		"EnemyEvent3"
+		});
+	objectTypes_.push_back({
+		408,
+		"EnemyEventDoor3",
+		"Gimmick",
+		0x00AAAAFF,     // color（水色）
+		"EnemyEventDoor3"
+		});
+	objectTypes_.push_back({
+		309,
+		"EnemyEvent4",
+		"Gimmick",
+		0xAAAA00FF,     // color（黄土色）
+		"EnemyEvent4"
+		});
+	objectTypes_.push_back({
+		409,
+		"EnemyEventDoor4",
+		"Gimmick",
+		0x00AAAAFF,     // color（水色）
+		"EnemyEventDoor4"
+		});
 	// ===================================================================
 	// アイテム（今後追加）
 	// ===================================================================

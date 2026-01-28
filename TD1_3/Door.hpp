@@ -138,3 +138,17 @@ public:
 		targetButtonID_ = 102;
 	}
 };
+
+class EventDoor3 : public Door {
+public:
+	EventDoor3() {
+		targetButtonID_ = 103;
+	}
+};
+
+class EventDoor4 : public Door {
+public:
+	EventDoor4() {
+		targetButtonID_ = 104;
+	}
+};

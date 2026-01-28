@@ -262,6 +262,20 @@ class EnemyEvent2 : public EnemyEvent {
 	}
 };
 
+class EnemyEvent3 : public EnemyEvent {
+public:
+	EnemyEvent3() {
+		ButtonID_ = 103;
+		isSwitch_ = true;
+		activeRange_ = 500.f;
+	}
+
+	void ActivateEvent() override {
+		auto e = manager_->Spawn<AttackEnemy>(this, "Enemy");
+		e->SetPosition({ transform_.translate.x + 200.f, transform_.translate.y + 100.f });
+		spawnedEnemies_.push_back(e);
+	}
+};
 
 
 
@@ -308,3 +322,17 @@ public:
 	}
 };
 
+class EnemyEvent4 : public EnemyEvent {
+public:
+	EnemyEvent4() {
+		ButtonID_ = 104;
+		isSwitch_ = true;
+		activeRange_ = 500.f;
+	}
+
+	void ActivateEvent() override {
+		auto e = manager_->Spawn<FatEnemy>(this, "Enemy");
+		e->SetPosition({ transform_.translate.x + 200.f, transform_.translate.y + 100.f });
+		spawnedEnemies_.push_back(e);
+	}
+};
