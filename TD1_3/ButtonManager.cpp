@@ -10,7 +10,6 @@
 #undef max
 #endif
 
-
 ButtonManager::ButtonManager() {
 }
 

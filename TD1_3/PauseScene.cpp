@@ -28,7 +28,7 @@ void PauseScene::InitializeButtons() {
 	const float centerX = 640.0f;
 	const float startY = 200.0f;
 	const float buttonSpacing = 100.0f;
-	Vector2 buttonSize = { 300.0f, 80.0f };
+	Vector2 buttonSize = { 250.0f, 76.0f };
 
 	// Resume: ポーズ解除
 	buttonManager_->AddButton(
@@ -49,7 +49,6 @@ void PauseScene::InitializeButtons() {
 			manager_.RequestRetry();
 		}
 	);
-
 
 	// Settings: 設定画面を開く
 	buttonManager_->AddButton(

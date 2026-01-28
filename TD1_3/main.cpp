@@ -11,7 +11,6 @@
 #include "Camera2D.h"
 
 #include "ParticleRegistry.h"
-
 #include "UIManager.h"
 #include "MapChip.h"
 
