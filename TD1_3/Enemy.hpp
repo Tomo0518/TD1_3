@@ -184,13 +184,13 @@ public:
 		}
 
 		if (playerRef_) {
-			Novice::ConsolePrintf("try finding\n");
+			//Novice::ConsolePrintf("try finding\n");
 			playerPos_ = playerRef_->GetPosition();
 			distanceToPlayer_ = Vector2::Length(Vector2::Subtract(playerPos_, transform_.translate));
 			if (IsFacingPlayer()) {
 				if (distanceToPlayer_ <= detectionRange_) {
 					SoundManager::GetInstance().PlaySe(SeId::EnemyFindPlayer2);
-					Novice::ConsolePrintf("Enemy id: %d found Player!\n", info_.id);
+					//Novice::ConsolePrintf("Enemy id: %d found Player!\n", info_.id);
 					foundPlayer = true;
 				}
 

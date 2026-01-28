@@ -120,6 +120,9 @@ void TextureManager::LoadResources() {
 	textureResources_[static_cast<int>(TextureId::Door_Closed)] =
 		Novice::LoadTexture("./Resources/images/item/doorOff.png");
 
+	textureResources_[static_cast<int>(TextureId::Coin)] =
+		Novice::LoadTexture("./Resources/images/item/Coin.png");
+
 	textureResources_[static_cast<int>(TextureId::UsagiCheckPoint_On)] =
 		Novice::LoadTexture("./Resources/images/item/checkPoint.png");
 	textureResources_[static_cast<int>(TextureId::UsagiCheckPoint_Off)] =
