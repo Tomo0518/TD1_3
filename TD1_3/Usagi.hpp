@@ -31,6 +31,7 @@ private:
 
 	bool isflipX_ = false;
 	float jumpForce_ = 21.f;
+	float jumpForceBooster_ = 7.f;
 	float JumpFriendlyTimer_ = 0;
 	float JumpFriendlyDuration_ = 15.f;
 
@@ -78,8 +79,10 @@ public:
 
 		rigidbody_.Initialize();
 		rigidbody_.deceleration = { 0.7f, 0.7f };
+		rigidbody_.maxSpeedY = jumpForceBooster_ + jumpForce_ + 5.f;
 		collider_.size = { 52.f, 120.f };
 		collider_.offset = { 5.f, -28.f };
+
 		// 描画コンポーネントの初期化があれば呼ぶ
 		delete drawComp_;
 		drawComp_ = nullptr;
@@ -154,14 +157,15 @@ public:
 	}
 
 
-	void Jump() {
+	void Jump(bool isDoubleJump = false) {
 		if (isGravityEnabled_ == false) return;
 		JumpFriendlyTimer_ = 0;
 		rigidbody_.velocity.y = 0.f; // ジャンプ前に垂直速度をリセット
-		rigidbody_.acceleration.y += jumpForce_;
+		rigidbody_.acceleration.y += jumpForce_ + (isDoubleJump ? jumpForceBooster_ : 0.f);
 		isGrounded_ = false;
 		// ジャンプアニメーションに切り替え
 		ChangeDrawComp(DrawCompState::eJump);
+		SoundManager::GetInstance().PlaySe(SeId::PlayerJump);
 
 	}
 
@@ -251,15 +255,7 @@ public:
 
 		// ジャンプ実行（チャージ中でも可能にする）
 		if (((jumpInput || JumpFriendlyTimer_ > 0.f) && isGrounded_) || (isCloseToBoomerang)) {
-			Jump();
-			// チャージ中にジャンプした場合、チャージを維持
-		}
-
-		// 落下アニメーション
-		if (!isGrounded_) {
-			if (rigidbody_.velocity.y < 0) {
-				ChangeDrawComp(DrawCompState::eFall);
-			}
+			Jump(isCloseToBoomerang);
 		}
 
 		if (isGrounded_) {
@@ -296,6 +292,7 @@ public:
 				rigidbody_.maxSpeedX = dashSpeed_;
 
 				ChangeDrawComp(DrawCompState::eJump);
+				SoundManager::GetInstance().PlaySe(SeId::PlayerDash);
 			}
 		}
 
@@ -454,6 +451,8 @@ public:
 			if (Input().GetInputMode() == InputMode::Gamepad) {
 				Input().GetPad()->StartVibration(0.5f, 0.5f, 15);
 			}
+
+			SoundManager::GetInstance().PlaySe(SeId::PlayerBoomerangReturn);
 		}
 		wasBoomerangActive_ = currentBoomerangActive;
 	}
@@ -535,6 +534,8 @@ public:
 			rigidbody_.AddForce(gravity);
 		}
 
+		bool previouslyGrounded = isGrounded_;
+
 		rigidbody_.Update(deltaTime);
 
 		Vector2 moveDelta = rigidbody_.GetMoveDelta(deltaTime);
@@ -542,13 +543,14 @@ public:
 
 		// ========== Y方向の移動と衝突判定 ==========
 		transform_.translate.y += moveDelta.y;
+		if (!isGravityEnabled_) transform_.translate.y -= 10;
 		HitDirection hitDirY = PhysicsManager::ResolveMapCollisionY(this, mapData);
 		isGrounded_ = (hitDirY == HitDirection::Top);
-
+		if (!isGravityEnabled_ && !isGrounded_) transform_.translate.y += 10;
 		// ========== X方向の移動と衝突判定 ==========
 		transform_.translate.x += moveDelta.x;
 		HitDirection hitDirX = PhysicsManager::ResolveMapCollisionX(this, mapData);
-
+		
 		// ========== 回転 ==========
 		transform_.rotation += rigidbody_.GetRotationDelta(deltaTime);
 
@@ -557,6 +559,10 @@ public:
 			/*Novice::ConsolePrintf("Hit Direction X: %d, Y: %d, position: (%.f, %.f)\n",
 				static_cast<int>(hitDirX), static_cast<int>(hitDirY),
 				transform_.translate.x, transform_.translate.y);*/
+		}
+
+		if(previouslyGrounded == false && isGrounded_ == true) {
+			SoundManager::GetInstance().PlaySe(SeId::PlayerLand);
 		}
 
 		transform_.CalculateWorldMatrix();
@@ -569,6 +575,8 @@ public:
 
 				starCount_ = std::min(4, starCount_ + 1);
 				other->GetInfo().isActive = false;
+
+				SoundManager::GetInstance().PlaySe(SeId::PlayerStarCollect);
 			}
 		}
 		else if (other->GetInfo().tag == "Enemy" || other->GetInfo().tag == "Player") {
@@ -580,6 +588,7 @@ public:
 
 		}
 		else if (other->GetInfo().tag == "CheckPoint") {
+			status_.currentHP = status_.maxHP;
 			respawnPosition_ = other->GetTransform().translate;
 		}
 
@@ -687,6 +696,8 @@ public:
 			if (damage > 0) {
 				ParticleManager::GetInstance().Emit(ParticleType::Hit, transform_.translate);
 				drawManager_.StartFlashBlink(0xFF0000CC, 4, 0.1f, BlendMode::kBlendModeNormal, 1);
+
+				SoundManager::GetInstance().PlaySe(SeId::PlayerDamage);
 			}			
 		}
 	}

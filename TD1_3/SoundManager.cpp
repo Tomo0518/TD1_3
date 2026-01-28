@@ -1,6 +1,7 @@
 ﻿#include "SoundManager.h"
+#ifdef _DEBUG
 #include <imgui.h>
-
+#endif
 SoundManager::SoundManager() {
 	LoadResources();
 }

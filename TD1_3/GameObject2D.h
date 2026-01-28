@@ -10,6 +10,7 @@
 #include "Rigidbody2D.hpp"
 #include "DrawComponent2D.h" 
 #include "TextureManager.h"
+#include "SoundManager.h"
 
 class GameObjectManager; // 前方宣言
 

@@ -21,7 +21,7 @@ public:
 		rigidbody_.Initialize();
 		info_.isActive = true;
 		info_.isVisible = true;
-		collider_.size = { 64.f, 256.f };
+		collider_.size = { 70.f, 256.f };
 		collider_.offset = { 0.f, 0.f };
 		openComp_ = new DrawComponent2D(Tex().GetTexture(TextureId::Door_Open));
 		closedComp_ = new DrawComponent2D(Tex().GetTexture(TextureId::Door_Closed));
@@ -71,7 +71,8 @@ public:
 		if (other->GetInfo().tag == "Player" || other->GetInfo().tag == "Enemy") {
 			Vector2 knockbackDir = Vector2::Subtract(transform_.translate, other->GetTransform().translate);
 			knockbackDir = Vector2::Normalize(knockbackDir) * -1.f;
-			other->GetRigidbody().acceleration.x += knockbackDir.x * 7.5f;
+			float speed = Vector2::Length(other->GetRigidbody().velocity);
+			other->GetRigidbody().acceleration.x += knockbackDir.x * (speed + 2.5f);
 		}
 		return 0;
 	}
