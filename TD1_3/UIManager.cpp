@@ -56,7 +56,9 @@ void UIManager::InitializeKeyGuides() {
     AddElement(std::make_unique<KeyGuideUIElement>("PadJump", TextureId::PadJump_A, Vector2(983.f, 584.f),0.79f));
     AddElement(std::make_unique<KeyGuideUIElement>("PadStick", TextureId::PadStickAndArrow,Vector2( 981.f,652.f),0.82f));
     AddElement(std::make_unique<KeyGuideUIElement>("PadButtonX", TextureId::PadButtonX, Vector2(1100.f ,663.f),0.85f));
-    AddElement(std::make_unique<KeyGuideUIElement>("PadButtonB", TextureId::PadButtonB, Vector2(1205.f, 663.f), 0.85f));
+    AddElement(std::make_unique<KeyGuideUIElement>("PadButtonRT", TextureId::PadButtonRT, Vector2(1205.f, 663.f), 0.85f));
+
+    //AddElement(std::make_unique<KeyGuideUIElement>("PadButtonB", TextureId::PadButtonB, Vector2(1205.f, 663.f), 0.85f));
 }
 
 void UIManager::InitializeSkillIcons() {
@@ -168,6 +170,11 @@ void UIManager::Update(float dt) {
             elem->SetVisible(isGamepad);
             elem->Update(dt);
         }
+
+        if (auto* elem = GetElement("PadButtonRT")) {
+            elem->SetVisible(isGamepad);
+            elem->Update(dt);
+        }
     }
 }
 
@@ -200,6 +207,12 @@ void UIManager::UpdateGamepadUI() {
             elem->TriggerSquash();
         }
     }
+    if (input.GetPad()->TriggerRightTrigger()) {
+        if (auto* elem = dynamic_cast<KeyGuideUIElement*>(GetElement("PadButtonRT"))) {
+            elem->TriggerSquash();
+        }
+    }
+
 }
 
 void UIManager::UpdateKeyboardUI() {
@@ -240,7 +253,8 @@ void UIManager::Draw() {
         if (auto* elem = GetElement("PadJump")) elem->Draw();
         if (auto* elem = GetElement("PadStick")) elem->Draw();
         if (auto* elem = GetElement("PadButtonX")) elem->Draw();
-        if (auto* elem = GetElement("PadButtonB")) elem->Draw();
+       // if (auto* elem = GetElement("PadButtonB")) elem->Draw();
+        if (auto* elem = GetElement("PadButtonRT")) elem->Draw();
 
         // スキルアイコン
         for (const auto& name : skillIconElements_) {
@@ -266,6 +280,7 @@ void UIManager::Draw() {
 void UIManager::DrawImGui() {
     if (!showImGui_) return;
 
+#ifdef _DEBUG
     ImGui::Begin("UI Manager", &showImGui_);
 
     if (ImGui::CollapsingHeader("Global Settings")) {
@@ -292,6 +307,7 @@ void UIManager::DrawImGui() {
     }
 
     ImGui::End();
+#endif
 }
 
 // 既存API互換性

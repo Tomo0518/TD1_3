@@ -80,6 +80,9 @@ void Pad::ReadHardware() {
 	rightX_ = ApplyDeadZone(state.Gamepad.sThumbRX * stickNorm, 0.15f);
 	rightY_ = ApplyDeadZone(state.Gamepad.sThumbRY * stickNorm, 0.15f);
 
+	prevLeftTrigger_ = leftTrigger_;
+	prevRightTrigger_ = rightTrigger_;
+
 	// トリガ
 	leftTrigger_ = state.Gamepad.bLeftTrigger / 255.0f;
 	rightTrigger_ = state.Gamepad.bRightTrigger / 255.0f;

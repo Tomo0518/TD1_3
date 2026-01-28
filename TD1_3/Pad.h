@@ -43,6 +43,15 @@ public:
 	float LeftTrigger()  const { return leftTrigger_; }
 	float RightTrigger() const { return rightTrigger_; }
 
+	bool TriggerLeftTrigger() const {
+		return (prevLeftTrigger_ < 0.5f) && (leftTrigger_ >= 0.5f);
+	}
+
+	bool TriggerRightTrigger() const {
+		return (prevRightTrigger_ < 0.5f) && (rightTrigger_ >= 0.5f);
+	}
+
+
 	void StartVibration(float leftPower, float rightPower, int frames);
 	void StopVibration();
 	bool IsConnected() const { return connected_; }
@@ -58,6 +67,7 @@ private:
 	float leftX_ = 0.0f, leftY_ = 0.0f;
 	float rightX_ = 0.0f, rightY_ = 0.0f;
 	float leftTrigger_ = 0.0f, rightTrigger_ = 0.0f;
+	float prevLeftTrigger_ = 0.0f, prevRightTrigger_ = 0.0f;
 
 	int   vibRemainFrames_ = 0;
 	float vibLeft_ = 0.0f, vibRight_ = 0.0f;

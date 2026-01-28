@@ -30,6 +30,10 @@ void TextureManager::LoadResources() {
 	textureResources_[static_cast<int>(TextureId::ResultClearLabel)] =
 		Novice::LoadTexture("./Resources/images/result/clear.png");
 
+	// Setting
+	textureResources_[static_cast<int>(TextureId::SettingFrame)] =
+		Novice::LoadTexture("./Resources/images/explanation/frame.png");
+
 	// ===========================================
 	// tutorial image
 	// ===========================================
@@ -386,6 +390,15 @@ void TextureManager::LoadResources() {
 			Novice::LoadTexture("./Resources/images/ui/keyGuide/pad_x.png");
 		textureResources_[static_cast<int>(TextureId::PadButtonY)] =
 			Novice::LoadTexture("./Resources/images/ui/keyGuide/pad_y.png");
+
+		textureResources_[static_cast<int>(TextureId::PadButtonRT)] =
+			Novice::LoadTexture("./Resources/images/ui/keyGuide/pad_RT.png");
+
+		textureResources_[static_cast<int>(TextureId::PadButtonRT)] =
+			Novice::LoadTexture("./Resources/images/ui/keyGuide/pad_RT.png");
+		textureResources_[static_cast<int>(TextureId::PadButtonLT)] =
+			Novice::LoadTexture("./Resources/images/ui/keyGuide/pad_LT.png");
+
 	/*	textureResources_[static_cast<int>(TextureId::PadMove)] =
 			Novice::LoadTexture("./Resources/images/ui/keyGuide/pad_move.png");
 		textureResources_[static_cast<int>(TextureId::PadDash)] =

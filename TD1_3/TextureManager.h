@@ -13,6 +13,9 @@ enum class TextureId {
 	// StageSelect
 	StageSelectBackground,
 
+	// Setting
+	SettingFrame,
+
 	// Result
 	ResultBackground,
 	ResultClearLabel,
@@ -183,6 +186,7 @@ enum class TextureId {
 	// Pad Guide
 	PadStickUp, PadStickDown, PadStickLeft, PadStickRight, PadStickAndArrow,
 	PadButtonA, PadButtonB, PadButtonX, PadButtonY,
+	PadButtonRT,PadButtonLT,
 	PadMove, PadDash, PadThrow, PadJump_A,
 
 	// UI: Scenes

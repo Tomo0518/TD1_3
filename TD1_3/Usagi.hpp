@@ -200,9 +200,9 @@ public:
 			}
 
 			// ダッシュ
-			if (Input().GetPad()->Trigger(Pad::Button::B)||
-				Input().GetPad()->RightTrigger() >= 0.2f || 
-				Input().GetPad()->LeftTrigger() >= 0.2f
+			if (/*Input().GetPad()->Trigger(Pad::Button::B)||*/
+				Input().GetPad()->TriggerRightTrigger() || 
+				Input().GetPad()->TriggerLeftTrigger()
 				) {
 				dashInput = true;
 			}

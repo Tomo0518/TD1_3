@@ -36,10 +36,9 @@ SettingScene::SettingScene(SceneManager& mgr)
 	: manager_(mgr) {
 
 	// フレーム画像
-	frame_ = DrawComponent2D(Tex().GetTexture(TextureId::ResultBackground));
-	frame_.SetGraphHandle(Novice::LoadTexture("./Resources/images/explanation/frame.png"));
-	frame_.SetAnchorPoint({ 0.0f, 0.0f });
-	frame_.SetPosition({ 50.0f, 50.0f });
+	frame_ = DrawComponent2D(TextureId::SettingFrame);
+	frame_.SetAnchorPoint({ 0.5f, 0.5f });
+	frame_.SetPosition({ kWindowCenterX, kWindowCenterY });
 
 	// 現在値（設定画面を開いた瞬間の値を反映）
 	bgmStep_ = VolumeToStep(Sound().GetBgmVolume());
