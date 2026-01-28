@@ -25,7 +25,7 @@ ResultScene::ResultScene(SceneManager& mgr)
 	InitializeButtons();
 
 	// リザルトBGMを再生
-	Sound().PlayBgm(BgmId::Result);
+	Sound().PlayBgm(BgmId::Title);
 
 }
 
@@ -39,11 +39,11 @@ void ResultScene::InitializeDrawComponents() {
 	int bgTexture = Novice::LoadTexture("./Resources/images/result/result_sky.png");
 
 	// 4x4分割、16フレームのアニメーション
-	drawCompBackground_ = new DrawComponent2D(bgTexture, 4, 4, 16, 0.13f, true);
+	drawCompBackground_ = new DrawComponent2D(bgTexture, 4, 1, 4, 5.f, true);
 
 	// 背景の設定
-	drawCompBackground_->SetPosition({ 400.0f, 400.0f });
-	drawCompBackground_->SetDrawSize(800.0f, 800.0f);
+	drawCompBackground_->SetPosition({ 640.0f,360.0f });
+	drawCompBackground_->SetDrawSize(1280.0f, 720.0f);
 	drawCompBackground_->SetAnchorPoint({ 0.5f, 0.5f });
 
 	// オプション: 背景に微妙なエフェクトを追加
@@ -56,7 +56,7 @@ void ResultScene::InitializeDrawComponents() {
 	drawCompClearLabel_ = new DrawComponent2D(clearTexture);
 
 	// クリアラベルの設定
-	drawCompClearLabel_->SetPosition({ 400.0f, 360.0f });
+	drawCompClearLabel_->SetPosition({ 640.0f, 360.0f });
 	drawCompClearLabel_->SetDrawSize(397.0f, 251.0f);
 	drawCompClearLabel_->SetAnchorPoint({ 0.5f, 0.5f });
 

@@ -15,6 +15,8 @@ enum class ObjectRegistryType {
 
 	Button1 = 300,
 	Door1 = 400,
+
+	EndButton = 999,
 };
 
 // 静的メンバの定義
@@ -208,6 +210,19 @@ void ObjectRegistry::Initialize() {
 		0x00AAAAFF,     // color（水色）
 		"EnemyEventDoor2"
 		});
+
+
+
+	///================================
+	objectTypes_.push_back({
+		999,
+		"EndButton",
+		"Gimmick",
+		0x00AAAAFF,     // color（水色）
+		"EndButton"
+		});
+
+
 	// ===================================================================
 	// アイテム（今後追加）
 	// ===================================================================

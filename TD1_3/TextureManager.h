@@ -66,6 +66,8 @@ enum class TextureId {
 	Door_Open,
 	Door_Closed,
 
+	Coin,
+
 	UsagiCheckPoint_On,
 	UsagiCheckPoint_Off,
 

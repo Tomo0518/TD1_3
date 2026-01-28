@@ -263,3 +263,53 @@ class EnemyEvent2 : public EnemyEvent {
 };
 
 
+
+
+
+// endButton
+class EndButton : public Button {
+protected:
+	float activeRange_ = 100.f;
+public:
+	EndButton() {
+		ButtonID_ = 999;
+		isSwitch_ = true;
+	}
+
+	void Initialize() override {
+		rigidbody_.Initialize();
+		info_.isActive = true;
+		info_.isVisible = true;
+		collider_.size = { 100.f, 100.f };
+		collider_.offset = { 0.f, 0.f };
+		onComp_ = new DrawComponent2D(Tex().GetTexture(TextureId::Coin), 4, 1, 4, 5.f, true);
+		offComp_ = new DrawComponent2D(Tex().GetTexture(TextureId::Coin), 4, 1, 4, 5.f, true);
+		onComp_->Initialize();
+		offComp_->Initialize();
+		drawComp_ = offComp_;
+
+		SetPressed(false);
+	}
+
+	virtual void CheckPlayerPress() override {
+		FindPlayer();
+		if (playerRef_) {
+			Usagi* player = dynamic_cast<Usagi*>(playerRef_);
+
+			if (player->GetStatus().currentHP <= 0) {
+				BackToDefault();
+				return;
+			}
+
+			Vector2 BoomerangPos = player->GetFirstBoomerang()->GetPosition();
+
+			Vector2 buttonPos = transform_.translate;
+			float distance = Vector2::Length(Vector2::Subtract(BoomerangPos, buttonPos));
+			if (distance < activeRange_ ) {				
+				SetPressed(true);
+			}
+		}
+
+	}
+};
+

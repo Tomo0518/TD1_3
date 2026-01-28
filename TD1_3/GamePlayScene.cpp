@@ -328,6 +328,14 @@ void GamePlayScene::SpawnObjectFromData(const ObjectSpawnInfo& spawn) {
 		break;
 	}
 
+	case 999:{
+		auto* door = objectManager_.Spawn<EndButton>(nullptr, "EndButton");
+		door->SetPosition(spawn.position);
+		door->Initialize();
+		Novice::ConsolePrintf("[GamePlayScene] Spawn point for debugging at (%.1f, %.1f)\n",
+			spawn.position.x, spawn.position.y);
+		break;
+	}
 	default:
 		Novice::ConsolePrintf("[GamePlayScene] Unknown object type: %d\n", spawn.objectTypeId);
 		break;
@@ -440,6 +448,24 @@ void GamePlayScene::Update(float dt, const char* keys, const char* pre) {
 	// パーティクル
 	particleManager_->Update(dt);
 
+	// ***************** START check if game finished **************************
+	auto buttons = objectManager_.GetObjectsByTag("EndButton");
+	bool allPressed = true;
+	int count = 0;
+	for (auto& buttonObj : buttons) {
+		Button* button = dynamic_cast<Button*>(buttonObj);
+		if (button) {
+			count++;
+			if (!button->IsPressed()) {
+				allPressed = false;
+				break;
+			}
+		}
+	}
+	if (count == 0) allPressed = false; // No buttons found with the target ID
+	if (allPressed) manager_.RequestTransition(SceneType::Result);
+		
+	// ************************** END check if game finished ***********************************
 
 
 	// テスト入力（player_ は参照として使える）
