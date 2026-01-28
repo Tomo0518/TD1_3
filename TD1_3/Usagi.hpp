@@ -195,7 +195,7 @@ public:
 			// スマブラ風ジャンプ（スティック上弾き）
 			// 接地中かつ強く上に倒した場合のみジャンプ
 			if (stickY > 0.7f && isGrounded_) {
-				jumpInput = true;
+				//jumpInput = true;
 			}
 			else if (Input().GetPad()->Trigger(Pad::Button::A)) {
 				jumpInput = true;
@@ -425,6 +425,7 @@ public:
 	void UpdateBoomerangPadVibration() {
 		// ブーメランの滞空振動と回収検出
 		bool currentBoomerangActive = false;
+
 		for (auto boom : boomerangs_) {
 			if (!boom->IsTemporary() && !boom->IsIdle()) {
 				currentBoomerangActive = true;

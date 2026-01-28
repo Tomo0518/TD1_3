@@ -355,6 +355,34 @@ void TextureManager::LoadResources() {
 			Novice::LoadTexture("./Resources/images/ui/keyGuide/enter.png");
 		textureResources_[static_cast<int>(TextureId::KeyEsc)] =
 			Novice::LoadTexture("./Resources/images/ui/keyGuide/esc.png");
+
+		// ======== Pad =============
+	/*	textureResources_[static_cast<int>(TextureId::PadStickUp)] =
+			Novice::LoadTexture("./Resources/images/ui/keyGuide/pad_stick_up.png");
+		textureResources_[static_cast<int>(TextureId::PadStickDown)] =
+			Novice::LoadTexture("./Resources/images/ui/keyGuide/pad_stick_down.png");
+		textureResources_[static_cast<int>(TextureId::PadStickLeft)] =
+			Novice::LoadTexture("./Resources/images/ui/keyGuide/pad_stick_left.png");
+		textureResources_[static_cast<int>(TextureId::PadStickRight)] =
+			Novice::LoadTexture("./Resources/images/ui/keyGuide/pad_stick_right.png");*/
+		textureResources_[static_cast<int>(TextureId::PadButtonA)] =
+			Novice::LoadTexture("./Resources/images/ui/keyGuide/pad_a.png");
+		textureResources_[static_cast<int>(TextureId::PadButtonB)] =
+			Novice::LoadTexture("./Resources/images/ui/keyGuide/pad_b.png");
+		textureResources_[static_cast<int>(TextureId::PadButtonX)] =
+			Novice::LoadTexture("./Resources/images/ui/keyGuide/pad_x.png");
+		textureResources_[static_cast<int>(TextureId::PadButtonY)] =
+			Novice::LoadTexture("./Resources/images/ui/keyGuide/pad_y.png");
+	/*	textureResources_[static_cast<int>(TextureId::PadMove)] =
+			Novice::LoadTexture("./Resources/images/ui/keyGuide/pad_move.png");
+		textureResources_[static_cast<int>(TextureId::PadDash)] =
+			Novice::LoadTexture("./Resources/images/ui/keyGuide/pad_dash.png");
+		textureResources_[static_cast<int>(TextureId::PadThrow)] =
+			Novice::LoadTexture("./Resources/images/ui/keyGuide/pad_throw.png");
+		textureResources_[static_cast<int>(TextureId::PadJump)] =
+			Novice::LoadTexture("./Resources/images/ui/keyGuide/pad_jump.png");*/
+
+
 		textureResources_[static_cast<int>(TextureId::PauseText)] =
 			Novice::LoadTexture("./Resources/images/ui/pause.png");
 
