@@ -84,7 +84,7 @@ void SoundManager::LoadResources() {
 	};
 	seResources_[static_cast<int>(SeId::PlayerDash)] = {
 		Novice::LoadAudio("./Resources/sounds/SE/player/dash.mp3"),
-		0.5f,
+		0.7f,
 		"Player Dash"
 	};
 	seResources_[static_cast<int>(SeId::PlayerDamage)] = {
