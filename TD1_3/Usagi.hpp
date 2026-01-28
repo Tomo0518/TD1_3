@@ -165,6 +165,7 @@ public:
 		isGrounded_ = false;
 		// ジャンプアニメーションに切り替え
 		ChangeDrawComp(DrawCompState::eJump);
+		SoundManager::GetInstance().PlaySe(SeId::PlayerJump);
 
 	}
 
@@ -299,6 +300,7 @@ public:
 				rigidbody_.maxSpeedX = dashSpeed_;
 
 				ChangeDrawComp(DrawCompState::eJump);
+				SoundManager::GetInstance().PlaySe(SeId::PlayerDash);
 			}
 		}
 
@@ -453,6 +455,8 @@ public:
 			if (Input().GetInputMode() == InputMode::Gamepad) {
 				Input().GetPad()->StartVibration(0.5f, 0.5f, 15);
 			}
+
+			SoundManager::GetInstance().PlaySe(SeId::PlayerBoomerangReturn);
 		}
 		wasBoomerangActive_ = currentBoomerangActive;
 	}
@@ -534,6 +538,8 @@ public:
 			rigidbody_.AddForce(gravity);
 		}
 
+		bool previouslyGrounded = isGrounded_;
+
 		rigidbody_.Update(deltaTime);
 
 		Vector2 moveDelta = rigidbody_.GetMoveDelta(deltaTime);
@@ -541,13 +547,14 @@ public:
 
 		// ========== Y方向の移動と衝突判定 ==========
 		transform_.translate.y += moveDelta.y;
+		if (!isGravityEnabled_) transform_.translate.y -= 10;
 		HitDirection hitDirY = PhysicsManager::ResolveMapCollisionY(this, mapData);
 		isGrounded_ = (hitDirY == HitDirection::Top);
-
+		if (!isGravityEnabled_ && !isGrounded_) transform_.translate.y += 10;
 		// ========== X方向の移動と衝突判定 ==========
 		transform_.translate.x += moveDelta.x;
 		HitDirection hitDirX = PhysicsManager::ResolveMapCollisionX(this, mapData);
-
+		
 		// ========== 回転 ==========
 		transform_.rotation += rigidbody_.GetRotationDelta(deltaTime);
 
@@ -556,6 +563,10 @@ public:
 			/*Novice::ConsolePrintf("Hit Direction X: %d, Y: %d, position: (%.f, %.f)\n",
 				static_cast<int>(hitDirX), static_cast<int>(hitDirY),
 				transform_.translate.x, transform_.translate.y);*/
+		}
+
+		if(previouslyGrounded == false && isGrounded_ == true) {
+			SoundManager::GetInstance().PlaySe(SeId::PlayerLand);
 		}
 
 		transform_.CalculateWorldMatrix();
@@ -568,6 +579,8 @@ public:
 
 				starCount_ = std::min(4, starCount_ + 1);
 				other->GetInfo().isActive = false;
+
+				SoundManager::GetInstance().PlaySe(SeId::PlayerStarCollect);
 			}
 		}
 		else if (other->GetInfo().tag == "Enemy" || other->GetInfo().tag == "Player") {
@@ -687,6 +700,8 @@ public:
 			if (damage > 0) {
 				ParticleManager::GetInstance().Emit(ParticleType::Hit, transform_.translate);
 				drawManager_.StartFlashBlink(0xFF0000CC, 4, 0.1f, BlendMode::kBlendModeNormal, 1);
+
+				SoundManager::GetInstance().PlaySe(SeId::PlayerDamage);
 			}			
 		}
 	}

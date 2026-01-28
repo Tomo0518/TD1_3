@@ -143,6 +143,11 @@ protected:
 
 	Vector2 DrawOffset_ = { -28.f, 45.f };
 
+	// sound
+	SeId foundPlayerSound = SeId::EnemyFindPlayer1;
+	SeId AttackSound = SeId::EnemyAttack1;
+	SeId DamagedSound = SeId::EnemyDamage1;
+
 	// 描画コンポーネント
 	//DrawComponent2D* StunnedComp_ = nullptr;
 	//DrawComponent2D* PatrolComp_ = nullptr;
@@ -220,12 +225,17 @@ public:
 		}
 
 		if (playerRef_) {
-			playerPos_ = playerRef_->GetPosition();
-			if (IsFacingPlayer()) {
-				distanceToPlayer_ = Vector2::Length(Vector2::Subtract(playerPos_, transform_.translate));
+			if (state_ != AttackEnemyPhase::Battle) {
 
-				if (distanceToPlayer_ <= detectionRange_) {
-					state_ = AttackEnemyPhase::Battle;
+				playerPos_ = playerRef_->GetPosition();
+				if (IsFacingPlayer()) {
+					distanceToPlayer_ = Vector2::Length(Vector2::Subtract(playerPos_, transform_.translate));
+
+					if (distanceToPlayer_ <= detectionRange_) {
+						SoundManager::GetInstance().PlaySe(foundPlayerSound);
+						state_ = AttackEnemyPhase::Battle;
+
+					}
 				}
 			}
 		}
@@ -327,6 +337,7 @@ public:
 
 			// Create and position the hitbox
 			SpawnHitBox(15.f);
+			SoundManager::GetInstance().PlaySe(AttackSound);
 		}
 	}
 
@@ -420,6 +431,7 @@ public:
 
 		attackTimer_ = 0.0f;
 		battleState_ = AttackEnemyBattleState::Idle;
+		SoundManager::GetInstance().PlaySe(DamagedSound);
 
 	}
 
@@ -539,6 +551,7 @@ public:
 				damagedShakeTimer_ = 0.0f;
 
 				ParticleManager::GetInstance().Emit(ParticleType::Hit, transform_.translate);
+				SoundManager::GetInstance().PlaySe(DamagedSound);
 			}
 
 

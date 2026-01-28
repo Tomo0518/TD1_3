@@ -158,6 +158,10 @@ public:
 
 
 		DrawOffset_ = { -64.f, 95.f };
+
+		foundPlayerSound = SeId::EnemyFindPlayer3;
+		DamagedSound = SeId::EnemyDamage3;
+		AttackSound = SeId::EnemyAttack3;
 	}
 
 	virtual void Initialize() override {
@@ -244,6 +248,7 @@ public:
 
 			// Create and position the hitbox
 			SpawnHitBox(15.f);
+			SoundManager::GetInstance().PlaySe(AttackSound);
 		}
 	}
 
@@ -260,6 +265,7 @@ public:
 			battleState_ = AttackEnemyBattleState::Attacking2;
 			windDownTimer_ = 0.0f;
 			SpawnHitBox(15.f);
+			SoundManager::GetInstance().PlaySe(AttackSound);
 
 			rigidbody_.AddForce({ direction_ * chargeForce_, 0.0f });
 		}

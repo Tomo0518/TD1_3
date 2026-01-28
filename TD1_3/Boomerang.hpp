@@ -185,6 +185,8 @@ public:
 
 			if (dist >= range) break;
 		}
+
+		SoundManager::GetInstance().PlaySe(SeId::PlayerBoomerangThrow);
 	}
 
 	float EaseOutCubic(float t) {
