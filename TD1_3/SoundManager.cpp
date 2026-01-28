@@ -117,7 +117,7 @@ void SoundManager::LoadResources() {
 	};
 	seResources_[static_cast<int>(SeId::PlayerBoomerangReturn)] = {
 		Novice::LoadAudio("./Resources/sounds/SE/player/boomerang/return.mp3"),
-		0.6f,
+		2.6f,
 		"Player Boomerang Return"
 	};
 

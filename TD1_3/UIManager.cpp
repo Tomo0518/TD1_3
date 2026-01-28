@@ -1,5 +1,7 @@
 ﻿#include "UIManager.h"
+#ifdef _DEBUG
 #include "imgui.h"
+#endif
 #include <algorithm>
 
 // =================================================================

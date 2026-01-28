@@ -1,5 +1,7 @@
 ﻿#include "UIElement.h"
+#ifdef _DEBUG
 #include "imgui.h"
+#endif
 #include <algorithm>
 
 // =================================================================
@@ -86,6 +88,7 @@ void GaugeUIElement::Draw() {
 }
 
 void GaugeUIElement::DrawImGuiControls() {
+#ifdef _DEBUG
     ImGui::PushID(name_.c_str());
 
     ImGui::Text("%s", name_.c_str());
@@ -110,6 +113,7 @@ void GaugeUIElement::DrawImGuiControls() {
 
     ImGui::PopID();
     ImGui::Separator();
+#endif
 }
 
 void GaugeUIElement::SetRatio(float ratio) {
@@ -154,6 +158,7 @@ void KeyGuideUIElement::Draw() {
 }
 
 void KeyGuideUIElement::DrawImGuiControls() {
+#ifdef _DEBUG
     ImGui::PushID(name_.c_str());
     ImGui::Text("%s", name_.c_str());
     ImGui::Checkbox("Visible", &isVisible_);
@@ -171,6 +176,7 @@ void KeyGuideUIElement::DrawImGuiControls() {
 
     ImGui::PopID();
     ImGui::Separator();
+#endif
 }
 
 void KeyGuideUIElement::TriggerSquash() {
@@ -282,6 +288,7 @@ void SkillIconUIElement::Draw() {
 }
 
 void SkillIconUIElement::DrawImGuiControls() {
+#ifdef _DEBUG
     ImGui::PushID(name_.c_str());
     ImGui::Text("%s", name_.c_str());
     ImGui::Checkbox("Visible", &isVisible_);
@@ -294,6 +301,7 @@ void SkillIconUIElement::DrawImGuiControls() {
 
     ImGui::PopID();
     ImGui::Separator();
+#endif
 }
 
 void SkillIconUIElement::SetPosition(const Vector2& pos) {

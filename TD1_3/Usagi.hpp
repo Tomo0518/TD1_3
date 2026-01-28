@@ -466,7 +466,7 @@ public:
 		// ブーメラン回収時の振動検出
 		if (wasBoomerangActive_ && !currentBoomerangActive) {
 			if (Input().GetInputMode() == InputMode::Gamepad) {
-				Input().GetPad()->StartVibration(0.5f, 0.5f, 15);
+				Input().GetPad()->StartVibration(0.7f, 0.7f, 12);
 			}
 
 			SoundManager::GetInstance().PlaySe(SeId::PlayerBoomerangReturn);
