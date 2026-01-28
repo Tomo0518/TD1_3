@@ -38,9 +38,11 @@ enum TileID{
 	DashTutorial = 51,
 	ThrowTutorial = 52,
 	BoomerangTutorial = 53,
-	Deco_Rock1_F = 54,
-	Deco_Bush1_F = 55,
-	Deco_BushDark_F = 56,
+	ChargeTutorial = 54,
+	ReturnTutorial = 55,
+	Deco_Rock1_F = 56,
+	Deco_Bush1_F = 57,
+	Deco_BushDark_F = 58,
 
 	//PlayerStart = 100,
 
@@ -208,7 +210,22 @@ public:
 			RenderMode::Component,DrawLayer::Foreground,
 			{ false, 1, 1, 1, 0.0f } // アニメーションなし
 			});
+		tiles_.push_back({
+			TileID::ChargeTutorial, "ChargeTutorial", TextureId::ChargeTutorial, TileType::Solid, false,
+			TileLayer::Decoration, {0.0f, 0.0f},
+			RenderMode::Component,DrawLayer::Foreground,
+			{ false, 1, 1, 1, 0.0f } // アニメーションなし
+			});
+		tiles_.push_back({
+			TileID::ReturnTutorial, "ReturnTutorial", TextureId::ReturnTutorial, TileType::Solid, false,
+			TileLayer::Decoration, {0.0f, 0.0f},
+			RenderMode::Component,DrawLayer::Foreground,
+			{ false, 1, 1, 1, 0.0f } // アニメーションなし
+			});
 
+		// **************************************
+		// foreground (decoration)
+		// **************************************
 		tiles_.push_back({
 			TileID::Deco_Rock1_F, "Rock1", TextureId::Deco_Rock1, TileType::Solid, false,
 			TileLayer::Decoration, {0.0f, 0.0f},

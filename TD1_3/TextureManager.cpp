@@ -41,6 +41,10 @@ void TextureManager::LoadResources() {
 		Novice::LoadTexture("./Resources/images/tutorial/throwTutorial.png");
 	textureResources_[static_cast<int>(TextureId::BoomerangTutorial)] =
 		Novice::LoadTexture("./Resources/images/tutorial/boomerangTutorial.png");
+	textureResources_[static_cast<int>(TextureId::ReturnTutorial)] =
+		Novice::LoadTexture("./Resources/images/tutorial/returnTutorial.png");
+	textureResources_[static_cast<int>(TextureId::ChargeTutorial)] =
+		Novice::LoadTexture("./Resources/images/tutorial/chargeTutorial.png");
 
 	// ==========================================
 	// enemy
