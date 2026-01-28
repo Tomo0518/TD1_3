@@ -49,10 +49,6 @@ void GamePlayScene::Initialize() {
 	backgroundManager_ = std::make_unique<BackgroundManager>();
 
 
-	// シングルトンを使う
-	auto& mapData = MapData::GetInstance();
-	mapData.Load("./Resources/data/stage1.json");
-
 	UIManager::GetInstance().SetGamePlay(true);
 
 
