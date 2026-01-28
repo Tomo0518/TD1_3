@@ -9,6 +9,12 @@ enum class BoomerangState {
 	Idle
 };
 
+
+struct TrailInfo {
+	Transform2D pos;
+	float lifeTime;
+};
+
 class Boomerang : public PhysicsObject {
 private:
 	BoomerangState state_;
@@ -43,6 +49,8 @@ private:
 	DrawComponent2D* effectComp_ = nullptr;
 	DrawComponent2D* effectCompLv2_ = nullptr;
 	DrawComponent2D* effectCompLv3_ = nullptr;
+
+	std::vector<TrailInfo> trailInfos_;
 public:
 	Boomerang(GameObject2D* owner, bool isTemp) {
 		state_ = BoomerangState::Idle;
@@ -100,6 +108,8 @@ public:
 		if (state_ != BoomerangState::Idle) return;
 		starCount_ = Star;
 		starRetrieved_ = false;
+
+		trailInfos_.clear();
 
 		maxStayTime_ = defaultMaxStayTime_ + starCount_ * delayPerStar + Charge/2.f; // Each star adds 2 seconds
 
@@ -228,6 +238,19 @@ public:
 		targetPos_ = transform_.translate;
 	}
 
+	void UpdateTrail(float deltaTime) {
+		for (auto& trail : trailInfos_) {
+			trail.lifeTime -= deltaTime;
+		}
+
+		// delete expired trails
+		trailInfos_.erase(
+			std::remove_if(trailInfos_.begin(), trailInfos_.end(),
+				[](const TrailInfo& t) { return t.lifeTime <= 0.f; }),
+			trailInfos_.end()
+		);
+	}
+
 	void Update(float deltaTime = 1.0f) override {
 		if (state_ == BoomerangState::Idle) {
 			info_.isActive = false;
@@ -237,7 +260,10 @@ public:
 
 		frameCount_ += deltaTime;
 
-		transform_.rotation -= (0.03f + float(damage_ + damageBonus_) / 20.f) * deltaTime;		
+		transform_.rotation -= (0.03f + float(damage_ + damageBonus_) / 20.f) * deltaTime;	
+
+		// Update trail
+		UpdateTrail(deltaTime);
 
 		
 		Vector2 ownerPos = owner_->GetTransform().translate;
@@ -347,6 +373,9 @@ public:
 		else if (state_ == BoomerangState::Returning) {
 			// Simple return logic: Move towards player
 			Vector2 dir = ownerPos - transform_.translate;
+
+			trailInfos_.push_back({ transform_, 5.f });
+
 			if (Vector2::Length(dir) < 40.0f) {
 				state_ = BoomerangState::Idle;
 			}
@@ -461,6 +490,14 @@ public:
 		// DrawComponent2Dを使って描画
 		if (drawComp_) {
 			drawComp_->Draw(camera);
+
+			for (auto& trail : trailInfos_) {
+				float alpha = trail.lifeTime / 10.f;
+				drawComp_->SetBaseColor({0.6f, 0.6f, 1.0f, alpha });
+				drawComp_->SetTransform(trail.pos);	
+				drawComp_->Draw(camera);
+			}
+			drawComp_->SetBaseColor({ 1.f, 1.f,1.f, 1.f });
 		}
 
 #ifdef _DEBUG
