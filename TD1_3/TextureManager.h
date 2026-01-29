@@ -29,6 +29,7 @@ enum class TextureId {
 	BoomerangTutorial,
 	ReturnTutorial,
 	ChargeTutorial,
+	StunTutorial,
 
 	// =========================================
 	// enemy

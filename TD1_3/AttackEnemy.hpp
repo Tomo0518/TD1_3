@@ -324,7 +324,7 @@ public:
 			emitedCanAttackEffect_ = true;
 
 			// エフェクトを開始
-			drawManager_.StartFlashBlink(0xFFFFFFFF, 4, 0.3f, BlendMode::kBlendModeAdd, 2);
+			drawManager_.StartFlashBlink(0xFFFFFFFF, 4, windupDuration_ / 8.f / 60.f, BlendMode::kBlendModeAdd, 2);
 		}
 
 		if (windupTimer_ >= windupDuration_ / 2) {
