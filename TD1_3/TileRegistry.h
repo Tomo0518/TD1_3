@@ -30,6 +30,8 @@ enum TileID{
 
 	Deco_Grass = 10,
 	Deco_Sign = 11,
+	Deco_Sign2 = 14,
+	Deco_Sign3 = 15,
 	Deco_Rock1 = 12,
 	Deco_Bush1 = 13,
 
@@ -160,6 +162,20 @@ public:
 		// ID:11 看板 (Decoration)
 		tiles_.push_back({
 			TileID::Deco_Sign, "Sign", TextureId::Deco_Sign, TileType::Solid, false,
+			TileLayer::Decoration, {0.0f, 0.0f},
+			RenderMode::Component,DrawLayer::Background,
+			{ false, 1, 1, 1, 0.0f } // アニメーションなし
+			});
+		// ID:11 看板 (Decoration)
+		tiles_.push_back({
+			TileID::Deco_Sign2, "Sign2", TextureId::Deco_Sign2, TileType::Solid, false,
+			TileLayer::Decoration, {0.0f, 0.0f},
+			RenderMode::Component,DrawLayer::Background,
+			{ false, 1, 1, 1, 0.0f } // アニメーションなし
+			});
+		// ID:11 看板 (Decoration)
+		tiles_.push_back({
+			TileID::Deco_Sign3, "Sign3", TextureId::Deco_Sign3, TileType::Solid, false,
 			TileLayer::Decoration, {0.0f, 0.0f},
 			RenderMode::Component,DrawLayer::Background,
 			{ false, 1, 1, 1, 0.0f } // アニメーションなし

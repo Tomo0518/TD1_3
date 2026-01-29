@@ -102,6 +102,8 @@ enum class TextureId {
 	// ========================================
 	Deco_Scrap,
 	Deco_Sign,
+	Deco_Sign2,
+	Deco_Sign3,
 	Deco_Grass,
 	Deco_GrassAnim,
 	Deco_Rock1,

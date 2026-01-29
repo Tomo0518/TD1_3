@@ -182,6 +182,10 @@ void TextureManager::LoadResources() {
 
 	textureResources_[static_cast<int>(TextureId::Deco_Sign)] =
 		Novice::LoadTexture("./Resources/images/mapChip/decoration/sign.png");
+	textureResources_[static_cast<int>(TextureId::Deco_Sign2)] =
+		Novice::LoadTexture("./Resources/images/mapChip/decoration/sign2.png");
+	textureResources_[static_cast<int>(TextureId::Deco_Sign3)] =
+		Novice::LoadTexture("./Resources/images/mapChip/decoration/sign3.png");
 
 	textureResources_[static_cast<int>(TextureId::Deco_Grass)] =
 		Novice::LoadTexture("./Resources/images/mapChip/decoration/gras.png");
