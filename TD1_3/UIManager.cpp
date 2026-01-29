@@ -51,8 +51,9 @@ void UIManager::InitializeKeyGuides() {
 	AddElement(std::make_unique<KeyGuideUIElement>("KeyD", TextureId::KeyD, Vector2(basePos.x + offset, basePos.y), keyScale));
 	AddElement(std::make_unique<KeyGuideUIElement>("KeyJ", TextureId::KeyJ, Vector2(1100.f, 665.f)));
 	AddElement(std::make_unique<KeyGuideUIElement>("KeyK", TextureId::KeyK, Vector2(1205.f, 665.f)));
+	AddElement(std::make_unique<KeyGuideUIElement>("KeySpace", TextureId::KeySpace, Vector2(kWindowCenterX, 665.f)));
 
-	keyGuideElements_ = { "KeyW", "KeyA", "KeyS", "KeyD", "KeyJ", "KeyK" };
+	keyGuideElements_ = { "KeyW", "KeyA", "KeyS", "KeyD", "KeyJ", "KeyK" ,"KeySpace"};
 
 	// ゲームパッド用
 	AddElement(std::make_unique<KeyGuideUIElement>("PadJump", TextureId::PadJump_A, Vector2(983.f, 584.f), 0.79f));
@@ -201,6 +202,11 @@ void UIManager::UpdateGamepadUI() {
 			elem->TriggerSquash();
 		}
 	}
+	if (input.GetPad()->Trigger(Pad::Button::A)) {
+		if (auto* elem = dynamic_cast<KeyGuideUIElement*>(GetElement("PadButtonA"))) {
+			elem->TriggerSquash();
+		}
+	}
 	if (input.GetPad()->Trigger(Pad::Button::B)) {
 		if (auto* elem = dynamic_cast<KeyGuideUIElement*>(GetElement("PadButtonB"))) {
 			elem->TriggerSquash();
@@ -224,14 +230,15 @@ void UIManager::UpdateKeyboardUI() {
 
 	const std::vector<std::pair<int, std::string>> keyMappings = {
 		{DIK_W, "KeyW"}, {DIK_A, "KeyA"}, {DIK_S, "KeyS"},
-		{DIK_D, "KeyD"}, {DIK_J, "KeyJ"}, {DIK_K, "KeyK"}
+		{DIK_D, "KeyD"}, {DIK_J, "KeyJ"}, {DIK_K, "KeyK"},
+		{DIK_SPACE, "KeySpace"}
 	};
 
 	for (const auto& [key, name] : keyMappings) {
 		if (input.TriggerKey(key)) {
 			if (auto* elem = dynamic_cast<KeyGuideUIElement*>(GetElement(name))) {
 				elem->TriggerSquash();
-			}
+ 			}
 		}
 	}
 }
@@ -249,6 +256,7 @@ void UIManager::Draw() {
 
 		for (const auto& name : keyGuideElements_) {
 			if (auto* elem = GetElement(name)) {
+				if (name == "KeySpace") continue;
 				elem->Draw();
 			}
 		}
@@ -283,7 +291,6 @@ void UIManager::Draw() {
 
 
 void UIManager::UpdateTitleControlUI(float dt) {
-	if (!isTitle_) return;
 
 	// F1でImGui表示切替（デバッグ用）
 	if (InputManager::GetInstance().TriggerKey(DIK_F1)) {
@@ -303,7 +310,7 @@ void UIManager::UpdateTitleControlUI(float dt) {
 	}
 
 	// パッドUI更新
-	if (auto* elem = GetElement("PadA")) {
+	if (auto* elem = GetElement("PadButtonA")) {
 		elem->SetVisible(isGamepad);
 		elem->Update(dt);
 	}
@@ -317,23 +324,31 @@ void UIManager::UpdateTitleControlUI(float dt) {
 		elem->SetVisible(!isGamepad);
 		elem->Update(dt);
 	}
+	if (auto* elem = GetElement("KeySpace")) {
+		elem->SetVisible(!isGamepad);
+		elem->Update(dt);
+	}
 }
 
 void UIManager::DrawTitleControlUI() {
+
 	if (InputManager::GetInstance().GetInputMode() == InputMode::Gamepad) {
 		// ゲームパッドUI
-		if (auto* elem = GetElement("PadA")) {
-			elem->Draw();
+		if (auto* elem = GetElement("PadButtonA")) {
+			elem->Draw(Vector2(kWindowCenterX, 660.0f));
 		}
 	}
 	else {
 		// キーボードUI
 		if (auto* elem = GetElement("KeyW")) {
-			elem->Draw();
+			elem->Draw(Vector2(kWindowCenterX * 1.2f,635.0f));
 		}
 
 		if (auto* elem = GetElement("KeyS")) {
-			elem->Draw();
+			elem->Draw(Vector2(kWindowCenterX * 1.2f, 685.0f));
+		}
+		if (auto* elem = GetElement("KeySpace")) {
+			elem->Draw(Vector2(kWindowCenterX,660.0f));
 		}
 	}
 }

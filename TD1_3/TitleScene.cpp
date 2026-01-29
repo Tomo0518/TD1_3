@@ -13,6 +13,7 @@
 
 #include "Camera2D.h"
 #include "TextureManager.h"
+#include "UIManager.h"
 
 TitleScene::TitleScene(SceneManager& manager)
 	: sceneManager_(manager){
@@ -116,6 +117,7 @@ void TitleScene::UpdateDrawComponents(float deltaTime) {
 }
 
 void TitleScene::Update(float dt, const char* keys, const char* pre) {
+	UIManager::GetInstance().UpdateTitleControlUI(dt);
 
 	Camera2D::GetInstance().DebugMove();
 	Camera2D::GetInstance().Update(dt);
@@ -140,4 +142,6 @@ void TitleScene::Draw() {
 
 	// ボタン描画
 	buttonManager_.Draw();
+
+	UIManager::GetInstance().DrawTitleControlUI();
 }
