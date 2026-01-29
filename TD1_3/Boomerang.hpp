@@ -210,8 +210,20 @@ public:
 
 	void AddDamageFromStar() {
 		if (starCount_ <= 0) return;
-		damage_ += 4;
-		starCount_ -= 1;
+		damage_ += 6;
+
+		float radius = 50.f;
+		float angleStep = 360.f / starCount_;
+
+		starCount_ -= 1;		
+
+		starComp_->SetRotation(starComp_->GetRotation() - 0.2f);
+		
+		float angle = angleStep * (starCount_);
+		Vector2 offset = { cosf(AngleToRadians(angle)) * radius, sinf(AngleToRadians(angle)) * radius };
+		Vector2 pos = transform_.translate + offset;
+		ParticleManager::GetInstance().Emit(ParticleType::Hit, pos);
+		
 	}
 
 	bool isWaitingToReturn() const {
@@ -332,11 +344,7 @@ public:
 					//closer the distance bigger damage bonus
 					//damageBonus_ = std::max(0,int((activeRange_*1.4f - distanceFormOwner) / 50.f));
 					float distanceFormOwner = Vector2::Length(transform_.translate - ownerPos);
-					if (distanceFormOwner > activeRange_ * 2.5f) {
-						damageBonus_ = 0;
-						damage_ = 0;
-						SwitchToReturn();
-					}
+					
 
 					if (int(stayTimer_) % int(delayPerStar) == 0) AddDamageFromStar();
 					if (stayTimer_ >= maxStayTime_) hitEnemies_.clear();
@@ -357,6 +365,12 @@ public:
 
 					if (int(stayTimer_) % 15 == 0) {
 						damageBonus_ = std::min(20, damageBonus_ + 1);
+					}
+
+					if (distanceFormOwner > activeRange_ * 2.5f) {
+						damageBonus_ = 0;
+						damage_ = 0;
+						SwitchToReturn();
 					}
 				//}
 				//else {

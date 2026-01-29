@@ -40,6 +40,7 @@ enum TileID{
 	BoomerangTutorial = 53,
 	ChargeTutorial = 57,
 	ReturnTutorial = 58,
+	StunTutorial = 59,
 	Deco_Rock1_F = 54,
 	Deco_Bush1_F = 55,
 	Deco_BushDark_F = 56,
@@ -218,6 +219,13 @@ public:
 			});
 		tiles_.push_back({
 			TileID::ReturnTutorial, "ReturnTutorial", TextureId::ReturnTutorial, TileType::Solid, false,
+			TileLayer::Decoration, {0.0f, 0.0f},
+			RenderMode::Component,DrawLayer::Foreground,
+			{ false, 1, 1, 1, 0.0f } // アニメーションなし
+			});
+
+		tiles_.push_back({
+			TileID::StunTutorial, "StunTutorial", TextureId::StunTutorial, TileType::Solid, false,
 			TileLayer::Decoration, {0.0f, 0.0f},
 			RenderMode::Component,DrawLayer::Foreground,
 			{ false, 1, 1, 1, 0.0f } // アニメーションなし
