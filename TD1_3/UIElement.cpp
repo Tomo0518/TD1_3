@@ -87,6 +87,23 @@ void GaugeUIElement::Draw() {
     bar_.DrawScreen();
 }
 
+void GaugeUIElement::Draw(const Vector2& drawPos) {
+    if (!isVisible_) return;
+    frame_.SetPosition(drawPos);
+    frame_.SetScale(scale_, scale_);
+    frame_.DrawScreen();
+    Vector2 barPos = {
+        drawPos.x + barOffset_.x * scale_,
+        drawPos.y + barOffset_.y * scale_
+    };
+    ghost_.SetPosition(barPos);
+    ghost_.SetScale(scale_, scale_);
+    ghost_.DrawScreen();
+    bar_.SetPosition(barPos);
+    bar_.SetScale(scale_, scale_);
+    bar_.DrawScreen();
+}
+
 void GaugeUIElement::DrawImGuiControls() {
 #ifdef _DEBUG
     ImGui::PushID(name_.c_str());
@@ -153,6 +170,13 @@ void KeyGuideUIElement::Update(float dt) {
 void KeyGuideUIElement::Draw() {
     if (!isVisible_) return;
     component_->SetPosition(position_);
+    component_->SetScale(scale_, scale_);
+    component_->DrawScreen();
+}
+
+void KeyGuideUIElement::Draw(const Vector2& drawPos) {
+    if (!isVisible_) return;
+    component_->SetPosition(drawPos);
     component_->SetScale(scale_, scale_);
     component_->DrawScreen();
 }
@@ -257,6 +281,15 @@ void SkillIcon::Draw() {
     }
 }
 
+void SkillIcon::Draw(const Vector2& drawPos) {
+    if (!icon_.first.empty()) {
+        // 現在のアイコンを描画
+        auto& iconComp = icon_.first[icon_.second];
+        iconComp->SetPosition(drawPos);
+        iconComp->DrawScreen();
+    }
+}
+
 void SkillIcon::AddIconTexture(TextureId texId, int iconId) {
     auto iconComp = std::make_unique<DrawComponent2D>(texId, 1, 1, 1, 0.0f);
     icon_.first.push_back(std::move(iconComp));
@@ -285,6 +318,11 @@ void SkillIconUIElement::Update(float dt) {
 void SkillIconUIElement::Draw() {
     if (!isVisible_) return;
     skillIcon_->Draw();
+}
+
+void SkillIconUIElement::Draw(const Vector2& drawPos) {
+    if (!isVisible_) return;
+    skillIcon_->Draw(drawPos);
 }
 
 void SkillIconUIElement::DrawImGuiControls() {

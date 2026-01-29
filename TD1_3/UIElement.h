@@ -16,6 +16,7 @@ public:
 
     virtual void Update(float dt) = 0;
     virtual void Draw() = 0;
+    virtual void Draw(const Vector2& drawPos) = 0;
     virtual void DrawImGuiControls() = 0;
 
     const std::string& GetName() const { return name_; }
@@ -43,6 +44,7 @@ public:
 
     void Update(float dt) override;
     void Draw() override;
+    void Draw(const Vector2& drawPos) override;
     void DrawImGuiControls() override;
 
     void SetRatio(float ratio);
@@ -69,6 +71,7 @@ public:
 
     void Update(float dt) override;
     void Draw() override;
+    void Draw(const Vector2& drawPos) override;
     void DrawImGuiControls() override;
 
     void TriggerSquash();
@@ -91,6 +94,7 @@ public:
 
     void Update(float dt, bool useSkill, bool canUseSkill, bool isWaiting = false);
     void Draw();
+	void Draw(const Vector2& drawPos);
 
     void AddIconTexture(TextureId texId, int iconId = 0);
     void SetPosition(const Vector2& pos);
@@ -111,6 +115,7 @@ public:
 
     void Update(float dt) override;
     void Draw() override;
+	void Draw(const Vector2& drawPos) override;
     void DrawImGuiControls() override;
     void SetPosition(const Vector2& pos) override;
 

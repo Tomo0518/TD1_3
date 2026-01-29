@@ -32,6 +32,10 @@ public:
     void Draw();
     void DrawImGui(); // ImGui調整UI
 
+
+	void UpdateTitleControlUI(float dt); // タイトル画面用UI更新
+	void DrawTitleControlUI(); // タイトル画面用UI調整
+
     // UI要素の管理
     void AddElement(std::unique_ptr<UIElement> element);
     void RemoveElement(const std::string& name);

@@ -384,7 +384,7 @@ void TextureManager::LoadResources() {
 			Novice::LoadTexture("./Resources/images/ui/keyGuide/pad_Lstick_leftAndRight.png");
 
 		textureResources_[static_cast<int>(TextureId::PadButtonA)] =
-			Novice::LoadTexture("./Resources/images/ui/keyGuide/pad_a.png");
+			Novice::LoadTexture("./Resources/images/ui/keyGuide/pad_a_new.png");
 		textureResources_[static_cast<int>(TextureId::PadJump_A)] =
 			Novice::LoadTexture("./Resources/images/ui/keyGuide/pad_a_jump.png");
 		textureResources_[static_cast<int>(TextureId::PadButtonB)] =
