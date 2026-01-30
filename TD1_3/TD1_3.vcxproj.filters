@@ -161,6 +161,9 @@
     <Filter Include="KamataEngine\Source\library\2D\Draw\DrawComponent2D\Manager">
       <UniqueIdentifier>{03a2112a-fd6e-416b-b5f2-b5b70cb599a5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="KamataEngine\Source\Game\Tips">
+      <UniqueIdentifier>{c96369a0-dbb8-4845-a1ef-8afd4ba208b6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -295,6 +298,12 @@
     </ClCompile>
     <ClCompile Include="UIElement.cpp">
       <Filter>KamataEngine\Source\library\2D\Ui</Filter>
+    </ClCompile>
+    <ClCompile Include="TipsCollection.cpp">
+      <Filter>KamataEngine\Source\Game\Tips</Filter>
+    </ClCompile>
+    <ClCompile Include="TipsManager.cpp">
+      <Filter>KamataEngine\Source\Game\Tips</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -577,6 +586,15 @@
     <ClInclude Include="FatEnemy.hpp" />
     <ClInclude Include="UIElement.h">
       <Filter>KamataEngine\Source\library\2D\Ui</Filter>
+    </ClInclude>
+    <ClInclude Include="TipsData.h">
+      <Filter>KamataEngine\Source\Game\Tips</Filter>
+    </ClInclude>
+    <ClInclude Include="TipsCollection.h">
+      <Filter>KamataEngine\Source\Game\Tips</Filter>
+    </ClInclude>
+    <ClInclude Include="TipsManager.h">
+      <Filter>KamataEngine\Source\Game\Tips</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
