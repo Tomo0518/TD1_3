@@ -306,7 +306,7 @@
       <Filter>KamataEngine\Source\Game\Tips</Filter>
     </ClCompile>
     <ClCompile Include="TipsUIDrawer.cpp">
-      <Filter>KamataEngine</Filter>
+      <Filter>KamataEngine\Source\Game\Tips</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -602,6 +602,8 @@
     <ClInclude Include="TipsTrigger.hpp">
       <Filter>KamataEngine\Source\Game\Object</Filter>
     </ClInclude>
-    <ClInclude Include="TipsUIDrawer.h" />
+    <ClInclude Include="TipsUIDrawer.h">
+      <Filter>KamataEngine\Source\Game\Tips</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
