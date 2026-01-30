@@ -305,6 +305,9 @@
     <ClCompile Include="TipsManager.cpp">
       <Filter>KamataEngine\Source\Game\Tips</Filter>
     </ClCompile>
+    <ClCompile Include="TipsUIDrawer.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\audio\Audio.h">
@@ -596,5 +599,9 @@
     <ClInclude Include="TipsManager.h">
       <Filter>KamataEngine\Source\Game\Tips</Filter>
     </ClInclude>
+    <ClInclude Include="TipsTrigger.hpp">
+      <Filter>KamataEngine\Source\Game\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="TipsUIDrawer.h" />
   </ItemGroup>
 </Project>

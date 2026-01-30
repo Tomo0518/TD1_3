@@ -28,6 +28,14 @@ public:
 		return instance;
 	}
 
+	static Camera2D* GetInstancePtr() {
+		return &GetInstance();
+	}
+
+	void Initialize(const Vector2& position,
+		const Vector2& size,
+		bool invertY = false);
+
 	// 更新（deltaTime対応でスムーズに）
 	void Update(float deltaTime);
 

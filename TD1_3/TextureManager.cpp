@@ -429,6 +429,22 @@ void TextureManager::LoadResources() {
 		textureResources_[static_cast<int>(TextureId::Icon_Dash)] =
 			Novice::LoadTexture("./Resources/images/ui/icon/dash.png");
 
+		// Tips UI
+		textureResources_[static_cast<int>(TextureId::TipsBook)] =
+			Novice::LoadTexture("./Resources/images/ui/icon/tips_book.png");
+		textureResources_[static_cast<int>(TextureId::TipsBookGlow)] =
+			Novice::LoadTexture("./Resources/images/ui/icon/tips_book_glow.png");
+		textureResources_[static_cast<int>(TextureId::TipsNotificationBadge)] =
+			Novice::LoadTexture("./Resources/images/ui/icon/tips_notification_badge.png");
+
+		// Tips icons
+		textureResources_[static_cast<int>(TextureId::TipsIcon01Controls)] =
+			Novice::LoadTexture("./Resources/images/ui/icon/tip_01_controls.png");
+		textureResources_[static_cast<int>(TextureId::TipsIcon02BoomerangJump)] =
+			Novice::LoadTexture("./Resources/images/ui/icon/tip_02_boomerang_jump.png");
+		textureResources_[static_cast<int>(TextureId::TipsIcon03BoomerangHeight)] =
+			Novice::LoadTexture("./Resources/images/ui/icon/tip_03_boomerang_height.png");
+
 
 		/*textureResources_[static_cast<int>(TextureId::PauseBg)] =
 			Novice::LoadTexture("./Resources/images/ui/pause_bg.png");

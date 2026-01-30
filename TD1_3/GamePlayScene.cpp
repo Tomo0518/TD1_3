@@ -88,7 +88,8 @@ void GamePlayScene::Initialize() {
 
 void GamePlayScene::InitializeCamera() {
 	const bool isWorldYUp = true;
-	camera_ = std::make_unique<Camera2D>(Vector2{ 640.0f, 360.0f }, Vector2{ 1280.0f, 720.0f }, isWorldYUp);
+	camera_ = Camera2D::GetInstancePtr();
+	camera_->Initialize({ 640.0f, 360.0f }, { 1280.0f, 720.0f }, isWorldYUp);
 	camera_->SetFollowSpeed(0.1f);
 	camera_->SetDeadZone(150.0f, 100.0f);
 	camera_->SetBounds(0.0f, 720.0f, 1280.0f, 0.0f);
@@ -577,7 +578,7 @@ void GamePlayScene::Draw() {
 
 	if (debugWindow_) {
 		debugWindow_->DrawDebugGui();
-		debugWindow_->DrawCameraDebugWindow(camera_.get());
+		debugWindow_->DrawCameraDebugWindow(camera_);
 		debugWindow_->DrawPlayerDebugWindow(player_);
 		debugWindow_->DrawParticleDebugWindow(particleManager_, player_);
 	}

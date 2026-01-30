@@ -198,6 +198,16 @@ enum class TextureId {
 	PauseText, PauseBg,
 	ResultClear, ResultOver,
 
+		// Tips UI
+		TipsBook,
+		TipsBookGlow,
+		TipsNotificationBadge,
+
+		// Tips icons
+		TipsIcon01Controls,
+		TipsIcon02BoomerangJump,
+		TipsIcon03BoomerangHeight,
+
 	None,		// テクスチャなし用
 	Count,	// 最後
 };

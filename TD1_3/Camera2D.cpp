@@ -17,6 +17,17 @@ Camera2D::Camera2D(const Vector2& position, const Vector2& size, bool invertY)
 	UpdateMatrices();
 }
 
+void Camera2D::Initialize(const Vector2& position,
+	const Vector2& size,
+	bool invertY) {
+	position_ = position;
+	size_ = size;
+	zoom_ = 1.0f;
+	rotation_ = 0.0f;
+	isWorldYUp_ = invertY;
+	UpdateMatrices();
+}
+
 // ========== 更新 ==========
 void Camera2D::Update(float deltaTime) {
 	// デバッグモード中は通常の更新処理をスキップ
@@ -123,7 +134,7 @@ void Camera2D::UpdateZoomEffect(float deltaTime) {
 void Camera2D::Shake(float intensity, float duration) {
 	shakeEffect_.isActive = true;
 	shakeEffect_.intensity = intensity;
-	shakeEffect_.duration = duration;
+	shakeEffect_.duration = duration * 60.0f;
 	shakeEffect_.elapsed = 0.0f;
 	shakeEffect_.continuous = false;
 	shakeEffect_.offset = { 0.0f, 0.0f };

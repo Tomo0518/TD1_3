@@ -35,7 +35,7 @@ private:
     WorldOrigin* worldOrigin_ = nullptr; // ワールド原点
 
     // --- カメラ ---
-    std::unique_ptr<Camera2D> camera_;
+    Camera2D* camera_;
 
     // ================================
     //  マップシステム
