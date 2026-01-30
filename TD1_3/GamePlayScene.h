@@ -7,6 +7,7 @@
 #include "MapChip.h"
 #include "MapManager.h"
 #include "BackgroundManager.h"
+#include "TipsUIDrawer.h"
 #include <memory>
 #include <vector>
 #include "WorldOrigin.h"
@@ -54,6 +55,10 @@ private:
     // --- パーティクル ---
     ParticleManager* particleManager_ = nullptr;
 
+
+    // --- Tips System ---
+    std::unique_ptr<TipsUIDrawer> tipsUIDrawer_;  // 追加
+
     // --- デバッグ ---
     std::unique_ptr<DebugWindow> debugWindow_;
     bool isDebugCameraMove_ = false;
@@ -65,6 +70,8 @@ private:
     void Initialize();
     void InitializeCamera();
     void InitializeObjects();
+
+    void InitializeTipsSystem();
     void InitializeBackground();
     void SpawnObjectFromData(const ObjectSpawnInfo& spawn);
 

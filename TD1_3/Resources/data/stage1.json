@@ -2043,6 +2043,7 @@
   {"type":409,"position":{"x":23387.71875,"y":6402.3408203125},"tag":"EnemyEventDoor4"},
   {"type":309,"position":{"x":24274.71875,"y":2547.340576171875},"tag":"EnemyEvent4"},
   {"type":409,"position":{"x":25013.048828125,"y":2435.546875},"tag":"EnemyEventDoor4"},
-  {"type":999,"position":{"x":26321.251953125,"y":2455.334228515625},"tag":"EndButton"}
+  {"type":999,"position":{"x":26321.251953125,"y":2455.334228515625},"tag":"EndButton"},
+  {"type":500,"position":{"x":3774.66943359375,"y":4814.0},"tag":"TipsTrigger"}
  ]
 }

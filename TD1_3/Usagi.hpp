@@ -576,27 +576,49 @@ public:
 		Vector2 moveDelta = rigidbody_.GetMoveDelta(deltaTime);
 		auto& mapData = MapData::GetInstance();
 
-		// ========== Y方向の移動と衝突判定 ==========
-		transform_.translate.y += moveDelta.y;
-		if (!isGravityEnabled_ && isCharging_) transform_.translate.y -= 1;
-		HitDirection hitDirY = PhysicsManager::ResolveMapCollisionY(this, mapData);
-		isGrounded_ = (hitDirY == HitDirection::Top);
-		if (!isGravityEnabled_ && !isGrounded_ && isCharging_) transform_.translate.y += 1;
-		// ========== X方向の移動と衝突判定 ==========
-		transform_.translate.x += moveDelta.x;
-		HitDirection hitDirX = PhysicsManager::ResolveMapCollisionX(this, mapData);
-		
+		// 移動量が大きすぎる場合は分割して処理（貫通防止）
+		const float maxMovePerStep = 10.0f; // タイルサイズの半分以下が推奨
+		int steps = std::max(1, (int)(std::max(abs(moveDelta.x), abs(moveDelta.y)) / maxMovePerStep) + 1);
+		Vector2 stepDelta = { moveDelta.x / steps, moveDelta.y / steps };
+
+		for (int step = 0; step < steps; ++step) {
+			// ========== Y方向の移動と衝突判定 ==========
+			transform_.translate.y += stepDelta.y;
+			if (!isGravityEnabled_ && isCharging_) transform_.translate.y -= 1.0f / steps;
+
+			HitDirection hitDirY = PhysicsManager::ResolveMapCollisionY(this, mapData);
+			isGrounded_ = (hitDirY == HitDirection::Top);
+
+			if (!isGravityEnabled_ && !isGrounded_ && isCharging_) transform_.translate.y += 1.0f / steps;
+
+			// Y軸で衝突した場合、速度をリセット
+			if (hitDirY != HitDirection::None) {
+				rigidbody_.velocity.y = 0.0f;
+			}
+
+			// ========== X方向の移動と衝突判定 ==========
+			transform_.translate.x += stepDelta.x;
+			HitDirection hitDirX = PhysicsManager::ResolveMapCollisionX(this, mapData);
+
+			// X軸で衝突した場合、速度をリセット
+			if (hitDirX != HitDirection::None) {
+				rigidbody_.velocity.x = 0.0f;
+			}
+
+			// 両方の軸で衝突した場合（角に当たった場合）、追加の安全チェック
+			if (hitDirX != HitDirection::None && hitDirY != HitDirection::None) {
+				// 再度Y軸をチェック（X軸の補正で新たにY軸の衝突が発生する可能性）
+				HitDirection hitDirY2 = PhysicsManager::ResolveMapCollisionY(this, mapData);
+				if (hitDirY2 == HitDirection::Top) {
+					isGrounded_ = true;
+				}
+			}
+		}
+
 		// ========== 回転 ==========
 		transform_.rotation += rigidbody_.GetRotationDelta(deltaTime);
 
-		// デバッグ出力
-		if (hitDirX != HitDirection::None || hitDirY != HitDirection::None) {
-			/*Novice::ConsolePrintf("Hit Direction X: %d, Y: %d, position: (%.f, %.f)\n",
-				static_cast<int>(hitDirX), static_cast<int>(hitDirY),
-				transform_.translate.x, transform_.translate.y);*/
-		}
-
-		if(previouslyGrounded == false && isGrounded_ == true) {
+		if (previouslyGrounded == false && isGrounded_ == true) {
 			SoundManager::GetInstance().PlaySe(SeId::PlayerLand);
 		}
 

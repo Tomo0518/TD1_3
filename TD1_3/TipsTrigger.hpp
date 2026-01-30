@@ -18,16 +18,17 @@ public:
 
 #ifdef _DEBUG
         // デバッグ用の描画（開発中のみ表示）
-        auto drawComp = std::make_unique<DrawComponent2D>(this, 1);
-        // 仮のテクスチャパス（後でデバッグ用画像に差し替え可能）
-        drawComp->SetTexture("./Resources/images/debug/tips_trigger_debug.png");
-        drawComp->SetSize(size_);
-        drawComp->SetAlpha(0.5f);  // 半透明
-        AddDrawComponent(std::move(drawComp));
+        //auto drawComp = std::make_unique<DrawComponent2D>(this, 1);
+        //// 仮のテクスチャパス（後でデバッグ用画像に差し替え可能）
+        //drawComp->SetTexture("./Resources/images/debug/tips_trigger_debug.png");
+        //drawComp->SetSize(size_);
+        //drawComp->SetAlpha(0.5f);  // 半透明
+        //AddDrawComponent(std::move(drawComp));
 #endif
     }
 
     void Update(float deltaTime) override {
+		deltaTime; // 未使用
         if (isTriggered_) return;
 
         // プレイヤーとの衝突判定

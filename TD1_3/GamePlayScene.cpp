@@ -19,6 +19,11 @@
 
 #include "SceneUtilityIncludes.h"
 
+
+// Tips System
+#include "TipsManager.h"
+#include "TipsTrigger.hpp"
+
 GamePlayScene::GamePlayScene(SceneManager& mgr)
 	: manager_(mgr) {
 
@@ -55,6 +60,10 @@ void GamePlayScene::Initialize() {
 	// 1. タイル、オブジェクト定義の初期化
 	TileRegistry::Initialize();
 	ObjectRegistry::Initialize();
+
+
+	// Tips System 初期化
+	InitializeTipsSystem();
 
 #ifdef _DEBUG
 	// --- マップシステムの初期化 ---
@@ -357,6 +366,33 @@ void GamePlayScene::SpawnObjectFromData(const ObjectSpawnInfo& spawn) {
 		break;
 	}
 
+	case 500: { // TipsTrigger
+		// customDataからtipsIdを取得
+		int tipsId = 1; // デフォルト値
+		if (spawn.customData.contains("tipsId")) {
+			tipsId = spawn.customData["tipsId"].get<int>();
+		}
+
+		// Spawn<T>(owner, tag, コンストラクタの引数...)
+		auto* trigger = objectManager_.Spawn<TipsTrigger>(
+			nullptr,              // owner
+			"TipsTrigger",        // tag
+			spawn.objectTypeId,   // id (TipsTriggerのコンストラクタ第1引数)
+			"TipsTrigger",        // name (TipsTriggerのコンストラクタ第2引数)
+			spawn.position,       // position (TipsTriggerのコンストラクタ第3引数)
+			tipsId                // tipsId (TipsTriggerのコンストラクタ第4引数)
+		);
+
+		// プレイヤーへの参照を設定
+		if (player_) {
+			trigger->SetPlayer(player_);
+		}
+
+		Novice::ConsolePrintf("[GamePlayScene] Spawned TipsTrigger (ID:%d) at (%.1f, %.1f)\n",
+			tipsId, spawn.position.x, spawn.position.y);
+		break;
+	}
+
 	case 999:{
 		auto* door = objectManager_.Spawn<EndButton>(nullptr, "EndButton");
 		door->SetPosition(spawn.position);
@@ -369,6 +405,15 @@ void GamePlayScene::SpawnObjectFromData(const ObjectSpawnInfo& spawn) {
 		Novice::ConsolePrintf("[GamePlayScene] Unknown object type: %d\n", spawn.objectTypeId);
 		break;
 	}
+}
+
+void GamePlayScene::InitializeTipsSystem() {
+	// TipsManagerを初期化（データ層、起動時に毎回リセット）
+	TipsManager::GetInstance().Initialize();
+
+	// TipsUIDrawerを初期化（表示層）
+	tipsUIDrawer_ = std::make_unique<TipsUIDrawer>();
+	tipsUIDrawer_->Initialize();
 }
 
 void GamePlayScene::InitializeBackground() {
@@ -477,6 +522,12 @@ void GamePlayScene::Update(float dt, const char* keys, const char* pre) {
 	// パーティクル
 	particleManager_->Update(dt);
 
+	// Tips UI更新  
+	if (tipsUIDrawer_) {  
+		tipsUIDrawer_->Update(dt);
+	} 
+
+
 	// ***************** START check if game finished **************************
 	auto buttons = objectManager_.GetObjectsByTag("EndButton");
 	bool allPressed = true;
@@ -570,6 +621,11 @@ void GamePlayScene::Draw() {
 
 
 	UIManager::GetInstance().Draw();
+
+	// Tips UI描画（最前面）
+	if (tipsUIDrawer_) { 
+		tipsUIDrawer_->Draw(); 
+	} 
 
 #ifdef _DEBUG
 
