@@ -38,19 +38,30 @@ void TextureManager::LoadResources() {
 	// tutorial image
 	// ===========================================
 	textureResources_[static_cast<int>(TextureId::JumpTutorial)] =
-		Novice::LoadTexture("./Resources/images/tutorial/jumpTutorial.png");
+		Novice::LoadTexture("./Resources/images/tutorial/jumpTutorial_ver2.png");
 	textureResources_[static_cast<int>(TextureId::DashTutorial)] =
-		Novice::LoadTexture("./Resources/images/tutorial/dashTutorial.png");
+		Novice::LoadTexture("./Resources/images/tutorial/dashTutorial_ver2.png");
 	textureResources_[static_cast<int>(TextureId::ThrowTutorial)] =
-		Novice::LoadTexture("./Resources/images/tutorial/throwTutorial.png");
+		Novice::LoadTexture("./Resources/images/tutorial/throwTutorial_ver2.png");
 	textureResources_[static_cast<int>(TextureId::BoomerangTutorial)] =
 		Novice::LoadTexture("./Resources/images/tutorial/boomerangTutorial.png");
 	textureResources_[static_cast<int>(TextureId::ReturnTutorial)] =
-		Novice::LoadTexture("./Resources/images/tutorial/returnTutorial.png");
+		Novice::LoadTexture("./Resources/images/tutorial/returnTutorial_ver2.png");
 	textureResources_[static_cast<int>(TextureId::ChargeTutorial)] =
-		Novice::LoadTexture("./Resources/images/tutorial/chargeTutorial.png");
+		Novice::LoadTexture("./Resources/images/tutorial/chargeTutorial_ver2.png");
 	textureResources_[static_cast<int>(TextureId::StunTutorial)] =
 		Novice::LoadTexture("./Resources/images/tutorial/stunTutorial.png");
+
+	textureResources_[static_cast<int>(TextureId::BoomerangJumpTutorial)] =
+		Novice::LoadTexture("./Resources/images/tutorial/boomerangJump.png");
+
+	textureResources_[static_cast<int>(TextureId::BoomerangThrowToJump)] =
+		Novice::LoadTexture("./Resources/images/tutorial/boomerangThrowToJump.png");
+
+	textureResources_[static_cast<int>(TextureId::BoomerangFocusPlayer)] =
+		Novice::LoadTexture("./Resources/images/tutorial/boomerangFocusPlayer.png");
+
+
 
 	// ==========================================
 	// enemy

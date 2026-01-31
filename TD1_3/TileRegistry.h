@@ -47,6 +47,10 @@ enum TileID{
 	Deco_Bush1_F = 55,
 	Deco_BushDark_F = 56,
 
+	BoomerangJumpTutorial = 60,
+	BoomerangThrowToJump = 61,
+	BoomerangFocusPlayer = 62,
+
 	//PlayerStart = 100,
 
 	Deco_RockBlock = 200,
@@ -242,6 +246,27 @@ public:
 
 		tiles_.push_back({
 			TileID::StunTutorial, "StunTutorial", TextureId::StunTutorial, TileType::Solid, false,
+			TileLayer::Decoration, {0.0f, 0.0f},
+			RenderMode::Component,DrawLayer::Foreground,
+			{ false, 1, 1, 1, 0.0f } // アニメーションなし
+			});
+
+		tiles_.push_back({
+			TileID::BoomerangJumpTutorial, "BoomerangJumpTutorial", TextureId::BoomerangJumpTutorial, TileType::Solid, false,
+			TileLayer::Decoration, {0.0f, 0.0f},
+			RenderMode::Component,DrawLayer::Foreground,
+			{ false, 1, 1, 1, 0.0f } // アニメーションなし
+			});
+
+		tiles_.push_back({
+			TileID::BoomerangThrowToJump, "BoomerangThrowToJump", TextureId::BoomerangThrowToJump, TileType::Solid, false,
+			TileLayer::Decoration, {0.0f, 0.0f},
+			RenderMode::Component,DrawLayer::Foreground,
+			{ false, 1, 1, 1, 0.0f } // アニメーションなし
+			});
+
+		tiles_.push_back({
+			TileID::BoomerangFocusPlayer, "BoomerangFocusPlayer", TextureId::BoomerangFocusPlayer, TileType::Solid, false,
 			TileLayer::Decoration, {0.0f, 0.0f},
 			RenderMode::Component,DrawLayer::Foreground,
 			{ false, 1, 1, 1, 0.0f } // アニメーションなし
