@@ -25,10 +25,10 @@ public:
 		info_.isVisible = true;
 		isGravityEnabled_ = false;
 
-		rigidbody_.deceleration = { 0.75f, 0.75f }; // No deceleration
+		rigidbody_.deceleration = { 0.85f, 0.85f }; // No deceleration
 
 		float angle = (rand() % 100 / 100.0f) * 3.14159f / 2.0f + 3.14159f / 4.0f; // 45 to 135 degrees
-		rigidbody_.velocity = { cosf(angle) * 20.0f, sinf(angle) * 20.0f };
+		rigidbody_.velocity = { cosf(angle) *(10.f+ (rand() % 100 / 100.0f) *20.0f), sinf(angle) * (10.f + (rand() % 100 / 100.0f) * 20.0f) };
 	}
 
 	void Update(float deltaTime = 1.0f) override {

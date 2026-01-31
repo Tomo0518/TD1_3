@@ -365,7 +365,22 @@ void GamePlayScene::SpawnObjectFromData(const ObjectSpawnInfo& spawn) {
 			spawn.position.x, spawn.position.y);
 		break;
 	}
-
+	case 310: { // Button7
+		auto* button = objectManager_.Spawn<Button7>(nullptr, "Button");
+		button->SetPosition(spawn.position);
+		button->Initialize();
+		Novice::ConsolePrintf("[GamePlayScene] Spawned Button at (%.1f, %.1f)\n",
+			spawn.position.x, spawn.position.y);
+		break;
+	}
+	case 410: {
+		auto* door = objectManager_.Spawn<Door7>(nullptr, "Door");
+		door->SetPosition(spawn.position);
+		door->Initialize();
+		Novice::ConsolePrintf("[GamePlayScene] Spawned Door at (%.1f, %.1f)\n",
+			spawn.position.x, spawn.position.y);
+		break;
+	}
 	case 500: { // TipsTrigger
 		// customDataからtipsIdを取得
 		int tipsId = 1; // デフォルト値

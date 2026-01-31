@@ -149,6 +149,14 @@ public:
 	}
 };
 
+class Button7 : public Button {
+public:
+	Button7() {
+		ButtonID_ = 7;
+		isGravityEnabled_ = false;
+	}
+};
+
 class EnemyEvent : public Button {
 protected:
 	std::vector<GameObject2D*> spawnedEnemies_;

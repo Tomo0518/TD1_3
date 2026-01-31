@@ -125,6 +125,13 @@ public:
 	}
 };
 
+class Door7 : public Door {
+public:
+	Door7() {
+		targetButtonID_ = 7;
+	}
+};
+
 class EventDoor : public Door {
 public:
 	EventDoor() {

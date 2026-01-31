@@ -210,7 +210,7 @@ void ObjectRegistry::Initialize() {
 		0x00AAAAFF,     // color（水色）
 		"EnemyEventDoor2"
 		});
-
+	
 
 
 	///================================
@@ -250,6 +250,21 @@ void ObjectRegistry::Initialize() {
 		"Gimmick",
 		0x00AAAAFF,     // color（水色）
 		"EnemyEventDoor4"
+		});
+
+	objectTypes_.push_back({
+		310,
+		"Button_7",
+		"Gimmick",
+		0xAAAA00FF,     // color（黄土色）
+		"Button_7"
+		});
+	objectTypes_.push_back({
+		410,
+		"Door_7",
+		"Gimmick",
+		0x00AAAAFF,     // color（水色）
+		"Door_7"
 		});
 
 	// ====================================================================
