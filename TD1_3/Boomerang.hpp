@@ -680,6 +680,9 @@ public:
 		hitEnemies_.clear();
 	}
 
+	int GetTotalDamage() const {
+		return damage_ + damageBonus_;
+	}
 
 
 };
