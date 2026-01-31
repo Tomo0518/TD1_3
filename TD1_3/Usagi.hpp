@@ -291,6 +291,7 @@ public:
 
 		if (isGrounded_) {
 			dashAvailable_ = true;
+
 		}
 
 		// ダッシュ処理
@@ -504,6 +505,9 @@ public:
 			}
 
 			SoundManager::GetInstance().PlaySe(SeId::PlayerBoomerangReturn);
+			/*dashCooldownTimer_ = 0.f;
+			dashAvailable_ = true;*/
+			//SoundManager::GetInstance().PlaySe(SeId::StarSpawn);
 		}
 		wasBoomerangActive_ = currentBoomerangActive;
 	}
@@ -654,6 +658,10 @@ public:
 
 		if (previouslyGrounded == false && isGrounded_ == true) {
 			SoundManager::GetInstance().PlaySe(SeId::PlayerLand);
+			/*if(dashAvailable_ == false) {
+				SoundManager::GetInstance().PlaySe(SeId::StarSpawn);
+			}*/
+			
 		}
 
 		transform_.CalculateWorldMatrix();

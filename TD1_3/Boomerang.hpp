@@ -403,7 +403,7 @@ public:
 						Move(deltaTime);
 						collider_.canCollide = false;
 					}
-					
+					collider_.canCollide = true;
 					//closer the distance bigger damage bonus
 					//damageBonus_ = std::max(0,int((activeRange_*1.4f - distanceFormOwner) / 50.f));
 					float distanceFormOwner = Vector2::Length(transform_.translate - ownerPos);
@@ -643,6 +643,7 @@ public:
 			hitEnemies_.push_back(enemyId);
 			other->OnDamaged(damage_ + damageBonus_);
 			Novice::ConsolePrintf("Boomerang hit Enemy ID %d for %d damage(%d + %d).\n", enemyId, damage_ + damageBonus_, damage_, damageBonus_);
+			
 			//other->Destroy();			
 
 			if (IsThrown()) {
@@ -651,13 +652,15 @@ public:
 				moveTimer_ = 0;
 				stayTimer_ = 0;
 				targetPos_ = transform_.translate;*/ 
+				if (isGoing) {
+					Vector2 dir;
 
-				Vector2 dir;
-
-				dir.x = transform_.translate.x > other->GetTransform().translate.x ? 1.f : -1.f;
-				dir.y = 0.5f;
-				dir = Vector2::Normalize(dir);
-				Blocked(dir);
+					dir.x = transform_.translate.x > other->GetTransform().translate.x ? 1.f : -1.f;
+					dir.y = 0.5f;
+					dir = Vector2::Normalize(dir);
+					Blocked(dir);
+				}
+				
 			}
 
 
@@ -671,6 +674,7 @@ public:
 		ParticleManager::GetInstance().Emit(ParticleType::Hit, transform_.translate);
 		bonusShakeTimer = bonusShakeDuration;
 		SoundManager::GetInstance().PlaySe(SeId::StarSpawn);
+		hitEnemies_.clear();
 	}
 
 
