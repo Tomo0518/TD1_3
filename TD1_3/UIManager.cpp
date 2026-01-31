@@ -44,6 +44,8 @@ void UIManager::InitializeKeyGuides() {
 	float keyScale = 0.72f;
 	float offset = 50.0f;
 
+	Vector2 titleOffset{0.0f,-45.f};
+
 	// キーボード用
 	AddElement(std::make_unique<KeyGuideUIElement>("KeyW", TextureId::KeyW, Vector2(basePos.x, basePos.y - offset), keyScale));
 	AddElement(std::make_unique<KeyGuideUIElement>("KeyA", TextureId::KeyA, Vector2(basePos.x - offset, basePos.y), keyScale));
@@ -340,20 +342,21 @@ void UIManager::DrawTitleControlUI() {
 	if (InputManager::GetInstance().GetInputMode() == InputMode::Gamepad) {
 		// ゲームパッドUI
 		if (auto* elem = GetElement("PadButtonA")) {
-			elem->Draw(Vector2(kWindowCenterX, 660.0f));
+			elem->Draw(Vector2(kWindowCenterX, 650.0f));
 		}
 	}
 	else {
 		// キーボードUI
+		Vector2 drawOffset{0.f,-40.0f};
 		if (auto* elem = GetElement("KeyW")) {
-			elem->Draw(Vector2(kWindowCenterX * 1.2f,635.0f));
+			elem->Draw(Vector2(kWindowCenterX * 1.2f,635.0f + drawOffset.y));
 		}
 
 		if (auto* elem = GetElement("KeyS")) {
-			elem->Draw(Vector2(kWindowCenterX * 1.2f, 685.0f));
+			elem->Draw(Vector2(kWindowCenterX * 1.2f, 685.0f + drawOffset.y));
 		}
 		if (auto* elem = GetElement("KeySpace")) {
-			elem->Draw(Vector2(kWindowCenterX,660.0f));
+			elem->Draw(Vector2(kWindowCenterX,660.0f + drawOffset.y));
 		}
 	}
 }

@@ -95,6 +95,7 @@ public:
     void Update(float dt, bool useSkill, bool canUseSkill, bool isWaiting = false);
     void Draw();
 	void Draw(const Vector2& drawPos);
+	void Draw(const Vector2& drawPos,Vector2& drawScale);
 
     void AddIconTexture(TextureId texId, int iconId = 0);
     void SetPosition(const Vector2& pos);

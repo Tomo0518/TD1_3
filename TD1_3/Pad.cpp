@@ -3,6 +3,7 @@
 #include <Xinput.h>
 #include <algorithm>
 #include <cmath>
+#include "InputManager.h"
 
 #pragma comment(lib, "Xinput.lib")
 
@@ -131,8 +132,9 @@ int Pad::HoldFrames(Button b)const {
 }
 
 void Pad::StartVibration(float leftPower, float rightPower, int frames) {
-	vibLeft_ = leftPower;
-	vibRight_ = rightPower;
+	if (!InputManager::GetInstance().IsVibrationEnabled()) return;
+	vibLeft_ = leftPower * InputManager::GetInstance().GetVibrationStrength();
+	vibRight_ = rightPower * InputManager::GetInstance().GetVibrationStrength();
 	vibRemainFrames_ = frames;
 }
 

@@ -20,6 +20,21 @@ void TextureManager::LoadResources() {
 	textureResources_[static_cast<int>(TextureId::TitleLogo)] =
 		Novice::LoadTexture("./Resources/images/title/logo_ver1.png");
 
+	// Title Logo Parts
+	textureResources_[static_cast<int>(TextureId::Logo_Lu)] =
+		Novice::LoadTexture("./Resources/images/title/Lu.png");
+	textureResources_[static_cast<int>(TextureId::Logo_U)] =
+		Novice::LoadTexture("./Resources/images/title/U.png");
+	textureResources_[static_cast<int>(TextureId::Logo_Na)] =
+		Novice::LoadTexture("./Resources/images/title/Na.png");
+	textureResources_[static_cast<int>(TextureId::Logo_Ra)] =
+		Novice::LoadTexture("./Resources/images/title/Ra.png");
+	textureResources_[static_cast<int>(TextureId::Logo_Nn)] =
+		Novice::LoadTexture("./Resources/images/title/Nn.png");
+	textureResources_[static_cast<int>(TextureId::Logo_All)] =
+		Novice::LoadTexture("./Resources/images/title/Logo_All.png");
+
+
 	// StageSelect
 	textureResources_[static_cast<int>(TextureId::StageSelectBackground)] =
 		Novice::LoadTexture("./Resources/images/stageSelect/background_ver1.png");
@@ -56,7 +71,7 @@ void TextureManager::LoadResources() {
 		Novice::LoadTexture("./Resources/images/tutorial/boomerangJump.png");
 
 	textureResources_[static_cast<int>(TextureId::BoomerangThrowToJump)] =
-		Novice::LoadTexture("./Resources/images/tutorial/boomerangThrowToJump.png");
+		Novice::LoadTexture("./Resources/images/tutorial/nagetesugu.png");
 
 	textureResources_[static_cast<int>(TextureId::BoomerangFocusPlayer)] =
 		Novice::LoadTexture("./Resources/images/tutorial/boomerangFocusPlayer.png");

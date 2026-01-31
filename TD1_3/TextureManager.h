@@ -6,9 +6,18 @@
 enum class TextureId {
 	White1x1,
 
+
+
+	// ========================================
+	// TitleScene
+	// ========================================
 	// Title
 	TitleBackground,
 	TitleLogo,
+
+	Logo_Lu, Logo_U, Logo_Na, Logo_Ra, Logo_Nn,
+	Logo_All,
+
 
 	// StageSelect
 	StageSelectBackground,
@@ -34,6 +43,8 @@ enum class TextureId {
 	BoomerangJumpTutorial,
 	BoomerangThrowToJump,
 	BoomerangFocusPlayer,
+
+
 
 	// =========================================
 	// enemy
