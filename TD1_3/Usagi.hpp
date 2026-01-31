@@ -177,6 +177,22 @@ public:
 		bool jumpInput = false;
 		bool dashInput = false;
 
+		// ブーメランジャンプの判定（先に行う）
+		bool isCloseToBoomerang = false;
+		for (auto boom : boomerangs_) {
+			if (!boom->IsTemporary()) {
+				if (!boom->IsIdle()) {
+					if (!isGrounded_ && boom->isWaitingToReturn() && BoomerangJumpTimer_ <= 0.f) {
+						float distance = Vector2::Length(this->GetPosition() - boom->GetPosition());
+						if (distance < 100.f) {
+							isCloseToBoomerang = true;
+						}
+					}
+				}
+				break;
+			}
+		}
+
 		// ゲームパッド入力（左スティック）
 		if (Input().GetPad()) {
 			float stickX = Input().GetPad()->GetLeftStick().x;
@@ -192,19 +208,18 @@ public:
 				inputDir.y = stickY;
 			}
 
-			// ジャンプ
+			// Aボタン: 地上ならジャンプ、空中ならダッシュ
 			if (Input().GetPad()->Trigger(Pad::Button::A)) {
-				inputDir.y += 1.0f;
-				jumpInput = true;
-				JumpFriendlyTimer_ = JumpFriendlyDuration_;
-			}
-
-			// ダッシュ
-			if (/*Input().GetPad()->Trigger(Pad::Button::B)||*/
-				Input().GetPad()->TriggerRightTrigger() || 
-				Input().GetPad()->TriggerLeftTrigger()
-				) {
-				dashInput = true;
+				if (isGrounded_ || isCloseToBoomerang) {
+					// 地上またはブーメラン近くならジャンプ
+					inputDir.y += 1.0f;
+					jumpInput = true;
+					JumpFriendlyTimer_ = JumpFriendlyDuration_;
+				}
+				else {
+					// 空中ならダッシュ
+					dashInput = true;
+				}
 			}
 		}
 
@@ -236,22 +251,10 @@ public:
 		// 入力方向を正規化
 		inputDir = Vector2::Normalize(inputDir);
 
-		// ブーメランジャンプの処理
-		bool isCloseToBoomerang = false;
-		for (auto boom : boomerangs_) {
-			if (!boom->IsTemporary()) {
-				if (!boom->IsIdle()) {
-					if (!isGrounded_ && boom->isWaitingToReturn() && BoomerangJumpTimer_ <= 0.f) {
-						float distance = Vector2::Length(this->GetPosition() - boom->GetPosition());
-						if (distance < 100.f) {
-							BoomerangJumpTimer_ = BoomerangJumpCooldown_;
-							isCloseToBoomerang = true;
-							ParticleManager::GetInstance().Emit(ParticleType::Hit, transform_.translate);
-						}
-					}
-				}
-				break;
-			}
+		// ブーメランジャンプの実行
+		if (isCloseToBoomerang && (jumpInput || JumpFriendlyTimer_ > 0.f)) {
+			BoomerangJumpTimer_ = BoomerangJumpCooldown_;
+			ParticleManager::GetInstance().Emit(ParticleType::Hit, transform_.translate);
 		}
 
 		// ジャンプ実行（チャージ中でも可能にする）
@@ -333,6 +336,7 @@ public:
 			}
 		}
 	}
+
 	bool hitMaxCharge = false;
 
 	void HandleBoomerang(float deltaTime) {

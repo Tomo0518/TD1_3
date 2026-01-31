@@ -176,6 +176,11 @@ void UIManager::Update(float dt) {
 			elem->Update(dt);
 		}
 
+		if (auto* elem = GetElement("PadButtonA")) {
+			elem->SetVisible(isGamepad);
+			elem->Update(dt);
+		}
+
 		if (auto* elem = GetElement("PadButtonRT")) {
 			elem->SetVisible(isGamepad);
 			elem->Update(dt);
@@ -266,7 +271,7 @@ void UIManager::Draw() {
 		if (auto* elem = GetElement("PadStick")) elem->Draw();
 		if (auto* elem = GetElement("PadButtonX")) elem->Draw();
 		// if (auto* elem = GetElement("PadButtonB")) elem->Draw();
-		if (auto* elem = GetElement("PadButtonRT")) elem->Draw();
+		if (auto* elem = GetElement("PadButtonA")) elem->Draw(Vector2(1205.f, 665.f));
 
 		// スキルアイコン
 		for (const auto& name : skillIconElements_) {
