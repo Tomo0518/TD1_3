@@ -119,6 +119,7 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClCompile Include="MapData.cpp" />
     <ClCompile Include="MapManager.cpp" />
     <ClCompile Include="ObjectRegistry.cpp" />
+    <ClCompile Include="OrbitSystem.cpp" />
     <ClCompile Include="ParallaxLayer.cpp" />
     <ClCompile Include="ParticleRegistry.cpp" />
     <ClCompile Include="PhysicsManager.cpp" />
@@ -180,6 +181,7 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClInclude Include="MapData.h" />
     <ClInclude Include="MapManager.h" />
     <ClInclude Include="ObjectRegistry.h" />
+    <ClInclude Include="OrbitSystem.h" />
     <ClInclude Include="ParallaxLayer.h" />
     <ClInclude Include="ParticleRegistry.h" />
     <ClInclude Include="PhysicsManager.h" />

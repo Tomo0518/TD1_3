@@ -4,6 +4,7 @@
 #include "Boomerang.hpp"
 #include "KinokoSpawner.hpp"
 #include "UIManager.h"
+#include "OrbitSystem.h"
 
 class Usagi : public PhysicsObject {
 private:
@@ -58,6 +59,9 @@ private:
 
 	// ブーメランの前フレームの状態(回収検知)
 	bool wasBoomerangActive_ = false;
+
+	// Orbitシステム
+	std::unique_ptr<OrbitSystem> orbitSystem_;
 
 	Vector2 respawnPosition_ = { 0.f, 0.f };
 	float respawnDelay_ = 120.f;
@@ -128,6 +132,8 @@ public:
 		starComp_ = new DrawComponent2D(Tex().GetTexture(TextureId::Star_shooting), 4, 1, 4, 5.f, true);
 		starComp_->Initialize();
 
+		// 初期化
+		orbitSystem_ = std::make_unique<OrbitSystem>();
 
 		//==========================================
 		boomerangs_.clear();
@@ -440,6 +446,17 @@ public:
 
 		//Novice::ConsolePrintf("isGrounded: %d\n", isGrounded_);
 		SpawnTestKinoko();
+
+
+		// Orbitシステムの更新
+		// プレイヤーの中心座標を渡す（transform_.translate + オフセット等）
+		// boomerangs_ も渡して、システム側で追従対象を判断させる
+		if (orbitSystem_) {
+			// 中心座標の補正（画像の中心に来るように適宜調整してください）
+			Vector2 centerPos = transform_.translate;
+
+			orbitSystem_->Update(deltaTime, centerPos, starCount_, boomerangs_);
+		}
 	}
 
 	void UpdateTimer(float deltaTime) {
@@ -575,15 +592,15 @@ public:
 			if (!boom->IsTemporary() && boom->IsIdle()) {
 				if (boom->isStarRetrieved()) {
 					boomerangDrawManager_.Draw(camera);
-					DrawStar(camera, starCount_);
+					//DrawStar(camera, starCount_);
 				}
 				break;
 			}
 		}
 
-		if (tempStarCount > 0) {
+		/*if (tempStarCount > 0) {
 			DrawStar(camera, tempStarCount);
-		}
+		}*/
 
 		// draw hitbox for debug
 		/*Vector2 screenPos = const_cast<Camera2D&>(camera).WorldToScreen(transform_.translate);
@@ -598,6 +615,11 @@ public:
 			0xFF0000FF,
 			kFillModeWireFrame
 		);*/
+
+		// Orbitシステムの描画
+		if (orbitSystem_) {
+			orbitSystem_->Draw(camera);
+		}
 	}
 
 	virtual void Move(float deltaTime) override {

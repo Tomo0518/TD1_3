@@ -164,6 +164,9 @@
     <Filter Include="KamataEngine\Source\Game\Tips">
       <UniqueIdentifier>{c96369a0-dbb8-4845-a1ef-8afd4ba208b6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="KamataEngine\Source\Game\Object\PhysicsGameObject\Star">
+      <UniqueIdentifier>{4fb4b037-c5c3-44ac-9258-fb02e0a596a6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -313,6 +316,9 @@
     </ClCompile>
     <ClCompile Include="TipsCardUI.cpp">
       <Filter>KamataEngine\Source\Game\Tips</Filter>
+    </ClCompile>
+    <ClCompile Include="OrbitSystem.cpp">
+      <Filter>KamataEngine\Source\Game\Object\PhysicsGameObject\Star</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -556,9 +562,6 @@
     <ClInclude Include="PhysicsObject.hpp">
       <Filter>KamataEngine\Source\Game\Object\PhysicsGameObject</Filter>
     </ClInclude>
-    <ClInclude Include="Star.hpp">
-      <Filter>KamataEngine\Source\Game\Object\PhysicsGameObject</Filter>
-    </ClInclude>
     <ClInclude Include="Usagi.hpp">
       <Filter>KamataEngine\Source\Game\Object\PhysicsGameObject</Filter>
     </ClInclude>
@@ -616,6 +619,12 @@
     </ClInclude>
     <ClInclude Include="TipsCollectionUI.h">
       <Filter>KamataEngine\Source\Game\Tips</Filter>
+    </ClInclude>
+    <ClInclude Include="Star.hpp">
+      <Filter>KamataEngine\Source\Game\Object\PhysicsGameObject\Star</Filter>
+    </ClInclude>
+    <ClInclude Include="OrbitSystem.h">
+      <Filter>KamataEngine\Source\Game\Object\PhysicsGameObject\Star</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
