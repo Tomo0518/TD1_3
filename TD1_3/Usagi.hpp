@@ -200,6 +200,10 @@ public:
 			}
 		}
 
+		if(!isGrounded_ && rigidbody_.velocity.y < 0.f) {
+			ChangeDrawComp(DrawCompState::eFall);
+		}
+
 		// ゲームパッド入力（左スティック）
 		if (Input().GetPad()) {
 			float stickX = Input().GetPad()->GetLeftStick().x;
