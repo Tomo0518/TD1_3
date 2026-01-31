@@ -376,9 +376,9 @@ void GamePlayScene::SpawnObjectFromData(const ObjectSpawnInfo& spawn) {
 		// Spawn<T>(owner, tag, コンストラクタの引数...)
 		auto* trigger = objectManager_.Spawn<TipsTrigger>(
 			nullptr,              // owner
-			"TipsTrigger",        // tag
+			"TipsTrigger_1",        // tag
 			spawn.objectTypeId,   // id (TipsTriggerのコンストラクタ第1引数)
-			"TipsTrigger",        // name (TipsTriggerのコンストラクタ第2引数)
+			"TipsTrigger_1",        // name (TipsTriggerのコンストラクタ第2引数)
 			spawn.position,       // position (TipsTriggerのコンストラクタ第3引数)
 			tipsId                // tipsId (TipsTriggerのコンストラクタ第4引数)
 		);
@@ -388,6 +388,78 @@ void GamePlayScene::SpawnObjectFromData(const ObjectSpawnInfo& spawn) {
 			trigger->SetPlayer(player_);
 		}
 
+		Novice::ConsolePrintf("[GamePlayScene] Spawned TipsTrigger (ID:%d) at (%.1f, %.1f)\n",
+			tipsId, spawn.position.x, spawn.position.y);
+		break;
+	}
+
+	case 501: { // TipsTrigger (別ID)
+		// customDataからtipsIdを取得
+		int tipsId = 2; // デフォルト値
+		if (spawn.customData.contains("tipsId")) {
+			tipsId = spawn.customData["tipsId"].get<int>();
+		}
+		// Spawn<T>(owner, tag, コンストラクタの引数...)
+		auto* trigger = objectManager_.Spawn<TipsTrigger>(
+			nullptr,              // owner
+			"TipsTrigger_2",        // tag
+			spawn.objectTypeId,   // id (TipsTriggerのコンストラクタ第1引数)
+			"TipsTrigger_2",        // name (TipsTriggerのコンストラクタ第2引数)
+			spawn.position,       // position (TipsTriggerのコンストラクタ第3引数)
+			tipsId                // tipsId (TipsTriggerのコンストラクタ第4引数)
+		);
+		// プレイヤーへの参照を設定
+		if (player_) {
+			trigger->SetPlayer(player_);
+		}
+		Novice::ConsolePrintf("[GamePlayScene] Spawned TipsTrigger (ID:%d) at (%.1f, %.1f)\n",
+			tipsId, spawn.position.x, spawn.position.y);
+		break;
+	}
+
+	case 502: { // TipsTrigger (別ID)
+		// customDataからtipsIdを取得
+		int tipsId = 3; // デフォルト値
+		if (spawn.customData.contains("tipsId")) {
+			tipsId = spawn.customData["tipsId"].get<int>();
+		}
+		// Spawn<T>(owner, tag, コンストラクタの引数...)
+		auto* trigger = objectManager_.Spawn<TipsTrigger>(
+			nullptr,              // owner
+			"TipsTrigger_3",        // tag
+			spawn.objectTypeId,   // id (TipsTriggerのコンストラクタ第1引数)
+			"TipsTrigger_3",        // name (TipsTriggerのコンストラクタ第2引数)
+			spawn.position,       // position (TipsTriggerのコンストラクタ第3引数)
+			tipsId                // tipsId (TipsTriggerのコンストラクタ第4引数)
+		);
+		// プレイヤーへの参照を設定
+		if (player_) {
+			trigger->SetPlayer(player_);
+		}
+		Novice::ConsolePrintf("[GamePlayScene] Spawned TipsTrigger (ID:%d) at (%.1f, %.1f)\n",
+			tipsId, spawn.position.x, spawn.position.y);
+		break;
+	}
+
+	case 503: { // TipsTrigger (別ID)
+		// customDataからtipsIdを取得
+		int tipsId = 4; // デフォルト値
+		if (spawn.customData.contains("tipsId")) {
+			tipsId = spawn.customData["tipsId"].get<int>();
+		}
+		// Spawn<T>(owner, tag, コンストラクタの引数...)
+		auto* trigger = objectManager_.Spawn<TipsTrigger>(
+			nullptr,              // owner
+			"TipsTrigger_4",        // tag
+			spawn.objectTypeId,   // id (TipsTriggerのコンストラクタ第1引数)
+			"TipsTrigger_4",        // name (TipsTriggerのコンストラクタ第2引数)
+			spawn.position,       // position (TipsTriggerのコンストラクタ第3引数)
+			tipsId                // tipsId (TipsTriggerのコンストラクタ第4引数)
+		);
+		// プレイヤーへの参照を設定
+		if (player_) {
+			trigger->SetPlayer(player_);
+		}
 		Novice::ConsolePrintf("[GamePlayScene] Spawned TipsTrigger (ID:%d) at (%.1f, %.1f)\n",
 			tipsId, spawn.position.x, spawn.position.y);
 		break;

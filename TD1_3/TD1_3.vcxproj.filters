@@ -308,6 +308,12 @@
     <ClCompile Include="TipsUIDrawer.cpp">
       <Filter>KamataEngine\Source\Game\Tips</Filter>
     </ClCompile>
+    <ClCompile Include="TipsCollectionUI.cpp">
+      <Filter>KamataEngine\Source\Game\Tips</Filter>
+    </ClCompile>
+    <ClCompile Include="TipsCardUI.cpp">
+      <Filter>KamataEngine\Source\Game\Tips</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\audio\Audio.h">
@@ -603,6 +609,12 @@
       <Filter>KamataEngine\Source\Game\Object</Filter>
     </ClInclude>
     <ClInclude Include="TipsUIDrawer.h">
+      <Filter>KamataEngine\Source\Game\Tips</Filter>
+    </ClInclude>
+    <ClInclude Include="TipsCardUI.h">
+      <Filter>KamataEngine\Source\Game\Tips</Filter>
+    </ClInclude>
+    <ClInclude Include="TipsCollectionUI.h">
       <Filter>KamataEngine\Source\Game\Tips</Filter>
     </ClInclude>
   </ItemGroup>

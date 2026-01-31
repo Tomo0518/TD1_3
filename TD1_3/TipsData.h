@@ -1,21 +1,23 @@
-﻿#pragma once
+﻿// 個別のTips情報
+#pragma once
 #include <string>
+#include "TextureManager.h"
 
-// 個別のTips情報
 struct TipsData {
-    int id;                          // Tips ID (1-3)
-    std::string title;               // タイトル
-    std::string description;         // 説明文
-    std::string iconTexturePath;     // アイコン画像パス
-    bool isUnlocked;                 // 解放済みか
+    int id;
+    std::string title;
+    std::string description;
+    TextureId unlockedTextureId;  // 解放済み画像
+    TextureId shadowTextureId;    // 未解放時の影画像（Tips固有）
+    bool isUnlocked = false;
 
-    TipsData()
-        : id(0), title(""), description(""), iconTexturePath(""), isUnlocked(false) {
-    }
-
-    TipsData(int _id, const std::string& _title, const std::string& _desc,
-        const std::string& _iconPath)
-        : id(_id), title(_title), description(_desc),
-        iconTexturePath(_iconPath), isUnlocked(false) {
+    TipsData(int id_, const std::string& title_, const std::string& desc_,
+        TextureId unlockedTexId, TextureId shadowTexId)
+        : id(id_)
+        , title(title_)
+        , description(desc_)
+        , unlockedTextureId(unlockedTexId)
+        , shadowTextureId(shadowTexId)
+    {
     }
 };

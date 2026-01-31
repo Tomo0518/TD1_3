@@ -472,12 +472,30 @@ void TextureManager::LoadResources() {
 			Novice::LoadTexture("./Resources/images/ui/tips/book_background.png");
 
 		// Tips icons
-		textureResources_[static_cast<int>(TextureId::TipsIcon01Controls)] =
+		textureResources_[static_cast<int>(TextureId::Tip_01_Controls)] =
 			Novice::LoadTexture("./Resources/images/ui/icon/tip_01_controls.png");
-		textureResources_[static_cast<int>(TextureId::TipsIcon02BoomerangJump)] =
-			Novice::LoadTexture("./Resources/images/ui/icon/tip_02_boomerang_jump.png");
-		textureResources_[static_cast<int>(TextureId::TipsIcon03BoomerangHeight)] =
-			Novice::LoadTexture("./Resources/images/ui/icon/tip_03_boomerang_height.png");
+		textureResources_[static_cast<int>(TextureId::Tip_01_Controls_Shadow)] =
+			Novice::LoadTexture("./Resources/images/ui/icon/tip_01_controls_shadow.png");
+
+		textureResources_[static_cast<int>(TextureId::Tip_02_Height_Control)] =
+			Novice::LoadTexture("./Resources/images/ui/icon/tip_02_height.png");
+		textureResources_[static_cast<int>(TextureId::Tip_02_Height_Control_Shadow)] =
+			Novice::LoadTexture("./Resources/images/ui/icon/tip_02_height_shadow.png");
+
+		textureResources_[static_cast<int>(TextureId::Tip_03_Boomerang_Jump)] =
+			Novice::LoadTexture("./Resources/images/ui/icon/tip_03_boomerang_jump.png");
+		textureResources_[static_cast<int>(TextureId::Tip_03_Boomerang_Jump_Shadow)] =
+			Novice::LoadTexture("./Resources/images/ui/icon/tip_03_boomerang_jump_shadow.png");
+
+		textureResources_[static_cast<int>(TextureId::Tip_04_Boomerang_Return_Damage)] =
+			Novice::LoadTexture("./Resources/images/ui/icon/tip_04_boomerang_return_damage.png");
+		textureResources_[static_cast<int>(TextureId::Tip_04_Boomerang_Return_Damage_Shadow)] =
+			Novice::LoadTexture("./Resources/images/ui/icon/tip_04_boomerang_return_damage_shadow.png");
+
+		textureResources_[static_cast<int>(TextureId::TipsLockIcon)] =
+			Novice::LoadTexture("./Resources/images/ui/icon/tips_lock_icon.png");
+
+
 
 
 		/*textureResources_[static_cast<int>(TextureId::PauseBg)] =

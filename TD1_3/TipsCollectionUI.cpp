@@ -11,6 +11,9 @@ TipsCollectionUI::TipsCollectionUI()
     , currentScale_(0.0f)
     , bookPosition_({ 640.0f, 360.0f })
     , bookSize_({ 1000.0f, 600.0f })
+    , cardGridStart_({ 320.0f, 180.0f })   
+    , cardSize_({ 220.0f, 260.0f })        
+    , cardSpacing_({ 240.0f, 280.0f })     
 #ifdef _DEBUG
     , debugOpenDuration_(0.3f)
     , debugCloseDuration_(0.2f)
@@ -18,50 +21,87 @@ TipsCollectionUI::TipsCollectionUI()
 {
 }
 
+// Initialize() でロックアイコンを初期化（既存のコード）
 void TipsCollectionUI::Initialize() {
-    // 見開き本の背景を初期化
     bookBackground_ = std::make_unique<DrawComponent2D>(
-        TextureId::TipsBookBackground 
+        TextureId::TipsBookBackground
     );
     bookBackground_->SetDrawSize(bookSize_);
     bookBackground_->SetAnchorPoint({ 0.5f, 0.5f });
     bookBackground_->SetPosition(bookPosition_);
 
-    // 初期状態は閉じている
+    // ロックアイコン（全カード共通）
+    lockIcon_ = std::make_unique<DrawComponent2D>(TextureId::TipsLockIcon);
+    lockIcon_->SetAnchorPoint({ 0.5f, 0.5f });
+
+    InitializeCards();
+
     animState_ = AnimState::Closed;
     currentScale_ = 0.0f;
 }
 
-void TipsCollectionUI::Update(float deltaTime) {
-    // 入力処理
-    UpdateInput();
 
-    // アニメーション更新
-    UpdateAnimation(deltaTime);
+void TipsCollectionUI::InitializeCards() {
+    cards_.clear();
 
-    // DrawComponent の更新
-    if (bookBackground_) {
-        bookBackground_->Update(deltaTime);
+    // 4枚のカードを 2x2 グリッドで配置
+    // Tips ID は 1, 2, 3, 4
+    for (int row = 0; row < 2; ++row) {
+        for (int col = 0; col < 2; ++col) {
+            int tipsId = row * 2 + col + 1;  // 1, 2, 3, 4
+
+            // カードの位置を計算
+            Vector2 cardPos = {
+                cardGridStart_.x + col * cardSpacing_.x,
+                cardGridStart_.y + row * cardSpacing_.y
+            };
+
+            auto card = std::make_unique<TipsCardUI>(tipsId, cardPos, cardSize_);
+            card->Initialize();
+            cards_.push_back(std::move(card));
+        }
     }
 }
 
+void TipsCollectionUI::Update(float deltaTime) {
+    UpdateInput();
+    UpdateAnimation(deltaTime);
+
+    if (bookBackground_) {
+        bookBackground_->Update(deltaTime);
+    }
+
+    // カードを更新（開いている時のみ）
+    if (animState_ == AnimState::Open || animState_ == AnimState::Opening) {
+        for (auto& card : cards_) {
+            card->Update(deltaTime);
+        }
+    }
+}
+
+
+// Draw() でロックアイコンを渡す
 void TipsCollectionUI::Draw() {
-    // 完全に閉じている時は描画しない
     if (animState_ == AnimState::Closed) {
         return;
     }
 
-    // スケールアニメーションを適用して描画
+    // 背景描画
     if (bookBackground_) {
-        // 現在のスケールを設定
         bookBackground_->SetScale(currentScale_, currentScale_);
-
-        // アルファ値も連動させる
         float alpha = currentScale_;
         unsigned int color = 0xFFFFFF00 | static_cast<unsigned int>(alpha * 255.0f);
         bookBackground_->SetBaseColor(color);
-
         bookBackground_->DrawScreen();
+    }
+
+    // カード描画（背景が50%以上開いたら表示）
+    if (currentScale_ > 0.5f && lockIcon_) {
+        lockIcon_->Update(0.0f);  // ロックアイコンを更新
+
+        for (auto& card : cards_) {
+            card->Draw(lockIcon_.get());  // ロックアイコンを渡す
+        }
     }
 }
 
@@ -107,21 +147,16 @@ void TipsCollectionUI::Toggle() {
 }
 
 void TipsCollectionUI::UpdateInput() {
-    // M キー or Y ボタンで開閉
     bool togglePressed =
         Input().TriggerKey(DIK_M) ||
         Input().GetPad()->Trigger(Pad::Button::Y);
 
     if (togglePressed) {
         Toggle();
-        // SE再生（必要に応じて）
-        // Sound().PlaySe(SeId::Menu_Toggle);
     }
 
-    // B ボタンで閉じる（開いている時のみ）
     if (isOpen_ && Input().GetPad()->Trigger(Pad::Button::B)) {
         Close();
-        // Sound().PlaySe(SeId::Cancel);
     }
 }
 
@@ -135,7 +170,6 @@ void TipsCollectionUI::UpdateAnimation(float deltaTime) {
 
     switch (animState_) {
     case AnimState::Opening: {
-        // EaseOutBack を使って弾むような開き方
         float c1 = 1.70158f;
         float c3 = c1 + 1.0f;
         float eased = 1.0f + c3 * std::pow(t - 1.0f, 3.0f) + c1 * std::pow(t - 1.0f, 2.0f);
@@ -149,7 +183,6 @@ void TipsCollectionUI::UpdateAnimation(float deltaTime) {
     }
 
     case AnimState::Closing: {
-        // EaseInBack を使ってスムーズに閉じる
         float c1 = 1.70158f;
         float c3 = c1 + 1.0f;
         float reversed = 1.0f - t;
@@ -177,10 +210,17 @@ void TipsCollectionUI::DrawImGui() {
         animState_ == AnimState::Opening ? "Opening" :
         animState_ == AnimState::Open ? "Open" : "Closing");
     ImGui::Text("Current Scale: %.2f", currentScale_);
+    ImGui::Text("Cards Count: %d", static_cast<int>(cards_.size()));
 
     ImGui::Separator();
     ImGui::DragFloat2("Book Position", &bookPosition_.x, 1.0f);
     ImGui::DragFloat2("Book Size", &bookSize_.x, 1.0f);
+
+    ImGui::Separator();
+    ImGui::Text("Card Grid Settings");
+    ImGui::DragFloat2("Grid Start", &cardGridStart_.x, 1.0f);
+    ImGui::DragFloat2("Card Size", &cardSize_.x, 1.0f);
+    ImGui::DragFloat2("Card Spacing", &cardSpacing_.x, 1.0f);
 
     ImGui::Separator();
     ImGui::DragFloat("Open Duration", &debugOpenDuration_, 0.01f, 0.1f, 2.0f);
@@ -190,10 +230,29 @@ void TipsCollectionUI::DrawImGui() {
         Toggle();
     }
 
+    if (ImGui::Button("Reinitialize Cards")) {
+        InitializeCards();
+    }
+
     // パラメータ適用
     if (bookBackground_) {
         bookBackground_->SetPosition(bookPosition_);
         bookBackground_->SetDrawSize(bookSize_);
+    }
+
+    // カード位置の再計算
+    int index = 0;
+    for (int row = 0; row < 2; ++row) {
+        for (int col = 0; col < 2; ++col) {
+            if (index < cards_.size()) {
+                Vector2 cardPos = {
+                    cardGridStart_.x + col * cardSpacing_.x,
+                    cardGridStart_.y + row * cardSpacing_.y
+                };
+                cards_[index]->SetPosition(cardPos);
+            }
+            index++;
+        }
     }
 
     ImGui::End();

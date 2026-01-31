@@ -4,15 +4,14 @@
 #include "TextureManager.h"
 #include "InputManager.h"
 #include "TipsManager.h"
+#include "TipsCardUI.h"  // 追加
 #include <memory>
+#include <vector>  // 追加
 
 #ifdef _DEBUG
 #include "imgui.h"
 #endif
 
-/// <summary>
-/// Tips一覧UI（見開き本）の管理クラス
-/// </summary>
 class TipsCollectionUI {
 public:
     TipsCollectionUI();
@@ -22,7 +21,6 @@ public:
     void Update(float deltaTime);
     void Draw();
 
-    // 開閉状態
     bool IsOpen() const { return isOpen_; }
     void Open();
     void Close();
@@ -35,31 +33,35 @@ public:
 private:
     void UpdateInput();
     void UpdateAnimation(float deltaTime);
+    void InitializeCards();  // 追加
 
-    // 開閉アニメーション
     enum class AnimState {
-        Closed,   // 完全に閉じている
-        Opening,  // 開いている途中
-        Open,     // 完全に開いている
-        Closing   // 閉じている途中
+        Closed,
+        Opening,
+        Open,
+        Closing
     };
 
     AnimState animState_;
     float animTimer_;
     float animDuration_;
 
-    // 開閉状態
     bool isOpen_;
-    float currentScale_;  // アニメーション用スケール（0.0 ~ 1.0）
+    float currentScale_;
 
-    // 見開き本の背景
     std::unique_ptr<DrawComponent2D> bookBackground_;
+    std::unique_ptr<DrawComponent2D> lockIcon_;
 
-    // 配置設定
-    Vector2 bookPosition_;  // 画面中央
-    Vector2 bookSize_;      // 見開き本のサイズ
+    Vector2 bookPosition_;
+    Vector2 bookSize_;
 
-    // デバッグ用調整パラメータ
+    // カード管理（追加）
+
+    std::vector<std::unique_ptr<TipsCardUI>> cards_;
+    Vector2 cardGridStart_;   // グリッドの開始位置
+    Vector2 cardSize_;        // 各カードのサイズ
+    Vector2 cardSpacing_;     // カード間の間隔
+
 #ifdef _DEBUG
     float debugOpenDuration_;
     float debugCloseDuration_;

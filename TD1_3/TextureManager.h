@@ -221,12 +221,17 @@ enum class TextureId {
 	TipsBookGlow,
 	TipsNotificationBadge,
 
-	TipsBookBackground,
+	Tip_01_Controls,
+	Tip_01_Controls_Shadow,            
+	Tip_02_Height_Control,
+	Tip_02_Height_Control_Shadow,         
+	Tip_03_Boomerang_Jump,
+	Tip_03_Boomerang_Jump_Shadow,        
+	Tip_04_Boomerang_Return_Damage,
+	Tip_04_Boomerang_Return_Damage_Shadow,
+	TipsLockIcon,
 
-	// Tips icons
-	TipsIcon01Controls,
-	TipsIcon02BoomerangJump,
-	TipsIcon03BoomerangHeight,
+	TipsBookBackground,
 
 	None,		// テクスチャなし用
 	Count,	// 最後

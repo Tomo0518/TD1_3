@@ -253,14 +253,38 @@ void ObjectRegistry::Initialize() {
 		});
 
 	// ====================================================================
-	// Tipsに新しい説明を追加する用判定オブジェクト]
+	// Tipsに新しい説明を追加する用判定オブジェクト
 	// ====================================================================
 	objectTypes_.push_back({
 		500,
-		"TipsTrigger",
+		"TipsTrigger_1",
 		"System",
 		0xFFFFFFFF,     // color（白色）
-		"TipsTrigger"
+		"TipsTrigger1"
+		});
+
+	objectTypes_.push_back({
+		501,
+		"TipsTrigger_2",
+		"System",
+		0xFFFFFFFF,     // color（白色）
+		"TipsTrigger2"
+		});
+
+	objectTypes_.push_back({
+		502,
+		"TipsTrigger_3",
+		"System",
+		0xFFFFFFFF,     // color（白色）
+		"TipsTrigger3"
+		});
+
+	objectTypes_.push_back({
+		503,
+		"TipsTrigger_4",
+		"System",
+		0xFFFFFFFF,     // color（白色）
+		"TipsTrigger4"
 		});
 
 	// ===================================================================

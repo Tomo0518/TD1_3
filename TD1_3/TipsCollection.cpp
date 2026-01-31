@@ -1,4 +1,5 @@
 ﻿#include "TipsCollection.h"
+#include "TextureManager.h"
 
 TipsCollection& TipsCollection::GetInstance() {
     static TipsCollection instance;
@@ -16,23 +17,35 @@ void TipsCollection::LoadTipsDefinitions() {
         1,
         "操作方法",
         "移動キーとジャンプ、ブーメランの操作方法",
-        "./Resources/images/tips/icons/tip_01_controls.png"
+        TextureId::Tip_01_Controls,        // 解放済み画像
+        TextureId::Tip_01_Controls_Shadow  // 影画像
     ));
 
-    // Tips 2: ブーメランジャンプ
+    // Tips 2: ブーメランの高さ調整
     tipsDatabase_.push_back(TipsData(
         2,
-        "ブーメランジャンプ",
-        "空中でブーメランに乗ることができます\n投げたブーメランの上に乗って\n高い場所へ移動できる",
-        "./Resources/images/tips/icons/tip_02_boomerang_jump.png"
+        "ブーメランの高さ調整",
+        "ブーメランは投げた後少しの間プレイヤーの高さについてくる",
+        TextureId::Tip_02_Height_Control,
+        TextureId::Tip_02_Height_Control_Shadow
     ));
 
-    // Tips 3: ブーメランの高さ調整
+    // Tips 3: ブーメランジャンプ
     tipsDatabase_.push_back(TipsData(
         3,
-        "ブーメランの高さ調整",
-        "なげ　",
-        "ブーメランは投げた後少しの間プレイヤーの高さについてくる"
+        "ブーメランジャンプ",
+        "空中でブーメランに乗ることができます\n投げたブーメランの上に乗って\n高い場所へ移動できる",
+        TextureId::Tip_03_Boomerang_Jump,
+        TextureId::Tip_03_Boomerang_Jump_Shadow
+    ));
+
+    // Tips 4: ブーメランは帰ってくるときにダメージが発生する
+    tipsDatabase_.push_back(TipsData(
+        4,
+        "ブーメランは帰ってくるときにダメージが発生する",
+        "ブーメランは帰ってくるときに敵に当たるとダメージを与えます",
+        TextureId::Tip_04_Boomerang_Return_Damage,
+        TextureId::Tip_04_Boomerang_Return_Damage_Shadow
     ));
 }
 
