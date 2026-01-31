@@ -74,6 +74,8 @@ public:
 		info_.isActive = false;
 		isGravityEnabled_ = false;
 		rigidbody_.deceleration = { 0.95f, 0.95f };
+		rigidbody_.maxSpeedX = 25.f;
+		rigidbody_.maxSpeedY = 25.f;
 	
 
 		delete drawComp_;
@@ -343,11 +345,12 @@ public:
 			blockedTimer_ -= deltaTime;
 
 			if (blockedTimer_ <= 0.f) {
+				hitEnemies_.clear();
 				isGravityEnabled_ = false;
 				blocked_ = false;
 				state_ = BoomerangState::Thrown;
 				waitingToReturn_ = true;
-				SwitchToReturn();
+				moveTimer_ = maxTime_ + 1;
 			}
 		}
 		else if (state_ == BoomerangState::Thrown) {
@@ -397,7 +400,7 @@ public:
 				// Stay logic
 				//if (stayTimer_ < maxStayTime_) {
 					stayTimer_ += deltaTime;
-
+					isGoing = false;
 					if (rigidbody_.velocity.Length(rigidbody_.velocity) != 0.f||rigidbody_.acceleration.Length(rigidbody_.acceleration) != 0.f) {
 						collider_.canCollide = true;
 						Move(deltaTime);
@@ -422,13 +425,13 @@ public:
 					//	transform_.translate.x = isHitWall ? farestDistance_.x : ownerPos.x;
 					//}
 
-					if (int(stayTimer_) % 30 == 0) {
+					if (int(stayTimer_) % 30 == 0 && damage_ + damageBonus_ > 0) {
 						SoundManager::GetInstance().PlaySe(SeId::PlayerBoomerangFly);
 					}
 
-					if (int(stayTimer_) % 15 == 0) {
+					/*if (int(stayTimer_) % 15 == 0) {
 						damageBonus_ = std::min(20, damageBonus_ + 1);
-					}
+					}*/
 
 					if (distanceFormOwner > activeRange_ * 3.5f) {
 						damageBonus_ = 0;
