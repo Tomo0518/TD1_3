@@ -8,6 +8,7 @@
 #include "MapManager.h"
 #include "BackgroundManager.h"
 #include "TipsUIDrawer.h"
+#include "TipsCollectionUI.h"
 #include <memory>
 #include <vector>
 #include "WorldOrigin.h"
@@ -57,7 +58,11 @@ private:
 
 
     // --- Tips System ---
-    std::unique_ptr<TipsUIDrawer> tipsUIDrawer_;  // 追加
+    std::unique_ptr<TipsUIDrawer> tipsUIDrawer_;
+
+    // Tips一覧UI
+    std::unique_ptr<TipsCollectionUI> tipsCollectionUI_;
+
 
     // --- デバッグ ---
     std::unique_ptr<DebugWindow> debugWindow_;

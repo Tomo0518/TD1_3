@@ -414,6 +414,10 @@ void GamePlayScene::InitializeTipsSystem() {
 	// TipsUIDrawerを初期化（表示層）
 	tipsUIDrawer_ = std::make_unique<TipsUIDrawer>();
 	tipsUIDrawer_->Initialize();
+
+	// TipsCollectionUIを初期化（一覧画面）
+	tipsCollectionUI_ = std::make_unique<TipsCollectionUI>();
+	tipsCollectionUI_->Initialize();
 }
 
 void GamePlayScene::InitializeBackground() {
@@ -527,6 +531,11 @@ void GamePlayScene::Update(float dt, const char* keys, const char* pre) {
 		tipsUIDrawer_->Update(dt);
 	} 
 
+	// Tips一覧UI更新
+	if (tipsCollectionUI_) {
+		tipsCollectionUI_->Update(dt);
+	}
+
 
 	// ***************** START check if game finished **************************
 	auto buttons = objectManager_.GetObjectsByTag("EndButton");
@@ -626,6 +635,11 @@ void GamePlayScene::Draw() {
 	if (tipsUIDrawer_) { 
 		tipsUIDrawer_->Draw(); 
 	} 
+	// Tips一覧UI描画（最前面）
+	if (tipsCollectionUI_) {
+		tipsCollectionUI_->Draw();
+	}
+
 
 #ifdef _DEBUG
 
@@ -639,6 +653,11 @@ void GamePlayScene::Draw() {
 		debugWindow_->DrawParticleDebugWindow(particleManager_, player_);
 	}
 #endif
+
+	// Tips一覧UIのデバッグウィンドウ
+	if (tipsCollectionUI_) {
+		tipsCollectionUI_->DrawImGui();
+	}
 }
 
 void GamePlayScene::CheckCollisions() {

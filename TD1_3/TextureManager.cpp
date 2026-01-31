@@ -458,13 +458,18 @@ void TextureManager::LoadResources() {
 		textureResources_[static_cast<int>(TextureId::Icon_Dash)] =
 			Novice::LoadTexture("./Resources/images/ui/icon/dash.png");
 
+		//====================================
 		// Tips UI
+		//====================================
 		textureResources_[static_cast<int>(TextureId::TipsBook)] =
 			Novice::LoadTexture("./Resources/images/ui/icon/tips_book.png");
 		textureResources_[static_cast<int>(TextureId::TipsBookGlow)] =
 			Novice::LoadTexture("./Resources/images/ui/icon/tips_book_glow.png");
 		textureResources_[static_cast<int>(TextureId::TipsNotificationBadge)] =
 			Novice::LoadTexture("./Resources/images/ui/icon/tips_notification_badge.png");
+
+		textureResources_[static_cast<int>(TextureId::TipsBookBackground)] =
+			Novice::LoadTexture("./Resources/images/ui/tips/book_background.png");
 
 		// Tips icons
 		textureResources_[static_cast<int>(TextureId::TipsIcon01Controls)] =

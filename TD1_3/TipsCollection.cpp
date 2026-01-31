@@ -15,7 +15,7 @@ void TipsCollection::LoadTipsDefinitions() {
     tipsDatabase_.push_back(TipsData(
         1,
         "操作方法",
-        "←→キー: 移動\nShift: ダッシュ\nZ: ブーメラン投げ\nブーメランは自動で戻ってきます",
+        "移動キーとジャンプ、ブーメランの操作方法",
         "./Resources/images/tips/icons/tip_01_controls.png"
     ));
 
@@ -23,7 +23,7 @@ void TipsCollection::LoadTipsDefinitions() {
     tipsDatabase_.push_back(TipsData(
         2,
         "ブーメランジャンプ",
-        "空中でブーメランに乗ることができます\n投げたブーメランの上に乗って\n高い場所へ移動しましょう",
+        "空中でブーメランに乗ることができます\n投げたブーメランの上に乗って\n高い場所へ移動できる",
         "./Resources/images/tips/icons/tip_02_boomerang_jump.png"
     ));
 
@@ -31,8 +31,8 @@ void TipsCollection::LoadTipsDefinitions() {
     tipsDatabase_.push_back(TipsData(
         3,
         "ブーメランの高さ調整",
-        "Zキーを押しながら↑↓キーで\nブーメランの投げる高さを調整できます\n高い敵や障害物を避けましょう",
-        "./Resources/images/tips/icons/tip_03_boomerang_height.png"
+        "なげ　",
+        "ブーメランは投げた後少しの間プレイヤーの高さについてくる"
     ));
 }
 

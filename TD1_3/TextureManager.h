@@ -167,7 +167,7 @@ enum class TextureId {
 	// UI用テクスチャ
 	// ========================================
 	// Icon
-	Icon_BoomerangReturn,Icon_BoomerangThrow,
+	Icon_BoomerangReturn, Icon_BoomerangThrow,
 	Icon_Dash,
 
 	// ========== ボタン ==========
@@ -207,22 +207,26 @@ enum class TextureId {
 	// Pad Guide
 	PadStickUp, PadStickDown, PadStickLeft, PadStickRight, PadStickAndArrow,
 	PadButtonA, PadButtonB, PadButtonX, PadButtonY,
-	PadButtonRT,PadButtonLT,
+	PadButtonRT, PadButtonLT,
 	PadMove, PadDash, PadThrow, PadJump_A,
 
 	// UI: Scenes
 	PauseText, PauseBg,
 	ResultClear, ResultOver,
 
-		// Tips UI
-		TipsBook,
-		TipsBookGlow,
-		TipsNotificationBadge,
+	// ================================
+	// Tips UI
+	// ================================
+	TipsBook,
+	TipsBookGlow,
+	TipsNotificationBadge,
 
-		// Tips icons
-		TipsIcon01Controls,
-		TipsIcon02BoomerangJump,
-		TipsIcon03BoomerangHeight,
+	TipsBookBackground,
+
+	// Tips icons
+	TipsIcon01Controls,
+	TipsIcon02BoomerangJump,
+	TipsIcon03BoomerangHeight,
 
 	None,		// テクスチャなし用
 	Count,	// 最後

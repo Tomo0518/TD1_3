@@ -148,6 +148,7 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="TileInstance.cpp" />
     <ClCompile Include="TipsCollection.cpp" />
+    <ClCompile Include="TipsCollectionUI.cpp" />
     <ClCompile Include="TipsManager.cpp" />
     <ClCompile Include="TipsUIDrawer.cpp" />
     <ClCompile Include="TitleScene.cpp" />
@@ -243,6 +244,7 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClInclude Include="TileInstance.h" />
     <ClInclude Include="TileRegistry.h" />
     <ClInclude Include="TipsCollection.h" />
+    <ClInclude Include="TipsCollectionUI.h" />
     <ClInclude Include="TipsData.h" />
     <ClInclude Include="TipsManager.h" />
     <ClInclude Include="TipsTrigger.hpp" />
