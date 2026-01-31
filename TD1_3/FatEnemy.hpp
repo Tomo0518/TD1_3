@@ -174,7 +174,7 @@ public:
 		collider_.size = { 140.f, 240.f };
 		collider_.offset = { 0.f, 0.f };
 
-		rigidbody_.maxSpeedX = chargeForce_;
+		rigidbody_.maxSpeedX = chargeForce_ * 2.2f;
 
 		// マネージャーにコンポーネントを登録
 		drawManager_.RegisterComponent(FatEnemyDrawState::ePatrol,
@@ -281,6 +281,11 @@ public:
 			battleState_ = AttackEnemyBattleState::Idle;
 			windDownTwoTimer_ = 0.0f;
 			// Create and position the hitbox
+
+			if(distanceToPlayer_ <= keepDistance_) {
+				rigidbody_.AddForce({ -direction_ * chargeForce_ * 2.2f, chargeForce_});
+
+			}
 			
 		}
 	}

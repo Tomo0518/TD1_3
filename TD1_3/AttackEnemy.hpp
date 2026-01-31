@@ -563,6 +563,8 @@ public:
 				ParticleManager::GetInstance().Emit(ParticleType::Hit, transform_.translate);
 				SoundManager::GetInstance().PlaySe(DamagedSound);
 				SoundManager::GetInstance().PlaySe(SeId::PlayerShot);
+
+				SpawnStar();
 			}
 
 

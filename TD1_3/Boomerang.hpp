@@ -34,7 +34,7 @@ private:
 
 	bool blocked_ = false;
 	float blockedTimer_ = 0.f;
-	float blockedDuration_ = 30.f;
+	float blockedDuration_ = 60.f;
 	
 	int damage_;
 	int damageBonus_ = 0;
@@ -403,7 +403,7 @@ public:
 						Move(deltaTime);
 						collider_.canCollide = false;
 					}
-					collider_.canCollide = true;
+					//collider_.canCollide = true;
 					//closer the distance bigger damage bonus
 					//damageBonus_ = std::max(0,int((activeRange_*1.4f - distanceFormOwner) / 50.f));
 					float distanceFormOwner = Vector2::Length(transform_.translate - ownerPos);
@@ -430,7 +430,7 @@ public:
 						damageBonus_ = std::min(20, damageBonus_ + 1);
 					}
 
-					if (distanceFormOwner > activeRange_ * 2.5f) {
+					if (distanceFormOwner > activeRange_ * 3.5f) {
 						damageBonus_ = 0;
 						damage_ = 0;
 						SwitchToReturn();
