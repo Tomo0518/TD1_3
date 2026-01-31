@@ -7,6 +7,7 @@ class Button : public PhysicsObject {
 protected:
 	bool isPressed_ = false;
 	int ButtonID_ = 0;
+	int requiredDamage_ = 0;
 	bool isSwitch_ = false;
 	DrawComponent2D* onComp_ = nullptr;
 	DrawComponent2D* offComp_ = nullptr;
@@ -61,7 +62,8 @@ public:
 
 			Vector2 buttonPos = transform_.translate;
 			float distance = Vector2::Length(Vector2::Subtract(BoomerangPos, buttonPos));
-			if (distance < 64.f) {
+			int damage = static_cast<Boomerang*>(player->GetFirstBoomerang())->GetTotalDamage();
+			if (distance < 64.f && damage >= requiredDamage_) {
 				SetPressed(true);
 			}
 			else {
@@ -154,6 +156,8 @@ public:
 	Button7() {
 		ButtonID_ = 7;
 		isGravityEnabled_ = false;
+		isSwitch_ = true;
+		requiredDamage_ = 22;
 	}
 };
 
@@ -233,7 +237,7 @@ public:
 				return;
 			}
 
-			Vector2 BoomerangPos = player->GetFirstBoomerang()->GetPosition();
+			Vector2 BoomerangPos = player->GetPosition();
 
 			Vector2 buttonPos = transform_.translate;
 			float distance = Vector2::Length(Vector2::Subtract(BoomerangPos, buttonPos));
