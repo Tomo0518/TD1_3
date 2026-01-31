@@ -753,6 +753,8 @@ public:
 				b->Throw(throwDir, starCount_, chargeTimer_);
 				chargeTimer_ = 0;
 
+				dashCooldownTimer_ = 0.f;
+				dashAvailable_ = true;
 				
 				isGravityEnabled_ = true;
 				//if (!isGrounded_) Jump();

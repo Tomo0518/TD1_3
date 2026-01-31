@@ -430,7 +430,7 @@ public:
 						damageBonus_ = std::min(20, damageBonus_ + 1);
 					}
 
-					if (distanceFormOwner > activeRange_ * 2.5f) {
+					if (distanceFormOwner > activeRange_ * 3.5f) {
 						damageBonus_ = 0;
 						damage_ = 0;
 						SwitchToReturn();

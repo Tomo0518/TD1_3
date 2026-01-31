@@ -10,7 +10,7 @@ private:
 public:
 	Star() {
 
-		lifeTime_ = 300.0f; // 5 seconds at 60fps
+		lifeTime_ = 500.0f; // 5 seconds at 60fps
 
 		delete drawComp_;
 		drawComp_ = new DrawComponent2D(Tex().GetTexture(TextureId::Star_idle), 4, 1, 4, 5.f, true);
