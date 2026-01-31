@@ -96,7 +96,7 @@ protected:
 
 	// 移動速度
 	float moveSpeed_ = 2.0f;
-	float runSpeed_ = 6.0f;
+	float runSpeed_ = 6.5f;
 
 	// damaged handling
 	float damagedShakingDuration_ = 20.0f; // ダメージ時の揺れ時間
@@ -129,7 +129,7 @@ protected:
 	float battleRange_ = 200.0f; // 戦闘維持範囲
 	float escapeRange_ = 600.0f; // 戦闘離脱範囲
 
-	float attackCooldown_ = 120.0f; // 攻撃クールダウン時間
+	float attackCooldown_ = 50.0f; // 攻撃クールダウン時間
 	float attackTimer_ = 0.0f; // 攻撃タイマー
 
 	float windDownDuration_ = 45.0f; // 攻撃後のクールダウン時間
@@ -337,6 +337,7 @@ public:
 			windupShakeMagnitude_ = 0.0f;
 			emitedCanAttackEffect_ = false;
 
+			rigidbody_.AddForce({ direction_ * 8.0f, 0.0f });
 			// Create and position the hitbox
 			SpawnHitBox(15.f);
 			SoundManager::GetInstance().PlaySe(AttackSound);
@@ -350,6 +351,8 @@ public:
 		transform_.translate.x += directionToPlayer.x * runSpeed_ * deltaTime;
 
 		direction_ = (directionToPlayer.x >= 0) ? 1 : -1;
+
+		attackTimer_ += deltaTime;
 
 		if (distanceToPlayer_ <= battleRange_) {
 			battleState_ = AttackEnemyBattleState::Idle;

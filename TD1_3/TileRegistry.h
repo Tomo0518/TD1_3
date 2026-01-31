@@ -46,6 +46,7 @@ enum TileID{
 	Deco_Rock1_F = 54,
 	Deco_Bush1_F = 55,
 	Deco_BushDark_F = 56,
+	Deco_Tree1_F = 60,
 
 	BoomerangJumpTutorial = 60,
 	BoomerangThrowToJump = 61,
@@ -225,6 +226,8 @@ public:
 			{ false, 1, 1, 1, 0.0f } // アニメーションなし
 			});
 
+
+
 		tiles_.push_back({
 			TileID::BoomerangTutorial, "BoomerangTutorial", TextureId::BoomerangTutorial, TileType::Solid, false,
 			TileLayer::Decoration, {0.0f, 0.0f},
@@ -290,6 +293,12 @@ public:
 			});
 		tiles_.push_back({
 			TileID::Deco_BushDark_F, "Bush1", TextureId::Deco_BushDark, TileType::Solid, false,
+			TileLayer::Decoration, {0.0f, 0.0f},
+			RenderMode::Component,DrawLayer::Foreground,
+			{ false, 1, 1, 1, 0.0f } // アニメーションなし
+			});
+		tiles_.push_back({
+			TileID::Deco_Tree1_F, "Tree1", TextureId::Deco_Tree1, TileType::Solid, false,
 			TileLayer::Decoration, {0.0f, 0.0f},
 			RenderMode::Component,DrawLayer::Foreground,
 			{ false, 1, 1, 1, 0.0f } // アニメーションなし
