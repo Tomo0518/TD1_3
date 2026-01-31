@@ -177,14 +177,14 @@ public:
 		if (isDoubleJump) {
 			BoomerangJumpTimer_ = BoomerangJumpCooldown_;
 			auto b = GetFirstBoomerang();
-			b->AddForce({ 0.f, -10.f });
-			
+			b->AddForce({ 0.f, -10.f });		
+
+			static_cast<Boomerang*>(b)->AddDamageBonus(5);			
+		}
+
+		if (isDoubleJump || ignoreGravity) {
 			dashCooldownTimer_ = 0.f;
 			dashAvailable_ = true;
-
-			static_cast<Boomerang*>(b)->AddDamageBonus(5);
-
-			
 		}
 
 		// ジャンプアニメーションに切り替え
@@ -680,9 +680,9 @@ public:
 				}				
 				other->GetInfo().isActive = false;
 
-				Jump(true, true);
+				Jump(false, true);
 				
-
+				ParticleManager::GetInstance().Emit(ParticleType::Hit, other->GetPosition());
 				SoundManager::GetInstance().PlaySe(SeId::PlayerStarCollect);
 			}
 		}
@@ -693,6 +693,14 @@ public:
 			//rigidbody_.acceleration.x = 0.f;
 			rigidbody_.velocity.x = 0.f;
 			rigidbody_.acceleration.x += (knockbackDir.x * (rigidbody_.acceleration.x +2.5f));
+
+			float dirX = (knockbackDir.x > 0) ? 1.f : -1.f;
+			float OtherDirX = (other->GetRigidbody().velocity.x > 0) ? 1.f : -1.f;
+
+			if (dirX == OtherDirX) {
+				rigidbody_.acceleration.x += other->GetRigidbody().velocity.x;
+			}
+			
 			//rigidbody_.acceleration.y += (knockbackDir.y * rigidbody_.acceleration.y);
 
 		}
@@ -703,6 +711,7 @@ public:
 
 		return 0;
 	}
+
 
 	void ThrowBoomerang(Vector2& throwDir) {
 		// Check throw/jump permission first

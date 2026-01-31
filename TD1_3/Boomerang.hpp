@@ -34,7 +34,7 @@ private:
 
 	bool blocked_ = false;
 	float blockedTimer_ = 0.f;
-	float blockedDuration_ = 30.f;
+	float blockedDuration_ = 60.f;
 	
 	int damage_;
 	int damageBonus_ = 0;
