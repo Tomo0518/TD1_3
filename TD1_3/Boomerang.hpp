@@ -403,7 +403,7 @@ public:
 						Move(deltaTime);
 						collider_.canCollide = false;
 					}
-					collider_.canCollide = true;
+					//collider_.canCollide = true;
 					//closer the distance bigger damage bonus
 					//damageBonus_ = std::max(0,int((activeRange_*1.4f - distanceFormOwner) / 50.f));
 					float distanceFormOwner = Vector2::Length(transform_.translate - ownerPos);
