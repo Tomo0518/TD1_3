@@ -38,7 +38,7 @@ private:
 	float JumpFriendlyTimer_ = 0;
 	float JumpFriendlyDuration_ = 15.f;
 
-	float dashSpeed_ = 20.f;
+	float dashSpeed_ = 25.f;
 	float dashDuration_ = 20.f;
 	float dashCooldown_ = 40.f;
 	float dashDurationTimer_ = 0.f;
@@ -48,7 +48,7 @@ private:
 	float BoomerangJumpCooldown_ = 15.f;
 	float BoomerangJumpTimer_ = 0.f;
 
-	float walkSpeed_ = 6.f;
+	float walkSpeed_ = 7.f;
 
 	float currentHp_ = 100.f;
 	float maxHp_ = 100.f;
@@ -85,6 +85,7 @@ public:
 		rigidbody_.Initialize();
 		rigidbody_.deceleration = { 0.7f, 0.7f };
 		rigidbody_.maxSpeedY = jumpForceBooster_ + jumpForce_ + 5.f;
+		rigidbody_.maxSpeedX = walkSpeed_;
 		collider_.size = { 52.f, 120.f };
 		collider_.offset = { 5.f, -28.f };
 
@@ -164,12 +165,28 @@ public:
 		}
 	}
 
-	void Jump(bool isDoubleJump = false) {
-		if (isGravityEnabled_ == false) return;
+	void Jump(bool isDoubleJump = false, bool ignoreGravity = false) {
+		if (!ignoreGravity) {
+			if (isGravityEnabled_ == false) return;
+		}
 		JumpFriendlyTimer_ = 0;
 		rigidbody_.velocity.y = 0.f; // ジャンプ前に垂直速度をリセット
 		rigidbody_.acceleration.y += jumpForce_ + (isDoubleJump ? jumpForceBooster_ : 0.f);
 		isGrounded_ = false;
+
+		if (isDoubleJump) {
+			BoomerangJumpTimer_ = BoomerangJumpCooldown_;
+			auto b = GetFirstBoomerang();
+			b->AddForce({ 0.f, -10.f });
+			
+			dashCooldownTimer_ = 0.f;
+			dashAvailable_ = true;
+
+			static_cast<Boomerang*>(b)->AddDamageBonus(5);
+
+			
+		}
+
 		// ジャンプアニメーションに切り替え
 		ChangeDrawComp(DrawCompState::eJump);
 		SoundManager::GetInstance().PlaySe(SeId::PlayerJump);
@@ -221,7 +238,7 @@ public:
 
 			// Aボタン: 地上ならジャンプ、空中ならダッシュ
 			if (Input().GetPad()->Trigger(Pad::Button::A)) {
-				if (isGrounded_ || isCloseToBoomerang) {
+				if (isGrounded_ /* || isCloseToBoomerang*/) {
 					// 地上またはブーメラン近くならジャンプ
 					inputDir.y += 1.0f;
 					jumpInput = true;
@@ -263,10 +280,9 @@ public:
 		inputDir = Vector2::Normalize(inputDir);
 
 		// ブーメランジャンプの実行
-		if (isCloseToBoomerang && (jumpInput || JumpFriendlyTimer_ > 0.f)) {
-			BoomerangJumpTimer_ = BoomerangJumpCooldown_;
+		/*if (isCloseToBoomerang && (jumpInput || JumpFriendlyTimer_ > 0.f)) {
 			ParticleManager::GetInstance().Emit(ParticleType::Hit, transform_.translate);
-		}
+		}*/
 
 		// ジャンプ実行（チャージ中でも可能にする）
 		if (((jumpInput || JumpFriendlyTimer_ > 0.f) && isGrounded_) || (isCloseToBoomerang)) {
@@ -275,6 +291,7 @@ public:
 
 		if (isGrounded_) {
 			dashAvailable_ = true;
+
 		}
 
 		// ダッシュ処理
@@ -488,6 +505,9 @@ public:
 			}
 
 			SoundManager::GetInstance().PlaySe(SeId::PlayerBoomerangReturn);
+			/*dashCooldownTimer_ = 0.f;
+			dashAvailable_ = true;*/
+			//SoundManager::GetInstance().PlaySe(SeId::StarSpawn);
 		}
 		wasBoomerangActive_ = currentBoomerangActive;
 	}
@@ -638,6 +658,10 @@ public:
 
 		if (previouslyGrounded == false && isGrounded_ == true) {
 			SoundManager::GetInstance().PlaySe(SeId::PlayerLand);
+			/*if(dashAvailable_ == false) {
+				SoundManager::GetInstance().PlaySe(SeId::StarSpawn);
+			}*/
+			
 		}
 
 		transform_.CalculateWorldMatrix();
@@ -655,6 +679,9 @@ public:
 					starCount_ = std::min(4, starCount_ + 1);
 				}				
 				other->GetInfo().isActive = false;
+
+				Jump(true, true);
+				
 
 				SoundManager::GetInstance().PlaySe(SeId::PlayerStarCollect);
 			}

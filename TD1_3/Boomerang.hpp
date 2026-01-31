@@ -6,7 +6,8 @@
 enum class BoomerangState {
 	Thrown,
 	Returning,
-	Idle
+	Idle,
+	blocked,
 };
 
 
@@ -30,6 +31,10 @@ private:
 	bool isHorizontal_;
 	std::vector<int> hitEnemies_; // Track hit enemy IDs
 	bool isTemporary_;
+
+	bool blocked_ = false;
+	float blockedTimer_ = 0.f;
+	float blockedDuration_ = 30.f;
 	
 	int damage_;
 	int damageBonus_ = 0;
@@ -38,12 +43,17 @@ private:
 	float activeRange_ = range_;
 	Vector2 RenderPos_;
 
+	bool isAddBonusShake = false;
+	float bonusShakeTimer = 0.f;
+	float bonusShakeDuration = 15.f;
+
 	int starCount_;
 	bool starRetrieved_ = false;
 
 	float frameCount_ = 0.f;
 
 	bool waitingToReturn_ = false;
+	bool isGoing = false;
 
 	DrawComponent2D* starComp_ = nullptr;
 	DrawComponent2D* effectComp_ = nullptr;
@@ -62,7 +72,8 @@ public:
 		collider_.offset = { 0.0f, -20.0f };
 		info_.isVisible = false;
 		info_.isActive = false;
-
+		isGravityEnabled_ = false;
+		rigidbody_.deceleration = { 0.95f, 0.95f };
 	
 
 		delete drawComp_;
@@ -108,6 +119,7 @@ public:
 		if (state_ != BoomerangState::Idle) return;
 		starCount_ = Star;
 		starRetrieved_ = false;
+		isGoing = true;
 
 		trailInfos_.clear();
 
@@ -204,6 +216,22 @@ public:
 		return 1.0f - f * f * f;
 	}
 
+	void Blocked(Vector2 dir) {
+		if (state_ != BoomerangState::Thrown) return;
+		
+		state_ = BoomerangState::blocked;
+		blocked_ = true;
+		blockedTimer_ = blockedDuration_;
+		moveTimer_ = 0;
+		stayTimer_ = 0;
+
+		damage_ = 0;
+		damageBonus_ = 0;
+
+		collider_.canCollide = false;
+		rigidbody_.AddForce(dir * 30.f);
+	}
+
 	// float EaseInCubic(float t) {
 	//    return t * t * t;
 	// }
@@ -263,6 +291,10 @@ public:
 		);
 	}
 
+	bool IsGoing() const {
+		return isGoing;
+	}
+
 	void Update(float deltaTime = 1.0f) override {
 		if (state_ == BoomerangState::Idle) {
 			info_.isActive = false;
@@ -272,6 +304,7 @@ public:
 
 		frameCount_ += deltaTime;
 
+		if(state_ != BoomerangState::blocked)
 		transform_.rotation -= (0.03f + float(damage_ + damageBonus_) / 20.f) * deltaTime;	
 
 		// Update trail
@@ -295,16 +328,41 @@ public:
 			}
 		}
 
+		if (state_ == BoomerangState::blocked) {
+			isGravityEnabled_ = true;
+			if (rigidbody_.velocity.Length(rigidbody_.velocity) != 0.f || rigidbody_.acceleration.Length(rigidbody_.acceleration) != 0.f) {
+				collider_.canCollide = true;
+				Move(deltaTime);
+				collider_.canCollide = false;
+			}
+			else {
+				drawComp_->PlayAnimation();
+			}
 
-		if (state_ == BoomerangState::Thrown) {
-			rigidbody_.velocity = { 0.0f, 0.0f }; // No physics movement
+
+			blockedTimer_ -= deltaTime;
+
+			if (blockedTimer_ <= 0.f) {
+				isGravityEnabled_ = false;
+				blocked_ = false;
+				state_ = BoomerangState::Thrown;
+				waitingToReturn_ = true;
+				SwitchToReturn();
+			}
+		}
+		else if (state_ == BoomerangState::Thrown) {
+			
 			if (moveTimer_ < maxTime_) {
+				rigidbody_.velocity = { 0.0f, 0.0f }; // No physics movement
 				moveTimer_ += deltaTime;
+
+				isGoing = true;
 
 				if (moveTimer_ >= maxTime_) {
 					hitEnemies_.clear();
 					damage_ += 8;
 					waitingToReturn_ = true;
+					isGoing = false;
 				}
 				if (moveTimer_ >= maxTime_ / 1.7f) collider_.canCollide = false;
 
@@ -318,7 +376,7 @@ public:
 				if (isHorizontal_) {
 					// x goes to target, y follows player
 					transform_.translate.x = currentTarget.x;
-					transform_.translate.y = isHitWall ? farestDistance_.y : ownerPos.y;
+					transform_.translate.y = (isHitWall ? farestDistance_.y : transform_.translate.y> ownerPos.y?ownerPos.y: transform_.translate.y);
 					//clamp x to farest distance
 					transform_.translate.x = std::clamp(transform_.translate.x,
 						std::min(startPos_.x, farestDistance_.x),
@@ -340,7 +398,12 @@ public:
 				//if (stayTimer_ < maxStayTime_) {
 					stayTimer_ += deltaTime;
 
-					
+					if (rigidbody_.velocity.Length(rigidbody_.velocity) != 0.f||rigidbody_.acceleration.Length(rigidbody_.acceleration) != 0.f) {
+						collider_.canCollide = true;
+						Move(deltaTime);
+						collider_.canCollide = false;
+					}
+					collider_.canCollide = true;
 					//closer the distance bigger damage bonus
 					//damageBonus_ = std::max(0,int((activeRange_*1.4f - distanceFormOwner) / 50.f));
 					float distanceFormOwner = Vector2::Length(transform_.translate - ownerPos);
@@ -350,14 +413,14 @@ public:
 					if (stayTimer_ >= maxStayTime_) hitEnemies_.clear();
 
 					// Still follow player while staying
-					if (isHorizontal_) {
-						transform_.translate.x = farestDistance_.x;
-						//transform_.translate.y = ownerPos.y;
-					}
-					else {
-						transform_.translate.y = farestDistance_.y;
-						transform_.translate.x = isHitWall ? farestDistance_.x : ownerPos.x;
-					}
+					//if (isHorizontal_) {
+					//	transform_.translate.x = farestDistance_.x;
+					//	//transform_.translate.y = ownerPos.y;
+					//}
+					//else {
+					//	transform_.translate.y = farestDistance_.y;
+					//	transform_.translate.x = isHitWall ? farestDistance_.x : ownerPos.x;
+					//}
 
 					if (int(stayTimer_) % 30 == 0) {
 						SoundManager::GetInstance().PlaySe(SeId::PlayerBoomerangFly);
@@ -372,6 +435,8 @@ public:
 						damage_ = 0;
 						SwitchToReturn();
 					}
+
+					
 				//}
 				//else {
 					//state_ = BoomerangState::Returning;
@@ -410,7 +475,7 @@ public:
 			}
 		}
 
-		GameObject2D::Update(deltaTime);
+		//GameObject2D::Update(deltaTime);
 		UpdateDrawComponent(deltaTime);
 
 		// clamp to farthest distance
@@ -418,7 +483,7 @@ public:
 		Novice::ScreenPrintf(10, 60, "Farest X: %.2f Y: %.2f", farestDistance_.x, farestDistance_.y);
 		Novice::ScreenPrintf(10, 80, "Current X: %.2f Y: %.2f", transform_.translate.x, transform_.translate.y);
 #endif
-		if (isHorizontal_) {
+		/*if (isHorizontal_) {
 			transform_.translate.x = std::clamp(transform_.translate.x,
 				std::min(ownerPos.x, farestDistance_.x),
 				std::max(ownerPos.x, farestDistance_.x));
@@ -427,7 +492,7 @@ public:
 			transform_.translate.y = std::clamp(transform_.translate.y,
 				std::min(ownerPos.y, farestDistance_.y),
 				std::max(ownerPos.y, farestDistance_.y));
-		}
+		}*/
 
 		if (IsTemporary() && IsIdle()) {
 			Destroy();
@@ -437,9 +502,20 @@ public:
 
 	void UpdateDrawComponent(float deltaTime) override {
 		if (!info_.isActive) return;
+		bonusShakeTimer -= deltaTime;
+
+		Vector2 bonusShakeOffset = { 0.f, 0.f };
+		if (bonusShakeTimer <= 0.f) {
+			bonusShakeTimer = 0.f;
+			isAddBonusShake = false;
+		} else {
+			isAddBonusShake = true;
+			bonusShakeOffset = { float(rand() % 200 - 100) / 100.f * 20  ,  float(rand() % 200 - 100) / 100.f * 20 };
+		}
+		
 		float ShakeIntensity = std::max(0.f, float(damage_ + damageBonus_/10.f));
-		RenderPos_.x = transform_.translate.x + float(rand() % 200 - 100) / 100.f * ShakeIntensity;
-		RenderPos_.y = transform_.translate.y + float(rand() % 200 - 100) / 100.f * ShakeIntensity;
+		RenderPos_.x = transform_.translate.x + float(rand() % 200 - 100) / 100.f * ShakeIntensity + bonusShakeOffset.x;
+		RenderPos_.y = transform_.translate.y + float(rand() % 200 - 100) / 100.f * ShakeIntensity + bonusShakeOffset.y;
 
 		if (drawComp_) {						
 			drawComp_->SetTransform(transform_);
@@ -454,21 +530,21 @@ public:
 		if (effectComp_) {
 			//effectComp_->SetTransform(transform_);
 			//effectComp_->SetPosition(RenderPos_);
-			effectComp_->SetPosition(transform_.translate);
+			effectComp_->SetPosition(transform_.translate + bonusShakeOffset);
 			effectComp_->Update(deltaTime);
 		}
 
 		if (effectCompLv2_) {
 			//effectCompLv2_->SetTransform(transform_);
 			//effectCompLv2_->SetPosition(RenderPos_);
-			effectCompLv2_->SetPosition(transform_.translate);
+			effectCompLv2_->SetPosition(transform_.translate + bonusShakeOffset);
 			effectCompLv2_->Update(deltaTime);
 		}
 
 		if (effectCompLv3_) {
 			//effectCompLv3_->SetTransform(transform_);
 			//effectCompLv3_->SetPosition(RenderPos_);
-			effectCompLv3_->SetPosition(transform_.translate);
+			effectCompLv3_->SetPosition(transform_.translate + bonusShakeOffset);
 			effectCompLv3_->Update(deltaTime);
 		}
 	}
@@ -567,20 +643,40 @@ public:
 			hitEnemies_.push_back(enemyId);
 			other->OnDamaged(damage_ + damageBonus_);
 			Novice::ConsolePrintf("Boomerang hit Enemy ID %d for %d damage(%d + %d).\n", enemyId, damage_ + damageBonus_, damage_, damageBonus_);
+			
 			//other->Destroy();			
 
 			if (IsThrown()) {
 				// On first hit during throw, immediately start returning
-				state_ = BoomerangState::Returning;
+				/*state_ = BoomerangState::Returning;
 				moveTimer_ = 0;
 				stayTimer_ = 0;
-				targetPos_ = transform_.translate;
+				targetPos_ = transform_.translate;*/ 
+				if (isGoing) {
+					Vector2 dir;
+
+					dir.x = transform_.translate.x > other->GetTransform().translate.x ? 1.f : -1.f;
+					dir.y = 0.5f;
+					dir = Vector2::Normalize(dir);
+					Blocked(dir);
+				}
+				
 			}
 
 
 		}
 		return 0;
 	}
+
+	void AddDamageBonus(int bonus) {
+		damageBonus_ += bonus;
+		ParticleManager::GetInstance().Emit(ParticleType::Hit, transform_.translate);
+		ParticleManager::GetInstance().Emit(ParticleType::Hit, transform_.translate);
+		bonusShakeTimer = bonusShakeDuration;
+		SoundManager::GetInstance().PlaySe(SeId::StarSpawn);
+		hitEnemies_.clear();
+	}
+
 
 
 };

@@ -142,10 +142,10 @@ public:
 		patrolRange_ = 200.0f; // パトロール範囲
 
 		// battle state
-		attackRange_ = 140.0f; // 攻撃範囲
-		keepDistance_ = 110.0f; // プレイヤーとの距離維持
-		battleRange_ = 200.0f; // 戦闘維持範囲
-		escapeRange_ = 800.0f; // 戦闘離脱範囲
+		attackRange_ = 190.0f; // 攻撃範囲
+		keepDistance_ = 150.0f; // プレイヤーとの距離維持
+		battleRange_ = 260.0f; // 戦闘維持範囲
+		escapeRange_ = 860.0f; // 戦闘離脱範囲
 
 		attackCooldown_ = 60.0f; // 攻撃クールダウン時間
 		attackTimer_ = 0.0f; // 攻撃タイマー
@@ -161,7 +161,7 @@ public:
 		battleState_ = AttackEnemyBattleState::Idle;
 
 
-		DrawOffset_ = { -64.f, 95.f };
+		DrawOffset_ = { -64.f, 100.f };
 
 		foundPlayerSound = SeId::EnemyFindPlayer3;
 		DamagedSound = SeId::EnemyDamage3;
@@ -171,7 +171,7 @@ public:
 	virtual void Initialize() override {
 		rigidbody_.Initialize();
 		rigidbody_.deceleration = { 0.9f, 0.9f };
-		collider_.size = { 140.f, 230.f };
+		collider_.size = { 140.f, 240.f };
 		collider_.offset = { 0.f, 0.f };
 
 		rigidbody_.maxSpeedX = chargeForce_;
@@ -201,7 +201,7 @@ public:
 		}
 
 		initialPosition_ = transform_.translate;
-		status_.maxHP = 45;
+		status_.maxHP = 11145;
 		status_.currentHP = status_.maxHP;
 	}
 
@@ -217,12 +217,12 @@ public:
 	virtual void Stunning(float deltaTime) override {
 		stunTimer_ -= deltaTime;
 		collider_.size = { 140.f, 120.f };
-		DrawOffset_ = { -64.f, 95.f + 60.f };
+		DrawOffset_ = { -64.f, 100.f + 60.f };
 
 		if (stunTimer_ <= 0) {
 			stunned_ = false;
-			collider_.size = { 140.f, 230.f };
-			DrawOffset_ = { -64.f, 95.f };
+			collider_.size = { 140.f, 240.f };
+			DrawOffset_ = { -64.f, 100.f };
 		}
 	}
 
@@ -257,7 +257,7 @@ public:
 	}
 
 	virtual void SpawnHitBox(float lifetime) {
-		FatEnemyHitBox* hitbox = manager_->Spawn<FatEnemyHitBox>(this, "FatEnemyHitBox");
+		FatEnemyHitBox* hitbox = manager_->Spawn<FatEnemyHitBox>(this, "EnemyHitBox");
 		hitbox->SetPosition(transform_.translate + Vector2(64.f, 0.f) * float(direction_));
 		hitbox->setLifetime(lifetime);
 		hitbox->SetOwner(this);

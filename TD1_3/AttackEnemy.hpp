@@ -484,7 +484,7 @@ public:
 	}
 
 	virtual void SpawnHitBox(float lifetime) {
-		AttackEnemyHitBox* hitbox = manager_->Spawn<AttackEnemyHitBox>(this, "AttackEnemyHitBox");
+		AttackEnemyHitBox* hitbox = manager_->Spawn<AttackEnemyHitBox>(this, "EnemyHitBox");
 		hitbox->SetPosition(transform_.translate + Vector2(64.f, 0.f) * float(direction_));
 		hitbox->setLifetime(lifetime);		
 	}
@@ -548,7 +548,8 @@ public:
 			ParticleManager::GetInstance().Emit(ParticleType::Hit, transform_.translate);
 			ParticleManager::GetInstance().Emit(ParticleType::Enemy_Dead, transform_.translate);
 			Destroy();
-			SoundManager::GetInstance().PlaySe(AttackSound);
+			SoundManager::GetInstance().PlaySe(DamagedSound);
+			SoundManager::GetInstance().PlaySe(SeId::PlayerShot);
 		}
 		else {
 			if (damage > 0) {
@@ -561,6 +562,7 @@ public:
 
 				ParticleManager::GetInstance().Emit(ParticleType::Hit, transform_.translate);
 				SoundManager::GetInstance().PlaySe(DamagedSound);
+				SoundManager::GetInstance().PlaySe(SeId::PlayerShot);
 			}
 
 
