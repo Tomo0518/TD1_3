@@ -183,9 +183,9 @@ public:
 		if (isDoubleJump) {
 			BoomerangJumpTimer_ = BoomerangJumpCooldown_;
 			auto b = GetFirstBoomerang();
-			b->AddForce({ 0.f, -10.f });		
+			b->AddForce({ 0.f, -10.f });
 
-			static_cast<Boomerang*>(b)->AddDamageBonus(5);			
+			static_cast<Boomerang*>(b)->AddDamageBonus(5);
 		}
 
 		if (isDoubleJump || ignoreGravity) {
@@ -223,7 +223,7 @@ public:
 			}
 		}
 
-		if(!isGrounded_ && rigidbody_.velocity.y < 0.f) {
+		if (!isGrounded_ && rigidbody_.velocity.y < 0.f) {
 			ChangeDrawComp(DrawCompState::eFall);
 		}
 
@@ -468,14 +468,14 @@ public:
 		attackDrawCompTimer_ -= deltaTime;
 	}
 
-	void RespawnHandle(){
+	void RespawnHandle() {
 		if (status_.currentHP <= 0.f) {
 			if (respawnTimer_ <= 0.f) {
 				// Respawn
 				Respawn();
 			}
 			if (respawnTimer_ <= respawnDelay_ * 0.5f) {
-				transform_.translate = respawnPosition_ + Vector2(0,10.f);
+				transform_.translate = respawnPosition_ + Vector2(0, 10.f);
 			}
 		}
 	}
@@ -571,10 +571,10 @@ public:
 	void Draw(const Camera2D& camera)override {
 		if (!info_.isActive) {
 
-			float RspawnProgress = (respawnTimer_ / (respawnDelay_*0.5f));
-			unsigned int alpha = static_cast<unsigned int>(std::min(255.f,255.f *  RspawnProgress));
+			float RspawnProgress = (respawnTimer_ / (respawnDelay_ * 0.5f));
+			unsigned int alpha = static_cast<unsigned int>(std::min(255.f, 255.f * RspawnProgress));
 			Novice::DrawBox(
-				0,0,
+				0, 0,
 				1280, 720,
 				0.0f,
 				0x00000000 | alpha,
@@ -592,15 +592,15 @@ public:
 			if (!boom->IsTemporary() && boom->IsIdle()) {
 				if (boom->isStarRetrieved()) {
 					boomerangDrawManager_.Draw(camera);
-					//DrawStar(camera, starCount_);
+					DrawStar(camera, starCount_);
 				}
 				break;
 			}
 		}
 
-		/*if (tempStarCount > 0) {
+		if (tempStarCount > 0) {
 			DrawStar(camera, tempStarCount);
-		}*/
+		}
 
 		// draw hitbox for debug
 		/*Vector2 screenPos = const_cast<Camera2D&>(camera).WorldToScreen(transform_.translate);
@@ -618,7 +618,7 @@ public:
 
 		// Orbitシステムの描画
 		if (orbitSystem_) {
-			orbitSystem_->Draw(camera);
+		//	orbitSystem_->Draw(camera);
 		}
 	}
 
@@ -683,7 +683,7 @@ public:
 			/*if(dashAvailable_ == false) {
 				SoundManager::GetInstance().PlaySe(SeId::StarSpawn);
 			}*/
-			
+
 		}
 
 		transform_.CalculateWorldMatrix();
@@ -699,11 +699,11 @@ public:
 				}
 				else {
 					starCount_ = std::min(4, starCount_ + 1);
-				}				
+				}
 				other->GetInfo().isActive = false;
 
 				Jump(false, true);
-				
+
 				ParticleManager::GetInstance().Emit(ParticleType::Hit, other->GetPosition());
 				SoundManager::GetInstance().PlaySe(SeId::PlayerStarCollect);
 			}
@@ -711,10 +711,10 @@ public:
 		else if (other->GetInfo().tag == "Enemy" || other->GetInfo().tag == "Player") {
 			// knockback on collision with other enemies
 			Vector2 knockbackDir = Vector2::Subtract(transform_.translate, other->GetTransform().translate);
-			knockbackDir = Vector2::Normalize(knockbackDir); 
+			knockbackDir = Vector2::Normalize(knockbackDir);
 			//rigidbody_.acceleration.x = 0.f;
 			rigidbody_.velocity.x = 0.f;
-			rigidbody_.acceleration.x += (knockbackDir.x * (rigidbody_.acceleration.x +2.5f));
+			rigidbody_.acceleration.x += (knockbackDir.x * (rigidbody_.acceleration.x + 2.5f));
 
 			float dirX = (knockbackDir.x > 0) ? 1.f : -1.f;
 			float OtherDirX = (other->GetRigidbody().velocity.x > 0) ? 1.f : -1.f;
@@ -722,7 +722,7 @@ public:
 			if (dirX == OtherDirX) {
 				rigidbody_.acceleration.x += other->GetRigidbody().velocity.x;
 			}
-			
+
 			//rigidbody_.acceleration.y += (knockbackDir.y * rigidbody_.acceleration.y);
 
 		}
@@ -777,7 +777,7 @@ public:
 
 				dashCooldownTimer_ = 0.f;
 				dashAvailable_ = true;
-				
+
 				isGravityEnabled_ = true;
 				//if (!isGrounded_) Jump();
 
@@ -846,7 +846,7 @@ public:
 				drawManager_.StartFlashBlink(0xFF0000CC, 4, 0.1f, BlendMode::kBlendModeNormal, 1);
 
 				SoundManager::GetInstance().PlaySe(SeId::PlayerDamage);
-			}			
+			}
 		}
 	}
 
