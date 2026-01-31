@@ -211,6 +211,9 @@ void TextureManager::LoadResources() {
 	textureResources_[static_cast<int>(TextureId::Deco_BushDark)] =
 		Novice::LoadTexture("./Resources/images/mapChip/decoration/bushDark.png");
 
+	textureResources_[static_cast<int>(TextureId::Deco_Tree1)] =
+		Novice::LoadTexture("./Resources/images/mapChip/decoration/tree.png");
+
 	// ========Background Decoration==========
 	textureResources_[static_cast<int>(TextureId::Deco_Background_RockBlock)] =
 		Novice::LoadTexture("./Resources/images/mapChip/BGTile.png");

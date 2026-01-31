@@ -23,6 +23,8 @@ private:
 	DrawComponent2D* BoomerangFallComp_ = nullptr;*/
 
 	DrawComponent2D* starComp_ = nullptr;
+	float attackDrawCompTimer_ = 0.f;
+	float attackDrawCompDuration_ = 20.f;
 
 	std::vector<Boomerang*> boomerangs_;
 	int starCount_ = 0;
@@ -97,9 +99,9 @@ public:
 		drawManager_.RegisterComponent(DrawCompState::eAttack,
 			new DrawComponent2D(Tex().GetTexture(TextureId::UsagiAttack), 4, 1, 4, 5.f, false));
 		drawManager_.RegisterComponent(DrawCompState::eJump,
-			new DrawComponent2D(Tex().GetTexture(TextureId::UsagiJump), 2, 1, 2, 5.f, false));
+			new DrawComponent2D(Tex().GetTexture(TextureId::UsagiJump), 4, 1, 4, 5.f, false));
 		drawManager_.RegisterComponent(DrawCompState::eFall,
-			new DrawComponent2D(Tex().GetTexture(TextureId::UsagiFall), 2, 1, 2, 5.f, false));
+			new DrawComponent2D(Tex().GetTexture(TextureId::UsagiFall), 4, 1, 4, 5.f, false));
 
 		boomerangDrawManager_.RegisterComponent(DrawCompState::eBreathe,
 			new DrawComponent2D(Tex().GetTexture(TextureId::BoomerangBreathe), 11, 1, 11, 5.f, true));
@@ -108,9 +110,9 @@ public:
 		boomerangDrawManager_.RegisterComponent(DrawCompState::eAttack,
 			new DrawComponent2D(Tex().GetTexture(TextureId::BoomerangAttack), 4, 1, 4, 5.f, false));
 		boomerangDrawManager_.RegisterComponent(DrawCompState::eJump,
-			new DrawComponent2D(Tex().GetTexture(TextureId::BoomerangJump), 2, 1, 2, 5.f, false));
+			new DrawComponent2D(Tex().GetTexture(TextureId::BoomerangJump), 4, 1, 4, 5.f, false));
 		boomerangDrawManager_.RegisterComponent(DrawCompState::eFall,
-			new DrawComponent2D(Tex().GetTexture(TextureId::BoomerangFall), 2, 1, 2, 5.f, false));
+			new DrawComponent2D(Tex().GetTexture(TextureId::BoomerangFall), 4, 1, 4, 5.f, false));
 
 		auto compNames = { DrawCompState::eBreathe, DrawCompState::eRun, DrawCompState::eAttack, DrawCompState::eJump, DrawCompState::eFall };
 		for (const auto& name : compNames) {
@@ -135,6 +137,7 @@ public:
 	void ChangeDrawComp(DrawCompState state) {
 		switch (state) {
 		case DrawCompState::eBreathe:
+			if (attackDrawCompTimer_ > 0.f) break;
 			drawManager_.ChangeComponent(DrawCompState::eBreathe);
 			boomerangDrawManager_.ChangeComponent(DrawCompState::eBreathe);
 			break;
@@ -145,12 +148,16 @@ public:
 		case DrawCompState::eAttack:
 			drawManager_.ChangeComponent(DrawCompState::eAttack);
 			boomerangDrawManager_.ChangeComponent(DrawCompState::eAttack);
+			drawManager_.GetActiveComponent()->PlayAnimation();
+			boomerangDrawManager_.GetActiveComponent()->PlayAnimation();
+			attackDrawCompTimer_ = attackDrawCompDuration_;
 			break;
 		case DrawCompState::eJump:
 			drawManager_.ChangeComponent(DrawCompState::eJump);
 			boomerangDrawManager_.ChangeComponent(DrawCompState::eJump);
 			break;
 		case DrawCompState::eFall:
+			if (attackDrawCompTimer_ > 0.f) break;
 			drawManager_.ChangeComponent(DrawCompState::eFall);
 			boomerangDrawManager_.ChangeComponent(DrawCompState::eFall);
 			break;
@@ -309,6 +316,8 @@ public:
 			if (inputDir.x != 0) {
 				isflipX_ = inputDir.x < 0.f;
 			}
+
+			ChangeDrawComp(DrawCompState::eAttack);
 		}
 
 		if (dashDurationTimer_ <= 0.f && !isCharging_) {
@@ -418,6 +427,7 @@ public:
 		BoomerangJumpTimer_ -= deltaTime;
 		JumpFriendlyTimer_ -= deltaTime;
 		respawnTimer_ -= deltaTime;
+		attackDrawCompTimer_ -= deltaTime;
 	}
 
 	void RespawnHandle(){
@@ -702,6 +712,10 @@ public:
 			if (b) {
 				b->Throw(throwDir, starCount_, chargeTimer_);
 				chargeTimer_ = 0;
+
+				
+				isGravityEnabled_ = true;
+				//if (!isGrounded_) Jump();
 
 				// ブーメラン投げ時の振動
 

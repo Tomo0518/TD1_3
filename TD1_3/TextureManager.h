@@ -113,6 +113,7 @@ enum class TextureId {
 	Deco_Rock1,
 	Deco_Bush1,
 	Deco_BushDark,
+	Deco_Tree1,
 
 	// ========================================
 	// デコレーション用
