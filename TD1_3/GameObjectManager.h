@@ -161,10 +161,14 @@ public:
         return result;
     }
 
-    std::vector<GameObject2D*> GetAllObjects() {
+    std::vector<GameObject2D*> GetAllObjects(bool includeCantCollide = false) {
         std::vector<GameObject2D*> result;
+        result.reserve(objects_.size());
+
         for (auto& obj : objects_) {
-            result.push_back(obj.get());
+            if (includeCantCollide || obj->GetCollider().canCollide) {
+                result.push_back(obj.get());
+            }
         }
         return result;
 	}
